@@ -1,6 +1,7 @@
 <?php
 
 return[
+    'SingIn' => 'Sing In',
     'Login' => 'Login',
     'Password' => 'Password',
     'Remember' => 'Remember',
