@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>{{config('app.name')}}</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -80,8 +80,7 @@
                         @if (Auth::check())
                             <a href="{{ url('/home') }}">Dashboard</a>
                         @else
-                            <a href="{{ url('/login') }}">@lang('header.Login')</a>
-                            <a href="{{ url('/register') }}">@lang('header.Register')</a>
+                            <a href="{{ url('/login') }}">@lang('header.Login')</a>                            
                         @endif
                         <a href="{{ route('change_lang', ['lang' => 'es']) }}">ES</a>
                         <a href="{{ route('change_lang', ['lang' => 'en']) }}">EN</a>
@@ -89,7 +88,7 @@
                 @endif
                 <div class="content">
                     <div class="title m-b-md">
-                        Laravel <br> 
+                        {{config('app.name')}} <br> 
                         
                     </div>
                 </div>

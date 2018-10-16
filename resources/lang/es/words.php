@@ -1,6 +1,7 @@
 <?php
 
 return[
+    'SingIn' => 'Registrarse',
     'Login' => 'Inicio de sesión',
     'Password' => 'Contraseña',
     'Remember' => 'Recordar',

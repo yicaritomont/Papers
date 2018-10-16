@@ -11,8 +11,8 @@
     <title>@yield('title') {{ config('app.name') }}</title>
 
     <!-- Styles -->
-{{--    <link href="{{ asset('css/app.css') }}" rel="stylesheet">--}}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">   
 
     <style>
         .result-set { margin-top: 1em }
@@ -24,7 +24,7 @@
         ]) !!};
     </script>
 </head>
-<body>
+<body class="{{ Request::path() == 'login' || Request::path() == 'password/reset' ? 'body-content' : '' }}">
     <div id="app">
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
@@ -40,7 +40,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+                        <span class="glyphicon glyphicon-home"></span>                      
                     </a>
                 </div>
 
@@ -70,8 +70,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
                         @if (Auth::guest())
-                            <li><a href="{{ route('login') }}">@lang('header.Login')</a></li>
-                            <li><a href="{{ route('register') }}">@lang('header.Register')</a></li>
+                            <li><a href="{{ route('login') }}">@lang('header.Login')</a></li>                            
                             <li><a href="{{ route('change_lang', ['lang' => 'es']) }}"><span class="badge badge-primary">ES</span></a></li>
                             <li><a href="{{ route('change_lang', ['lang' => 'en']) }}"><span class="badge badge-primary">EN</span></a></li>
 
@@ -113,7 +112,7 @@
             </div>
         </nav>
 
-        <div class="container">
+        <div class="container" id="particles-js">
             <div id="flash-msg">
                 @include('flash::message')
             </div>
