@@ -7,17 +7,11 @@ class Permission extends \Spatie\Permission\Models\Permission
 
     public static function defaultPermissions()
     {
-        $routeCollection = Route::getRoutes();  
-        $routesArray = array();
-        foreach ($routeCollection as $value) 
-        {     
-            array_push($routesArray, $value->getName()); 
-        }
         
 
        /* $routes = app('router')->getRoutes();
         return  $arrays=(array) $routes;*/
-        /*return [
+        return [
             'view_users*',
             'add_users',
             'edit_users',
@@ -32,7 +26,6 @@ class Permission extends \Spatie\Permission\Models\Permission
             'add_posts',
             'edit_posts',
             'delete_posts',
-        ];*/
-       return $routesArray;
+        ];
     }
 }
