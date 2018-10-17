@@ -68,3 +68,15 @@
     padding-top: 15%;
     
 }
+
+.left-align 
+{
+    float: left;
+}
+
+.panel-user-left
+{
+    height: 100%;
+    width: 15%;
+    background-color: #c5deea;
+}

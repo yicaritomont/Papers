@@ -9,7 +9,7 @@
                     <form class="form-horizontal" role="form" method="POST" action="{{ route('login') }}">
                         {{ csrf_field() }}
                         <div>
-                            <h2>@lang('words.Login')</h2>
+                            <h1>@lang('words.Login')</h1>
                         </div>
                         <div class="title-space-login">
                             <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}" align="center">
