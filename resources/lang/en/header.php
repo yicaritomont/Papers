@@ -3,6 +3,11 @@
 return
 [
     'Login' => 'Login',
-    'Register' => 'Register'
+    'Register' => 'Register',
+    'Welcome' => 'Welcome',    
+    'Profile' => 'Profile',
+    'Setting' => 'Setting',
+    'Help' => 'Help',
+    'Logout' => 'LogOut',
 ];
 ?>
