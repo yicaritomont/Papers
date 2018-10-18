@@ -45,7 +45,7 @@
                 <div class="col-md-3 left_col">
                     <div class="left_col scroll-view">
                         <div class="navbar nav_title" style="border: 0;">
-                            <a href="{{ route('login') }}" class="site_title"><i class="fa fa-bullseye"></i> <span>@yield('title') {{ config('app.name') }}</span></a>
+                            <a href="{{ route('login') }}" class="site_title"><i class="fa fa-bullseye"></i> </a>
                         </div>
                         
                         <div class="clearfix"></div>
@@ -53,7 +53,7 @@
                         <!-- menu profile quick info -->
                         <div class="profile clearfix">
                             <div class="profile_pic">
-                                <img src="images/user.png" alt="..." class="img-circle profile_img">
+                                <img src="{{asset('images/user.png')}}" alt="..." class="img-circle profile_img">
                             </div>
                             <div class="profile_info">
                                 <span>@lang('header.Welcome'),</span>
@@ -115,12 +115,19 @@
                             <div class="nav toggle">
                                 <a id="menu_toggle"><i class="fa fa-bars"></i></a>
                             </div>
+                            <div class="navbar-header">
+                                <!-- Branding Image -->
+                                <a class="navbar-brand" href="{{ url('/') }}">
+                                    <span>@yield('title') {{ config('app.name') }}</span>                     
+                                </a>
+                            </div>
+                            
                             
                             <ul class="nav navbar-nav navbar-right">
                                 @if (Auth::check())
                                 <li class="">
                                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <img src="images/user.png" alt="">{{ Auth::user()->name }}
+                                        <img src="{{asset('images/user.png')}}" alt="">{{ Auth::user()->name }}
                                         <span class=" fa fa-angle-down"></span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -154,7 +161,7 @@
                                     <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
                                         <li>
                                             <a>
-                                                <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                                <span class="image"><img src="images/user.png" alt="Profile Image" /></span>
                                                 <span>
                                                     <span>{{ Auth::user()->name }}</span>
                                                     <span class="time">3 mins ago</span>
@@ -186,7 +193,9 @@
                     <div id="flash-msg">
                         @include('flash::message')
                     </div>
+                    <div class="content-page">
                     @yield('content')
+                    </div>
                 </div>
             </div>
             

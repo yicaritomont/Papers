@@ -33,12 +33,6 @@
             </div>
         </div>
     </div>
-            <?php
-            echo "<pre>";
-            print_r($listPermission);
-            echo "</pre>";            
-            
-            ?>
     <div class="row">
         <div class="col-md-5">
             <h3>@lang('words.Roles')</h3>
