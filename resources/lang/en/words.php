@@ -22,5 +22,6 @@ return[
     'Roles' => 'Roles',
     'CreatedAt' => 'Created At',
     'Actions' => 'Actions',
+    'Inspectors' => 'Inspectors',
 ];
 ?>

@@ -22,6 +22,7 @@ return[
     'Roles' => 'Roles',
     'CreatedAt' => 'Creado En',
     'Actions' => 'Acciones',
+    'Inspectors' => 'Inspectores',
 
 ];
 ?>

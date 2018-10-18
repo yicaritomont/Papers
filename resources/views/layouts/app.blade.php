@@ -94,6 +94,14 @@
                                                                 <span class="text-danger glyphicon glyphicon-lock"></span> Roles
                                                             </a>
                                                         </li>
+                                                    @endcan
+
+                                                    @can('view_inspectors')
+                                                        <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectors.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> Inspectores
+                                                            </a>
+                                                        </li>
                                                     @endcan 
                                                 @endif
                                             </ul>
