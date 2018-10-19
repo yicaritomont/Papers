@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use App\Permission;
 use Illuminate\Support\Facades\Route;
 class Permission extends \Spatie\Permission\Models\Permission
 {
@@ -27,5 +28,12 @@ class Permission extends \Spatie\Permission\Models\Permission
             'edit_posts',
             'delete_posts',
         ];
+    }
+
+    public static function storedPermissions()
+    {
+        $permissions = Permission::pluck('name', 'id');
+
+        return $permissions;
     }
 }

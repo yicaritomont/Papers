@@ -23,5 +23,7 @@ return[
     'Roles' => 'Roles',
     'CreatedAt' => 'Created At',
     'Actions' => 'Actions',
+    'SaveChanges' => 'Save Changes',
+    'User' => 'User',
 ];
 ?>

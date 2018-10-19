@@ -11,7 +11,7 @@
                     <h3 class="panel-titles">@lang('words.Create')</h3>                    
                 </div>
                 <div class="panel-body black-letter">
-                    {!! Form::open(['route' => ['users.store'] ]) !!}
+                    {!! Form::open(['route' => ['users.store'] ,'enctype' => "multipart/form-data" ]) !!}
                         @include('user._form')
                         <!-- Submit Form Button -->                        
                         {!! Form::submit('Create', ['class' => 'btn-body']) !!}
