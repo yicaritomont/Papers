@@ -31,7 +31,7 @@ class CreatePermissionTables extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('guard_name');
-            $table->string('password_min_length');
+            $table->string('password_min_length')->nullable(false)->default(8);
             $table->timestamps();
         });
 

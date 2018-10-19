@@ -1,24 +1,19 @@
 <?php
 
 namespace App;
+use App\Permission;
 use Illuminate\Support\Facades\Route;
 class Permission extends \Spatie\Permission\Models\Permission
 {
 
     public static function defaultPermissions()
     {
-        $routeCollection = Route::getRoutes();  
-        $routesArray = array();
-        foreach ($routeCollection as $value) 
-        {     
-            array_push($routesArray, $value->getName()); 
-        }
         
 
        /* $routes = app('router')->getRoutes();
         return  $arrays=(array) $routes;*/
-        /*return [
-            'view_users*',
+        return [
+            'view_users',
             'add_users',
             'edit_users',
             'delete_users',
@@ -32,7 +27,13 @@ class Permission extends \Spatie\Permission\Models\Permission
             'add_posts',
             'edit_posts',
             'delete_posts',
-        ];*/
-       return $routesArray;
+        ];
+    }
+
+    public static function storedPermissions()
+    {
+        $permissions = Permission::pluck('name', 'id');
+
+        return $permissions;
     }
 }

@@ -44,29 +44,57 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        $this->validate($request, [
+    {       
+        print_r($_POST);
+       
+       $this->validate($request, [
             'name' => 'bail|required|min:2',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
-            'roles' => 'required|min:1'
+            'roles' => 'required|min:1',
+            'picture' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // hash password
-        $request->merge(['password' => bcrypt($request->get('password'))]);
+        $user = new User();
+        // Carga imagen a destino
+        if ($request->hasFile('picture')) {
+            $image = $request->file('picture');
+            $name = str_slug($request->email).'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images/imagenes_user');
+            $imagePath = $destinationPath. "/".  $name;
+            $imageBd = 'images/imagenes_user/'.$name;
+            $image->move($destinationPath, $name);
+            $user->picture = $imageBd;
+      
+        }
 
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->get('password'));
+        
+        // hash password
+        //$request->merge(['password' => bcrypt($request->get('password'))]);
         // Create the user
-        if ( $user = User::create($request->except('roles', 'permissions')) ) {
+        //if ( $user = User::create($request->except('roles', 'permissions')) ) 
+        if($user->save())
+        {
 
             $this->syncPermissions($request, $user);
 
-            flash('User has been created.');
+            //flash('User has been created.');
+            return redirect()->route('users.index')
+		    	        ->with('success_message','User has been created');
 
-        } else {
-            flash()->error('Unable to create user.');
+        } 
+        else 
+        {
+            //echo "Unable to ";
+            //flash()->error('Unable to create user.');
+            return redirect()->route('users.index')
+		                    ->withErrors(['Unable to create user.!']);
         }
 
-        return redirect()->route('users.index');
+        //return redirect()->route('users.index');
     }
 
     /**
@@ -107,14 +135,28 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'bail|required|min:2',
             'email' => 'required|email|unique:users,email,' . $id,
-            'roles' => 'required|min:1'
+            'roles' => 'required|min:1',
+            'picture' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         // Get the user
         $user = User::findOrFail($id);
 
+        if ($request->hasFile('picture')) {
+            $image = $request->file('picture');
+            $name = str_slug($request->email).'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images/imagenes_user');
+            $imagePath = $destinationPath. "/".  $name;
+            $imageBd = 'images/imagenes_user/'.$name;
+            $image->move($destinationPath, $name);
+            $user->picture = $imageBd;
+      
+        }
+
         // Update user
-        $user->fill($request->except('roles', 'permissions', 'password'));
+        $user->name = $request->name;
+        $user->email = $request->email;
+        //$user->fill($request->except('roles', 'permissions', 'password'));
 
         // check for password change
         if($request->get('password')) {
