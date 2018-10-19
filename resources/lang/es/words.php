@@ -1,6 +1,7 @@
 <?php
 
 return[
+    'Picture' => 'Imagen',
     'SingIn' => 'Registrarse',
     'Login' => 'Inicio de sesión',
     'Password' => 'Contraseña',

@@ -12,7 +12,7 @@ class Permission extends \Spatie\Permission\Models\Permission
        /* $routes = app('router')->getRoutes();
         return  $arrays=(array) $routes;*/
         return [
-            'view_users*',
+            'view_users',
             'add_users',
             'edit_users',
             'delete_users',

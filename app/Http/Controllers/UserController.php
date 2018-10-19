@@ -45,12 +45,21 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        
+       
         $this->validate($request, [
             'name' => 'bail|required|min:2',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
-            'roles' => 'required|min:1'
+            'roles' => 'required|min:1',
+            
         ]);
+
+        // Carga imagen a destino
+       /* $imageName = time().'.'.request()->image->getClientOriginalExtension();
+
+        request()->image->move(public_path('../images'), $imageName);*/
+
 
         // hash password
         $request->merge(['password' => bcrypt($request->get('password'))]);
@@ -60,13 +69,18 @@ class UserController extends Controller
 
             $this->syncPermissions($request, $user);
 
-            flash('User has been created.');
+           // flash('User has been created.');
+           return redirect()->route('users.index')
+		    	        ->with('success_message','User has been created');
 
         } else {
-            flash()->error('Unable to create user.');
+            /*echo "Unable to ";
+            flash()->error('Unable to create user.');*/
+            return redirect()->route('users.index')
+		                    ->withErrors(['Unable to create user.!']);
         }
 
-        return redirect()->route('users.index');
+        //return redirect()->route('users.index');
     }
 
     /**
