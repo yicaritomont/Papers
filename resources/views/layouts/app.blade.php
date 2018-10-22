@@ -96,12 +96,28 @@
                                                         </li>
                                                     @endcan
 
+                                                     @can('view_inspectortypes')
+                                                        <li class="{{ Request::is('inspectortypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectortypes.index') }}">
+                                                                <span class="text-warning glyphicon glyphicon-tasks"></span> Tipos Inspectores
+                                                            </a>
+                                                        </li>
+                                                    @endcan 
+
+                                                     @can('view_professions')
+                                                        <li class="{{ Request::is('professions*') ? 'active' : '' }}">
+                                                            <a href="{{ route('professions.index') }}">
+                                                                <span class="text-primary glyphicon glyphicon-education"></span> Tipo Profesiones
+                                                            </a>
+                                                        </li>
+                                                    @endcan 
+
                                                     @can('view_inspectors')
-                                                        <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
+                                                       <!-- <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectors.index') }}">
                                                                 <span class="text-white glyphicon glyphicon-briefcase"></span> Inspectores
                                                             </a>
-                                                        </li>
+                                                        </li>-->
                                                     @endcan 
                                                 @endif
                                             </ul>

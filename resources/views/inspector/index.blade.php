@@ -28,10 +28,12 @@
     </div>
        <div class="row">
             <div class="col-md-5">
-                <h3>@lang('words.Inspectors')</h3>
+                <h3 class="modal-title">{{ $result->total() }}@lang('words.Inspectors')</h3>
             </div>
             <div class="col-md-7 page-action text-right">
-                
+                @can('add_inspectors')
+                    <a href="#" class="btn btn-sm btn-succes pull-right" data-toggle="modal" data-target="#roleModal"><i class="glyphicon glyphicon-plus"></i>New </a>
+                @endcan
             </div>
        </div> 
 @endsection

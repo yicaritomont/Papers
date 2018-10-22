@@ -24,6 +24,8 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');
     Route::resource('inspectors','InspectorController');
+    Route::resource('inspectortypes','InspectorTypeController');
+    Route::resource('professions','ProfessionController');
 });
 
 Route::get('lang/{lang}', function($lang) {

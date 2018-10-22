@@ -2,10 +2,9 @@
 
 namespace App;
 
-
 use Illuminate\Database\Eloquent\Model;
 
-class InspectorType extends Model
+class Profession extends Model
 {
      /**
      * The attributes that are mass assignable.
@@ -20,5 +19,4 @@ class InspectorType extends Model
     {
         return $this->hasMany(Post::class);
     }
-
 }

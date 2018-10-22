@@ -2,37 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\InspectorType;
-use App\Permission;
 use Illuminate\Http\Request;
+use App\Profession;
+use App\Permission;
 
-class InspectorTypeController extends Controller
+class ProfessionController extends Controller
 {
-    /**
+     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $result = InspectorType::latest()->paginate();
+        $result = Profession::latest()->paginate();
 
-        return view('inspector_type.index', compact('result'));
+        return view('profession.index', compact('result'));
     }
 
-    /**
+     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        $inspector_types = InspectorType::pluck('name', 'id');
+        $profession = Profession::pluck('name', 'id');
 
-        return view('inspector_type.new',compact('inspector_types'));
+        return view('profession.new',compact('professions'));
     }
 
-    /**
+     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -43,41 +43,30 @@ class InspectorTypeController extends Controller
         $this->validate($request, [
             'name' => 'bail|required|min:2'
         ]);
-        if (InspectorType::create($request->except('permissions'))) {
+        if (Profession::create($request->except('permissions'))) {
 
-            flash('Ispector Type has been created.');
+            flash('Profession Type has been created.');
 
         } else {
-            flash()->error('Unable to create Inspector Type.');
+            flash()->error('Unable to create Profession Type.');
         }
 
-        return redirect()->route('inspectortypes.index');
+        return redirect()->route('professions.index');
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\inspector_type  $inspector_type
-     * @return \Illuminate\Http\Response
-     */
-    public function show(inspector_type $inspector_type)
-    {
-        //
-    }
-
-    /**
+      /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\inspector_type  $inspector_type
+     * @param  \App\profession  $inspector_type
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $type = InspectorType::find($id);
+        $type = Profession::find($id);
         $permissions = Permission::all('name', 'id');
 
-        return view('inspector_type.edit', compact('type', 'permissions'));
+        return view('profession.edit', compact('type', 'permissions'));
     }
 
     /**
@@ -94,29 +83,29 @@ class InspectorTypeController extends Controller
         ]);
 
         //Get the inspector type
-        $inspectortype = InspectorType::findOrFail($id);
+        $profession = Profession::findOrFail($id);
         
-        $inspectortype->fill($request->except('permissions'));
+        $profession->fill($request->except('permissions'));
 
-        $inspectortype->save();
+        $profession->save();
 
-        flash()->success('Inspector Type has been updated');
+        flash()->success('Profession Type has been updated');
 
-        return redirect()->route('inspectortypes.index');
+        return redirect()->route('professions.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\inspector_type  $inspector_type
+     * @param  \App\profession  $inspector_type
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        if (InspectorType::findOrFail($id)->delete()) {
-            flash()->success('Inspector Type has been deleted');
+        if (Profession::findOrFail($id)->delete()) {
+            flash()->success('Profession has been deleted');
         } else {
-            flash()->success('Inspector Type not deleted');
+            flash()->success('Profession not deleted');
         }
         return redirect()->back();
     }

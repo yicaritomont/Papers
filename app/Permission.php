@@ -28,6 +28,17 @@ class Permission extends \Spatie\Permission\Models\Permission
             'delete_posts',
 
             'view_inspectors',
+            'add_inspectors',
+
+            'view_inspectortypes',
+            'add_inspectortypes',
+            'edit_inspectortypes',
+            'delete_inspectortypes',
+
+             'view_professions',
+            'add_professions',
+            'edit_professions',
+            'delete_professions',
         ];
     }
 }

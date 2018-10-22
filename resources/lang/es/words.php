@@ -23,6 +23,7 @@ return[
     'CreatedAt' => 'Creado En',
     'Actions' => 'Acciones',
     'Inspectors' => 'Inspectores',
+    'Especialization' => 'Especialización'
 
 ];
 ?>
