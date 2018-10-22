@@ -52,8 +52,8 @@
                         @if (Auth::check())
                         <!-- menu profile quick info -->
                         <div class="profile clearfix">
-                            <div class="profile_pic">
-                                <img src="{{asset('images/user.png')}}" alt="..." class="img-circle profile_img">
+                            <div class="profile_pic">                        
+                                <img src="{{asset(Auth::user()->picture)}}" alt="..." class="img-circle profile_img">
                             </div>
                             <div class="profile_info">
                                 <span>@lang('header.Welcome'),</span>
@@ -151,7 +151,7 @@
                                 @if (Auth::check())
                                 <li class="">
                                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <img src="{{asset('images/user.png')}}" alt="">{{ Auth::user()->name }}
+                                        <img src="{{asset(Auth::user()->picture)}}" alt="">{{ Auth::user()->name }}
                                         <span class=" fa fa-angle-down"></span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">

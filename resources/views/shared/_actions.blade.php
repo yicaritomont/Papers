@@ -1,6 +1,6 @@
 @can('edit_'.$entity)
     <a href="{{ route($entity.'.edit', [str_singular($entity) => $id])  }}" class="btn btn-xs btn-info">
-        <i class="fa fa-edit"></i> Edit</a>
+        <i class="fa fa-edit"></i> @lang('words.Edit')</a>
 @endcan
 
 @can('delete_'.$entity)

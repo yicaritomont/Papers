@@ -1,6 +1,7 @@
 <?php
 
 return[
+    'Picture' => 'Imagen',
     'SingIn' => 'Registrarse',
     'Login' => 'Inicio de sesión',
     'Password' => 'Contraseña',
@@ -23,7 +24,8 @@ return[
     'CreatedAt' => 'Creado En',
     'Actions' => 'Acciones',
     'Inspectors' => 'Inspectores',
-    'Especialization' => 'Especialización'
-
+    'Especialization' => 'Especialización',
+    'SaveChanges' => 'Guardar Cambios',
+    'User' => 'Usuario',
 ];
 ?>

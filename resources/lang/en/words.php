@@ -1,6 +1,7 @@
 <?php
 
 return[
+    'Picture' => 'Picture',
     'SingIn' => 'Sing In',
     'Login' => 'Login',
     'Password' => 'Password',
@@ -24,5 +25,7 @@ return[
     'Actions' => 'Actions',
     'Inspectors' => 'Inspectors',
     'Especialization' => 'Especialization',
+    'SaveChanges' => 'Save Changes',
+    'User' => 'User',
 ];
 ?>
