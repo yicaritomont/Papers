@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', trans('words.ManageUsers'))
+@section('title', trans('words.Permission'))
 
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ str_plural(trans('words.ManageUsers'), $result->count()) }} </h3>
+            <h3 class="modal-title">{{ $result->total() }} {{ str_plural(trans('words.Permission'), $result->count()) }} </h3>
         </div>
         <div class="col-md-7 page-action text-right">
-            @can('add_users')
-                <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
+            @can('add_permissions')
+                <a href="{{ route('permissions.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
             @endcan
         </div>
     </div>
@@ -19,12 +19,11 @@
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
-                <th>@lang('words.Name')</th>
-                <th>@lang('words.E-Mail')</th>
-                <th>@lang('words.Roles')</th>
+                <th>@lang('words.Name')</th>            
                 <th>@lang('words.CreatedAt')</th>
-                @can('edit_users', 'delete_users')
-                <th class="text-center">@lang('words.Actions')</th>
+                
+                @can('delete_permissions')
+                    <th class="text-center">Actions</th>
                 @endcan
             </tr>
             </thead>
@@ -32,16 +31,13 @@
             @foreach($result as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->name }}</td>
-                    <td>{{ $item->email }}</td>
-                    <td>{{ $item->roles->implode('name', ', ') }}</td>
+                    <td>{{ $item->name }}</td>                    
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
-
-                    @can('edit_users')
+                    @can('delete_permissions')
                     <td class="text-center">
                         @include('shared._actions', [
-                            'entity' => 'users',
-                            'id' => $item->id
+                            'entity' => 'permissions',
+                            'id' => $item->name
                         ])
                     </td>
                     @endcan
@@ -50,9 +46,10 @@
             </tbody>
         </table>
 
-        <div class="text-center">
+        
+    </div>
+    <div class="text-center">
             {{ $result->links() }}
         </div>
-    </div>
 
 @endsection

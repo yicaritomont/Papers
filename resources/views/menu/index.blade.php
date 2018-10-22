@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', trans('words.ManageUsers'))
+@section('title', trans('words.Create').' '.trans('words.ManageMenu'))
 
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ str_plural(trans('words.ManageUsers'), $result->count()) }} </h3>
+            <h3 class="modal-title">{{ $result->total() }} {{ str_plural(trans('words.ManageMenu'), $result->count()) }} </h3>
         </div>
         <div class="col-md-7 page-action text-right">
-            @can('add_users')
-                <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
+            @can('add_posts')
+                <a href="{{ route('posts.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
             @endcan
         </div>
     </div>
@@ -18,13 +18,12 @@
         <table class="table table-bordered table-striped table-hover" id="data-table">
             <thead>
             <tr>
-                <th>@lang('words.Id')</th>
-                <th>@lang('words.Name')</th>
-                <th>@lang('words.E-Mail')</th>
-                <th>@lang('words.Roles')</th>
-                <th>@lang('words.CreatedAt')</th>
-                @can('edit_users', 'delete_users')
-                <th class="text-center">@lang('words.Actions')</th>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Created At</th>
+                @can('edit_posts', 'delete_posts')
+                    <th class="text-center">Actions</th>
                 @endcan
             </tr>
             </thead>
@@ -32,15 +31,13 @@
             @foreach($result as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->name }}</td>
-                    <td>{{ $item->email }}</td>
-                    <td>{{ $item->roles->implode('name', ', ') }}</td>
+                    <td>{{ $item->title }}</td>
+                    <td>{{ $item->user['name'] }}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
-
-                    @can('edit_users')
+                    @can('edit_posts', 'delete_posts')
                     <td class="text-center">
                         @include('shared._actions', [
-                            'entity' => 'users',
+                            'entity' => 'posts',
                             'id' => $item->id
                         ])
                     </td>

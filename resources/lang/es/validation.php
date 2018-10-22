@@ -115,5 +115,8 @@ return [
     */
 
     'attributes' => [],
-
+    'PermissionTake' => 'Permiso ya ha sido tomado',
+    'PermissionAdmin' => 'Permisos de administrador actualizados.',
+    'MessageCreated' => 'Se ha realizado la acción existosamente',
+    'MessageError' => 'No se puede completar la acción',
 ];

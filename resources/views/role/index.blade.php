@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Roles & Permissions')
+@section('title', trans('words.ManageRolesPermission'))
 
 @section('content')
 
@@ -13,12 +13,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="roleModalLabel">Role</h4>
+                    <h4 class="modal-title" id="roleModalLabel">@lang('words.Roles')</h4>
                 </div>
                 <div class="modal-body">
                     <!-- name Form Input -->
                     <div class="form-group @if ($errors->has('name')) has-error @endif">
-                        {!! Form::label('name', 'Name') !!}
+                        {!! Form::label(trans('words.Name'), 'Name') !!}
                         {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Role Name']) !!}
                         @if ($errors->has('name')) <p class="help-block">{{ $errors->first('name') }}</p> @endif
                     </div>
@@ -39,7 +39,7 @@
         </div>
         <div class="col-md-7 page-action text-right">
             @can('add_roles')
-                <a href="#" class="btn btn-sm btn-success pull-right" data-toggle="modal" data-target="#roleModal"> <i class="glyphicon glyphicon-plus"></i> New</a>
+                <a href="#" class="btn btn-sm btn-success pull-right" data-toggle="modal" data-target="#roleModal"> <i class="glyphicon glyphicon-plus"></i> @lang('words.New')</a>
             @endcan
         </div>
     </div>
@@ -50,14 +50,14 @@
 
         @if($role->name === 'Admin')
             @include('shared._permissions', [
-                          'title' => $role->name .' Permissions',
+                          'title' => $role->name .' '.trans('words.Permissions'),
                           'options' => ['disabled'] ])
         @else
             @include('shared._permissions', [
-                          'title' => $role->name .' Permissions',
+                          'title' => $role->name .' '.trans('words.Permissions'),
                           'model' => $role ])
             @can('edit_roles')
-                {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
+                {!! Form::submit(trans('words.Save'), ['class' => 'btn btn-primary']) !!}
             @endcan
         @endif
 

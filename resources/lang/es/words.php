@@ -25,5 +25,21 @@ return[
     'Actions' => 'Acciones',
     'SaveChanges' => 'Guardar Cambios',
     'User' => 'Usuario',
+    'Permissions' => 'Permisos',
+    'Permission' => 'Permiso',
+    'Created' => 'Creados',
+    'Deleted' => 'Eliminados',
+    'Save' => 'Guardar',
+    'New' => 'Nuevo',
+    'Status' => 'Estado',
+
+    //To App Latout Menu
+    'ManagementTools' => 'Herramientas',
+    'ManageUsers' => 'Usuarios',
+    'ManagePermission' => 'Permisos',
+    'ManageMenu' => 'Menú',
+    'ManageRoles' => 'Roles',
+    'ManageRolesPermission' => 'Roles y Permisos',
+    'ManageModulo' => 'Módulos',
 ];
 ?>

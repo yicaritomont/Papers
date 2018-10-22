@@ -116,4 +116,9 @@ return [
 
     'attributes' => [],
 
+    'PermissionTake' => 'Permission has been taken',
+    'PermissionAdmin' => 'Admin permissions updated',
+    'MessageCreated' => 'The action has been carried out successfully',
+    'MessageError' => 'Can not finish the action',
+
 ];

@@ -15,6 +15,8 @@ class MenuController extends Controller
     public function index()
     {
         //
+        $result = Menu::latest()->paginate(15);
+        return view('menu.index', compact('result'));
     }
 
     /**
@@ -25,6 +27,7 @@ class MenuController extends Controller
     public function create()
     {
         //
+        return view('menu.new');
     }
 
     /**

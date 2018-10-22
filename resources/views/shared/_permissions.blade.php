@@ -8,7 +8,8 @@
     </div>
     <div id="dd-{{ isset($title) ? str_slug($title) :  'permissionHeading' }}" class="panel-collapse collapse {{ $closed or 'in' }}" role="tabpanel" aria-labelledby="dd-{{ isset($title) ? str_slug($title) :  'permissionHeading' }}">
         <div class="panel-body">
-            <div class="row">
+            <div class="row">   
+            
                 @foreach($permissions as $perm)
                     <?php
                         $per_found = null;

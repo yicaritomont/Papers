@@ -23,7 +23,11 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');
+    Route::resource('permissions','PermissionController');
+    Route::resource('menus','MenuController');
+    Route::resource('modulos','ModuloController');
 });
+
 
 Route::get('lang/{lang}', function($lang) {
     Session::put('lang', $lang);

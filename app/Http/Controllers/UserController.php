@@ -45,7 +45,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {       
-        print_r($_POST);
+    
        
        $this->validate($request, [
             'name' => 'bail|required|min:2',
@@ -81,17 +81,15 @@ class UserController extends Controller
 
             $this->syncPermissions($request, $user);
 
-            //flash('User has been created.');
-            return redirect()->route('users.index')
-		    	        ->with('success_message','User has been created');
+            flash('User has been created.');
+            return redirect()->route('users.index');
 
         } 
         else 
         {
             //echo "Unable to ";
-            //flash()->error('Unable to create user.');
-            return redirect()->route('users.index')
-		                    ->withErrors(['Unable to create user.!']);
+            flash()->error('Unable to create user.');
+            return redirect()->route('users.index');
         }
 
         //return redirect()->route('users.index');

@@ -41,15 +41,18 @@
 
     <body class="{{ Request::path() == 'login' || Request::path() == 'password/reset' ? 'body-content' : '' }} nav-md">
         <div class="container body">
+        @if (Auth::check())
             <div class="main_container">
                 <div class="col-md-3 left_col">
+                
                     <div class="left_col scroll-view">
+                    
                         <div class="navbar nav_title" style="border: 0;">
                             <a href="{{ route('login') }}" class="site_title"><i class="fa fa-bullseye"></i> </a>
                         </div>
                         
                         <div class="clearfix"></div>
-                        @if (Auth::check())
+                        
                         <!-- menu profile quick info -->
                         <div class="profile clearfix">
                             <div class="profile_pic">                        
@@ -69,36 +72,63 @@
                             <div class="menu_section">
                                 <h3>General</h3>
                                     <ul class="nav side-menu">
-                                        <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                                        <li><a><i class="fa fa-cogs"></i> @lang('words.ManagementTools') <span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">
                                                 @if (Auth::check())
                                                     @can('view_users')
                                                         <li class="{{ Request::is('users*') ? 'active' : '' }}">
                                                             <a href="{{ route('users.index') }}">
-                                                                <span class="text-info glyphicon glyphicon-user"></span> Users
+                                                                <span class="text-info glyphicon glyphicon-user"></span> @lang('words.ManageUsers')
                                                             </a>
                                                         </li>
-                                                    @endcan
+                                                    @endcan                                                    
 
-                                                    @can('view_posts')
-                                                        <li class="{{ Request::is('posts*') ? 'active' : '' }}">
-                                                            <a href="{{ route('posts.index') }}">
-                                                                <span class="text-success glyphicon glyphicon-text-background"></span> Posts
+                                                    @can('view_permissions')
+                                                        <li class="{{ Request::is('permissions*') ? 'active' : '' }}">
+                                                            <a href="{{ route('permissions.index') }}">
+                                                                <span class="text-danger glyphicon glyphicon-wrench"></span> @lang('words.ManagePermission')
                                                             </a>
                                                         </li>
-                                                    @endcan
+                                                    @endcan 
 
                                                     @can('view_roles')
                                                         <li class="{{ Request::is('roles*') ? 'active' : '' }}">
                                                             <a href="{{ route('roles.index') }}">
-                                                                <span class="text-danger glyphicon glyphicon-lock"></span> Roles
+                                                                <span class="text-danger glyphicon glyphicon-lock"></span> @lang('words.ManageRoles')
                                                             </a>
                                                         </li>
-                                                    @endcan 
+                                                    @endcan
+
+                                                    @can('view_modulos')
+                                                        <li class="{{ Request::is('modulos*') ? 'active' : '' }}">
+                                                            <a href="{{ route('modulos.index') }}">
+                                                                <span class="text-warning glyphicon glyphicon-tasks"></span> @lang('words.ManageModulo')
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+
+                                                    @can('view_menus')
+                                                        <li class="{{ Request::is('menus*') ? 'active' : '' }}">
+                                                            <a href="{{ route('menus.index') }}">
+                                                                <span class="text-success glyphicon glyphicon-th-list"></span> @lang('words.ManageMenu')
+                                                            </a>
+                                                        </li>
+                                                    @endcan
                                                 @endif
                                             </ul>
                                         </li> 
-                                                                               
+                                        <li><a><i class="fa fa-suitcase"></i> App <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                @can('view_posts')
+                                                    <li class="{{ Request::is('posts*') ? 'active' : '' }}">
+                                                        <a href="{{ route('posts.index') }}">
+                                                            <span class="text-success glyphicon glyphicon-text-background"></span> Posts
+                                                        </a>
+                                                    </li>
+                                                @endcan
+                                            </ul>
+                                        </li>
+                                                                              
                                     </ul>
                             </div>                                
                         </div>
@@ -190,10 +220,11 @@
                 </div>
                 <!-- /top navigation -->
                 <div class="container right_col" role="main">                    
+                    
+                    <div class="content-page">
                     <div id="flash-msg">
                         @include('flash::message')
                     </div>
-                    <div class="content-page">
                     @yield('content')
                     </div>
                 </div>
