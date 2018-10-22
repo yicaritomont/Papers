@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Authorizable;
+use App\Permission;
 use App\Inspector;
+use App\Profession;
+use App\InspectorType;
+use View;
 use Illuminate\Http\Request;
 
 class InspectorController extends Controller
@@ -17,8 +21,27 @@ class InspectorController extends Controller
      */
     public function index()
     {
-        $inspector =Inspector::all();
+        $result =Inspector::latest()->paginate();
 
-        return view('inspector.index');
+        return view('inspector.index', compact('result'));
     }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $roles = Inspector::pluck('name', 'id');
+
+        $professions = Profession::pluck('name','id');
+        $inspector_types = InspectorType::pluck('name','id');
+
+        return View::make('inspector.new', compact('inspectors'))
+            ->with('professions',$professions)
+            ->with('inspector_types',$inspector_types);
+    }
+
+    
 }

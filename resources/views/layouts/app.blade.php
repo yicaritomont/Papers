@@ -96,29 +96,44 @@
                                                         </li>
                                                     @endcan
 
-                                                     @can('view_inspectortypes')
-                                                        <li class="{{ Request::is('inspectortypes*') ? 'active' : '' }}">
-                                                            <a href="{{ route('inspectortypes.index') }}">
-                                                                <span class="text-warning glyphicon glyphicon-tasks"></span> Tipos Inspectores
+                                                     @can('view_professions')
+                                                        <li class="{{ Request::is('professions*') ? 'active' : '' }}">
+                                                            <a href="{{ route('professions.index') }}">
+                                                                <span class="text-primary glyphicon glyphicon-education"></span> Professions
                                                             </a>
                                                         </li>
                                                     @endcan 
 
-                                                     @can('view_professions')
-                                                        <li class="{{ Request::is('professions*') ? 'active' : '' }}">
-                                                            <a href="{{ route('professions.index') }}">
-                                                                <span class="text-primary glyphicon glyphicon-education"></span> Tipo Profesiones
+                                                     @can('view_inspectortypes')
+                                                        <li class="{{ Request::is('inspectortypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectortypes.index') }}">
+                                                                <span class="text-info glyphicon glyphicon-pushpin"></span> Inspector Types
                                                             </a>
                                                         </li>
                                                     @endcan 
 
                                                     @can('view_inspectors')
-                                                       <!-- <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
+                                                        <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectors.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> Inspectores
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> Inspectors
                                                             </a>
-                                                        </li>-->
+                                                        </li>
                                                     @endcan 
+
+                                                    @can('view_inspectiontypes')
+                                                        <li class="{{ Request::is('inspectiontypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectiontypes.index') }}">
+                                                                <span class="text-dark glyphicon glyphicon-folder-open"></span> Inspectión Type
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                     @can('view_appointmentstates')
+                                                        <li class="{{ Request::is('appointmentstates*') ? 'active' : '' }}">
+                                                            <a href="{{ route('appointmentstates.index') }}">
+                                                                <span class="text-dark glyphicon glyphicon-folder-open"></span> Appointment States
+                                                            </a>
+                                                        </li>
+                                                    @endcan
                                                 @endif
                                             </ul>
                                         </li> 

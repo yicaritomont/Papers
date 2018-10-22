@@ -27,5 +27,11 @@ return[
     'Especialization' => 'Especialización',
     'SaveChanges' => 'Guardar Cambios',
     'User' => 'Usuario',
+    'Identification' => 'Identificacion',
+    'Phone' => 'Telefono',
+    'Addres' => 'Dirección',
+    'Email' => 'Correo',
+    'Profession' => 'Profesión',
+    'InspectorType' => 'Tipo Inspector',
 ];
 ?>

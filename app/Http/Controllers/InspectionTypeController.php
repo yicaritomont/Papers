@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Profession;
+use App\InspectionType;
 use App\Permission;
 
-class ProfessionController extends Controller
+class InspectionTypeController extends Controller
 {
      /**
      * Display a listing of the resource.
@@ -15,9 +15,9 @@ class ProfessionController extends Controller
      */
     public function index()
     {
-        $result = Profession::latest()->paginate();
+        $result = InspectionType::latest()->paginate();
 
-        return view('profession.index', compact('result'));
+        return view('inspection_type.index', compact('result'));
     }
 
      /**
@@ -27,9 +27,9 @@ class ProfessionController extends Controller
      */
     public function create()
     {
-        $profession = Profession::pluck('name', 'id');
+        $inspection_types = InspectionType::pluck('name', 'id');
 
-        return view('profession.new',compact('professions'));
+        return view('inspection_type.new',compact('inspection_types'));
     }
 
      /**
@@ -43,37 +43,37 @@ class ProfessionController extends Controller
         $this->validate($request, [
             'name' => 'bail|required|min:2'
         ]);
-        if (Profession::create($request->except('permissions'))) {
+        if (InspectionType::create($request->except('permissions'))) {
 
-            flash('Profession has been created.');
+            flash(' Inspection Type has been created.');
 
         } else {
-            flash()->error('Unable to create Profession.');
+            flash()->error('Unable to create Inspection Type.');
         }
 
-        return redirect()->route('professions.index');
+        return redirect()->route('inspectiontypes.index');
 
     }
 
       /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\profession  $inspector_type
+     * @param  \App\inspection_type  $inspector_type
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $type = Profession::find($id);
+        $type = InspectionType::find($id);
         $permissions = Permission::all('name', 'id');
 
-        return view('profession.edit', compact('type', 'permissions'));
+        return view('inspection_type.edit', compact('type', 'permissions'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\inspector_type  $inspector_type
+     * @param  \App\inspection_type  $inspector_type
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -83,29 +83,29 @@ class ProfessionController extends Controller
         ]);
 
         //Get the inspector type
-        $profession = Profession::findOrFail($id);
+        $inspectiontype = InspectionType::findOrFail($id);
         
-        $profession->fill($request->except('permissions'));
+        $inspectiontype->fill($request->except('permissions'));
 
-        $profession->save();
+        $inspectiontype->save();
 
-        flash()->success('Profession has been updated');
+        flash()->success('Inspection Type has been updated');
 
-        return redirect()->route('professions.index');
+        return redirect()->route('inspectiontypes.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\profession  $inspector_type
+     * @param  \App\inspection_type  $inspector_type
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        if (Profession::findOrFail($id)->delete()) {
-            flash()->success('Profession has been deleted');
+        if (InspectionType::findOrFail($id)->delete()) {
+            flash()->success('Inspection type has been deleted');
         } else {
-            flash()->success('Profession not deleted');
+            flash()->success('Inspection type not deleted');
         }
         return redirect()->back();
     }

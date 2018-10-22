@@ -30,13 +30,15 @@ class Permission extends \Spatie\Permission\Models\Permission
 
             'view_inspectors',
             'add_inspectors',
+            'edit_inspectors',
+            'delete_inspectors',
 
             'view_inspectortypes',
             'add_inspectortypes',
             'edit_inspectortypes',
             'delete_inspectortypes',
 
-             'view_professions',
+            'view_professions',
             'add_professions',
             'edit_professions',
             'delete_professions',

@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'inspectors')
+@section('title', 'InspectionTypes')
 
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ str_plural('inspector',$result->count()) }}</h3>
+            <h3 class="modal-title">{{ $result->total() }} {{ str_plural('InspectionType',$result->count()) }}</h3>
         </div>
         <div class="col-md-7 page-action text-right">
-            @can('add_inspectors')
-                <a href="{{ route('inspectors.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i>@lang('words.Create')</a>
+            @can('add_inspectiontypes')
+                <a href="{{ route('inspectiontypes.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i>@lang('words.Create')</a>
             @endcan
         </div>
     </div>
@@ -20,14 +20,8 @@
             <tr>
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>
-                <th>@lang('words.Identification')</th>
-                <th>@lang('words.Phone')</th>
-                <th>@lang('words.Addres')</th>
-                <th>@lang('words.Email')</th>
-                <th>@lang('words.Profession')</th>
-                <th>@lang('words.InspectorType')</th>
                 <th>@lang('words.CreatedAt')</th>
-                @can('edit_inspectors','delete_inspectors')
+                @can('edit_inspectiontypes','delete_inspectiontypes')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
             </tr>
@@ -39,10 +33,10 @@
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
 
-                    @can('edit_inspectors','delete_inspectors')
+                    @can('edit_inspectiontypes','delete_inspectiontypes')
                         <td class="text-center">
                             @include('shared._actions', [
-                                'entity' => 'inspectors',
+                                'entity' => 'inspectiontypes',
                                 'id' => $item->id
                             ])
                         </td>

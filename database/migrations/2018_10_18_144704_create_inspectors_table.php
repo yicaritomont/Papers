@@ -20,8 +20,12 @@ class CreateInspectorsTable extends Migration
             $table->string('phone');
             $table->string('addres');
             $table->string('email');
+            $table->unsignedInteger('profession_id');
             $table->unsignedInteger('inspector_type_id');
 
+             $table->foreign('profession_id')
+                ->references('id')->on('professions')
+                ->onDelete('cascade');
             $table->foreign('inspector_type_id')
                 ->references('id')->on('inspector_types')
                 ->onDelete('cascade');
