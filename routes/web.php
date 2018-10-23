@@ -30,6 +30,11 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('clients', 'ClientController');
     Route::resource('headquarters', 'HeadquartersController');
     Route::resource('companies', 'CompanyController');
+    Route::resource('inspectors','InspectorController');
+    Route::resource('inspectortypes','InspectorTypeController');
+    Route::resource('professions','ProfessionController');
+    Route::resource('inspectiontypes','InspectionTypeController');
+    Route::resource('inspectionsubtypes','InspectionSubtypeController');
 });
 
 Route::get('lang/{lang}', function($lang) {

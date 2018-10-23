@@ -23,6 +23,8 @@ return[
     'Roles' => 'Roles',
     'CreatedAt' => 'Creado En',
     'Actions' => 'Acciones',
+    'Inspectors' => 'Inspectores',
+    'Especialization' => 'Especialización',
     'SaveChanges' => 'Guardar Cambios',
     'User' => 'Usuario',
     'Lastname' => 'Apellido',
@@ -44,5 +46,10 @@ return[
     'Activity' => 'Actividad',
     'Whatch' => 'Ver',
     'Of' => 'de',
+    'Identification' => 'Identificacion',
+    'Email' => 'Correo',
+    'Profession' => 'Profesión',
+    'InspectorType' => 'Tipo Inspector',
+    'InspectionType' => 'Tipo Inspeción',
 ];
 ?>

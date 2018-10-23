@@ -7,7 +7,6 @@ return[
     'Password' => 'Password',
     'Remember' => 'Remember',
     'Go' => 'Go',
-    'E-Mail' => 'E-Mail Address',
     'Address' => 'Address',
     'Forgot' => 'Forgot',
     'Your' => 'Your',
@@ -23,6 +22,8 @@ return[
     'Roles' => 'Roles',
     'CreatedAt' => 'Created At',
     'Actions' => 'Actions',
+    'Inspectors' => 'Inspectors',
+    'Especialization' => 'Especialization',
     'SaveChanges' => 'Save Changes',
     'User' => 'User',
     'Lastname' => 'Last Name',
@@ -44,5 +45,10 @@ return[
     'Activity' => 'Activity',
     'Whatch' => 'Whatch',
     'Of' => 'of',
+    'Identification' => 'Identification',
+    'Email' => 'Email',
+    'Profession' => 'Profession',
+    'InspectorType' => 'Inspector Type',
+    'InspectionType' => 'Inspection Type',
 ];
 ?>
