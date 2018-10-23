@@ -11,6 +11,10 @@
 |
 */
 
+/* DB::listen(function($query){
+    echo "<pre>{$query->sql}</pre>";
+}); */
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -23,6 +27,8 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');
+    Route::resource('clients', 'ClientController');
+    Route::resource('headquarters', 'HeadquartersController');
 });
 
 Route::get('lang/{lang}', function($lang) {

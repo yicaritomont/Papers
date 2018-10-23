@@ -95,6 +95,22 @@
                                                             </a>
                                                         </li>
                                                     @endcan 
+
+                                                    @can('view_clients')
+                                                        <li class="{{ Request::is('clients*') ? 'active' : '' }}">
+                                                            <a href="{{ route('clients.index') }}">
+                                                                <span class="text-warning glyphicon glyphicon-user"></span> {{str_plural(trans('words.Client'),2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan 
+
+                                                    @can('view_headquarters')
+                                                        <li class="{{ Request::is('headquarters*') ? 'active' : '' }}">
+                                                            <a href="{{ route('headquarters.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-home"></span> {{str_plural(trans('words.Headquarters'),2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan 
                                                 @endif
                                             </ul>
                                         </li> 
@@ -189,12 +205,12 @@
                     </div>
                 </div>
                 <!-- /top navigation -->
-                <div class="container right_col" role="main">                    
-                    <div id="flash-msg">
-                        @include('flash::message')
-                    </div>
+                <div class="container right_col" role="main">                   
                     <div class="content-page">
-                    @yield('content')
+                        <div id="flash-msg">
+                            @include('flash::message')
+                        </div>
+                        @yield('content')
                     </div>
                 </div>
             </div>
@@ -243,6 +259,6 @@
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.min.js')}}"></script>
-	
+	@yield('scripts')
   </body>
 </html>
