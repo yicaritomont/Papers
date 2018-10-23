@@ -66,13 +66,13 @@ return [
     'numeric'              => 'El :attribute tiene que ser un número.',
     'present'              => 'El :attribute campo debe estar presente.',
     'regex'                => 'El :attribute el formato no es válido.',
-    'required'             => 'El :attribute campo es requerido.',
-    'required_if'          => 'El :attribute campo es requerido cuando :other es :value.',
-    'required_unless'      => 'El :attribute campo es obligatorio a menos que :other es in :values.',
-    'required_with'        => 'El :attribute campo es requerido cuando :values está presente.',
-    'required_with_all'    => 'El :attribute campo es requerido cuando :values está presente.',
-    'required_without'     => 'El :attribute campo es requerido cuando :values no está presente.',
-    'required_without_all' => 'El :attribute campo es requerido cuando ninguno de :values están presentes.',
+    'required'             => 'El campo :attribute  es requerido.',
+    'required_if'          => 'El campo :attribute es requerido cuando :other es :value.',
+    'required_unless'      => 'El campo :attribute es obligatorio a menos que :other es in :values.',
+    'required_with'        => 'El campo :attribute es requerido cuando :values está presente.',
+    'required_with_all'    => 'El campo :attribute es requerido cuando :values está presente.',
+    'required_without'     => 'El campo :attribute es requerido cuando :values no está presente.',
+    'required_without_all' => 'El campo :attribute es requerido cuando ninguno de :values están presentes.',
     'same'                 => 'El :attribute y :other deben coincidir .',
     'size'                 => [
         'numeric' => 'El :attribute debe ser :size.',
@@ -114,6 +114,12 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'Nombre',
+        'client_id' => 'Cliente',
+        'cities' => 'Ciudad',
+        'address' => 'Dirección',
+        'slug' => 'Ficha',
+    ],
 
 ];

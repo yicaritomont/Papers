@@ -144,3 +144,7 @@
     color: inherit;
     font-weight: bold;
 }
+
+#flash-msg{
+    margin-top: 60px;
+}

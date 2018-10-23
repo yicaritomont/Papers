@@ -4,7 +4,7 @@
 @endcan
 
 @can('delete_'.$entity)
-    {!! Form::open( ['method' => 'delete', 'url' => route($entity.'.destroy', ['user' => $id]), 'style' => 'display: inline', 'onSubmit' => 'return confirm("Are yous sure wanted to delete it?")']) !!}
+    {!! Form::open( ['method' => 'delete', 'url' => route($entity.'.destroy', ['user' => $id]), 'style' => 'display: inline', 'onSubmit' => 'return confirm("'.trans("words.MsgDel").'")']) !!}
         <button type="submit" class="btn-delete btn btn-xs btn-danger">
             <i class="glyphicon glyphicon-trash"></i>
         </button>
