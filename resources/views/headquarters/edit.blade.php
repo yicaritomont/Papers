@@ -13,6 +13,7 @@
             <div class="panel-body black-letter">
                 {!! Form::model($headquarters, ['method' => 'PUT', 'route' => ['headquarters.update',  $headquarters->slug ]]) !!}
                         @include('headquarters._form')
+                        
                         <!-- Status of Headquarters Form Select -->
                         <div class="form-group @if ($errors->has('name')) has-error @endif">
                             {{-- {!! Form::label('status', trans('words.Status')) !!}

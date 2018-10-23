@@ -14,7 +14,9 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //
+        $result = Company::latest()->paginate(15);
+        //dd($result);
+        return view('company.index', compact('result'));
     }
 
     /**
@@ -24,7 +26,7 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        //
+        return view('company.new');
     }
 
     /**
@@ -35,7 +37,20 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $c = new Company();
+        $c->name = $request->input('name');
+        $c->address = $request->input('address');
+        $c->phone = $request->input('phone');
+        $c->email = $request->input('email');
+        $c->status = 1;
+        $c->activity = $request->input('activity');
+        $c->activity = $request->input('activity');
+        $c->slug = $request->input('slug');
+        $c->save();
+
+        flash(trans('words.Company').' '.trans('words.HasAdded'));
+
+        return redirect()->back();  
     }
 
     /**
@@ -46,7 +61,10 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
-        //
+        
+        $users = $company->users;
+        //dd($users->count());
+        return view('company.show', compact('company', 'users'));
     }
 
     /**
@@ -57,7 +75,7 @@ class CompanyController extends Controller
      */
     public function edit(Company $company)
     {
-        //
+        return view('company.edit', compact('company'));
     }
 
     /**
@@ -69,7 +87,10 @@ class CompanyController extends Controller
      */
     public function update(Request $request, Company $company)
     {
-        //
+        $company->update($request->all());
+
+        flash()->success(trans('words.Company').' '.trans('words.HasUpdated'));
+        return redirect()->route('companies.index');
     }
 
     /**
@@ -80,6 +101,8 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-        //
+        $company->delete();
+        flash()->success(trans('words.Company').' '.trans('words.HasEliminated'));
+        return back();
     }
 }

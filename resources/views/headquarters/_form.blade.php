@@ -51,13 +51,6 @@
     @if ($errors->has('slug')) <p class="help-block">{{ $errors->first('slug') }}</p> @endif
 </div>
 
-{{-- <!-- Status of Headquarters Form Input -->
-<div class="form-group @if ($errors->has('address')) has-error @endif">
-    {!! Form::label('status', 'Status') !!}
-    {!! Form::text('status', null, ['class' => 'input-body ckeditor', 'placeholder' => 'Status of Headquarters...']) !!}
-    @if ($errors->has('status')) <p class="help-block">{{ $errors->first('status') }}</p> @endif
-</div> --}}
-
 @push('scripts')
 <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
     

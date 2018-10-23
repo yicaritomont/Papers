@@ -31,7 +31,7 @@ class HeadquartersController extends Controller
      */
     public function create()
     {
-        $result = Headquarters::latest()->with(['client', 'cities']);
+        // $result = Headquarters::latest()->with(['client', 'cities']);
         $cl = Client::all();
         $cy = Cities::all();
         //dd($c[0]->name);

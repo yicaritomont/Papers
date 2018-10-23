@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-{{-- {{dd($client->name)}} --}}
-
 @section('title', trans('words.Edit').' '.trans('words.Client').' '.$client->name)
 
 @section('content')

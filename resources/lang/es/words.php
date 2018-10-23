@@ -40,5 +40,9 @@ return[
     'HasEliminated' => 'ha sido eliminado',
     'HasUpdated' => 'ha sido actualizado',
     'MsgDel' => 'Seguro que quieres borrarlo?',
+    'Company' => 'Compañia',
+    'Activity' => 'Actividad',
+    'Whatch' => 'Ver',
+    'Of' => 'de',
 ];
 ?>
