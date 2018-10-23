@@ -22,6 +22,6 @@ class Inspector extends Model
 
     public function inspectorType()
     {
-        return $this->belongsTo('inspector_types','inspector_type_id');
+        return $this->belongsTo('inspector_types','inspector_type_id','id');
     }
 }

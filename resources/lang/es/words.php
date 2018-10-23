@@ -33,5 +33,6 @@ return[
     'Email' => 'Correo',
     'Profession' => 'Profesión',
     'InspectorType' => 'Tipo Inspector',
+    'InspectionType' => 'Tipo Inspeción',
 ];
 ?>

@@ -127,10 +127,10 @@
                                                             </a>
                                                         </li>
                                                     @endcan
-                                                     @can('view_appointmentstates')
-                                                        <li class="{{ Request::is('appointmentstates*') ? 'active' : '' }}">
-                                                            <a href="{{ route('appointmentstates.index') }}">
-                                                                <span class="text-dark glyphicon glyphicon-folder-open"></span> Appointment States
+                                                     @can('view_inspectionsubtypes')
+                                                        <li class="{{ Request::is('nspectionsubtypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectionsubtypes.index') }}">
+                                                                <span class="text-dark glyphicon glyphicon-refresh"></span> Inspection Subtypes
                                                             </a>
                                                         </li>
                                                     @endcan

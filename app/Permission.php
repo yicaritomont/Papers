@@ -42,6 +42,16 @@ class Permission extends \Spatie\Permission\Models\Permission
             'add_professions',
             'edit_professions',
             'delete_professions',
+
+            'view_inspectiontypes',
+            'add_inspectiontypes',
+            'edit_inspectiontypes',
+            'delete_inspectiontypes',
+
+            'view_inspectionsubtypes',
+            'add_inspectionsubtypes',
+            'edit_inspectionsubtypes',
+            'delete_inspectionsubtypes',
         ];
     }
 

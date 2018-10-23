@@ -27,7 +27,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('inspectortypes','InspectorTypeController');
     Route::resource('professions','ProfessionController');
     Route::resource('inspectiontypes','InspectionTypeController');
-    Route::resource('appointmentstates','AppointmentStateController');
+    Route::resource('inspectionsubtypes','InspectionSubtypeController');
 });
 
 Route::get('lang/{lang}', function($lang) {
