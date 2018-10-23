@@ -32,6 +32,11 @@ return[
     'Save' => 'Save',
     'New' => 'New',
     'State' => 'State',
+    'Url' => 'URL',
+    'Modules' => 'Modules',
+    'Menu' => 'Menu',
+    'Padre' => 'Parent',
+    'MenuPadre' => 'Parent Menu',
 
     //To App Latout Menu
     'ManagementTools' => 'Tools',

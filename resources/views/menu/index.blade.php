@@ -8,8 +8,8 @@
             <h3 class="modal-title">{{ $result->total() }} {{ str_plural(trans('words.ManageMenu'), $result->count()) }} </h3>
         </div>
         <div class="col-md-7 page-action text-right">
-            @can('add_posts')
-                <a href="{{ route('posts.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
+            @can('add_menus')
+                <a href="{{ route('menus.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
             @endcan
         </div>
     </div>
@@ -18,11 +18,12 @@
         <table class="table table-bordered table-striped table-hover" id="data-table">
             <thead>
             <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Author</th>
+                <th>@lang('words.Id')</th>
+                <th>@lang('words.Url')</th>
+                <th>@lang('words.Menu')</th>
+                <th>@lang('words.Modules')</th>
                 <th>Created At</th>
-                @can('edit_posts', 'delete_posts')
+                @can('edit_menus', 'delete_menus')
                     <th class="text-center">Actions</th>
                 @endcan
             </tr>
@@ -31,13 +32,14 @@
             @foreach($result as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->title }}</td>
-                    <td>{{ $item->user['name'] }}</td>
+                    <td>{{ $item->name }}</td>
+                    <td>{{ $item->menu['name'] }}</td>
+                    <td>{{ $item->modulo['name'] }}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
-                    @can('edit_posts', 'delete_posts')
+                    @can('edit_menus', 'delete_menus')
                     <td class="text-center">
                         @include('shared._actions', [
-                            'entity' => 'posts',
+                            'entity' => 'menus',
                             'id' => $item->id
                         ])
                     </td>

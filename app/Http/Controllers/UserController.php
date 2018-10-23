@@ -20,8 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $result = User::latest()->paginate();
-
+        $result = User::latest()->paginate();        
         return view('user.index', compact('result'));
     }
 

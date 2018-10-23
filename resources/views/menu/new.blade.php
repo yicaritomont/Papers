@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', trans('words.Create').' '.trans('words.ManagementMenu'))
+@section('title', trans('words.Create').' '.trans('words.ManageMenu'))
 
 @section('content')
 
@@ -12,7 +12,7 @@
                 </div>
                 <div class="panel-body black-letter">
                     {!! Form::open(['route' => ['menus.store']]) !!}
-                        @include('user._form')
+                        @include('menu._form')
                         <!-- Submit Form Button -->                        
                         {!! Form::submit(trans('words.Create'), ['class' => 'btn-body']) !!}
                     {!! Form::close() !!}

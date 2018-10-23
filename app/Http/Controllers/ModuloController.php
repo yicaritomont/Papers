@@ -23,7 +23,7 @@ class ModuloController extends Controller
 
     public function store(Request $request)
     {
-        print_r($_POST);
+       
         $this->validate($request, [
             'name' => 'required|min:4',
         ]);
