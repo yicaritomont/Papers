@@ -33,8 +33,7 @@
     {!! Form::select('roles[]', $roles, isset($user) ? $user->roles->pluck('id')->toArray() : null,  ['class' => 'input-body', 'multiple']) !!}
     @if ($errors->has('roles')) <p class="help-block">{{ $errors->first('roles') }}</p> @endif
 </div>
- {{-- {{dd($companies)}} --}}
-{{-- {{dd($user->roles->pluck('id')->toArray())}} --}}
+
 <!-- Companies Form Input -->
 <div class="form-group @if ($errors->has('companies')) has-error @endif">
     {!! Form::label('companies[]', trans_choice('words.Company', 2)) !!}

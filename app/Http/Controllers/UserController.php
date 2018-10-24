@@ -92,7 +92,7 @@ class UserController extends Controller
         if($user->save())
         {
 
-            $this->syncPermissions($request, $user);
+            //$this->syncPermissions($request, $user);
             $user->companies()->attach($request->companies);
             //flash('User has been created.');
             return redirect()->route('users.index')

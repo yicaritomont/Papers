@@ -124,6 +124,8 @@
                                                         <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectors.index') }}">
                                                                 <span class="text-white glyphicon glyphicon-briefcase"></span> Inspectors
+                                                            </a>
+                                                        </li>
                                                     @endcan
 
                                                     @can('view_inspectiontypes')

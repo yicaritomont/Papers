@@ -49,7 +49,7 @@ class HeadquartersController extends Controller
 
         $h = new Headquarters();
         $h->client_id = $request->input('client_id');
-        $h->cities_id = $request->input('cities_id');
+        $h->_id = $request->input('cities_id');
         $h->name = $request->input('name');
         $h->address = $request->input('address');
         $h->status = 1;
