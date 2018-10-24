@@ -27,7 +27,7 @@ class InspectorController extends Controller
         if(isset($company)){
             $cpy = Company::where('slug','=',$company)->get();
             $result = $cpy[0]->inspectors;
-            dd($result);
+            // dd($result);
             return view('inspector.index', compact('result', 'cpy'));
         }
 
@@ -61,16 +61,22 @@ class InspectorController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->except('permissions','companies'));
         $inspector = new Inspector();
-        //echo "<pre>";print_r($_POST);echo "</pre>";exit();
-        if (Inspector::create($request->except('permissions','companies'))) {
+        $inspector->name = $request->name;
+        $inspector->identification = $request->identification;
+        $inspector->phone = $request->phone;
+        $inspector->addres = $request->addres;
+        $inspector->email = $request->email;
+        $inspector->profession_id = $request->profession_id;
+        $inspector->inspector_type_id = $request->inspector_type_id;
+        // if (Inspector::create($request->except('permissions','companies'))) {
+        if ($inspector->save()) {
             flash(trans('words.Inspectors').' '.trans('words.HasAdded'));
         } else {
             flash()->error(trans('words.UnableCreate').' '.trans('words.Inspectors'));
         }
-        $inspector->save();
-        // $inspector->companies()->attach($request->companies);
+        // $inspector->save();
+        $inspector->companies()->attach($request->companies);
         return redirect()->route('inspectors.index');
     }
 
@@ -88,8 +94,9 @@ class InspectorController extends Controller
         $countries = Country::pluck('name','id');
         $cities = Citie::pluck('name','id');
         $permissions = Permission::all('name', 'id');
+        $companies = Company::pluck('name', 'id');
 
-        return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities'));
+        return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities','companies'));
     }
 
      /**
@@ -111,6 +118,7 @@ class InspectorController extends Controller
         $inspector->fill($request->except('permissions'));
 
         $inspector->save();
+        $inspector->companies()->sync($request->companies);
 
         flash()->success(trans('words.Inspectors').' '.trans('words.HasUpdated'));
 
