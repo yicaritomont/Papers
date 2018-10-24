@@ -22,7 +22,7 @@
                 <th>@lang('words.Name')</th>
                 <th>@lang('words.Lastname')</th>
                 <th>@lang('words.Phone')</th>
-                <th>@lang('words.E-Mail')</th>
+                <th>@lang('words.Email')</th>
                 <th>@lang('words.CellPhone')</th>
                 <th>@lang('words.Slug')</th>
                 <th>@lang('words.CreatedAt')</th>
@@ -59,5 +59,4 @@
             {{ $result->links() }}
         </div>
     </div>
-
 @endsection

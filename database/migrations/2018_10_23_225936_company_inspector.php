@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserCompanyTable extends Migration
+class CompanyInspector extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,17 @@ class CreateUserCompanyTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_company', function (Blueprint $table) {
+        Schema::create('company_inspector', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('company_id')->unsigned();
-            $table->integer('user_id')->unsigned();
-            $table->integer('status')->default('1');
+            $table->integer('inspector_id')->unsigned();
 
             $table->foreign('company_id')
                 ->references('id')->on('companies')
                 ->onDelete('cascade');
 
-            $table->foreign('user_id')
-                ->references('id')->on('users')
+            $table->foreign('inspector_id')
+                ->references('id')->on('inspectors')
                 ->onDelete('cascade');
             $table->timestamps();
         });
@@ -37,6 +36,6 @@ class CreateUserCompanyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_company');
+        Schema::dropIfExists('company_inspector');
     }
 }

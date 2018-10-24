@@ -117,9 +117,17 @@ return [
     'attributes' => [
         'name' => 'Nombre',
         'client_id' => 'Cliente',
-        'cities' => 'Ciudad',
+        'cities_id' => 'Ciudad',
         'address' => 'Dirección',
         'slug' => 'Ficha',
+        'email' => 'Correo',
+        'password' => 'Contraseña',
+        'roles' => 'Roles',
+        'companies' => 'Compañias',
+        'lastname' => 'Apellido',
+        'phone' => 'Teléfono',
+        'cell_phone' => 'Celular',
+        'activity' => 'Actividad',
     ],
 
 ];

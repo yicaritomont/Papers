@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Company;
+use App\Http\Requests\CompanyRequest;
 use Illuminate\Http\Request;
 
 class CompanyController extends Controller
@@ -35,7 +36,7 @@ class CompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CompanyRequest $request)
     {
         $c = new Company();
         $c->name = $request->input('name');
@@ -48,7 +49,7 @@ class CompanyController extends Controller
         $c->slug = $request->input('slug');
         $c->save();
 
-        flash(trans('words.Company').' '.trans('words.HasAdded'));
+        flash(trans_choice('words.Company',1).' '.trans('words.HasAdded'));
 
         return redirect()->back();  
     }
@@ -85,11 +86,11 @@ class CompanyController extends Controller
      * @param  \App\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Company $company)
+    public function update(CompanyRequest $request, Company $company)
     {
         $company->update($request->all());
 
-        flash()->success(trans('words.Company').' '.trans('words.HasUpdated'));
+        flash()->success(trans_choice('words.Company',1).' '.trans('words.HasUpdated'));
         return redirect()->route('companies.index');
     }
 
@@ -102,7 +103,7 @@ class CompanyController extends Controller
     public function destroy(Company $company)
     {
         $company->delete();
-        flash()->success(trans('words.Company').' '.trans('words.HasEliminated'));
+        flash()->success(trans_choice('words.Company',1).' '.trans('words.HasEliminated'));
         return back();
     }
 }

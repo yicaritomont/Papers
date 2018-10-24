@@ -18,4 +18,10 @@ class Company extends Model
     {
         return $this->belongsToMany(User::class, 'user_company');
     }
+
+    public function inspectors()
+    {
+        return $this->belongsToMany(Inspector::class, 'company_inspector');
+    }
+
 }

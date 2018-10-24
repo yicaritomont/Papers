@@ -139,7 +139,7 @@
                                                     @can('view_companies')
                                                         <li class="{{ Request::is('companies*') ? 'active' : '' }}">
                                                             <a href="{{ route('companies.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{str_plural(trans('words.Company'),2)}}
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.Company',2)}}
                                                             </a>
                                                         </li>
                                                     @endcan 

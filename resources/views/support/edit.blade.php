@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', trans('words.Edit').' '.trans('words.Client').' '.$client->name)
+@section('title', trans('words.Edit').' '.trans('words.Support').' '.$result->name)
 
 @section('content')
 
@@ -8,11 +8,11 @@
         <a href="{{ route('clients.index') }}" class="btn btn-default btn-sm"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
         <div class="panel panel-default">
             <div class="panel-header-form">
-                <h3 class="panel-titles">@lang('words.Edit') {{ $client-> name.' '.$client->lastname }}</h3>                    
+                <h3 class="panel-titles">@lang('words.Edit') {{ $result-> name }}</h3>                    
             </div>
             <div class="panel-body black-letter">
-                {!! Form::model($client, ['method' => 'PUT', 'route' => ['clients.update',  $client->slug ]]) !!}
-                        @include('client._form')
+                {!! Form::model($result, ['method' => 'PUT', 'route' => ['supports.update',  $result->slug ]]) !!}
+                        @include('support._form')
                         <!-- Submit Form Button -->                           
                         <input class="btn-body" type="submit" value="@lang('words.SaveChanges')">
                 {!! Form::close() !!}

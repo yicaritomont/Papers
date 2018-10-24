@@ -18,7 +18,7 @@
             <tr>
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>
-                <th>@lang('words.E-Mail')</th>
+                <th>@lang('words.Email')</th>
                 <th>@lang('words.Roles')</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_users', 'delete_users')

@@ -24,4 +24,8 @@ class Inspector extends Model
     {
         return $this->belongsTo('inspector_types','inspector_type_id','id');
     }
+
+    public function company(){
+        return $this->belongsToMany(Company::class, 'company_inspector');
+    }
 }

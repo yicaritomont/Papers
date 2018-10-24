@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\City;
+use App\Citie;
 
 class CitiesTableSeeder extends Seeder
 {
@@ -12,7 +12,7 @@ class CitiesTableSeeder extends Seeder
      */
     public function run()
     {
-        $c = new City();
+        $c = new Citie();
         $c->countries_id = 1;
         $c->name = 'Ibague';
         $c->save();
