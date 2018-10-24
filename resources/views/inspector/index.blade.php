@@ -37,6 +37,12 @@
                 <tr>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->name }}</td>
+                    <td>{{ $item->identification}}</td>
+                    <td>{{ $item->phone}}</td>
+                    <td>{{ $item->addres}}</td>
+                    <td>{{ $item->email}}</td>
+                     <td>{{ $item->profession['name']}}</td>
+                    <td>{{ $item->inspectorType['name']}}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
 
                     @can('edit_inspectors','delete_inspectors')

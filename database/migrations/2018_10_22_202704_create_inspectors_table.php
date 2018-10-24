@@ -22,6 +22,7 @@ class CreateInspectorsTable extends Migration
             $table->string('email');
             $table->unsignedInteger('profession_id');
             $table->unsignedInteger('inspector_type_id');
+            //$table->unsignedInteger('city_id');
 
              $table->foreign('profession_id')
                 ->references('id')->on('professions')
@@ -29,6 +30,9 @@ class CreateInspectorsTable extends Migration
             $table->foreign('inspector_type_id')
                 ->references('id')->on('inspector_types')
                 ->onDelete('cascade');
+            /*$table->foreign('city_id')
+                ->references('id')->on('cities')
+                ->onDelete('cascade');*/
 
             $table->timestamps();
         });
