@@ -57,5 +57,6 @@ return[
     'Whatch' => 'Ver',
     'Of' => 'de',
     'Professions' => 'Profesion',
+    'Profession' => 'Profesión',
 ];
 ?>
