@@ -94,6 +94,68 @@
                                                                 <span class="text-danger glyphicon glyphicon-lock"></span> Roles
                                                             </a>
                                                         </li>
+                                                    @endcan
+
+                                                     @can('view_professions')
+                                                        <li class="{{ Request::is('professions*') ? 'active' : '' }}">
+                                                            <a href="{{ route('professions.index') }}">
+                                                                <span class="text-primary glyphicon glyphicon-education"></span> Professions
+                                                            </a>
+                                                        </li>
+                                                    @endcan 
+
+                                                     @can('view_inspectortypes')
+                                                        <li class="{{ Request::is('inspectortypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectortypes.index') }}">
+                                                                <span class="text-info glyphicon glyphicon-pushpin"></span> Inspector Types
+                                                            </a>
+                                                        </li>
+                                                    @endcan 
+
+                                                    @can('view_clients')
+                                                        <li class="{{ Request::is('clients*') ? 'active' : '' }}">
+                                                            <a href="{{ route('clients.index') }}">
+                                                                <span class="text-warning glyphicon glyphicon-user"></span> {{str_plural(trans('words.Client'),2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    
+                                                    @can('view_inspectors')
+                                                        <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectors.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> Inspectors
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+
+                                                    @can('view_inspectiontypes')
+                                                        <li class="{{ Request::is('inspectiontypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectiontypes.index') }}">
+                                                                <span class="text-dark glyphicon glyphicon-folder-open"></span> Inspectión Type
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                     @can('view_inspectionsubtypes')
+                                                        <li class="{{ Request::is('nspectionsubtypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectionsubtypes.index') }}">
+                                                                <span class="text-dark glyphicon glyphicon-refresh"></span> Inspection Subtypes
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('view_headquarters')
+                                                        <li class="{{ Request::is('headquarters*') ? 'active' : '' }}">
+                                                            <a href="{{ route('headquarters.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-home"></span> {{str_plural(trans('words.Headquarters'),2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan 
+
+                                                    @can('view_companies')
+                                                        <li class="{{ Request::is('companies*') ? 'active' : '' }}">
+                                                            <a href="{{ route('companies.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.Company',2)}}
+                                                            </a>
+                                                        </li>
                                                     @endcan 
                                                 @endif
                                             </ul>
@@ -189,12 +251,12 @@
                     </div>
                 </div>
                 <!-- /top navigation -->
-                <div class="container right_col" role="main">                    
-                    <div id="flash-msg">
-                        @include('flash::message')
-                    </div>
+                <div class="container right_col" role="main">                   
                     <div class="content-page">
-                    @yield('content')
+                        <div id="flash-msg">
+                            @include('flash::message')
+                        </div>
+                        @yield('content')
                     </div>
                 </div>
             </div>
@@ -243,6 +305,6 @@
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.min.js')}}"></script>
-	
+	@yield('scripts')
   </body>
 </html>

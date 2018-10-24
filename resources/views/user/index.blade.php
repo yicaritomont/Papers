@@ -5,9 +5,17 @@
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ str_plural('User', $result->count()) }} </h3>
+
+            @if(isset($cpy))
+                <h3 class="modal-title">{{ str_plural(trans('words.User'), $result->count()) }} @lang('words.Of') {{ $cpy[0]->name }}  </h3>
+            @else
+                <h3 class="modal-title">{{ $result->total() }} {{ str_plural('User', $result->count()) }} </h3>
+            @endif
         </div>
         <div class="col-md-7 page-action text-right">
+            @if(isset($cpy))
+                <a href="{{ route('companies.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
+            @endif
             @can('add_users')
                 <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
             @endcan
@@ -20,7 +28,7 @@
             <tr>
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>
-                <th>@lang('words.E-Mail')</th>
+                <th>@lang('words.Email')</th>
                 <th>@lang('words.Roles')</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_users', 'delete_users')
@@ -51,7 +59,9 @@
         </table>
 
         <div class="text-center">
-            {{ $result->links() }}
+            @if(!isset($cpy))
+                {{ $result->links() }}
+            @endif
         </div>
     </div>
 

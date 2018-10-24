@@ -114,6 +114,20 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'Name',
+        'client_id' => 'Client',
+        'cities_id' => 'City',
+        'address' => 'Address',
+        'slug' => 'Slug',
+        'email' => 'Email',
+        'password' => 'Password',
+        'roles' => 'Roles',
+        'companies' => 'Companies',
+        'lastname' => 'Lastname',
+        'phone' => 'Phone',
+        'cell_phone' => 'Cell Phone',
+        'activity' => 'Activity',
+    ],
 
 ];
