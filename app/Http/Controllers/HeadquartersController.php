@@ -6,7 +6,7 @@ use App\Headquarters;
 use App\Http\Requests\HeadquartersRequest;
 use Illuminate\Http\Request;
 use App\Client;
-use App\Cities;
+use App\Citie;
 
 class HeadquartersController extends Controller
 {
@@ -33,7 +33,7 @@ class HeadquartersController extends Controller
     {
         // $result = Headquarters::latest()->with(['client', 'cities']);
         $cl = Client::all();
-        $cy = Cities::all();
+        $cy = Citie::all();
         //dd($c[0]->name);
         return view('headquarters.new', compact(['cl', 'cy']));
     }
@@ -87,7 +87,7 @@ class HeadquartersController extends Controller
     public function edit(Headquarters $headquarters)
     {
         $cl = Client::all();
-        $cy = Cities::all();
+        $cy = Citie::all();
         //dd($headquarters);
         return view('headquarters.edit', compact(['headquarters', 'cl', 'cy']));
     }

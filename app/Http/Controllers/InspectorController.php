@@ -7,7 +7,8 @@ use App\Permission;
 use App\Inspector;
 use App\Profession;
 use App\InspectorType;
-use App\Cities;
+use App\Company;
+use App\Citie;
 use App\Country;
 use View;
 use Illuminate\Http\Request;
@@ -21,8 +22,15 @@ class InspectorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($company=null)
     {
+        if(isset($company)){
+            $cpy = Company::where('slug','=',$company)->get();
+            $result = $cpy[0]->inspectors;
+            dd($result);
+            return view('inspector.index', compact('result', 'cpy'));
+        }
+
         $result =Inspector::latest()->with(['profession','inspectorType'])->paginate();
 
         return view('inspector.index', compact('result'));

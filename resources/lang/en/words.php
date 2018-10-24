@@ -50,14 +50,9 @@ return[
     'HasEliminated' => 'has been eliminated',
     'HasUpdated' => 'has been updated',
     'MsgDel' => 'Are you sure to proceed with the deletion?',
-    'Company' => 'Company',
+    'Company' => 'Company|Companies',
     'Activity' => 'Activity',
     'Whatch' => 'Whatch',
     'Of' => 'of',
-    'Identification' => 'Identification',
-    'Email' => 'Email',
-    'Profession' => 'Profession',
-    'InspectorType' => 'Inspector Type',
-    'InspectionType' => 'Inspection Type',
 ];
 ?>

@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', trans('words.Headquarters'))
+@section('title', trans('words.Support'))
 
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ str_plural(trans('words.Headquarters'), $result->count()) }} </h3>
+            <h3 class="modal-title">{{ $result->total() }} {{ str_plural(trans('words.Support'), $result->count()) }} </h3>
         </div>
         <div class="col-md-7 page-action text-right">
-            @can('add_posts')
-                <a href="{{ route('headquarters.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
+            @can('add_clients')
+                <a href="{{ route('support.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
             @endcan
         </div>
     </div>
@@ -19,14 +19,14 @@
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
-                <th>@lang('words.Client')</th>
-                <th>@lang('words.City')</th>
                 <th>@lang('words.Name')</th>
-                <th>@lang('words.Address')</th>
+                <th>@lang('words.Date')</th>
+                <th>@lang('words.Route')</th>
                 <th>@lang('words.Status')</th>
+                <th>@lang('words.Name')</th>
                 <th>@lang('words.Slug')</th>
                 <th>@lang('words.CreatedAt')</th>
-                @can('edit_headquarters', 'delete_headquarters')
+                @can('edit_posts', 'delete_posts')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
             </tr>
@@ -35,17 +35,17 @@
             @foreach($result as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->client['name'] . ' ' . $item->client['lastname'] }}</td>
-                    <td>{{ $item->cities['name'] }}</td>
                     <td>{{ $item->name }}</td>
-                    <td>{{ $item->address }}</td>
-                    <td>{{ $item->status == 1 ? trans('words.Active') : trans('words.Inactive') }}</td>
+                    <td>{{ $item->date }}</td>
+                    <td>{{ $item->route }}</td>
+                    <td>{{ $item->status }}</td>
+                    <td>{{ $item->name }}</td>
                     <td>{{ $item->slug }}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
-                    @can('edit_headquarters', 'delete_headquarters')
+                    @can('edit_clients', 'delete_clients')
                     <td class="text-center">
                         @include('shared._actions', [
-                            'entity' => 'headquarters',
+                            'entity' => 'supports',
                             'id' => $item->slug
                         ])
                     </td>

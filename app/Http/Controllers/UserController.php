@@ -19,11 +19,19 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($company=null)
     {
+        if(isset($company)){
+            $cpy = Company::where('slug','=',$company)->get();
+            // $company = Company::find($cpy[0]->id);
+            $result = $cpy[0]->users;
+            // dd($cpy[0]->users);
+            return view('user.index', compact('result', 'cpy'));
+        }
+
         $result = User::latest()->paginate();
 
-        return view('user.index', compact('result'));
+        return view('user.index', compact('result', 'company'));
     }
 
     /**
@@ -110,7 +118,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        return "Show User";
     }
 
     /**

@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', trans('words.Company'))
+@section('title', trans_choice('words.Company', 2))
 
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ str_plural(trans('words.Company'), $result->count()) }} </h3>
+            <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Company',$result->count())  }} </h3>
         </div>
         <div class="col-md-7 page-action text-right">
             @can('add_companies')
@@ -22,7 +22,7 @@
                 <th>@lang('words.Name')</th>
                 <th>@lang('words.Address')</th>
                 <th>@lang('words.Phone')</th>
-                <th>@lang('words.E-Mail')</th>
+                <th>@lang('words.Email')</th>
                 <th>@lang('words.Status')</th>
                 <th>@lang('words.Activity')</th>
                 <th>@lang('words.Slug')</th>
@@ -50,9 +50,17 @@
                             'entity' => 'companies',
                             'id' => $item->slug
                         ])
-                        <a href="{{ route('companies.show', [str_singular('companies') => $item->slug])  }}" class="btn btn-xs btn-primary">
+                        {{-- <a href="{{ route('companies.show', [str_singular('companies') => $item->slug])  }}" class="btn btn-xs btn-primary"> --}}
                         @can('view_users')
-                            <i class="fa fa-eye"></i> @lang('words.Whatch') @lang('words.User')</a>
+                            <a href="{{ route('users.company', $item->slug)  }}" class="btn btn-xs btn-primary">
+                                <i class="fa fa-eye"></i> @lang('words.Whatch') @lang('words.User')
+                            </a>
+                        @endcan
+                        @can('view_inspectors')
+                            <a href="{{ route('inspectors.company', $item->slug)  }}" class="btn btn-xs btn-primary">
+                            {{-- <a href="{{ route('users.company', $item->slug)  }}" class="btn btn-xs btn-primary"> --}}
+                                <i class="fa fa-eye"></i> @lang('words.Whatch') @lang('words.Inspectors')
+                            </a>
                         @endcan
                     </td>
                     @endcan

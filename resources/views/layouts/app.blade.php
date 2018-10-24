@@ -112,6 +112,14 @@
                                                         </li>
                                                     @endcan 
 
+                                                    @can('view_clients')
+                                                        <li class="{{ Request::is('clients*') ? 'active' : '' }}">
+                                                            <a href="{{ route('clients.index') }}">
+                                                                <span class="text-warning glyphicon glyphicon-user"></span> {{str_plural(trans('words.Client'),2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    
                                                     @can('view_inspectors')
                                                         <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectors.index') }}">
@@ -145,7 +153,7 @@
                                                     @can('view_companies')
                                                         <li class="{{ Request::is('companies*') ? 'active' : '' }}">
                                                             <a href="{{ route('companies.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{str_plural(trans('words.Company'),2)}}
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.Company',2)}}
                                                             </a>
                                                         </li>
                                                     @endcan 

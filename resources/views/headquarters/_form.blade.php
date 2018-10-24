@@ -8,7 +8,7 @@
             @if(isset($headquarters))
                 {{ ($headquarters->client_id === $item->id) ? 'selected' : '' }}
             @endif
-            >{{$item->name}}</option>
+            >{{$item->name . ' ' . $item->lastname}}</option>
         @endforeach
     </select>
     @if ($errors->has('client_id')) <p class="help-block">{{ $errors->first('client_id') }}</p> @endif

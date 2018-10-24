@@ -21,7 +21,7 @@
 
 <!-- Email of Client Form Input -->
 <div class="form-group @if ($errors->has('email')) has-error @endif">
-    {!! Form::label('email', trans('words.E-Mail')) !!}
+    {!! Form::label('email', trans('words.Email')) !!}
     {!! Form::text('email', null, ['class' => 'input-body']) !!}
     @if ($errors->has('email')) <p class="help-block">{{ $errors->first('email') }}</p> @endif
 </div>

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Client;
-use App\Cities;
+use App\Citie;
 
 class Headquarters extends Model
 {
@@ -18,7 +18,7 @@ class Headquarters extends Model
 
     public function cities()
     {
-        return $this->belongsTo(Cities::class);
+        return $this->belongsTo(Citie::class);
     }
 
     public function getRouteKeyName()

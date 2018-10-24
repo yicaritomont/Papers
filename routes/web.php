@@ -24,6 +24,8 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group( ['middleware' => ['auth']], function() {
+    Route::get('users/{company?}', 'UserController@index')->name('users.company');
+    Route::get('inspectors/{company?}', 'InspectorController@index')->name('inspectors.company');
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');
@@ -35,6 +37,9 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('professions','ProfessionController');
     Route::resource('inspectiontypes','InspectionTypeController');
     Route::resource('inspectionsubtypes','InspectionSubtypeController');
+    Route::resource('clients', 'ClientController');
+    Route::resource('headquarters', 'HeadquartersController');
+    Route::resource('companies', 'CompanyController');
 });
 
 Route::get('lang/{lang}', function($lang) {
