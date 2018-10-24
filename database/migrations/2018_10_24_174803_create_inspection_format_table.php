@@ -16,7 +16,7 @@ class CreateInspectionFormatTable extends Migration
         Schema::table('inspection_format', function (Blueprint $table) {
             $table->increments('id');
             $table->string('number', 45);
-            $table->datatime('date');
+            $table->dateTimeTz('date');
             $table->integer('inspection_appointment_id')->unsigned();
 
             $table->foreign('inspection_appointment_id')
