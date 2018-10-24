@@ -30,7 +30,7 @@ class Inspector extends Model
         return $this->belongsTo('cities','city_id','id');
     }
 
-    public function company(){
+    public function companies(){
         return $this->belongsToMany(Company::class, 'company_inspector');
     }
 }

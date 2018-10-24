@@ -47,9 +47,10 @@ class InspectorController extends Controller
         $professions = Profession::pluck('name','id');
         $inspector_types = InspectorType::pluck('name','id');
         $countries = Country::pluck('name','id');
-        $cities = Cities::pluck('name','id');
+        $cities = Citie::pluck('name','id');
+        $companies = Company::pluck('name', 'id');
 
-        return View::make('inspector.new', compact('inspectors','professions','inspector_types','countries','cities'));
+        return View::make('inspector.new', compact('inspectors','professions','inspector_types','countries','cities','companies'));
     }
 
      /**
@@ -60,12 +61,16 @@ class InspectorController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->except('permissions','companies'));
+        $inspector = new Inspector();
         //echo "<pre>";print_r($_POST);echo "</pre>";exit();
-        if (Inspector::create($request->except('permissions'))) {
+        if (Inspector::create($request->except('permissions','companies'))) {
             flash(trans('words.Inspectors').' '.trans('words.HasAdded'));
         } else {
             flash()->error(trans('words.UnableCreate').' '.trans('words.Inspectors'));
         }
+        $inspector->save();
+        // $inspector->companies()->attach($request->companies);
         return redirect()->route('inspectors.index');
     }
 
@@ -81,7 +86,7 @@ class InspectorController extends Controller
         $professions = Profession::pluck('name','id');
         $inspector_types = InspectorType::pluck('name','id');
         $countries = Country::pluck('name','id');
-        $cities = Cities::pluck('name','id');
+        $cities = Citie::pluck('name','id');
         $permissions = Permission::all('name', 'id');
 
         return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities'));
