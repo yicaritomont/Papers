@@ -32,8 +32,7 @@ class InspectionSubtypeController extends Controller
 
         $inspection_types = InspectionType::pluck('name','id');
 
-        return View::make('inspection_subtype.new',compact('inspection_subtype'))
-            ->with('inspection_types',$inspection_types);
+        return View::make('inspection_subtype.new',compact('inspection_subtype','inspection_types'));
     }
 
     /**

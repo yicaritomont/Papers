@@ -124,10 +124,22 @@
                                                         <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectors.index') }}">
                                                                 <span class="text-white glyphicon glyphicon-briefcase"></span> Inspectors
+                                                    @endcan
+
+                                                    @can('view_inspectiontypes')
+                                                        <li class="{{ Request::is('inspectiontypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectiontypes.index') }}">
+                                                                <span class="text-dark glyphicon glyphicon-folder-open"></span> Inspectión Type
                                                             </a>
                                                         </li>
-                                                    @endcan 
-
+                                                    @endcan
+                                                     @can('view_inspectionsubtypes')
+                                                        <li class="{{ Request::is('nspectionsubtypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectionsubtypes.index') }}">
+                                                                <span class="text-dark glyphicon glyphicon-refresh"></span> Inspection Subtypes
+                                                            </a>
+                                                        </li>
+                                                    @endcan
                                                     @can('view_headquarters')
                                                         <li class="{{ Request::is('headquarters*') ? 'active' : '' }}">
                                                             <a href="{{ route('headquarters.index') }}">
@@ -143,22 +155,6 @@
                                                             </a>
                                                         </li>
                                                     @endcan 
-
-                                                    @can('view_inspectiontypes')
-                                                        <li class="{{ Request::is('inspectiontypes*') ? 'active' : '' }}">
-                                                            <a href="{{ route('inspectiontypes.index') }}">
-                                                                <span class="text-dark glyphicon glyphicon-folder-open"></span> Inspectión Type
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-
-                                                    @can('view_inspectionsubtypes')
-                                                        <li class="{{ Request::is('nspectionsubtypes*') ? 'active' : '' }}">
-                                                            <a href="{{ route('inspectionsubtypes.index') }}">
-                                                                <span class="text-dark glyphicon glyphicon-refresh"></span> Inspection Subtypes
-                                                            </a>
-                                                        </li>
-                                                    @endcan
                                                 @endif
                                             </ul>
                                         </li> 

@@ -12,17 +12,22 @@ class Inspector extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'identification', 'phone', 'addres', 'email', 'profession_id', 'inspector_type_id'
+        'name', 'identification', 'phone', 'addres', 'email', 'profession_id', 'inspector_type_id', 'city_id',
     ];
 
     public function profession()
     {
-        return $this->belongsTo('professions','profession_id','id');
+        return $this->belongsTo('App\Profession','profession_id','id');
     }
 
     public function inspectorType()
     {
-        return $this->belongsTo('inspector_types','inspector_type_id','id');
+        return $this->belongsTo('App\InspectorType','inspector_type_id','id');
+    }
+
+    public function cities()
+    {
+        return $this->belongsTo('cities','city_id','id');
     }
 
     public function company(){
