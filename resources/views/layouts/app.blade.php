@@ -117,7 +117,7 @@
                                                 @endif
                                             </ul>
                                         </li> 
-                                        <li><a><i class="fa fa-suitcase"></i> App <span class="fa fa-chevron-down"></span></a>
+                                        <!--<li><a><i class="fa fa-suitcase"></i> App <span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">
                                                 @can('view_posts')
                                                     <li class="{{ Request::is('posts*') ? 'active' : '' }}">
@@ -127,8 +127,42 @@
                                                     </li>
                                                 @endcan
                                             </ul>
-                                        </li>
+                                        </li>-->
 
+                                        <!-- Made Menu, with modules -->
+                                        @if(count(MadeMenu::get_modules()) >0)
+                                            @foreach(MadeMenu::get_modules() as $modulo)
+                                                <li><a><i class="fa fa-suitcase"></i>{{$modulo->name}}<span class="fa fa-chevron-down"></span></a>
+                                                    <ul class="nav child_menu">
+                                                        @foreach(MadeMenu::get_item_modules($modulo->id) as $item)
+                                                            @can('view_'.$item->url)
+                                                                <li class="{{ Request::is($item->name.'*') ? 'active' : '' }}">
+                                                                    @if(MadeMenu::item_has_child($item->id) >=0)
+                                                                    <a>
+                                                                        <span class="text-success glyphicon glyphicon-text-background"></span> {{$item->name}}
+                                                                    </a>
+                                                                    @else
+                                                                    <a href="{{ route('posts.index') }}">
+                                                                        <span class="text-success glyphicon glyphicon-text-background"></span> {{$item->name}}
+                                                                    </a>
+                                                                    @endif
+
+                                                                    @if( count(MadeMenu::get_child_items($item->id)) > 0)
+                                                                        <ul class="nav child_menu">
+                                                                            @foreach(MadeMenu::get_child_items($item->id) as $child)
+                                                                                <li>
+                                                                                    <a href="{{ route($child->url.'.index') }}"><span></span>{{$child->name}}</a>
+                                                                                </li>
+                                                                            @endforeach
+                                                                        </ul> 
+                                                                    @endif
+                                                                </li>
+                                                            @endcan
+                                                        @endforeach
+                                                    </ul>
+                                                </li>
+                                            @endforeach
+                                        @endif
                                                                               
                                     </ul>
                             </div>                                

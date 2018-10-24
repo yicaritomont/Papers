@@ -31,12 +31,14 @@ class MenuController extends Controller
     {
         //
         $modulos            = Modulo::where('state',1)->pluck('name', 'id');
-        $menu               = Menu::where('state',1)->pluck('name', 'id');
+        $menu               = Menu::where('state',1)->whereRaw('id = menu_id')->pluck('name', 'id');
         $cuantos_menu = count($menu);
         if($cuantos_menu<=0)
         {
-            $menu[1] = 'Menu Inicial';
+           $menu[1] = 'Menu Inicial';
         }
+
+        $menu[0] = "Menu Principal";
         
         
         $permisos           = Permission::pluck('name', 'id');
@@ -100,12 +102,22 @@ class MenuController extends Controller
             'menu_id' => 'required'
         ]);
 
+        $lastMenuHead = Menu::orderBy('id', 'desc')->first();
         $menu = new Menu();
 
         $menu->name   = $request->name;
         $menu->url   = $request->url;
         $menu->modulo_id   = $request->modulo_id;
-        $menu->menu_id  = $request->menu_id;
+        
+        if($request->menu_id == 0)
+        {
+            $menu->menu_id = (int)$lastMenuHead->id+1;
+        }
+        else
+        {
+            $menu->menu_id  = $request->menu_id;
+        }
+        
         $menu->state = 1;
         
         $menu->save();
@@ -136,7 +148,7 @@ class MenuController extends Controller
     {
         //
         $modulos           = Modulo::where('state',1)->pluck('name', 'id');
-        $menu               = Menu::where('state',1)->pluck('name', 'id');
+        $menu               = Menu::where('state',1)->whereRaw('id = menu_id')->pluck('name', 'id');
         $cuantos_menu = count($menu);
         if($cuantos_menu<=0)
         {

@@ -19,6 +19,7 @@
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
+                <th>@lang('words.Name')</th>
                 <th>@lang('words.Url')</th>
                 <th>@lang('words.Menu')</th>
                 <th>@lang('words.Modules')</th>
@@ -33,6 +34,7 @@
                 <tr>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->name }}</td>
+                    <td>{{ $item->url }}</td>
                     <td>{{ $item->menu['name'] }}</td>
                     <td>{{ $item->modulo['name'] }}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
