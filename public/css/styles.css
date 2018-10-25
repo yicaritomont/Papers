@@ -144,3 +144,9 @@
     color: inherit;
     font-weight: bold;
 }
+
+.picture_perfil
+{
+    width: 35%;    
+    margin: auto;
+}

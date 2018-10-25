@@ -282,7 +282,8 @@ class MenuController extends Controller
             'roles',
             'permissions',
             'modulos',
-            'menus'
+            'menus',
+            'perfiles'
         ];
     }
 

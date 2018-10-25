@@ -196,13 +196,7 @@
                                         <span class=" fa fa-angle-down"></span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                        <li><a href="javascript:;">@lang('header.Profile')</a></li>
-                                        <li>
-                                            <a href="javascript:;">
-                                                <span class="badge bg-red pull-right">50%</span>
-                                                <span>@lang('header.Setting')</span>
-                                            </a>
-                                        </li>
+                                        <li><a href="{{route('perfiles.index')}}">@lang('header.Profile')</a></li>                                        
                                         <li><a href="javascript:;">@lang('header.Help')</a></li>
                                         <li>
                                             <a href="{{ route('logout') }}"

@@ -37,6 +37,8 @@ return[
     'Menu' => 'Menu',
     'Padre' => 'Parent',
     'MenuPadre' => 'Parent Menu',
+    'Active' => 'Active',
+    'Inactive' => 'Inactive',
 
     //To App Latout Menu
     'ManagementTools' => 'Tools',

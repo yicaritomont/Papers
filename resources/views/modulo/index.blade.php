@@ -20,8 +20,7 @@
             <tr>
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>                
-                <th>@lang('words.CreatedAt')</th>
-                <th>@lang('words.Status')</th>
+                <th>@lang('words.CreatedAt')</th>               
                 @can('edit_modulos', 'delete_modulos')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
@@ -32,23 +31,32 @@
                 <tr>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->name }}</td>                    
-                    <td>{{ $item->created_at->toFormattedDateString() }}</td>
+                    <td>{{ $item->created_at->toFormattedDateString() }}</td>                    
                     <td>
-                        @if($item->state == 1)
-                            <button class="btn  btn-xs btn-success"><span class='glyphicon glyphicon-ok-sign'></span></button>
-                        @else
-                            <button class="btn  btn-xs btn-danger"><span class='glyphicon glyphicon-remove-sign'></button>
-                        @endif                        
-                    </td>                  
+                        @can('edit_modulos')
+                            <a href="{{ route('modulos.edit', $item->id)  }}" class="btn btn-xs btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        @endcan
+                        @can('delete_modulos')
+                        {!! Form::open( ['method' => 'delete', 'url' => route('modulos.destroy', ['user' => $item->id]), 'style' => 'display: inline', 'onSubmit' => 'return confirm("Are your sure wanted to delete it?")']) !!}                            
+                            @if($item->state == 1)
+                                <button class="btn  btn-xs btn-success"><span class='glyphicon glyphicon-ok-sign'></span></button>
+                            @else
+                                <button class="btn  btn-xs btn-danger"><span class='glyphicon glyphicon-remove-sign'></button>
+                            @endif    
+                        {!! Form::close() !!}
+                        @endcan
+                    </td>                
 
-                    @can('edit_modulos', 'delete_modulos')
+                   <!-- @can('edit_modulos', 'delete_modulos')
                     <td class="text-center">
                         @include('shared._actions', [
                             'entity' => 'modulos',
                             'id' => $item->id
                         ])
                     </td>
-                    @endcan
+                    @endcan-->
                 </tr>
             @endforeach
             </tbody>

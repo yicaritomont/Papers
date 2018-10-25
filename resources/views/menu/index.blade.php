@@ -23,6 +23,7 @@
                 <th>@lang('words.Url')</th>
                 <th>@lang('words.Menu')</th>
                 <th>@lang('words.Modules')</th>
+                <th>@lang('words.Status')</th>
                 <th>Created At</th>
                 @can('edit_menus', 'delete_menus')
                     <th class="text-center">Actions</th>
@@ -37,6 +38,13 @@
                     <td>{{ $item->url }}</td>
                     <td>{{ $item->menu['name'] }}</td>
                     <td>{{ $item->modulo['name'] }}</td>
+                    <td>
+                        @if($item->state == 1)
+                            <button class="btn  btn-xs btn-success"><span class='glyphicon glyphicon-ok-sign'></span> @lang('words.Active')</button>
+                        @else
+                            <button class="btn  btn-xs btn-danger"><span class='glyphicon glyphicon-remove-sign'></span> @lang('words.Inactive')</button>
+                        @endif   
+                    </td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
                     @can('edit_menus', 'delete_menus')
                     <td class="text-center">
