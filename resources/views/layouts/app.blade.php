@@ -304,5 +304,7 @@
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.min.js')}}"></script>
 	
+    <!-- Js to application -->
+    <script src="{{asset('js/applicationEvents.js')}}"></script>
   </body>
 </html>

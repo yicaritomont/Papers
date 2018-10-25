@@ -120,5 +120,6 @@ return [
     'PermissionAdmin' => 'Admin permissions updated',
     'MessageCreated' => 'The action has been carried out successfully',
     'MessageError' => 'Can not finish the action',
+    'ChangePasswordMissing' => 'Please, write a new Password',
 
 ];

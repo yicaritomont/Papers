@@ -119,4 +119,5 @@ return [
     'PermissionAdmin' => 'Permisos de administrador actualizados.',
     'MessageCreated' => 'Se ha realizado la acción existosamente',
     'MessageError' => 'No se puede completar la acción',
+    'ChangePasswordMissing' => 'Por favor, escriba una nueva contraseña',
 ];

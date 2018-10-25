@@ -28,6 +28,8 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('menus','MenuController');
     Route::resource('perfiles','PerfilController');
     Route::resource('agendas','MenuController');
+    Route::post('changePassword/{id}',['as'=>'changePassword','uses' => 'PerfilController@changePassword']);
+    Route::get('ajxVerifyPassword','PerfilController@VerifyPassword');
 });
 
 
