@@ -54,5 +54,9 @@ return[
     'Activity' => 'Activity',
     'Whatch' => 'Whatch',
     'Of' => 'of',
+    'Inspectionappointment' => 'Inspection Appointment',
+    'Date' => 'Date',
+    'AppointmentLocation' => 'Appointment Location',
+    'InspectionSubtype' => 'Inspection Subtype',
 ];
 ?>

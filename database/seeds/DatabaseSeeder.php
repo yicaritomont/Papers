@@ -70,6 +70,8 @@ class DatabaseSeeder extends Seeder
             $this->command->info('Added only default user role.');
         }
 
+        $this->command->info('corriendo semillas');
+        $this->sembrarSemillas();
 
         // now lets seed some posts for demo
         factory(\App\Post::class, 30)->create();
@@ -92,5 +94,11 @@ class DatabaseSeeder extends Seeder
             $this->command->warn($user->email);
             $this->command->warn('Password is "secret"');
         }
+    }
+
+    private function sembrarSemillas()
+    {
+        AppointmentStateTableSeeder::run();
+        AppointmentLocationTableSeeder::run();
     }
 }

@@ -40,6 +40,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('clients', 'ClientController');
     Route::resource('headquarters', 'HeadquartersController');
     Route::resource('companies', 'CompanyController');
+    Route::resource('inspectionappointments', 'InspectionAppointmentController');
 });
 
 Route::get('lang/{lang}', function($lang) {

@@ -60,16 +60,19 @@ class InspectorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //dd($request->except('permissions','companies'));
-        $inspector = new Inspector();
-        //echo "<pre>";print_r($_POST);echo "</pre>";exit();
+    {   
+        $this->validate($request, [
+            'name' => 'bail|required|min:2',
+            'identification' => 'required|unique:inspectors|numeric',
+            'phone' => 'required|string',
+            'addres' => 'required|string',
+            'email' => 'required|email',
+        ]);   
         if (Inspector::create($request->except('permissions','companies'))) {
             flash(trans('words.Inspectors').' '.trans('words.HasAdded'));
         } else {
             flash()->error(trans('words.UnableCreate').' '.trans('words.Inspectors'));
         }
-        $inspector->save();
         // $inspector->companies()->attach($request->companies);
         return redirect()->route('inspectors.index');
     }
@@ -88,8 +91,9 @@ class InspectorController extends Controller
         $countries = Country::pluck('name','id');
         $cities = Citie::pluck('name','id');
         $permissions = Permission::all('name', 'id');
+        $companies = Company::pluck('name', 'id');
 
-        return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities'));
+        return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities', 'companies'));
     }
 
      /**
@@ -108,6 +112,16 @@ class InspectorController extends Controller
         //Get the inspector
         $inspector = Inspector::findOrFail($id);
         
+        if($inspector->identification != $request->identification) {
+             
+            $this->validate($request, [
+            'name' => 'bail|required|min:2',
+            'identification' => 'required|unique:inspectors|numeric',
+            'phone' => 'required|string',
+            'addres' => 'required|string',
+            'email' => 'required|email',
+        ]);
+        }
         $inspector->fill($request->except('permissions'));
 
         $inspector->save();

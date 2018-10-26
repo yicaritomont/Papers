@@ -55,5 +55,9 @@ return[
     'Activity' => 'Actividad',
     'Whatch' => 'Ver',
     'Of' => 'de',
+    'Inspectionappointment' => 'Cita de Inspección',
+    'Date' => 'Fecha',
+    'AppointmentLocation' => 'Localizacion de la Cita',
+    'InspectionSubtype' => 'Subtipo de Inpección',
 ];
 ?>

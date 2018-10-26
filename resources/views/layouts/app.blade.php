@@ -99,7 +99,7 @@
                                                      @can('view_professions')
                                                         <li class="{{ Request::is('professions*') ? 'active' : '' }}">
                                                             <a href="{{ route('professions.index') }}">
-                                                                <span class="text-primary glyphicon glyphicon-education"></span> Professions
+                                                                <span class="text-primary glyphicon glyphicon-education"></span> @lang('words.Profession')
                                                             </a>
                                                         </li>
                                                     @endcan 
@@ -107,7 +107,7 @@
                                                      @can('view_inspectortypes')
                                                         <li class="{{ Request::is('inspectortypes*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectortypes.index') }}">
-                                                                <span class="text-info glyphicon glyphicon-pushpin"></span> Inspector Types
+                                                                <span class="text-info glyphicon glyphicon-pushpin"></span> @lang('words.InspectorType')
                                                             </a>
                                                         </li>
                                                     @endcan 
@@ -123,7 +123,7 @@
                                                     @can('view_inspectors')
                                                         <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectors.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> Inspectors
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> @lang('words.Inspectors')
                                                             </a>
                                                         </li>
                                                     @endcan 
@@ -131,14 +131,14 @@
                                                     @can('view_inspectiontypes')
                                                         <li class="{{ Request::is('inspectiontypes*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectiontypes.index') }}">
-                                                                <span class="text-dark glyphicon glyphicon-folder-open"></span> Inspectión Type
+                                                                <span class="text-dark glyphicon glyphicon-folder-open"></span> @lang('words.InspectionType')
                                                             </a>
                                                         </li>
                                                     @endcan
                                                      @can('view_inspectionsubtypes')
                                                         <li class="{{ Request::is('nspectionsubtypes*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectionsubtypes.index') }}">
-                                                                <span class="text-dark glyphicon glyphicon-refresh"></span> Inspection Subtypes
+                                                                <span class="text-dark glyphicon glyphicon-refresh"></span> @lang('words.InspectionSubtype')
                                                             </a>
                                                         </li>
                                                     @endcan
@@ -154,6 +154,14 @@
                                                         <li class="{{ Request::is('companies*') ? 'active' : '' }}">
                                                             <a href="{{ route('companies.index') }}">
                                                                 <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.Company',2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan 
+
+                                                     @can('view_inspectionappointments')
+                                                        <li class="{{ Request::is('inspectionappointments*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectionappointments.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.Inspectionappointment',2)}}
                                                             </a>
                                                         </li>
                                                     @endcan 

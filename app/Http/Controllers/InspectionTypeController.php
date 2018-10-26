@@ -41,7 +41,7 @@ class InspectionTypeController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'bail|required|min:2'
+            'name' => 'bail|unique:inspection_types|required|min:2'
         ]);
         if (InspectionType::create($request->except('permissions'))) {
 
@@ -78,13 +78,18 @@ class InspectionTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'bail|required|min:2'
-        ]);
+       
 
         //Get the inspector type
         $inspectiontype = InspectionType::findOrFail($id);
         
+        if($inspectiontype->name != $request->name)
+        {
+             $this->validate($request, [
+                'name' => 'bail|unique:inspection_types|required|min:2'
+            ]);
+        }
+
         $inspectiontype->fill($request->except('permissions'));
 
         $inspectiontype->save();
