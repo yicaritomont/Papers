@@ -121,5 +121,14 @@ return [
     'MessageCreated' => 'The action has been carried out successfully',
     'MessageError' => 'Can not finish the action',
     'ChangePasswordMissing' => 'Please, write a new Password',
-
+    
+    /*  Verificacion para uso de contraseñas */
+    'PasswordHas' => 'The password must have at least',
+    'PasswordLength' => 'The password must have a minimum length of',
+    'Number' => 'numbers',
+    'Character' => 'characters',
+    'Lower' => 'lowercase',
+    'Upper' => 'capital letters',
+    'beforePass' => 'The password has already been used previously, you must register a new password.',
+    'keyWordPass' => 'The password can not contain keywords of its user.',
 ];

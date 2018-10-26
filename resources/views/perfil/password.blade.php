@@ -17,10 +17,17 @@
                         <div class="form-group @if ($errors->has('password')) has-error @endif">
                             <label for="password">@lang('words.Password')</label>
                             <input type="hidden" id='user_pasword' value='{{$user->id}}'>
-                            {!! Form::text('password', null,['class' => 'input-body' ,'id' => 'password_update']) !!}   
+                            {!! Form::password('password',['class' => 'input-body' ,'id' => 'password_update']) !!}   
                             
                             @if ($errors->has('password')) <p class="help-block">{{ $errors->first('password') }}</p> @endif
                         </div>
+                        <p id="div_info_lengthPwd" ></p>
+                        <p id="div_info_lengthNumber"></p>
+                        <p id="div_info_lengthLower"></p>
+                        <p id="div_info_lengthUpper"></p>
+                        <p id="div_info_beforePass"></p>
+
+
                         <!-- Submit Form Button -->                        
                         {!! Form::submit(trans('words.SaveChanges'), ['class' => 'btn-body' ,'id' => 'changePassword']) !!}
                     {!! Form::close() !!}

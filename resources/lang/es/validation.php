@@ -120,4 +120,14 @@ return [
     'MessageCreated' => 'Se ha realizado la acción existosamente',
     'MessageError' => 'No se puede completar la acción',
     'ChangePasswordMissing' => 'Por favor, escriba una nueva contraseña',
+
+    /*  Verificacion para uso de contraseñas */
+    'PasswordHas' => 'La contraseña debe tener al menos',
+    'PasswordLength' => 'La contraseña debe tener una longitud mínima de ',
+    'Number' => 'números',
+    'Character' => 'caracteres',
+    'Lower' => 'minúsculas',
+    'Upper' => 'mayúsculas',
+    'beforePass' => 'La contraseña ya fue usada anteriormente, debe registrar una nueva.',
+    'keyWordPass' => 'La contraseña no puede contener palabras claves de su usuario.',
 ];
