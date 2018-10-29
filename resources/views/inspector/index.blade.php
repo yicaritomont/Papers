@@ -7,7 +7,7 @@
         <div class="col-md-5">
 
             @if(isset($companyObj))
-                <h3 class="modal-title">{{ str_plural(trans('words.Inspector'), $result->count()) }} @lang('words.Of') {{ $companyObj[0]->name }}  </h3>
+                <h3 class="modal-title">{{ str_plural(trans('words.Inspector'), $result->count()) }} @lang('words.Of') {{ $companyObj[0]->name }}</h3>
             @else
                 <h3 class="modal-title">{{ $result->total() }} {{ str_plural('inspector',$result->count()) }}</h3>
             @endif
