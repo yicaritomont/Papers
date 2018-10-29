@@ -31,6 +31,9 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');
+    Route::resource('clients', 'ClientController');
+    Route::resource('headquarters', 'HeadquartersController');
+    Route::resource('companies', 'CompanyController');
     Route::resource('inspectors','InspectorController');
     Route::resource('inspectortypes','InspectorTypeController');
     Route::resource('professions','ProfessionController');
@@ -39,6 +42,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('clients', 'ClientController');
     Route::resource('headquarters', 'HeadquartersController');
     Route::resource('companies', 'CompanyController');
+    Route::resource('inspectionappointments', 'InspectionAppointmentController');
     Route::resource('inspectoragendas', 'InspectorAgendaController');
 });
 

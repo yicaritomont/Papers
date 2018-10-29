@@ -41,7 +41,7 @@ class ProfessionController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'bail|required|min:2'
+            'name' => 'bail|required|unique:professions|min:2'
         ]);
         if (Profession::create($request->except('permissions'))) {
 
@@ -78,13 +78,13 @@ class ProfessionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'bail|required|min:2'
-        ]);
-
         //Get the inspector type
-        $profession = Profession::findOrFail($id);
         
+        $profession = Profession::findOrFail($id);
+        $rules = array('name' => 'bail|required|unique:professions|min:2');
+        if ($profession->name != $request->name) {
+           $this->validate($request,$rules);
+        } 
         $profession->fill($request->except('permissions'));
 
         $profession->save();

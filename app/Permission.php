@@ -48,6 +48,11 @@ class Permission extends \Spatie\Permission\Models\Permission
             'edit_inspectiontypes',
             'delete_inspectiontypes',
 
+            'view_inspectionsubtypes',
+            'add_inspectionsubtypes',
+            'edit_inspectionsubtypes',
+            'delete_inspectionsubtypes',
+
             'view_companies',
             'add_companies',
             'edit_companies',
@@ -62,6 +67,11 @@ class Permission extends \Spatie\Permission\Models\Permission
             'add_headquarters',
             'edit_headquarters',
             'delete_headquarters',
+
+            'view_inspectionappointments',
+            'add_inspectionappointments',
+            'edit_inspectionappointments',
+            'delete_inspectionappointments',
         ];
     }
 

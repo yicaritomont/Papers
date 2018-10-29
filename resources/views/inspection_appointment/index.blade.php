@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', trans_choice('words.Profession',2).', ')
+@section('title', 'Inspection Appointment')
 
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Profession',$result->count()) }}</h3>
+            <h3 class="modal-title">{{ $result->total() }} {{ str_plural('InspectionAppointment',$result->count()) }}</h3>
         </div>
         <div class="col-md-7 page-action text-right">
-            @can('add_professions')
-                <a href="{{ route('professions.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i>@lang('words.Create')</a>
+            @can('add_inspectionappointments')
+                <a href="{{ route('inspectionappointments.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i>@lang('words.Create')</a>
             @endcan
         </div>
     </div>
@@ -19,9 +19,12 @@
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
-                <th>@lang('words.Name')</th>
+                <th>@lang('words.Inspectors')</th>
+                <th>@lang('words.InspectionType')</th>
+                <th>@lang('words.Date')</th>
+                <th>@lang('words.Status')</th>
                 <th>@lang('words.CreatedAt')</th>
-                @can('edit_professions','delete_professions')
+                @can('edit_inspectionappointments','delete_inspectionappointments')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
             </tr>
@@ -30,13 +33,16 @@
                 @foreach($result as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->name }}</td>
+                    <td>{{ $item->inspector['name']}}</td>
+                    <td>{{ $item->inspectionType['name']}}</td>
+                    <td>{{ $item->date}}</td>
+                    <td>{{ $item->appointmentState['name']}}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
 
-                    @can('edit_professions','delete_professions')
+                    @can('edit_inspectionappointments','delete_inspectionappointments')
                         <td class="text-center">
                             @include('shared._actions', [
-                                'entity' => 'professions',
+                                'entity' => 'inspectionappointments',
                                 'id' => $item->id
                             ])
                         </td>
