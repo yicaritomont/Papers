@@ -55,7 +55,7 @@ return[
     'Date' => 'Date',
     'StartTime' => 'Start Time',
     'EndTime' => 'End Time',
-    'InspectorAgenda' => 'Inspector Agenda',
+    'InspectorAgenda' => "Inspector Agenda|Inspector's Agenda",
     'Delete' => 'Delete',
     'Close' => 'Close',
     'AvailableAppointments' => 'AvailableAppointments',

@@ -56,7 +56,7 @@ return[
     'Date' => 'Fecha',
     'StartTime' => 'Hora de inicio',
     'EndTime' => 'Hora fin',
-    'InspectorAgenda' => 'Agenda del inspector',
+    'InspectorAgenda' => 'Agenda del inspector|Agendas del inspector',
     'Delete' => 'Eliminar',
     'Close' => 'Cerrar',
     'AvailableAppointments' => 'Citas disponibles',
