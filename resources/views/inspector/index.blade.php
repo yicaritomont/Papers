@@ -6,14 +6,14 @@
     <div class="row">
         <div class="col-md-5">
 
-            @if(isset($cpy))
-                <h3 class="modal-title">{{ str_plural(trans('words.Inspector'), $result->count()) }} @lang('words.Of') {{ $cpy[0]->name }}  </h3>
+            @if(isset($companyObj))
+                <h3 class="modal-title">{{ str_plural(trans('words.Inspector'), $result->count()) }} @lang('words.Of') {{ $companyObj[0]->name }}  </h3>
             @else
                 <h3 class="modal-title">{{ $result->total() }} {{ str_plural('inspector',$result->count()) }}</h3>
             @endif
         </div>
         <div class="col-md-7 page-action text-right">
-            @if(isset($cpy))
+            @if(isset($companyObj))
                 <a href="{{ route('companies.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
             @endif
             @can('add_inspectors')
@@ -59,15 +59,21 @@
                                 'entity' => 'inspectors',
                                 'id' => $item->id
                             ])
+                            @can('view_inspectoragendas')
+                                <a href="{{ route('inspectoragendas.inspector', $item->id)  }}" class="btn btn-xs btn-primary">
+                                    <i class="fa fa-eye"></i> @lang('words.Whatch') @lang('words.InspectorAgenda')
+                                </a>
+                            @endcan
                         </td>
                     @endcan
+                    
                 </tr>
                 @endforeach
             </tbody>
         </table>
 
         <div class="text-center">
-            @if(!isset($cpy))
+            @if(!isset($companyObj))
                 {{ $result->links() }}
             @endif
         </div>

@@ -29,9 +29,9 @@ class CompanyRequest extends FormRequest
                 'name' => 'required',
                 'address' => 'required',
                 'phone' => 'required',
-                'email' => 'required|email',
+                'email' => 'required|email|unique:companies,email,'.$this->route('company')->id,
                 'activity' => 'required',
-                'slug' => 'required|unique:companies,slug,'.$this->route('company')->id
+                // 'slug' => 'required|unique:companies,slug,'.$this->route('company')->id
             ];
         }
         // dd('F');
@@ -40,9 +40,9 @@ class CompanyRequest extends FormRequest
             'name' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:companies,email',
             'activity' => 'required',
-            'slug' => 'required|unique:companies,slug'
+            // 'slug' => 'required|unique:companies,slug'
         ];
     }
 }

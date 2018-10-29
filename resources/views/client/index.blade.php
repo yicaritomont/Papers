@@ -24,7 +24,6 @@
                 <th>@lang('words.Phone')</th>
                 <th>@lang('words.Email')</th>
                 <th>@lang('words.CellPhone')</th>
-                <th>@lang('words.Slug')</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_posts', 'delete_posts')
                     <th class="text-center">@lang('words.Actions')</th>
@@ -40,7 +39,6 @@
                     <td>{{ $item->phone }}</td>
                     <td>{{ $item->email }}</td>
                     <td>{{ $item->cell_phone }}</td>
-                    <td>{{ $item->slug }}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
                     @can('edit_clients', 'delete_clients')
                     <td class="text-center">

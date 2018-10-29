@@ -19,8 +19,8 @@ class CreateHeadquartersTable extends Migration
             $table->Integer('cities_id')->unsigned();
             $table->string('name', 40);
             $table->string('address', 60);
-            $table->integer('status');
-            $table->string('slug', 40)->unique();
+            $table->integer('status')->nullable();
+            $table->string('slug', 40)->unique()->nullable();
 
             $table->foreign('client_id')
                 ->references('id')->on('clients')

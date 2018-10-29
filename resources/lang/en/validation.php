@@ -128,6 +128,11 @@ return [
         'phone' => 'Phone',
         'cell_phone' => 'Cell Phone',
         'activity' => 'Activity',
+        'date' => 'Date',
+        'start_time' => 'Start time',
+        'end_time' => 'End time',
+        'inspector_id' => 'Inspectors',
+        'headquarters_id' => 'Headquarters',
     ],
 
 ];

@@ -41,9 +41,13 @@ class ClientController extends Controller
     {
 
         //$request->user()->posts()->create($request->all());
+        //dd($request->all());
         $client = Client::create($request->all());
 
         flash(trans('words.Client').' '.trans('words.HasAdded'));
+
+        $client->slug = md5($client->id);
+        $client->save();
 
         return redirect()->back();
     }

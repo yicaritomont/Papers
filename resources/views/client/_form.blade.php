@@ -33,13 +33,6 @@
     @if ($errors->has('cell_phone')) <p class="help-block">{{ $errors->first('cell_phone') }}</p> @endif
 </div>
 
-<!-- Slug of Client Form Input -->
-<div class="form-group @if ($errors->has('slug')) has-error @endif">
-    {!! Form::label('slug', trans('words.Slug')) !!}
-    {!! Form::text('slug', null, ['class' => 'input-body']) !!}
-    @if ($errors->has('slug')) <p class="help-block">{{ $errors->first('slug') }}</p> @endif
-</div>
-
 @push('scripts')
 <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
 @endpush

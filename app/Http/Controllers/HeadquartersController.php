@@ -7,6 +7,7 @@ use App\Http\Requests\HeadquartersRequest;
 use Illuminate\Http\Request;
 use App\Client;
 use App\Citie;
+use DB;
 
 class HeadquartersController extends Controller
 {
@@ -31,11 +32,12 @@ class HeadquartersController extends Controller
      */
     public function create()
     {
-        // $result = Headquarters::latest()->with(['client', 'cities']);
-        $cl = Client::all();
-        $cy = Citie::all();
+        $clients = Client::select(DB::raw('CONCAT(name ," ", lastname) AS name'), 'id')->get();
+      /*   dd($headquarters->pluck('nombre_completo', 'id'));
+        $clients = Client::all(); */
+        $cities = Citie::all();
         //dd($c[0]->name);
-        return view('headquarters.new', compact(['cl', 'cy']));
+        return view('headquarters.new', compact(['clients', 'cities']));
     }
 
     /**
@@ -46,22 +48,13 @@ class HeadquartersController extends Controller
      */
     public function store(HeadquartersRequest $request)
     {
+        $headquarters = Headquarters::create($request->all());
+        $headquarters->status = 1;
+        $headquarters->slug = md5($headquarters->id);
+        $headquarters->save();
 
-        $h = new Headquarters();
-        $h->client_id = $request->input('client_id');
-        $h->_id = $request->input('cities_id');
-        $h->name = $request->input('name');
-        $h->address = $request->input('address');
-        $h->status = 1;
-        $h->slug = $request->input('slug');
-        $h->save();
-        /* $this->validate($request, [
-            'title' => 'required|min:10',
-            'body' => 'required|min:20'
-        ]);
-
-        $request->user()->posts()->create($request->all());
-        */
+        // $request->user()->posts()->create($request->all());
+        
         flash(trans('words.Headquarters').' '.trans('words.HasAdded'));
 
         return redirect()->back(); 
@@ -86,10 +79,10 @@ class HeadquartersController extends Controller
      */
     public function edit(Headquarters $headquarters)
     {
-        $cl = Client::all();
-        $cy = Citie::all();
+        $clients = Client::all();
+        $cities = Citie::all();
         //dd($headquarters);
-        return view('headquarters.edit', compact(['headquarters', 'cl', 'cy']));
+        return view('headquarters.edit', compact(['headquarters', 'clients', 'cities']));
     }
 
     /**
@@ -118,6 +111,7 @@ class HeadquartersController extends Controller
      */
     public function destroy(Headquarters $headquarters)
     {
+        //dd($headquarters);
         $headquarters->delete();
         flash()->success(trans('words.Headquarters').' '.trans('words.HasEliminated'));
         return back();

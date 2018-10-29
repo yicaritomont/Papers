@@ -128,6 +128,11 @@ return [
         'phone' => 'Teléfono',
         'cell_phone' => 'Celular',
         'activity' => 'Actividad',
+        'date' => 'Fecha',
+        'start_time' => 'Hora de inicio',
+        'end_time' => 'Hora final',
+        'inspector_id' => 'Inspectores',
+        'headquarters_id' => 'Sedes',
     ],
 
 ];
