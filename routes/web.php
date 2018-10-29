@@ -24,10 +24,10 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group( ['middleware' => ['auth']], function() {
-    Route::get('user/{company?}', 'UserController@index')->name('users.company');
-    Route::get('inspector/{company?}', 'InspectorController@index')->name('inspectors.company');
-    Route::get('inspectoragenda/{view}', 'InspectorAgendaController@index')->name('inspectoragendas.view');
-    Route::get('inspectoragendas/{id}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
+    Route::get('users/company/{company?}', 'UserController@index')->name('users.company');
+    Route::get('inspectors/company/{company?}', 'InspectorController@index')->name('inspectors.company');
+    Route::get('inspectoragendas/list', 'InspectorAgendaController@list')->name('inspectoragendas.view');
+    Route::get('inspectoragendas/inspector/{id}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');

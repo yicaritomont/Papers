@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', trans('words.InspectorAgenda'))
+@section('title', trans_choice('words.InspectorAgenda', 1))
 
 @section('styles')
     <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap-datepicker.min.css')}}">
@@ -44,7 +44,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">{{-- @lang('words.InspectorAgenda') --}}
                         <h3 class="">@lang('words.AvailableAppointments')</h3>
-                        <a href="{{ route('inspectoragendas.view', 'list') }}">Lista tabla</a>
+                        <a href="{{ route('inspectoragendas.view') }}">@lang('words.tableView')</a>
                     </div>
                     <div class="panel-body">
                         <div id="calendar"></div>

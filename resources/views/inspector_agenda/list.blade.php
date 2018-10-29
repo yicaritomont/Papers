@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', trans('words.InspectorAgenda'))
+@section('title', trans_choice('words.InspectorAgenda', 1))
 
 @section('content')
     <div class="row">
@@ -11,6 +11,7 @@
             @else
                 <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.InspectorAgenda', $result->count()) }} </h3>
             @endif
+            <a href="{{ route('inspectoragendas.index') }}">@lang('words.calendarView')</a>
         </div>
         <div class="col-md-7 page-action text-right">
             @if(isset($inspector))

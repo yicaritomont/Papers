@@ -60,5 +60,7 @@ return[
     'Close' => 'Close',
     'AvailableAppointments' => 'AvailableAppointments',
     'WhatYouLike' => 'What would you like to do?',
+    'calendarView' => 'Calendar view',
+    'tableView' => 'Table view',
 ];
 ?>

@@ -61,5 +61,7 @@ return[
     'Close' => 'Cerrar',
     'AvailableAppointments' => 'Citas disponibles',
     'WhatYouLike' => '¿Qué desea Hacer?',
+    'calendarView' => 'Vista Calendario',
+    'tableView' => 'Vista tabla',
 ];
 ?>

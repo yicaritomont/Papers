@@ -61,7 +61,7 @@
                             ])
                             @can('view_inspectoragendas')
                                 <a href="{{ route('inspectoragendas.inspector', $item->id)  }}" class="btn btn-xs btn-primary">
-                                    <i class="fa fa-eye"></i> @lang('words.Whatch') @lang('words.InspectorAgenda')
+                                    <i class="fa fa-eye"></i> @lang('words.Whatch') {{trans_choice('words.InspectorAgenda', 1)}}
                                 </a>
                             @endcan
                         </td>

@@ -17,8 +17,9 @@ class InspectorAgendaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($view=null)
+    public function index()
     {
+
         $result = InspectorAgenda::latest()->with(['inspector', 'headquarters'])->paginate();
         $headquarters = Headquarters::all();
         $inspectors = Inspector::all();
@@ -48,9 +49,6 @@ class InspectorAgendaController extends Controller
         // }
         //dd('calendar-'.Calendar::getId());
         // dd($calendar->script ());
-        if(isset($view)){
-            return view('inspector_agenda.list', compact('result', 'headquarters', 'inspectors'));
-        }
 
         return view('inspector_agenda.index', compact('result', 'headquarters', 'inspectors'));
 
@@ -159,5 +157,13 @@ class InspectorAgendaController extends Controller
         $result = $inspector[0]->inspector_agendas;
         // dd($result);
         return view('inspector_agenda.list', compact('result', 'inspector'));
+    }
+
+    public function list(){
+        $result = InspectorAgenda::latest()->with(['inspector', 'headquarters'])->paginate();
+        $headquarters = Headquarters::all();
+        $inspectors = Inspector::all();
+
+        return view('inspector_agenda.list', compact('result', 'headquarters', 'inspectors'));
     }
 }
