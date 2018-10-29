@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    protected $fillable = ['name', 'lastname', 'phone', 'email', 'cell_phone', 'slug'];
+    protected $fillable = ['name', 'lastname', 'phone', 'email', 'cell_phone'];
 
     public function getRouteKeyName()
     {

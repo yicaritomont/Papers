@@ -24,7 +24,6 @@
                 <th>@lang('words.Name')</th>
                 <th>@lang('words.Address')</th>
                 <th>@lang('words.Status')</th>
-                <th>@lang('words.Slug')</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_headquarters', 'delete_headquarters')
                     <th class="text-center">@lang('words.Actions')</th>
@@ -40,7 +39,6 @@
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->address }}</td>
                     <td>{{ $item->status == 1 ? trans('words.Active') : trans('words.Inactive') }}</td>
-                    <td>{{ $item->slug }}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
                     @can('edit_headquarters', 'delete_headquarters')
                     <td class="text-center">

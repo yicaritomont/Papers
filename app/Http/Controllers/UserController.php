@@ -19,19 +19,19 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($company=null)
+    public function index($company_slug=null)
     {
-        if(isset($company)){
-            $cpy = Company::where('slug','=',$company)->get();
+        if(isset($company_slug)){
+            $companies = Company::where('slug','=',$company_slug)->get();
             // $company = Company::find($cpy[0]->id);
-            $result = $cpy[0]->users;
+            $result = $companies[0]->users;
             // dd($cpy[0]->users);
-            return view('user.index', compact('result', 'cpy'));
+            return view('user.index', compact('result', 'companies'));
         }
 
         $result = User::latest()->paginate();
 
-        return view('user.index', compact('result', 'company'));
+        return view('user.index', compact('result'));
     }
 
     /**
@@ -92,7 +92,7 @@ class UserController extends Controller
         if($user->save())
         {
 
-            //$this->syncPermissions($request, $user);
+            $this->syncPermissions($request, $user);
             $user->companies()->attach($request->companies);
             //flash('User has been created.');
             return redirect()->route('users.index')

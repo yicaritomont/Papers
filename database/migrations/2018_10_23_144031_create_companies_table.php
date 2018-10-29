@@ -19,9 +19,9 @@ class CreateCompaniesTable extends Migration
             $table->string('address', 100);
             $table->string('phone', 45);
             $table->string('email', 45);
-            $table->integer('status');
+            $table->integer('status')->nullable();;
             $table->string('activity', 60);
-            $table->string('slug', 40)->unique();
+            $table->string('slug', 40)->unique()->nullable();
             $table->timestamps();
         });
     }

@@ -25,7 +25,6 @@
                 <th>@lang('words.Email')</th>
                 <th>@lang('words.Status')</th>
                 <th>@lang('words.Activity')</th>
-                <th>@lang('words.Slug')</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_posts', 'delete_posts')
                     <th class="text-center">@lang('words.Actions')</th>
@@ -42,7 +41,6 @@
                     <td>{{ $item->email }}</td>
                     <td>{{ $item->status == 1 ? trans('words.Active') : trans('words.Inactive') }}</td>
                     <td>{{ $item->activity }}</td>
-                    <td>{{ $item->slug }}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
                     @can('edit_companies', 'delete_companies')
                     <td class="text-center">

@@ -55,8 +55,16 @@ return[
     'Whatch' => 'Whatch',
     'Of' => 'of',
     'Inspectionappointment' => 'Inspection Appointment',
-    'Date' => 'Date',
     'AppointmentLocation' => 'Appointment Location',
     'InspectionSubtype' => 'Inspection Subtype|Inspection Subtypes',
+    'Email' => 'Email',
+    'Date' => 'Date',
+    'StartTime' => 'Start Time',
+    'EndTime' => 'End Time',
+    'InspectorAgenda' => 'Inspector Agenda',
+    'Delete' => 'Delete',
+    'Close' => 'Close',
+    'AvailableAppointments' => 'AvailableAppointments',
+    'WhatYouLike' => 'What would you like to do?',
 ];
 ?>

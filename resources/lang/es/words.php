@@ -56,8 +56,15 @@ return[
     'Whatch' => 'Ver',
     'Of' => 'de',
     'Inspectionappointment' => 'Cita de Inspección',
-    'Date' => 'Fecha',
     'AppointmentLocation' => 'Localizacion de la Cita',
     'InspectionSubtype' => 'Subtipo de Inpección|Subtipos de Inspección',
+    'Date' => 'Fecha',
+    'StartTime' => 'Hora de inicio',
+    'EndTime' => 'Hora fin',
+    'InspectorAgenda' => 'Agenda del inspector',
+    'Delete' => 'Eliminar',
+    'Close' => 'Cerrar',
+    'AvailableAppointments' => 'Citas disponibles',
+    'WhatYouLike' => '¿Qué desea Hacer?',
 ];
 ?>

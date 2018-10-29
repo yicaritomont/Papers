@@ -6,14 +6,14 @@
     <div class="row">
         <div class="col-md-5">
 
-            @if(isset($cpy))
-                <h3 class="modal-title">{{ str_plural(trans('words.User'), $result->count()) }} @lang('words.Of') {{ $cpy[0]->name }}  </h3>
+            @if(isset($companies))
+                <h3 class="modal-title">{{ str_plural(trans('words.User'), $result->count()) }} @lang('words.Of') {{ $companies[0]->name }}  </h3>
             @else
                 <h3 class="modal-title">{{ $result->total() }} {{ str_plural('User', $result->count()) }} </h3>
             @endif
         </div>
         <div class="col-md-7 page-action text-right">
-            @if(isset($cpy))
+            @if(isset($companies))
                 <a href="{{ route('companies.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
             @endif
             @can('add_users')
@@ -59,7 +59,7 @@
         </table>
 
         <div class="text-center">
-            @if(!isset($cpy))
+            @if(!isset($companies))
                 {{ $result->links() }}
             @endif
         </div>
