@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create')
+@section('title', trans('words.Create'))
 
 @section('content')
 
@@ -8,13 +8,13 @@
             <a href="{{ route('inspectionsubtypes.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
             <div class="panel panel-default">
                 <div class="panel-header-form">
-                    <h3 class="panel-titles">@lang('words.Create') @lang('words.InspectionSubtype')</h3>                    
+                    <h3 class="panel-titles">@lang('words.Create') {{trans_choice('words.InspectionSubtype', 2)}}</h3>                    
                 </div>
                 <div class="panel-body black-letter">
                     {!! Form::open(['route' => ['inspectionsubtypes.store'] ]) !!}
                         @include('inspection_subtype._form')
                         <!-- Submit Form Button -->                        
-                        {!! Form::submit('Create', ['class' => 'btn-body']) !!}
+                        {!! Form::submit(trans('words.Create'), ['class' => 'btn-body']) !!}
                     {!! Form::close() !!}
                 </div>
             </div>                 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Inspection Type ' . $inspection_subtype->name)
+@section('title', trans('words.Edit').' '.trans_choice('words.InspectionType',2).' "'.$inspection_subtype->name.'", ')
 
 @section('content')
 
@@ -14,7 +14,7 @@
             {!! Form::model($inspection_subtype,['method' => 'PUT', 'route' => [ 'inspectionsubtypes.update', $inspection_subtype->id]]) !!}
             @include('inspection_subtype._form')
 
-            {!! Form::submit('Save Changes', ['class' => 'btn btn-primary'])!!}
+            {!! Form::submit(trans('words.SaveChanges'), ['class' => 'btn btn-primary'])!!}
             {!! Form::close() !!}
         </div>
     </div>

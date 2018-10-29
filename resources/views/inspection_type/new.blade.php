@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create')
+@section('title', trans('words.Create').' '.trans_choice('words.InspectionType',1).', ')
 
 @section('content')
 
@@ -14,7 +14,7 @@
                     {!! Form::open(['route' => ['inspectiontypes.store'] ]) !!}
                         @include('inspection_type._form')
                         <!-- Submit Form Button -->                        
-                        {!! Form::submit('Create', ['class' => 'btn-body']) !!}
+                        {!! Form::submit(trans('words.Create'), ['class' => 'btn-body']) !!}
                     {!! Form::close() !!}
                 </div>
             </div>                 

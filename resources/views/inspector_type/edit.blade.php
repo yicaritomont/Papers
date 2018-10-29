@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Inspector Type ' . $type->name)
+@section('title', trans('words.Edit').' '.trans_choice('words.InspectorType',1).' - "'.$type->name.'", ')
 
 @section('content')
 
@@ -14,7 +14,7 @@
             {!! Form::model($type,['method' => 'PUT', 'route' => [ 'inspectortypes.update', $type->id]]) !!}
             @include('inspector_type._form')
 
-            {!! Form::submit('Save Changes', ['class' => 'btn btn-primary'])!!}
+            {!! Form::submit(trans('words.SaveChanges'), ['class' => 'btn btn-primary'])!!}
             {!! Form::close() !!}
         </div>
     </div>

@@ -30,9 +30,9 @@ return[
     'Phone' => 'Telefono',
     'Addres' => 'Dirección',
     'Email' => 'Correo',
-    'Profession' => 'Profesión',
-    'InspectorType' => 'Tipo Inspector',
-    'InspectionType' => 'Tipo Inspeción',
+    'Profession' => 'Profesión|profesiones',
+    'InspectorType' => 'Tipo Inspector|Tipo Inspectores',
+    'InspectionType' => 'Tipo de Inspección|Tipos de Inspección',
     'Lastname' => 'Apellido',
     'Client' => 'Cliente',
     'Phone' => 'Teléfono',
@@ -58,6 +58,6 @@ return[
     'Inspectionappointment' => 'Cita de Inspección',
     'Date' => 'Fecha',
     'AppointmentLocation' => 'Localizacion de la Cita',
-    'InspectionSubtype' => 'Subtipo de Inpección',
+    'InspectionSubtype' => 'Subtipo de Inpección|Subtipos de Inspección',
 ];
 ?>

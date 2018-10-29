@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'inspectors')
+@section('title', trans_choice('words.Inspectors',2).', ')
 
 @section('content')
     <div class="row">
@@ -32,8 +32,8 @@
                 <th>@lang('words.Phone')</th>
                 <th>@lang('words.Addres')</th>
                 <th>@lang('words.Email')</th>
-                <th>@lang('words.Profession')</th>
-                <th>@lang('words.InspectorType')</th>
+                <th>{{trans_choice('words.Profession',2)}}</th>
+                <th>{{trans_choice('words.InspectorType',2)}}</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_inspectors','delete_inspectors')
                     <th class="text-center">@lang('words.Actions')</th>
