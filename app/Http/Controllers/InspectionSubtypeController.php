@@ -43,7 +43,16 @@ class InspectionSubtypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'bail|required|unique:inspection_subtypes|min:2'
+        ]);
+        if(InspectionSubtype::create($request->except('permision'))) {
+           flash(trans('words.InspectionSubtype').' '.trans('words.HasAdded'));
+        } else {
+            flash()->error(trans('words.UnableCreate').' '.trans('words.InspectionSubtype'));
+        }
+        // $inspector->companies()->attach($request->companies);
+        return redirect()->route('inspectionsubtypes.index');
     }
 
     /**
@@ -65,7 +74,10 @@ class InspectionSubtypeController extends Controller
      */
     public function edit($id)
     {
-        //
+        $inspection_subtype= InspectionSubtype::find($id);
+        $inspection_types = InspectionType::pluck('name', 'id');
+
+        return view('inspection_subtype.edit', compact('inspection_subtype', 'inspection_types'));
     }
 
     /**
@@ -77,7 +89,17 @@ class InspectionSubtypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $inspection_subtype = InspectionSubtype::findOrFail($id);
+        
+        if ($inspection_subtype->name != $request->name) {
+             $this->validate($request, [
+                'name' => 'bail|required|unique:inspection_subtypes|min:2'
+            ]);
+        }
+        $inspection_subtype->fill($request->except('permission'));
+        $inspection_subtype->save();
+        flash()->success(trans('words.InspectionSubtype').' '.trans('words.HasUpdated'));
+        return redirect()->route('inspectionsubtypes.index');
     }
 
     /**
@@ -88,6 +110,12 @@ class InspectionSubtypeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (InspectionSubtype::findOrFail($id)->delete()) {
+            flash()->success(trans('words.InspectionSubtype').' '.trans('words.HasEliminated'));
+        } else {
+            flash()->success(trans('words.InspectionSubtype').' '.trans('words.NotDeleted'));
+            flash()->success('Inspection type not deleted');
+        }
+        return redirect()->back();
     }
 }

@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'inspectors')
+@section('title', trans_choice('words.Inspectors',2).', ')
 
 @section('content')
     <div class="row">
         <div class="col-md-5">
 
             @if(isset($companyObj))
-                <h3 class="modal-title">{{ str_plural(trans('words.Inspector'), $result->count()) }} @lang('words.Of') {{ $companyObj[0]->name }}  </h3>
+                <h3 class="modal-title">{{ str_plural(trans('words.Inspector'), $result->count()) }} @lang('words.Of') {{ $companyObj[0]->name }}</h3>
             @else
                 <h3 class="modal-title">{{ $result->total() }} {{ str_plural('inspector',$result->count()) }}</h3>
             @endif
@@ -32,8 +32,8 @@
                 <th>@lang('words.Phone')</th>
                 <th>@lang('words.Addres')</th>
                 <th>@lang('words.Email')</th>
-                <th>@lang('words.Profession')</th>
-                <th>@lang('words.InspectorType')</th>
+                <th>{{trans_choice('words.Profession',2)}}</th>
+                <th>{{trans_choice('words.InspectorType',2)}}</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_inspectors','delete_inspectors')
                     <th class="text-center">@lang('words.Actions')</th>
