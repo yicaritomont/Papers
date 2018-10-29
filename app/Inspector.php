@@ -33,4 +33,8 @@ class Inspector extends Model
     public function companies(){
         return $this->belongsToMany(Company::class, 'company_inspector');
     }
+
+    public function inspector_agendas(){
+        return $this->hasMany('App\InspectorAgenda');
+    }
 }

@@ -53,5 +53,13 @@ return[
     'Professions' => 'Profesión',
     'InspectorType' => 'Tipo Inspector',
     'InspectionType' => 'Tipo Inspeción',
+    'Date' => 'Fecha',
+    'StartTime' => 'Hora de inicio',
+    'EndTime' => 'Hora fin',
+    'InspectorAgenda' => 'Agenda del inspector',
+    'Delete' => 'Eliminar',
+    'Close' => 'Cerrar',
+    'AvailableAppointments' => 'Citas disponibles',
+    'WhatYouLike' => '¿Qué desea Hacer?',
 ];
 ?>

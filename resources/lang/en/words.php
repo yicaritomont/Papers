@@ -52,5 +52,13 @@ return[
     'Professions' => 'Professions',
     'InspectorType' => 'Inspector Type',
     'InspectionType' => 'Inspection Type',
+    'Date' => 'Date',
+    'StartTime' => 'Start Time',
+    'EndTime' => 'End Time',
+    'InspectorAgenda' => 'Inspector Agenda',
+    'Delete' => 'Delete',
+    'Close' => 'Close',
+    'AvailableAppointments' => 'AvailableAppointments',
+    'WhatYouLike' => 'What would you like to do?',
 ];
 ?>

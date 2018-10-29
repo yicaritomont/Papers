@@ -30,6 +30,8 @@
         <!-- bootstrap-daterangepicker -->
         <link href="{{asset('vendors/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 
+        @yield('styles')
+
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.css')}}" rel="stylesheet">
         <script>
@@ -154,6 +156,14 @@
                                                         <li class="{{ Request::is('companies*') ? 'active' : '' }}">
                                                             <a href="{{ route('companies.index') }}">
                                                                 <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.Company',2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan 
+
+                                                    @can('view_inspectoragendas')
+                                                        <li class="{{ Request::is('inspectoragendas*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectoragendas.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.InspectorAgenda',2)}}
                                                             </a>
                                                         </li>
                                                     @endcan 

@@ -38,16 +38,10 @@ class CompanyController extends Controller
      */
     public function store(CompanyRequest $request)
     {
-        $c = new Company();
-        $c->name = $request->input('name');
-        $c->address = $request->input('address');
-        $c->phone = $request->input('phone');
-        $c->email = $request->input('email');
-        $c->status = 1;
-        $c->activity = $request->input('activity');
-        $c->activity = $request->input('activity');
-        $c->slug = $request->input('slug');
-        $c->save();
+        $company = Company::create($request->all());
+        $company->status = 1;
+        $company->slug = md5($company->id);
+        $company->save();
 
         flash(trans_choice('words.Company',1).' '.trans('words.HasAdded'));
 

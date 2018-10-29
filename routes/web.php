@@ -26,6 +26,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group( ['middleware' => ['auth']], function() {
     Route::get('user/{company?}', 'UserController@index')->name('users.company');
     Route::get('inspector/{company?}', 'InspectorController@index')->name('inspectors.company');
+    Route::get('inspectoragenda/{view}', 'InspectorAgendaController@index')->name('inspectoragendas.view');
+    Route::get('inspectoragendas/{id}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');
@@ -37,6 +39,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('clients', 'ClientController');
     Route::resource('headquarters', 'HeadquartersController');
     Route::resource('companies', 'CompanyController');
+    Route::resource('inspectoragendas', 'InspectorAgendaController');
 });
 
 Route::get('lang/{lang}', function($lang) {

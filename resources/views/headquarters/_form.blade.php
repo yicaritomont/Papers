@@ -1,32 +1,34 @@
 <!-- Client of Headquarters Form Select -->
-<div class="form-group @if ($errors->has('name')) has-error @endif">
+<div class="form-group @if ($errors->has('client_id')) has-error @endif">
     {!! Form::label('client_id', trans('words.Client')) !!}
-    <select name="client_id" id="client_id" class="input-body">
+    {{-- <select name="client_id" id="client_id" class="input-body">
         <option value="">@lang('words.ChooseOption')</option>
-        @foreach($cl as $item)
+        @foreach($clients as $item)
             <option value="{{$item->id}}" 
             @if(isset($headquarters))
                 {{ ($headquarters->client_id === $item->id) ? 'selected' : '' }}
             @endif
             >{{$item->name . ' ' . $item->lastname}}</option>
         @endforeach
-    </select>
+    </select> --}}
+    {!!Form::select('client_id', $clients->pluck('name', 'id'), isset($headquarters) ? $headquarters->client_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
     @if ($errors->has('client_id')) <p class="help-block">{{ $errors->first('client_id') }}</p> @endif
 </div>
 
 <!-- City of Headquarters Form Select -->
-<div class="form-group @if ($errors->has('name')) has-error @endif">
+<div class="form-group @if ($errors->has('cities_id')) has-error @endif">
     {!! Form::label('cities_id', trans('words.City')) !!}
-    <select name="cities_id" id="cities_id" class="input-body">
+    {{-- <select name="cities_id" id="cities_id" class="input-body">
         <option value="">@lang('words.ChooseOption')</option>
-        @foreach($cy as $item)
+        @foreach($cities as $item)
             <option value="{{$item->id}}" 
             @if(isset($headquarters))
             {{ $headquarters->cities_id === $item->id ? 'selected' : '' }}
             @endif
             >{{$item->name}}</option>
         @endforeach
-    </select>
+    </select> --}}
+    {!!Form::select('cities_id', $cities->pluck('name', 'id'), isset($headquarters) ? $headquarters->cities_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
     @if ($errors->has('cities_id')) <p class="help-block">{{ $errors->first('cities_id') }}</p> @endif
 </div>
 
@@ -42,13 +44,6 @@
     {!! Form::label('address', trans('words.Address')) !!}
     {!! Form::text('address', null, ['class' => 'input-body ckeditor']) !!}
     @if ($errors->has('address')) <p class="help-block">{{ $errors->first('address') }}</p> @endif
-</div>
-
-<!-- Slug of Headquarters Form Input -->
-<div class="form-group @if ($errors->has('slug')) has-error @endif">
-    {!! Form::label('slug', trans('words.Slug')) !!}
-    {!! Form::text('slug', null, ['class' => 'input-body ckeditor']) !!}
-    @if ($errors->has('slug')) <p class="help-block">{{ $errors->first('slug') }}</p> @endif
 </div>
 
 @push('scripts')

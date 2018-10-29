@@ -29,9 +29,9 @@ class ClientRequest extends FormRequest
                 'name' => 'required',
                 'lastname' => 'required',
                 'phone' => 'required',
-                'email' => 'required|email',
+                'email' => 'required|email|unique:clients,email,'.$this->route('client')->id,
                 'cell_phone' => 'required',
-                'slug' => 'required|unique:clients,slug,'.$this->route('client')->id
+                // 'slug' => 'required|unique:clients,slug,'.$this->route('client')->id
             ];
         }
 
@@ -39,9 +39,9 @@ class ClientRequest extends FormRequest
             'name' => 'required',
             'lastname' => 'required',
             'phone' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:clients,email',
             'cell_phone' => 'required',
-            'slug' => 'required|unique:clients,slug'
+            // 'slug' => 'required|unique:clients,slug'
         ];
         
     }

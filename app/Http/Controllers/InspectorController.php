@@ -25,10 +25,10 @@ class InspectorController extends Controller
     public function index($company=null)
     {
         if(isset($company)){
-            $cpy = Company::where('slug','=',$company)->get();
-            $result = $cpy[0]->inspectors;
+            $companyObj = Company::where('slug','=',$company)->get();
+            $result = $companyObj[0]->inspectors;
             // dd($result);
-            return view('inspector.index', compact('result', 'cpy'));
+            return view('inspector.index', compact('result', 'companyObj'));
         }
 
         $result =Inspector::latest()->with(['profession','inspectorType'])->paginate();
