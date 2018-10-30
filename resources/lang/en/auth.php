@@ -15,5 +15,8 @@ return [
 
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'warning' => 'Your user will be blocked after 5 attempts.',
+    'locked' => 'Your user has been blocked, contact the system administrator.'
+
 
 ];

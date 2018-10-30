@@ -77,6 +77,7 @@ class PerfilController extends Controller
       
     }
 
+
     public function changePassword(Request $request, $id)
     {
         
@@ -84,7 +85,6 @@ class PerfilController extends Controller
         if($user)
         {
             $user->password = bcrypt($request->get('password'));
-            print_r($_POST);
             $user->save();
             $last_password = new LastPasswordUser();
             $last_password->user = $user->id;
@@ -104,6 +104,7 @@ class PerfilController extends Controller
         
 
     }
+
 
     public function verifyPassword()
     {
@@ -147,7 +148,8 @@ class PerfilController extends Controller
             }
         }
         //Verificamos si el total de coincidencias es lo requerido
-        if( $number_len >= $len ){
+        if( $number_len >= $len )
+        {
             return true;
         }
         return false;        
@@ -186,29 +188,18 @@ class PerfilController extends Controller
     /* valida que no tenga coincidencias con palabras claves*/
     public function getKeyWords( $str , $keys = array() )
     {
-        $this->obtenerInfoEmpresa();
+        $dataUser = User::find(Auth::user()->id);
         $band = true;
         foreach($keys AS $k => $item)
-        {
-            if( isset($_SESSION[$item]))
+        {           
+            if( preg_match("/".$dataUser[$item]."/i",$str,$matches) )
             {
-                $val = trim($_SESSION[$item]);
-                if( !empty($val) )
+                if( isset($matches[0]) && $matches[0] != ""  )
                 {
-                    //Dividimos el valor por espacio
-                    $source = explode(" ",$_SESSION[$item]);
-                    foreach( $source AS $i => $word )
-                    {
-                        if( preg_match("/".$word."/i",$str,$matches) )
-                        {
-                            if( isset($matches[0]) && $matches[0] != ""  )
-                            {
-                                return false;
-                            }
-                        }
-                    }
+                    return false;
                 }
             }
+                    
         }
         return $band;
     }
@@ -278,7 +269,7 @@ class PerfilController extends Controller
     {
         $user = Auth::user()->id;
         // take the last 10 password
-        $oldPassword = LastPasswordUser::where('user',$user)->latest()->take(5)->get();
+        $oldPassword = LastPasswordUser::where('user',$user)->latest()->take(10)->get();
         if(count($oldPassword)>0)
         {
             $num = 0;
@@ -346,11 +337,11 @@ class PerfilController extends Controller
         //Verificamos que la contraseña no contenga palabras claves en relación al usuario
         $keyWords = array('name');
         $len['keyWordPass'] = null;
-        /*if( !$this->getKeyWords($pwd,$keyWords ) || empty($pwd))
+        if( !$this->getKeyWords($pwd,$keyWords ) || empty($pwd))
         {   
             $band = false;
             $error['keyWordPass'] = trans('validation.keyWordPass');
-        }*/
+        }
 
         $obj->state = $band;
         $obj->message = $error;

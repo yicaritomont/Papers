@@ -57,11 +57,13 @@ function verifyPassword()
                         $('#div_info_lengthLower').html("");
                         $('#div_info_lengthUpper').html("");
                         $('#div_info_beforePass').html("");
+                        $('#div_info_keyWordPass').html("");
                         $('#div_info_lengthPwd').removeClass("text-danger");  
                         $('#div_info_lengthNumber').removeClass("text-danger");
                         $('#div_info_lengthLower').removeClass("text-danger");
                         $('#div_info_lengthUpper').removeClass("text-danger");
                         $('#div_info_beforePass').removeClass("text-danger");
+                        $('#div_info_keyWordPass').removeClass("text-danger");
                         //renderizarNotificacionModal('modal_notificacion','cont-notificacion-modal',response.notificacion);
                     }
                     else
@@ -128,6 +130,17 @@ function verifyPassword()
                                 $('#div_info_beforePass').html("");
                                 $('#div_info_beforePass').removeClass("text-danger");
                             }
+
+                            if(response.message.message.keyWordPass)
+                            {
+                                $('#div_info_keyWordPass').html(response.message.message.beforePass);
+                                $('#div_info_keyWordPass').addClass("text-danger");
+                            }
+                            else
+                            {
+                                $('#div_info_keyWordPass').html("");
+                                $('#div_info_keyWordPass').removeClass('text-danger');
+                            }
                             
                             
                             
@@ -138,13 +151,15 @@ function verifyPassword()
                             $('#div_info_lengthNumber').html("");
                             $('#div_info_lengthLower').html("");
                             $('#div_info_lengthUpper').html("");   
-                            $('#div_info_beforePass').html("");                         
+                            $('#div_info_beforePass').html(""); 
+                            $('#div_info_keyWordPass').html("");                        
                             $('#changePassword').removeAttr('disabled');
                             $('#div_info_lengthPwd').removeClass("text-danger");  
                             $('#div_info_lengthNumber').removeClass("text-danger");
                             $('#div_info_lengthLower').removeClass("text-danger");
                             $('#div_info_lengthUpper').removeClass("text-danger");
                             $('#div_info_beforePass').removeClass("text-danger");
+                            $('#div_info_keyWordPass').removeClass("text-danger");
                             //renderizarNotificacionModal('modal_notificacion','cont-notificacion-modal','OK');
                         } 
                                                 

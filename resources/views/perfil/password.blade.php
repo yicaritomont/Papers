@@ -26,7 +26,7 @@
                         <p id="div_info_lengthLower"></p>
                         <p id="div_info_lengthUpper"></p>
                         <p id="div_info_beforePass"></p>
-
+                        <p id="div_info_keyWordPass"></p>
 
                         <!-- Submit Form Button -->                        
                         {!! Form::submit(trans('words.SaveChanges'), ['class' => 'btn-body' ,'id' => 'changePassword']) !!}
