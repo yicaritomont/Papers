@@ -99,4 +99,15 @@ return [
         ],
     ],
 
+
+    'reminder' => [
+
+		'email' => 'emails.auth.reminder',
+
+		'table' => 'password_reminders',
+
+		'expire' => 60,
+
+    ],
+
 ];

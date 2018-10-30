@@ -112,9 +112,23 @@ class PerfilController extends Controller
         {
             // Segun el perfil del usuario, verifica el tamaño de la contraseña
             $pwd = $_GET['newPassword'];
-            $user = User::find(Auth::user()->id);
-            $rol = $user->roles[0]['id'];
-            $return = $this->isValid( $pwd , $rol );
+            if(Auth::user())
+            {
+                $user = User::find(Auth::user()->id);
+                $rol = $user->roles[0]['id'];
+            }
+            else
+            {
+                $rol = 1;
+            }
+            
+            $confirmPassword = "";
+            if(isset($_GET['confirmPassword']))
+            {
+                $confirmPassword = $_GET['confirmPassword'];
+            }
+            
+            $return = $this->isValid( $pwd , $rol , $confirmPassword );
             //print_r($return);
             if(!$return->state)
             {
@@ -188,19 +202,28 @@ class PerfilController extends Controller
     /* valida que no tenga coincidencias con palabras claves*/
     public function getKeyWords( $str , $keys = array() )
     {
-        $dataUser = User::find(Auth::user()->id);
-        $band = true;
-        foreach($keys AS $k => $item)
-        {           
-            if( preg_match("/".$dataUser[$item]."/i",$str,$matches) )
-            {
-                if( isset($matches[0]) && $matches[0] != ""  )
-                {
-                    return false;
-                }
-            }
-                    
+        if(Auth::user())
+        {
+            $dataUser = User::find(Auth::user()->id);    
         }
+        $dataUser = [];
+        $band = true;
+
+        if(count($dataUser) >0)
+        {
+            foreach($keys AS $k => $item)
+            {           
+                if( preg_match("/".$dataUser[$item]."/i",$str,$matches) )
+                {
+                    if( isset($matches[0]) && $matches[0] != ""  )
+                    {
+                        return false;
+                    }
+                }
+                        
+            }
+        }
+        
         return $band;
     }
 
@@ -267,9 +290,17 @@ class PerfilController extends Controller
 
     public function consultarPassword( $pwd )
     {
-        $user = Auth::user()->id;
-        // take the last 10 password
-        $oldPassword = LastPasswordUser::where('user',$user)->latest()->take(10)->get();
+        if(Auth::user())
+        {
+            $user = Auth::user()->id;
+            // take the last 10 password
+            $oldPassword = LastPasswordUser::where('user',$user)->latest()->take(10)->get();
+        }
+        else
+        {
+            $oldPassword = [];
+        }
+        
         if(count($oldPassword)>0)
         {
             $num = 0;

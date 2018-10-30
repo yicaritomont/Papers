@@ -18,6 +18,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+// Password Reset
+Route::resource('reminder', 'RemindersController'); 
+Route::get('reminder',['as'=>'reminder','uses' => 'RemindersController@getRemind']);
+Route::post('postRemind',['as'=>'postRemind','uses' => 'RemindersController@postRemind']);
+
+Route::get('ajxVerifyPassword','PerfilController@VerifyPassword');
 
 Route::group( ['middleware' => ['auth']], function() {
     Route::resource('users', 'UserController');
@@ -29,7 +35,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('perfiles','PerfilController');
     Route::resource('agendas','MenuController');
     Route::post('changePassword/{id}',['as'=>'changePassword','uses' => 'PerfilController@changePassword']);
-    Route::get('ajxVerifyPassword','PerfilController@VerifyPassword');
+    
 });
 
 

@@ -4,6 +4,7 @@ function inicial (argument)
 {   
      //Eventos de los botones para solicitud de turno cliente interno
      $('#password_update').keyup(verifyPassword);
+     $('#password-confirm').blur(verifyPassword);
 }
 
 
@@ -38,6 +39,7 @@ function verifyPassword()
 {
     var newPassword = $(this).val();
     var userPassword = $('#user_password').val();   
+    var confirmPassword = $('#password-confirm').val();
     if(newPassword != "")
     {
         $('#changePassword').attr('disabled','disabled');
@@ -45,7 +47,7 @@ function verifyPassword()
             type: "GET",
             url: obtenerUrl()+"/public/ajxVerifyPassword",   
             dataType:'json',
-            data: {newPassword:newPassword , userPassword : userPassword}
+            data: {newPassword:newPassword , userPassword : userPassword ,confirmPassword : confirmPassword}
             }).done(function( response) 
                 {       
                     if(!jQuery.isEmptyObject(response.notificacion))
@@ -58,12 +60,14 @@ function verifyPassword()
                         $('#div_info_lengthUpper').html("");
                         $('#div_info_beforePass').html("");
                         $('#div_info_keyWordPass').html("");
+                        $('#div_info_confirmPass').html("");
                         $('#div_info_lengthPwd').removeClass("text-danger");  
                         $('#div_info_lengthNumber').removeClass("text-danger");
                         $('#div_info_lengthLower').removeClass("text-danger");
                         $('#div_info_lengthUpper').removeClass("text-danger");
                         $('#div_info_beforePass').removeClass("text-danger");
                         $('#div_info_keyWordPass').removeClass("text-danger");
+                        $('#div_info_confirmPass').removeClass("text-danger");
                         //renderizarNotificacionModal('modal_notificacion','cont-notificacion-modal',response.notificacion);
                     }
                     else
@@ -133,7 +137,7 @@ function verifyPassword()
 
                             if(response.message.message.keyWordPass)
                             {
-                                $('#div_info_keyWordPass').html(response.message.message.beforePass);
+                                $('#div_info_keyWordPass').html(response.message.message.keyWordPass);
                                 $('#div_info_keyWordPass').addClass("text-danger");
                             }
                             else
@@ -143,7 +147,16 @@ function verifyPassword()
                             }
                             
                             
-                            
+                            if(response.message.message.confirmPass)
+                            {
+                                $('#div_info_confirmPass').html(response.message.message.confirmPass);
+                                $('#div_info_confirmPass').addClass("text-danger");
+                            }
+                            else
+                            {
+                                $('#div_info_confirmPass').html("");
+                                $('#div_info_confirmPass').removeClass('text-danger');
+                            }
                         }
                         else
                         {
@@ -152,7 +165,8 @@ function verifyPassword()
                             $('#div_info_lengthLower').html("");
                             $('#div_info_lengthUpper').html("");   
                             $('#div_info_beforePass').html(""); 
-                            $('#div_info_keyWordPass').html("");                        
+                            $('#div_info_keyWordPass').html("");     
+                            $('#div_info_confirmPass').html("");                   
                             $('#changePassword').removeAttr('disabled');
                             $('#div_info_lengthPwd').removeClass("text-danger");  
                             $('#div_info_lengthNumber').removeClass("text-danger");
@@ -160,6 +174,7 @@ function verifyPassword()
                             $('#div_info_lengthUpper').removeClass("text-danger");
                             $('#div_info_beforePass').removeClass("text-danger");
                             $('#div_info_keyWordPass').removeClass("text-danger");
+                            $('#div_info_confirmPass').removeClass("text-danger");
                             //renderizarNotificacionModal('modal_notificacion','cont-notificacion-modal','OK');
                         } 
                                                 
