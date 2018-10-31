@@ -39,4 +39,9 @@ class User extends Authenticatable
     {
         $this->notify(new MailResetPasswordToken($token));
     }
+    
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'user_company');
+    }
 }

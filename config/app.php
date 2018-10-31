@@ -180,7 +180,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\MadeMenuProvider::class,
-
+        Maddhatter\LaravelFullcalendar\ServiceProvider::class,
     ],
 
     /*

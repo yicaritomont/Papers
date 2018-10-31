@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Role;
+use App\Company;
 use App\Permission;
 use App\Authorizable;
 use Illuminate\Http\Request;
@@ -18,9 +19,18 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($company_slug=null)
     {
-        $result = User::latest()->paginate();        
+        if(isset($company_slug)){
+            $companies = Company::where('slug','=',$company_slug)->get();
+            // $company = Company::find($cpy[0]->id);
+            $result = $companies[0]->users;
+            // dd($cpy[0]->users);
+            return view('user.index', compact('result', 'companies'));
+        }
+
+        $result = User::latest()->paginate();
+
         return view('user.index', compact('result'));
     }
 
@@ -31,9 +41,10 @@ class UserController extends Controller
      */
     public function create()
     {
+        $companies = Company::pluck('name', 'id');
         $roles = Role::pluck('name', 'id');
 
-        return view('user.new', compact('roles'));
+        return view('user.new', compact('roles', 'companies'));
     }
 
     /**
@@ -44,16 +55,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {       
-    
-       
-       $this->validate($request, [
+        
+        $this->validate($request, [
             'name' => 'bail|required|min:2',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'roles' => 'required|min:1',
+            'companies' => 'required|min:1',
             'picture' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
+            ]);
+            
+        // dd($request->companies);
         $user = new User();
         // Carga imagen a destino
         if ($request->hasFile('picture')) {
@@ -71,6 +83,8 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->password = bcrypt($request->get('password'));
         
+        
+
         // hash password
         //$request->merge(['password' => bcrypt($request->get('password'))]);
         // Create the user
@@ -79,9 +93,10 @@ class UserController extends Controller
         {
 
             $this->syncPermissions($request, $user);
-
-            flash('User has been created.');
-            return redirect()->route('users.index');
+            $user->companies()->attach($request->companies);
+            //flash('User has been created.');
+            return redirect()->route('users.index')
+		    	        ->with('success_message','User has been created');
 
         } 
         else 
@@ -102,7 +117,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        return "Show User";
     }
 
     /**
@@ -113,11 +128,12 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        $companies = Company::pluck('name', 'id');
         $user = User::find($id);
         $roles = Role::pluck('name', 'id');
         $permissions = Permission::all('name', 'id');
 
-        return view('user.edit', compact('user', 'roles', 'permissions'));
+        return view('user.edit', compact('user', 'roles', 'permissions', 'companies'));
     }
 
     /**
@@ -133,6 +149,7 @@ class UserController extends Controller
             'name' => 'bail|required|min:2',
             'email' => 'required|email|unique:users,email,' . $id,
             'roles' => 'required|min:1',
+            'companies' => 'required|min:1',
             'picture' => 'mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -149,12 +166,12 @@ class UserController extends Controller
             $user->picture = $imageBd;
       
         }
-
+        // dd($request->companies);
         // Update user
         $user->name = $request->name;
         $user->email = $request->email;
         //$user->fill($request->except('roles', 'permissions', 'password'));
-
+        
         // check for password change
         if($request->get('password')) {
             $user->password = bcrypt($request->get('password'));
@@ -162,8 +179,9 @@ class UserController extends Controller
 
         // Handle the user roles
         $this->syncPermissions($request, $user);
-
+        // dd($user->companies->toArray());
         $user->save();
+        $user->companies()->sync($request->companies);
 
         flash()->success('User has been updated.');
 
