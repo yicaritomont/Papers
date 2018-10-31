@@ -11,6 +11,10 @@
 |
 */
 
+/* DB::listen(function($query){
+    echo "<pre>{$query->sql}</pre>";
+}); */
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -26,6 +30,10 @@ Route::post('postRemind',['as'=>'postRemind','uses' => 'RemindersController@post
 Route::get('ajxVerifyPassword','PerfilController@VerifyPassword');
 
 Route::group( ['middleware' => ['auth']], function() {
+    Route::get('user/{company?}', 'UserController@index')->name('users.company');
+    Route::get('inspector/{company?}', 'InspectorController@index')->name('inspectors.company');
+    Route::get('inspectoragenda/{view}', 'InspectorAgendaController@index')->name('inspectoragendas.view');
+    Route::get('inspectoragendas/{id}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');
@@ -36,6 +44,19 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('agendas','MenuController');
     Route::post('changePassword/{id}',['as'=>'changePassword','uses' => 'PerfilController@changePassword']);
     
+    Route::resource('clients', 'ClientController');
+    Route::resource('headquarters', 'HeadquartersController');
+    Route::resource('companies', 'CompanyController');
+    Route::resource('inspectors','InspectorController');
+    Route::resource('inspectortypes','InspectorTypeController');
+    Route::resource('professions','ProfessionController');
+    Route::resource('inspectiontypes','InspectionTypeController');
+    Route::resource('inspectionsubtypes','InspectionSubtypeController');
+    Route::resource('clients', 'ClientController');
+    Route::resource('headquarters', 'HeadquartersController');
+    Route::resource('companies', 'CompanyController');
+    Route::resource('inspectionappointments', 'InspectionAppointmentController');
+    Route::resource('inspectoragendas', 'InspectorAgendaController');
 });
 
 
