@@ -16,7 +16,7 @@ return[
     'Confirm' => 'Confirm',
     'Reset' => 'Reset',
     'SendPasswordResetLink' => 'Send Password Reset Link',
-    'Edit' => 'Editar',
+    'Edit' => 'Edit',
     'Back' => 'Back',
     'Create' => 'Create',
     'Id' => 'Id',
@@ -25,5 +25,32 @@ return[
     'Actions' => 'Actions',
     'SaveChanges' => 'Save Changes',
     'User' => 'User',
+    'Permissions' => 'Permissions',
+    'Permission' => 'Permission',
+    'Created' => 'Created',
+    'Deleted' => 'Deleted',
+    'Save' => 'Save',
+    'New' => 'New',
+    'State' => 'State',
+    'Url' => 'URL',
+    'Modules' => 'Modules',
+    'Menu' => 'Menu',
+    'Padre' => 'Parent',
+    'MenuPadre' => 'Parent Menu',
+    'Active' => 'Active',
+    'Inactive' => 'Inactive',
+
+    //To App Latout Menu
+    'ManagementTools' => 'Tools',
+    'ManageUsers' => 'Users',
+    'ManagePermission' => 'Permissions',
+    'ManageMenu' => 'Menu',
+    'ManageRoles' => 'Roles',
+    'ManageRolesPermission' => 'Roles And Permissions',
+    'ManageModulo' => 'Modules',
+
+    //404 page
+    '404' => 'Oops! Looks like you got lost',
+    'TakeMeBack' => 'Take Me Back',
 ];
 ?>

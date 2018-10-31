@@ -25,5 +25,31 @@ return[
     'Actions' => 'Acciones',
     'SaveChanges' => 'Guardar Cambios',
     'User' => 'Usuario',
+    'Permissions' => 'Permisos',
+    'Permission' => 'Permiso',
+    'Created' => 'Creados',
+    'Deleted' => 'Eliminados',
+    'Save' => 'Guardar',
+    'New' => 'Nuevo',
+    'Status' => 'Estado',
+    'Url' => 'URL',
+    'Modules' => 'Módulos',
+    'Menu' => 'Menú',
+    'Padre' => 'Padre',
+    'MenuPadre' => 'Menú Padre',
+    'Active' => 'Activo',
+    'Inactive' => 'Inactivo',
+
+    //To App Latout Menu
+    'ManagementTools' => 'Herramientas',
+    'ManageUsers' => 'Usuarios',
+    'ManagePermission' => 'Permisos',
+    'ManageMenu' => 'Menú',
+    'ManageRoles' => 'Roles',
+    'ManageRolesPermission' => 'Roles y Permisos',
+    'ManageModulo' => 'Módulos',
+    //404 page
+    '404' => 'Oops! Parece que se ha perdido.',
+    'TakeMeBack' => 'Regresar',
 ];
 ?>

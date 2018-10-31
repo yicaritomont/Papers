@@ -45,7 +45,7 @@
 
                             <div class="form-group">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
+                                    <a class="btn btn-link" href="{{ route('reminder') }}">
                                         @lang('words.Forgot') @lang('words.Your') @lang('words.Password')?
                                     </a>
                                 </div>

@@ -117,7 +117,7 @@
 
 .content-page
 {
-    width: 85%;
+    width: 100%;
 }
 
 .black-letter
@@ -143,4 +143,10 @@
     font-size: 16px;
     color: inherit;
     font-weight: bold;
+}
+
+.picture_perfil
+{
+    width: 35%;    
+    margin: auto;
 }
