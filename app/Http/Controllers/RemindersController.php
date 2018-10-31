@@ -35,12 +35,14 @@ class RemindersController extends Controller
 			$message->subject('Password Reminder');
 		}))
 		{
-			case Password::INVALID_USER:
-                return redirect()->back()->with('error',':p');
+            case Password::INVALID_USER:
+                flash()->error( trans('passwords.user'));
+                return redirect()->back();
                 
 
-			case Password::RESET_LINK_SENT:                
-                return redirect()->back()->with('error', '=)');
+            case Password::RESET_LINK_SENT:                
+                flash()->success( trans('passwords.sent'));
+                return redirect()->back();
 		}
     }
     

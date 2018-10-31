@@ -48,5 +48,8 @@ return[
     'ManageRoles' => 'Roles',
     'ManageRolesPermission' => 'Roles y Permisos',
     'ManageModulo' => 'Módulos',
+    //404 page
+    '404' => 'Oops! Parece que se ha perdido.',
+    'TakeMeBack' => 'Regresar',
 ];
 ?>
