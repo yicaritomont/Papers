@@ -10,10 +10,17 @@ class CountriesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public static function run()
     {
-        $c = new Country();
-        $c->name = 'Colombia';
-        $c->save();
+        $countrys = array(
+            array('id' => 1,'name' => 'Colombia'),
+            array('id' => 2,'name' => 'Brasil'),
+            array('id' => 3,'name' => 'Argentina'),
+            array('id' => 4,'name' => 'Ecuador'),
+        );
+
+        foreach ($countrys as $country) {
+            Country::create($country);
+        }
     }
 }
