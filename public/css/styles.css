@@ -117,7 +117,7 @@
 
 .content-page
 {
-    width: 85%;
+    width: 100%;
 }
 
 .black-letter
@@ -145,6 +145,13 @@
     font-weight: bold;
 }
 
-#flash-msg{
+.picture_perfil
+{
+    width: 35%;    
+    margin: auto;
+}
+
+#flash-msg
+{
     margin-top: 60px;
 }

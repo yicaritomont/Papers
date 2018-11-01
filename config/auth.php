@@ -95,8 +95,19 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
-            'expire' => 60,
+            'expire' => 30,
         ],
+    ],
+
+
+    'reminder' => [
+
+		'email' => 'emails.auth.reminder',
+
+		'table' => 'password_reminders',
+
+		'expire' => 60,
+
     ],
 
 ];

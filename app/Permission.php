@@ -9,9 +9,6 @@ class Permission extends \Spatie\Permission\Models\Permission
     public static function defaultPermissions()
     {
         
-
-       /* $routes = app('router')->getRoutes();
-        return  $arrays=(array) $routes;*/
         return [
             'view_users',
             'add_users',
@@ -22,6 +19,20 @@ class Permission extends \Spatie\Permission\Models\Permission
             'add_roles',
             'edit_roles',
             'delete_roles',
+
+            'view_permissions',
+            'add_permissions',            
+            'delete_permissions',
+
+            'view_modulos',
+            'add_modulos',
+            'edit_modulos',
+            'delete_modulos',
+
+            'view_menus',
+            'add_menus',
+            'edit_menus',
+            'delete_menus',
 
             'view_posts',
             'add_posts',
@@ -77,7 +88,7 @@ class Permission extends \Spatie\Permission\Models\Permission
 
     public static function storedPermissions()
     {
-        $permissions = Permission::pluck('name', 'id');
+        $permissions = Permission::pluck('name');
 
         return $permissions;
     }
