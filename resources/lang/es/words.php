@@ -4,6 +4,7 @@ return[
     'Picture' => 'Imagen',
     'SingIn' => 'Registrarse',
     'Login' => 'Inicio de sesión',
+    'E-Mail' => 'Correo Electrónico',
     'Password' => 'Contraseña',
     'Remember' => 'Recordar',
     'Go' => 'Acceder',
