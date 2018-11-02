@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Modulo;
+use App\Modulo;
 
 class ModuloSeeder extends Seeder
 {
@@ -10,7 +10,7 @@ class ModuloSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public static function run()
     {
         //
         $Modulos = array(

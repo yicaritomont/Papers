@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Menu;
+use App\Menu;
 class MenuSeeder extends Seeder
 {
     /**
@@ -9,7 +9,7 @@ class MenuSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public static function run()
     {
         //
         $Menus = [
@@ -21,8 +21,8 @@ class MenuSeeder extends Seeder
             ['id' => '6' , 'name' => 'Sedes' , 'url' => 'headquarters','state' => 1,'menu_id' => 5 , 'modulo_id' => 1],
             ['id' => '7' , 'name' => 'Compañias' , 'url' => 'companies','state' => 1,'menu_id' => 5 , 'modulo_id' => 1],
             ['id' => '8' , 'name' => 'Inspectores' , 'url' => 'inspectors','state' => 1,'menu_id' => 8 , 'modulo_id' => 1],
-            ['id' => '8' , 'name' => 'Citas de Inspección' , 'url' => 'inspectionappointments','state' => 1,'menu_id' => 8 , 'modulo_id' => 1],
-
+            ['id' => '9' , 'name' => 'Agenda del inspector' , 'url' => 'inspectoragendas','state' => 1,'menu_id' => 8 , 'modulo_id' => 1],            
+            ['id' => '10' , 'name' => 'Citas de Inspección' , 'url' => 'inspectionappointments','state' => 1,'menu_id' => 8 , 'modulo_id' => 1],
 
         ];
 
