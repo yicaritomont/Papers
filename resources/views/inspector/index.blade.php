@@ -32,8 +32,9 @@
                 <th>@lang('words.Phone')</th>
                 <th>@lang('words.Addres')</th>
                 <th>@lang('words.Email')</th>
-                <th>{{trans_choice('words.Profession',2)}}</th>
-                <th>{{trans_choice('words.InspectorType',2)}}</th>
+                <th>{{trans_choice('words.Company',2)}}</th>
+                <th>{{trans_choice('words.Profession',1)}}</th>
+                <th>{{trans_choice('words.InspectorType',1)}}</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_inspectors','delete_inspectors')
                     <th class="text-center">@lang('words.Actions')</th>
@@ -49,6 +50,7 @@
                     <td>{{ $item->phone}}</td>
                     <td>{{ $item->addres}}</td>
                     <td>{{ $item->email}}</td>
+                    <td>{{ $item->companies->pluck('name')->implode(' - ')}}</td>
                      <td>{{ $item->profession['name']}}</td>
                     <td>{{ $item->inspectorType['name']}}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
@@ -60,8 +62,21 @@
                                 'id' => $item->id
                             ])
                             @can('view_inspectoragendas')
-                                <a href="{{ route('inspectoragendas.inspector', $item->id)  }}" class="btn btn-xs btn-primary">
-                                    <i class="fa fa-eye"></i> @lang('words.Whatch') {{trans_choice('words.InspectorAgenda', 1)}}
+                                
+                                <!-- Single button -->
+                                <div class="btn-group agenda-inspector">
+                                    <button class="btn btn-xs btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-eye"></i> @lang('words.Whatch') {{trans_choice('words.InspectorAgenda', 1)}} <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{{ route('inspectoragendas.inspector', [$item->id, 'index']) }}">Calendario</a></li>
+                                        <li><a href="{{ route('inspectoragendas.inspector', [$item->id, 'list']) }}">Tabla</a></li>
+                                    </ul>
+                                </div>
+                            @endcan
+                            @can('view_inspectionappointments')
+                                <a href="{{ route('inspectionappointments.inspector', $item->id)  }}" class="btn btn-xs btn-primary">
+                                    <i class="fa fa-eye"></i> @lang('words.Whatch') {{trans_choice('words.Inspectionappointment', 1)}}
                                 </a>
                             @endcan
                         </td>

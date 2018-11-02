@@ -54,7 +54,7 @@ return[
     'Activity' => 'Activity',
     'Whatch' => 'Whatch',
     'Of' => 'of',
-    'Inspectionappointment' => 'Inspection Appointment',
+    'Inspectionappointment' => 'Inspection Appointment|Inspection Appointments',
     'AppointmentLocation' => 'Appointment Location',
     'InspectionSubtype' => 'Inspection Subtype|Inspection Subtypes',
     'Email' => 'Email',
@@ -64,9 +64,13 @@ return[
     'InspectorAgenda' => "Inspector Agenda|Inspector's Agenda",
     'Delete' => 'Delete',
     'Close' => 'Close',
-    'AvailableAppointments' => 'AvailableAppointments',
     'WhatYouLike' => 'What would you like to do?',
     'calendarView' => 'Calendar view',
     'tableView' => 'Table view',
+    'AgendaBusy' => 'The agenda is busy',
+    'IncorrectDate' => 'There are no agendas that day',
+    'IncorrectHours' => 'Incorrect hours range',
+    'IncorrectAppointments' => 'The appointment is busy',
+    'AgendaDeleteError' => "There are appointments assigned in the current agenda, you can't delete it.",
 ];
 ?>

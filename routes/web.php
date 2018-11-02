@@ -27,7 +27,15 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('users/company/{company?}', 'UserController@index')->name('users.company');
     Route::get('inspectors/company/{company?}', 'InspectorController@index')->name('inspectors.company');
     Route::get('inspectoragendas/list', 'InspectorAgendaController@list')->name('inspectoragendas.view');
-    Route::get('inspectoragendas/inspector/{id}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
+    Route::get('inspectoragendas/inspector/{id}/{view}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
+    Route::post('inspectoragendas/ajax', 'InspectorAgendaController@storeAjax')->name('inspectoragendas.store.ajax');
+    Route::put('inspectoragendas/ajax/{inspectoragenda}', 'InspectorAgendaController@updateAjax')->name('inspectoragendas.update.ajax');
+    Route::delete('inspectoragendas/ajax/{inspectoragenda}', 'InspectorAgendaController@destroyAjax')->name('inspectoragendas.destroy.ajax');
+    Route::get('inspectoragendas/events', 'InspectorAgendaController@events')->name('inspectoragendas.events');
+    Route::get('inspectionappointments/events', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
+    Route::post('inspectionappointments/subtypes', 'InspectionAppointmentController@subtypes')->name('inspectionappointments.subtypes');
+    Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');
+    Route::get('inspectionappointments/inspector/{id?}', 'InspectionAppointmentController@inspector')->name('inspectionappointments.inspector');
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');

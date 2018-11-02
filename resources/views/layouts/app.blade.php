@@ -10,7 +10,8 @@
         <link rel="icon" href="images/favicon.ico" type="image/ico" />
 
         <title>@yield('title') {{ config('app.name') }}</title>
-
+        
+        @yield('styles')
         <!--  -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet">   
@@ -30,7 +31,7 @@
         <!-- bootstrap-daterangepicker -->
         <link href="{{asset('vendors/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 
-        @yield('styles')
+        
 
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.css')}}" rel="stylesheet">
@@ -164,6 +165,8 @@
                                                         <li class="{{ Request::is('inspectionappointments*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectionappointments.index') }}">
                                                                 <span class="text-white glyphicon glyphicon-copy"></span> {{trans_choice('words.Inspectionappointment',2)}}
+                                                            </a>
+                                                        </li>
                                                     @endcan
                                                     
                                                     @can('view_inspectoragendas')

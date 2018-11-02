@@ -29,6 +29,6 @@ class CreateInspectorTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('');
+        Schema::dropIfExists('inspector_types');
     }
 }

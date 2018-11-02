@@ -6,20 +6,20 @@
     <div class="row">
         <div class="col-md-5">
 
-            @if(isset($inspector))
-                <h3 class="modal-title">{{ trans_choice('words.InspectorAgenda', $result->count()) }} @lang('words.Of') {{ $inspector[0]->name }}  </h3>
+            @if(isset($id))
+                <h3 class="modal-title">{{ trans_choice('words.InspectorAgenda', $result->count()) }} {{ $result[0]->inspector['name'] }}  </h3>
             @else
                 <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.InspectorAgenda', $result->count()) }} </h3>
             @endif
-            <a href="{{ route('inspectoragendas.index') }}">@lang('words.calendarView')</a>
         </div>
         <div class="col-md-7 page-action text-right">
-            @if(isset($inspector))
+            <a class="btn btn-info btn-sm" href="{{ route('inspectoragendas.index') }}">@lang('words.calendarView')</a>
+            @can('add_inspectoragendas')
+                <a href="{{ route('inspectoragendas.create', ['view'=>'list']) }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
+            @endcan
+            @if(isset($id))
                 <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
             @endif
-            @can('add_inspectoragendas')
-                <a href="{{ route('inspectoragendas.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
-            @endcan
         </div>
     </div>
 
@@ -55,6 +55,16 @@
                             'entity' => 'inspectoragendas',
                             'id' => $item->slug
                         ])
+                        @can('add_inspectionappointments')
+                            <form action="{{ route('inspectionappointments.create.post')  }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="inspector_id" value="{{ $item->inspector['id'] }}">
+                                <input type="hidden" name="date" value="{{ $item->date }}">
+                                <input type="hidden" name="start_time" value="{{ $item->start_time }}">
+                                <input type="hidden" name="end_time" value="{{ $item->end_time }}">
+                                <button type="submit" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i> Añadir cita</button>
+                            </form>
+                        @endcan
                     </td>
                     @endcan
                 </tr>

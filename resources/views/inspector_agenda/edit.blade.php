@@ -8,9 +8,12 @@
 @endsection
 
 @section('content')
-
     <div class="col-xs-12 col-sm-8 col-md-6 col-md-offset-3">
-        <a href="{{ redirect()->getUrlGenerator()->previous() }}" class="btn btn-default btn-sm"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
+        @if(isset($view))
+            <a href="{{ route('inspectoragendas.index') }}" class="btn btn-default btn-sm"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
+        @else
+            <a href="{{ route('inspectoragendas.view') }}" class="btn btn-default btn-sm"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
+        @endif
         <div class="panel panel-default">
             <div class="panel-header-form">
                 <h3 class="panel-titles">@lang('words.Edit') {{ $inspectorAgenda-> name }}</h3>                    

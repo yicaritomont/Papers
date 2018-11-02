@@ -31,6 +31,6 @@ class CreateChangePasswordDaysTable extends Migration
     public function down()
     {
         //
-        Schema::drop('change_password_days');
+        Schema::dropIfExists('change_password_days');
     }
 }
