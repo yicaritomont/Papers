@@ -100,5 +100,11 @@ class DatabaseSeeder extends Seeder
     {
         AppointmentStateTableSeeder::run();
         AppointmentLocationTableSeeder::run();
+        CountriesTableSeeder::run();
+        CitiesTableSeeder::run();
+        ChangePasswordDaysSeeder::run();
+        ModuloSeeder::run();
+        MenuSeeder::run();
+        
     }
 }
