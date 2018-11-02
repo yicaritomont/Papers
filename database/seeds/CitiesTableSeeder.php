@@ -10,7 +10,7 @@ class CitiesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public static function run()
     {
         $c = new Citie();
         $c->countries_id = 1;

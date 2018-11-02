@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use ChangePasswordDay;
+use App\ChangePasswordDay;
+
 class ChangePasswordDaysSeeder extends Seeder
 {
     /**
@@ -9,7 +10,7 @@ class ChangePasswordDaysSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public static function run()
     {
         //
         $ChangePasswordDays = array(

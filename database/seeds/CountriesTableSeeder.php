@@ -10,7 +10,7 @@ class CountriesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public static function run()
     {
         $c = new Country();
         $c->name = 'Colombia';
