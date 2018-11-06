@@ -109,5 +109,9 @@ class DatabaseSeeder extends Seeder
         InspectorTypeTableSeeder::run();
         InspectionTypeTableSeeder::run();
         InspectionSubTypeTableSeeder::run();
+        ChangePasswordDaysSeeder::run();
+        ModuloSeeder::run();
+        MenuSeeder::run();
+        
     }
 }

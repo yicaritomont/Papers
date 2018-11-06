@@ -102,9 +102,8 @@ class UserController extends Controller
         else 
         {
             //echo "Unable to ";
-            //flash()->error('Unable to create user.');
-            return redirect()->route('users.index')
-		                    ->withErrors(['Unable to create user.!']);
+            flash()->error('Unable to create user.');
+            return redirect()->route('users.index');
         }
 
         //return redirect()->route('users.index');
@@ -198,7 +197,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if ( Auth::user()->id == $id ) {
+        /*if ( Auth::user()->id == $id ) {
             flash()->warning('Deletion of currently logged in user is not allowed :(')->important();
             return redirect()->back();
         }
@@ -209,7 +208,39 @@ class UserController extends Controller
             flash()->success('User not deleted');
         }
 
-        return redirect()->back();
+        return redirect()->back();*/
+
+        $user = User::find($id);
+        
+        //Valida que exista el servicio
+        if($user)
+        {
+		    switch ($user->status) 
+		    {
+			    case 1 : $user->status = 0;
+				         $accion = 'Desactivó';
+				    break;
+    			
+			    case 0 : $user->status = 1;
+				         $accion = 'Activó';
+				    break;
+    
+			    default : $user->status = 0;
+    
+			        break;
+		    } 
+    
+		    $user->save();
+            $menssage = \Lang::get('validation.MessageCreated');
+            flash()->success($menssage);
+		    return redirect()->route('users.index');
+        }
+        else
+        {
+            $menssage = \Lang::get('validation.MessageError');
+            flash()->success($menssage);
+            return redirect()->route('users.index');
+        }	
     }
 
     /**

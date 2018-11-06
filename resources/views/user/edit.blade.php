@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit User ' . $user->first_name)
+@section('title', trans('words.Edit').' '.trans('words.User') . $user->first_name)
 
 @section('content')
 

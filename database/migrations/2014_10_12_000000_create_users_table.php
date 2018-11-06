@@ -22,7 +22,13 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->integer('number_tride')->nullable(false)->default(5);
             $table->string('picture')->nullable(true);
+            $table->integer('status')->nullable(false)->default(1);
             $table->rememberToken();
+            $table->string('last_session_id')->nullable(true);
+            $table->string('last_ip_session')->nullable(true);
+            $table->string('login_attempts', 1)->nullable(true);
+            $table->dateTime('last_login_attempt')->nullable(true);
+            $table->dateTime('last_login')->nullable(true);
             $table->timestamps();
         });
     }
