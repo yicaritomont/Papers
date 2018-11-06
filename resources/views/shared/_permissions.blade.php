@@ -30,7 +30,7 @@
                         if($permission != $antes_role)
                         {
                             ?>
-                            <div class="col-md-12 panel-header-form" >
+                            <div class="col-sm-12 col-md-12 panel-header-form" >
                                 {{ strtoupper($permission)}}
                             </div>
                             

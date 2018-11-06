@@ -4,6 +4,7 @@ return[
     'Picture' => 'Picture',
     'SingIn' => 'Sing In',
     'Login' => 'Login',
+    'E-Mail' => 'E-Mail',
     'Password' => 'Password',
     'Remember' => 'Remember',
     'Go' => 'Go',
