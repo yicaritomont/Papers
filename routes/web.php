@@ -28,6 +28,8 @@ Route::get('reminder',['as'=>'reminder','uses' => 'RemindersController@getRemind
 Route::post('postRemind',['as'=>'postRemind','uses' => 'RemindersController@postRemind']);
 
 Route::get('ajxVerifyPassword','PerfilController@VerifyPassword');
+// cargar ciudades al pais seleccionado
+Route::get('ajxCountry','InspectorController@asincronia');
 
 Route::group( ['middleware' => ['auth']], function() {
     Route::get('user/{company?}', 'UserController@index')->name('users.company');

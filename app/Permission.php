@@ -83,6 +83,11 @@ class Permission extends \Spatie\Permission\Models\Permission
             'add_inspectionappointments',
             'edit_inspectionappointments',
             'delete_inspectionappointments',
+
+            'view_inspectoragendas',
+            'add_inspectoragendas',
+            'edit_inspectoragendas',
+            'delete_inspectoragendas',
         ];
     }
 

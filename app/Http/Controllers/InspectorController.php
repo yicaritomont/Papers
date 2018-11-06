@@ -43,14 +43,20 @@ class InspectorController extends Controller
      */
     public function create()
     {
+        $cities = Citie::with('country')->get();
+        $cities_contry = [];
+        //echo "<pre>";print_r($cities);"</pre>";exit();
+        foreach ($cities as $key => $value) {
+            $cities[$value->id] = $value->name;
+        }
         $inspectors = Inspector::pluck('name', 'id');
         $professions = Profession::pluck('name','id');
         $inspector_types = InspectorType::pluck('name','id');
         $countries = Country::pluck('name','id');
-        $cities = Citie::pluck('name','id');
+        $cities_country['']= 'Selecione...';
         $companies = Company::pluck('name', 'id');
 
-        return View::make('inspector.new', compact('inspectors','professions','inspector_types','countries','cities','companies'));
+        return View::make('inspector.new', compact('inspectors','professions','inspector_types','countries','cities_country','companies'));
     }
 
      /**
@@ -159,5 +165,22 @@ class InspectorController extends Controller
         }
         return redirect()->back();
     }
-    
+
+    /**
+	 * Resolves the ajax requests
+	 *
+	 * @param  $_GET
+	 * @return Response
+	 */
+    public function asincronia()
+    {  
+        if(isset($_GET['country']))
+        {
+            $id = $_GET['country'];
+            $citiesCountry = Citie::where('country','countries_id',$id);
+            $citiesCountry[''] = 'Seleccione..';
+            json_encode($response = ['citiesCountry'=>$citiesCountry]);
+        }
+    return $response;
+    }
 }

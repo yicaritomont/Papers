@@ -144,7 +144,7 @@
                                                     @can('view_inspectors')
                                                         <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectors.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-sunglasses"></span> @lang('words.Inspectors')
+                                                                <span class="text-white glyphicon glyphicon-sunglasses"></span> {{trans_choice('words.Inspectors',2)}}
                                                             </a>
                                                         </li>
                                                     @endcan 

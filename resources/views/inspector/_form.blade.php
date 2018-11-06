@@ -4,25 +4,25 @@
     @if ($errors->has('name')) <p class="help-block">{{ $errors->first('name') }}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('identification')) has-error @endif">
-    <label for="name">@lang('words.Profession')</label>
+    <label for="name">{{trans_choice('words.Profession',1)}}</label>
     {!! Form::select('profession_id',$professions,null, array('class' => 'input-body', 'required')) !!}
     @if ($errors->has('profession')) <p class="help-block">{{ $errors->first('profession') }}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('name')) has-error @endif">
-    <label for="name">@lang('words.InspectorType')</label>
+    <label for="name">{{trans_choice('words.InspectorType',1)}}</label>
     {!! Form::select('inspector_type_id',$inspector_types,null, array('class' => 'input-body','require')) !!}
     @if ($errors->has('inspector_type')) <p class="help-block">{{ $errors->first('inspector_type') }}</p> @endif
 </div>
-<!--<div class="form-group @if ($errors->has('identification')) has-error @endif">
+<div class="form-group @if ($errors->has('identification')) has-error @endif">
     <label for="name">@lang('words.Country')</label>
-    {!! Form::select('country_id',$countries,null, array('class' => 'input-body', 'required')) !!}
+    {!! Form::select('country_id',$countries,null, array('class' => 'input-body id_country', 'required')) !!}
     @if ($errors->has('country')) <p class="help-block">{{ $errors->first('country') }}</p> @endif
 </div>
-<div class="form-group @if ($errors->has('name')) has-error @endif">
+<div class="form-group  @if ($errors->has('name')) has-error @endif" id="container_cities">
     <label for="name">@lang('words.City')</label>
-    {!! Form::select('city_id',$cities,null, array('class' => 'input-body','required')) !!}
+    {!! Form::select('city_id',$cities_country,null, array('class' => 'input-body','required')) !!}
     @if ($errors->has('city')) <p class="help-block">{{ $errors->first('city') }}</p> @endif
-</div>-->
+</div>
 <div class="form-group @if ($errors->has('identification')) has-error @endif">
     <label for="name">@lang('words.Identification')</label>
     {!! Form::text('identification', null, ['class' => 'input-body', 'placeholder' => 'Identification']) !!}
