@@ -30,6 +30,11 @@ Route::post('postRemind',['as'=>'postRemind','uses' => 'RemindersController@post
 Route::get('ajxVerifyPassword','PerfilController@VerifyPassword');
 
 Route::group( ['middleware' => ['auth']], function() {
+
+    // Rutas para la eleccion de inicio de session 
+    Route::get('elegirCompania', array('as' => 'elegirCompania', 'uses'=>'UserController@ShowMultiple'));
+    Route::get('enviaCompania/{id}',array('as'=>'enviaCompania','uses'=>'UserController@PostMultiple'));
+
     Route::get('user/{company?}', 'UserController@index')->name('users.company');
     Route::get('inspector/{company?}', 'InspectorController@index')->name('inspectors.company');
     Route::get('inspectoragenda/{view}', 'InspectorAgendaController@index')->name('inspectoragendas.view');

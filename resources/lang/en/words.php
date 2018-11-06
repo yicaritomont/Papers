@@ -54,6 +54,8 @@ return[
     //404 page
     '404' => 'Oops! Looks like you got lost',
     'TakeMeBack' => 'Take Me Back',
+
+
     'Identification' => 'Identification',
     'Phone' => 'Phone',
     'Addres' => 'Addres',
@@ -94,5 +96,8 @@ return[
     'Close' => 'Close',
     'AvailableAppointments' => 'AvailableAppointments',
     'WhatYouLike' => 'What would you like to do?',
+
+    'ChangeCompany' => 'Change company in Session',
+
 ];
 ?>

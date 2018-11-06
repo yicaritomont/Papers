@@ -94,5 +94,7 @@ return[
     'Close' => 'Cerrar',
     'AvailableAppointments' => 'Citas disponibles',
     'WhatYouLike' => '¿Qué desea Hacer?',
+
+    'ChangeCompany' => 'Cambiar compañia en sesión',
 ];
 ?>
