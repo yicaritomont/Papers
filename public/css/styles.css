@@ -172,4 +172,9 @@
 
 .panel-heading{
     color: #73879C !important;
+    background-color: transparent !important;
+}
+
+.dataTable{
+    width: 100% !important;
 }

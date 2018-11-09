@@ -5,6 +5,7 @@
 @section('styles')
     <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap-datepicker.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap-clockpicker.css')}}">
+    <meta>
     <!-- FullCalendar -->
         {{-- <link href="{{asset('vendors/fullcalendar/dist/fullcalendar.min.css')}}" rel="stylesheet">
         <link href="{{asset('vendors/fullcalendar/dist/fullcalendar.print.css')}}" rel="stylesheet" media="print"> --}}
@@ -24,6 +25,7 @@
 @endsection
 
 @section('content')
+    {{date('Y-m-d')}}    
 
     <div class="msgAlert"></div>
     {{-- <div class="container"> --}}
@@ -33,14 +35,14 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">              
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-8">
                                 @if(isset($id))
                                     <h3 class="modal-title">{{ trans_choice('words.InspectorAgenda', $result->count()) }} {{ $result[0]->inspector['name'] }}  </h3>
                                 @else
                                     <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.InspectorAgenda', $result->count()) }} </h3>
                                 @endif
                             </div>
-                            <div class="col-md-7 page-action text-right">
+                            <div class="col-md-4 text-right">
                                 <a class="btn btn-info" href="{{ route('inspectoragendas.view') }}">@lang('words.tableView')</a>
                                 @if(isset($id))
                                     <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
@@ -116,8 +118,9 @@
         </div>
     </div>
 
-    <input type="hidden" id="url" value="{{ route('inspectoragendas.index') }}">
-
+    <input type="hidden" id="url" value="{{ route('inspectoragendas.events') }}">
+    <input type="hidden" id="_token" value="{{ csrf_token() }}">
+    <input type="hidden" id="selectOption" value="{{trans('words.ChooseOption')}}">
 @endsection
 
 @section('scripts')
@@ -212,6 +215,41 @@
                     });
                 });
             });
+
+            $('.country').on('change',function(event, agenda){
+                console.log($(this).val());
+                console.log(this.dataset.route);
+                console.log($('#_token').val());
+                $.ajax({
+                    url:this.dataset.route,
+                    type:'POST',
+                    data:{
+                        id: $(this).val(),
+                        _token: $('#_token').val(),
+                    }
+                })
+                .done(function(res){
+                    
+                    console.log('done\n'+res);
+                    console.log(JSON.parse(res).status);
+                    $('.city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+                    $.each(JSON.parse(res), function( key, value ) {
+                        //$('.msgError').append(alert('danger', value));
+                        console.log('Id: '+value.id+'\nName: '+value.name);
+                        $('.city_id').append('<option value="'+value.id+'">'+value.name+'</option>');
+                    });
+
+                    if(agenda != undefined){
+                        $('#modalEditDel #city_id').val(agenda.city_id);
+                    }
+                })
+                .fail(function(res){
+                    alert('Error\n'+res);
+                })
+                .always(function(res){
+                    console.log('complete\n'+res);
+                });
+            });
         });
         
         function alert(color, msg){
@@ -228,7 +266,7 @@
             eventRender: function(eventObj, $el) {
                 $el.popover({//Ventana desplegable al hacer hover a un evento
                     title: eventObj.inspector,
-                    content: eventObj.headquarter,
+                    content: eventObj.city,
                     trigger: 'hover',
                     placement: 'top',
                     container: 'body'
@@ -250,29 +288,29 @@
             header:{
                 "left":"prev,next today,createButton",
                 "center":"title",
-                "right":"month,agendaWeek,agendaDay,listMonth"
+                "right":"month,agendaWeek,listMonth"
             },
-            events: $('#url').val()+'/events',
+            events: $('#url').val(),
 
             eventClick: function(calEvent, jsEvent, view) {
                 //Separar en fecha[0] y hora[1]
-                var start = calEvent.start.format().split('T');
-                var end =  calEvent.end.format().split('T');
-                console.log(start[0]);
-                console.log(start[1]);
-                console.log(end[0]);
-                console.log(end[1]);
-                console.log(calEvent.inspector_id);
-                console.log(calEvent.headquarters_id);
-
+                var start = calEvent.start.format();
+                if(calEvent.end == null){
+                    console.log('Un solo día');
+                    var end =  start;
+                }else{
+                    var end =  calEvent.end.format();
+                }
+                console.log(start);
+                console.log(end);
 
                 //Se rellena el formulario de editar con los valores correspondientes
                 //$('#modalEditDel #date').val(start[0]);
-                $('#modalEditDel #date').val(start[0]);
-                $('#modalEditDel #start_time').val(start[1]);
-                $('#modalEditDel #end_time').val(end[1]);
+                $('#modalEditDel #start_date').val(start);
+                $('#modalEditDel #end_date').val(end);
                 $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
-                $('#modalEditDel #headquarters_id').val(calEvent.headquarters_id);
+                $('#modalEditDel #country').val(calEvent.country_id);
+                $('#modalEditDel #country').trigger('change',calEvent);
 
                 //Cambiar el action del formulario
                 $('#editAgenda').attr('action',  $('#url').val()+'/ajax/'+calEvent.slug);
@@ -285,27 +323,36 @@
             select: function(startDate, endDate, jsEvent, view) {
                 //Separar en fecha[0] y hora[1]
                 var start = startDate.format().split('T');
-                var end =  endDate.format().split('T');
+                var end =  endDate.format();
 
-                //console.log(end[0]);
-                //console.log(start[0]);
-                
+                var ed = new Date(end);
+                ed = ed.getFullYear()+'-'+ (ed.getMonth()+1) +'-'+ed.getDate();
+                /*console.log('Fecha inicio: '+start);
+                console.log('Fecha final: '+ed);*/
+         
                 //Validar si se selecciono un día u horas en un rango de dos días
-                if(end[1] != undefined && end[0] == start[0]){
+                //if(end[1] != undefined && end[0] == start[0]){
+                //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
+                if(start != ed){
+                    console.log('Selecciono un conjunto de dias');
                     $('#formCreateAgenda')[0].reset();
                     $('.msgError').html('');
-                    $('#date').val(start[0]);
-                    $('#start_time').val(start[1]);
-                    $('#end_time').val(end[1]);
-                    $('#date').attr('disabled', 'disabled');
-                    $('.input-group.date').append('<input type="hidden" name="date" value="'+start[0]+'">');
+                    $('#start_date').val(start[0]);
+                    $('#end_date').val(ed);
+                    //$('#date').attr('disabled', 'disabled');
+                    //$('.input-group.date').append('<input type="hidden" name="date" value="'+start[0]+'">');
                     $('#modalCreate').modal('show');
                 }
             },
             dayClick: function(date, jsEvent, view) {
+                console.log('Clickeo');
+                console.log(date.format());
+                $('.msgError').html('');
                 $('#formCreateAgenda')[0].reset();
-                $('#modalCreate #date').val(date.format());
-                $('#modalCreate #date').removeAttr("disabled");
+                $('#modalCreate #start_date').val(date.format());
+                $('#modalCreate #end_date').val(date.format());
+                //console.log(date.format());
+                //$('#modalCreate #date').removeAttr("disabled");
                 $('#modalCreate').modal('show');
             },
             //editable: true,

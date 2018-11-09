@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Contract;
+use App\Client;
+use App\Company;
 use Illuminate\Http\Request;
 
 class ContractController extends Controller
@@ -14,7 +16,9 @@ class ContractController extends Controller
      */
     public function index()
     {
-        //
+        $result = Contract::latest()->with(['company', 'client'])->paginate();
+        
+        return view('contract.index', compact('result'));
     }
 
     /**
@@ -24,7 +28,14 @@ class ContractController extends Controller
      */
     public function create()
     {
-        //
+        $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+                        ->select('clients.id AS id', 'users.name AS name')
+                        ->get()
+                        ->pluck('name', 'id');
+
+        $companies = Company::all()->pluck('name', 'id');
+        /* dd($company); */
+        return view('contract.new', compact(['clients', 'companies']));
     }
 
     /**
@@ -35,7 +46,23 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+
+        $this->validate($request, [
+            'name' => 'required|min:2',
+            'date' => 'date',
+            'client_id' => 'required',
+            'company_id' => 'required',
+        ]);
+        if (Contract::create($request->except('_token'))) {
+
+            flash('Contract has been created.');
+
+        } else {
+            flash()->error('Unable to create Contract.');
+        }
+
+        return redirect()->back();
     }
 
     /**
@@ -57,7 +84,14 @@ class ContractController extends Controller
      */
     public function edit(Contract $contract)
     {
-        //
+        $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+                        ->select('clients.id AS id', 'users.name AS name')
+                        ->get()
+                        ->pluck('name', 'id');
+
+        $companies = Company::all()->pluck('name', 'id');
+
+        return view('contract.edit', compact(['contract', 'clients', 'companies']));
     }
 
     /**
@@ -69,7 +103,21 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract)
     {
-        //
+
+        $this->validate($request, [
+            'name' => 'required|min:2',
+            'date' => 'date',
+            'client_id' => 'required',
+            'company_id' => 'required',
+        ]);
+
+        // dd($request->except('_method', '_token'));
+
+        $contract->update($request->all());
+
+        //flash()->success('Client has been updated.');
+        flash()->success(trans_choice('words.Contract', 1).' '.trans('words.HasUpdated'));
+        return redirect()->route('contracts.index');
     }
 
     /**
@@ -80,6 +128,35 @@ class ContractController extends Controller
      */
     public function destroy(Contract $contract)
     {
-        //
+        // dd($contract);
+
+        if($contract)
+        {
+		    switch ($contract->status) 
+		    {
+                case 1 :
+                    $contract->status = 0;     
+				    break;
+    			
+                case 0 :
+                    $contract->status = 1;
+				    break;
+    
+                default :
+                    $contract->status = 0;
+			        break;
+		    } 
+    
+		    $contract->save();
+            $menssage = \Lang::get('validation.MessageCreated');
+            flash()->success($menssage);
+		    return redirect()->route('contracts.index');
+        }
+        else
+        {
+            $menssage = \Lang::get('validation.MessageError');
+            flash()->success($menssage);
+            return redirect()->route('contracts.index');
+        }	
     }
 }

@@ -19,9 +19,9 @@
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
+                <th>@lang('words.Name')</th>
                 <th>@lang('words.Client')</th>
                 <th>@lang('words.City')</th>
-                <th>@lang('words.Name')</th>
                 <th>@lang('words.Address')</th>
                 <th>@lang('words.Status')</th>
                 <th>@lang('words.CreatedAt')</th>
@@ -34,20 +34,28 @@
             @foreach($result as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->client['name'] . ' ' . $item->client['lastname'] }}</td>
-                    <td>{{ $item->cities['name'] }}</td>
                     <td>{{ $item->name }}</td>
+                    <td>{{ $item->client->user->name }}</td>
+                    <td>{{ $item->cities->name }}</td>
                     <td>{{ $item->address }}</td>
                     <td>{{ $item->status == 1 ? trans('words.Active') : trans('words.Inactive') }}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
-                    @can('edit_headquarters', 'delete_headquarters')
                     <td class="text-center">
-                        @include('shared._actions', [
-                            'entity' => 'headquarters',
-                            'id' => $item->slug
-                        ])
+                        @can('edit_headquarters')
+                            <a href="{{ route('headquarters.edit', $item->slug)  }}" class="btn btn-xs btn-info">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        @endcan
+                        @can('delete_headquarters')
+                        {!! Form::open( ['method' => 'delete', 'url' => route('headquarters.destroy', ['user' => $item->slug]), 'style' => 'display: inline']) !!}                            
+                            @if($item->status == 1)
+                                <button class="btn  btn-xs btn-success"><span class='glyphicon glyphicon-ok-sign'></span></button>
+                            @else
+                                <button class="btn  btn-xs btn-danger"><span class='glyphicon glyphicon-remove-sign'></button>
+                            @endif    
+                        {!! Form::close() !!}
+                        @endcan
                     </td>
-                    @endcan
                 </tr>
             @endforeach
             </tbody>

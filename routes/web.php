@@ -37,9 +37,9 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::post('inspectoragendas/ajax', 'InspectorAgendaController@storeAjax')->name('inspectoragendas.store.ajax');
     Route::put('inspectoragendas/ajax/{inspectoragenda}', 'InspectorAgendaController@updateAjax')->name('inspectoragendas.update.ajax');
     Route::delete('inspectoragendas/ajax/{inspectoragenda}', 'InspectorAgendaController@destroyAjax')->name('inspectoragendas.destroy.ajax');
-    Route::get('inspectoragendas/events', 'InspectorAgendaController@events')->name('inspectoragendas.events');
     Route::get('inspectionappointments/events', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
     Route::post('inspectionappointments/subtypes', 'InspectionAppointmentController@subtypes')->name('inspectionappointments.subtypes');
+    Route::post('inspectoragendas/cities', 'InspectorAgendaController@cities')->name('inspectoragendas.cities');
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');
     Route::get('inspectionappointments/inspector/{id?}', 'InspectionAppointmentController@inspector')->name('inspectionappointments.inspector');
     Route::resource('users', 'UserController');
@@ -65,6 +65,9 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('companies', 'CompanyController');
     Route::resource('inspectionappointments', 'InspectionAppointmentController');
     Route::resource('inspectoragendas', 'InspectorAgendaController');
+    Route::resource('contracts', 'ContractController');
+
+    Route::get('datatable/{model}/{entity}/{identificador?}/{relations?}', 'GeneralController@datatable')->name('datatable');
 });
 
 

@@ -1,16 +1,16 @@
 
 <div class="form-group @if ($errors->has('inspector')) has-error @endif">
     {!! Form::label('inspector_id', trans('words.Inspectors')) !!}
-    {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, array('class' => 'input-body', 'required')) !!}
+    {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, array('class' => 'input-body')) !!}
     @if ($errors->has('inspector')) <p class="help-block">{{ $errors->first('inspector') }}</p> @endif
 </div>
-<div class="form-group @if ($errors->has('inspection_types')) has-error @endif">
+<div class="form-group @if ($errors->has('inspection_type_id')) has-error @endif">
     {!! Form::label('inspection_type_id', trans('words.InspectionType')) !!}
     {!! Form::select('inspection_type_id',$inspection_types,null, ['class' => ['input-body', 'inspection_type_id'] ,'require', 'data-route'=>route('inspectionappointments.subtypes'), 'placeholder'=>trans('words.ChooseOption')]) !!}
     @if ($errors->has('inspection_types')) <p class="help-block">{{ $errors->first('inspection_types') }}</p> @endif
 </div>
 
-<div class="form-group @if ($errors->has('inspection_types')) has-error @endif">
+<div class="form-group @if ($errors->has('inspection_subtype_id')) has-error @endif">
     {!! Form::label('inspection_subtype_id', trans('words.InspectionType')) !!}
     {{-- {!! Form::select('inspection_subtype_id', null, null, ['class' => 'input-body','require', 'placeholder'=>trans('words.ChooseOption')]) !!} --}}
     <select id="inspection_subtype_id" name="inspection_subtype_id" class="input-body inspection_subtype_id">

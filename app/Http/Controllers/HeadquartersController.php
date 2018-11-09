@@ -18,7 +18,7 @@ class HeadquartersController extends Controller
      */
     public function index()
     {
-        $result = Headquarters::latest()->with(['client', 'cities'])->paginate();
+        $result = Headquarters::latest()->with('client', 'cities')->paginate();
 
         //dd(\App\Cities::all());
         // dd($result[0]->cities->name);
@@ -32,11 +32,13 @@ class HeadquartersController extends Controller
      */
     public function create()
     {
-        $clients = Client::select(DB::raw('CONCAT(name ," ", lastname) AS name'), 'id')->get();
-      /*   dd($headquarters->pluck('nombre_completo', 'id'));
-        $clients = Client::all(); */
-        $cities = Citie::all();
-        //dd($c[0]->name);
+        $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+                        ->select('clients.id AS id', 'users.name AS name')
+                        ->get()
+                        ->pluck('name', 'id');
+
+        $cities = Citie::all()->pluck('name', 'id');
+        
         return view('headquarters.new', compact(['clients', 'cities']));
     }
 
@@ -49,7 +51,6 @@ class HeadquartersController extends Controller
     public function store(HeadquartersRequest $request)
     {
         $headquarters = Headquarters::create($request->all());
-        $headquarters->status = 1;
         $headquarters->slug = md5($headquarters->id);
         $headquarters->save();
 
@@ -79,9 +80,13 @@ class HeadquartersController extends Controller
      */
     public function edit(Headquarters $headquarters)
     {
-        $clients = Client::all();
-        $cities = Citie::all();
-        //dd($headquarters);
+        $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+        ->select('clients.id AS id', 'users.name AS name')
+        ->get()
+        ->pluck('name', 'id');
+
+        $cities = Citie::all()->pluck('name', 'id');
+        
         return view('headquarters.edit', compact(['headquarters', 'clients', 'cities']));
     }
 
@@ -111,9 +116,37 @@ class HeadquartersController extends Controller
      */
     public function destroy(Headquarters $headquarters)
     {
-        //dd($headquarters);
-        $headquarters->delete();
+        if($headquarters)
+        {
+		    switch ($headquarters->status) 
+		    {
+                case 1 :
+                    $headquarters->status = 0;     
+				    break;
+    			
+                case 0 :
+                    $headquarters->status = 1;
+				    break;
+    
+                default :
+                    $headquarters->status = 0;
+			        break;
+		    } 
+    
+		    $headquarters->save();
+            $menssage = \Lang::get('validation.MessageCreated');
+            flash()->success($menssage);
+		    return redirect()->route('headquarters.index');
+        }
+        else
+        {
+            $menssage = \Lang::get('validation.MessageError');
+            flash()->success($menssage);
+            return redirect()->route('headquarters.index');
+        }	
+
+        /* $headquarters->delete();
         flash()->success(trans('words.Headquarters').' '.trans('words.HasEliminated'));
-        return back();
+        return back(); */
     }
 }

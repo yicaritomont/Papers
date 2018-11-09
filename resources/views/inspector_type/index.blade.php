@@ -20,6 +20,7 @@
             <tr>
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>
+                <th>{{ trans_choice('words.InspectionSubtype',1) }}</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_inspectortypes','delete_inspectortypes')
                     <th class="text-center">@lang('words.Actions')</th>
@@ -31,6 +32,7 @@
                 <tr>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->name }}</td>
+                    <td>{{ $item->inspection_subtypes['name'].' - '.$item->inspection_subtypes->inspection_types['name'] }}</td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
 
                     @can('edit_inspectortypes','delete_inspectortypes')

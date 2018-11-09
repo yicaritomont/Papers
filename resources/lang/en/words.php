@@ -100,5 +100,8 @@ return[
     'IncorrectHours' => 'Incorrect hours range',
     'IncorrectAppointments' => 'The appointment is busy',
     'AgendaDeleteError' => "There are appointments assigned in the current agenda, you can't delete it.",
+    'ContractName' => "Name of the contract",
+    'ContractDate' => "Date of the contract",
+    'Contract' => 'Contract|Contracts',
 ];
 ?>

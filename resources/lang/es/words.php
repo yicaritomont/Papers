@@ -100,5 +100,8 @@ return[
     'IncorrectHours' => 'Rango de horas incorrecto',
     'IncorrectAppointments' => 'La cita está ocupada',
     'AgendaDeleteError' => "Hay citas asignadas en la agenda actual, no se puede eliminar.",
+    'ContractName' => "Nombre del contrato",
+    'ContractDate' => "Fecha del contrato",
+    'Contract' => 'Contrato|Contratos',
 ];
 ?>

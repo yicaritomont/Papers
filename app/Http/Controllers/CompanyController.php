@@ -16,7 +16,7 @@ class CompanyController extends Controller
     public function index()
     {
         $result = Company::latest()->paginate(15);
-        //dd($result);
+        dd($result[0]);
         return view('company.index', compact('result'));
     }
 
@@ -39,7 +39,7 @@ class CompanyController extends Controller
     public function store(CompanyRequest $request)
     {
         $company = Company::create($request->all());
-        $company->status = 1;
+/*         $company->status = 1; */
         $company->slug = md5($company->id);
         $company->save();
 

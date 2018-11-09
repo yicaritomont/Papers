@@ -18,7 +18,12 @@ class CreateInspectorTypesTable extends Migration
             $table->collation = 'utf8_unicode_ci';
             $table->increments('id');
             $table->string('name')->unique();
+            $table->integer('inspection_subtypes_id')->unsigned();
             $table->timestamps();
+
+            $table->foreign('inspection_subtypes_id')
+                ->references('id')
+                ->on('inspection_subtypes');
         });
     }
 

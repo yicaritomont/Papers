@@ -31,13 +31,18 @@
         <!-- bootstrap-daterangepicker -->
         <link href="{{asset('vendors/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 
-        
-
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.css')}}" rel="stylesheet">
+
+        <!-- Datatable -->
+        <link rel="stylesheet" type="text/css" href="{{asset('dataTable/css/dataTables.bootstrap.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('dataTable/css/fixedHeader.bootstrap.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('dataTable/css/responsive.bootstrap.min.css')}}">
+
         <script>
             window.Laravel = {!! json_encode([
                 'csrfToken' => csrf_token(),
+                'language' => app()->getLocale(),
             ]) !!};
         </script>
     </head>
@@ -308,8 +313,16 @@
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.min.js')}}"></script>
 	
+    <!-- Datatable -->
+    <script src="{{ asset('dataTable/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/dataTables.fixedHeader.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/responsive.bootstrap.min.js') }}"></script>
+    
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
+
 	@yield('scripts')
   </body>
 </html>

@@ -27,9 +27,10 @@ class ClientRequest extends FormRequest
         if(isset($this->route('client')->id)){
             return [
                 'name' => 'required',
-                'lastname' => 'required',
+                'identification' => 'required',
+                'email' => 'required|email|unique:users,email,'.$this->route('client')->id,
+                'password' => 'required|min:6',
                 'phone' => 'required',
-                'email' => 'required|email|unique:clients,email,'.$this->route('client')->id,
                 'cell_phone' => 'required',
                 // 'slug' => 'required|unique:clients,slug,'.$this->route('client')->id
             ];
@@ -37,9 +38,10 @@ class ClientRequest extends FormRequest
 
         return [
             'name' => 'required',
-            'lastname' => 'required',
+            'identification' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
             'phone' => 'required',
-            'email' => 'required|email|unique:clients,email',
             'cell_phone' => 'required',
             // 'slug' => 'required|unique:clients,slug'
         ];

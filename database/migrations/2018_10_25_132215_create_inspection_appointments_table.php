@@ -20,9 +20,8 @@ class CreateInspectionAppointmentsTable extends Migration
             $table->unsignedInteger('appointment_location_id');
             $table->unsignedInteger('inspection_subtype_id');
             
-            $table->date('date');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->timestamps();
 
             $table->foreign('inspector_id')

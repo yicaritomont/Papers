@@ -6,6 +6,8 @@ use App\InspectorAgenda;
 use App\Headquarters;
 use App\Inspector;
 use App\InspectionAppointment;
+use App\Country;
+use App\Citie;
 use DB;
 use App\Http\Requests\InspectorAgendaRequest;
 use Illuminate\Http\Request;
@@ -21,11 +23,11 @@ class InspectorAgendaController extends Controller
     public function index()
     {
 
-        $result = InspectorAgenda::orderBy('date', 'desc')->with(['inspector', 'headquarters'])->paginate();
-        $headquarters = Headquarters::all();
+        $result = InspectorAgenda::with(['inspector'])->paginate();
         $inspectors = Inspector::all();
+        $countries = Country::all()->pluck('name', 'id');
 
-        return view('inspector_agenda.index', compact('result', 'headquarters', 'inspectors'));
+        return view('inspector_agenda.index', compact('result', 'inspectors', 'countries'));
 
     }
 
@@ -279,63 +281,42 @@ class InspectorAgendaController extends Controller
      */
     public function storeAjax(InspectorAgendaRequest $request)
     {
-        /* echo json_encode([
-            'request' => $request->all(),
-        ]); */
-        
+       
         //Contadores de error para las validaciones
-        $contFecha=0;
         $contHorasError=0;
 
         //Se consulta todas las Agendas filtradas por un inspector
         $inspectorAgenda = InspectorAgenda::where('inspector_id', '=', $request->input('inspector_id'))->get();
 
         foreach($inspectorAgenda as $item){
-            if($request->input('date') == $item->date){
-                $contFecha++;
-                if(($request->input('end_time') < $item->end_time && $request->input('start_time') < $item->start_time && $request->input('end_time') < $item->start_time) || ($request->input('end_time') > $item->end_time && $request->input('start_time') > $item->start_time && $request->input('start_time') > $item->end_time)){
-                    //Se comprueba si las horas ingresadas no se crucen con otra agenda el mismo día
-                }else{
-                    $contHorasError++;   
-                }
+            if(($request->input('end_date') < $item->end_date && $request->input('start_date') < $item->start_date && $request->input('end_date') < $item->start_date) || ($request->input('end_date') > $item->end_date && $request->input('start_date') > $item->start_date && $request->input('start_date') > $item->end_date)){
+                //Se comprueba si las horas ingresadas no se crucen con otra agenda el mismo día
+            }else{
+                $contHorasError++;   
             }
         }
 
-        /* //Comprueba si hay agendas en el día seleccionado 
-        if($contFecha != 0){ */
-            //Si la agenda ya esta ocupada
-            if($contHorasError > 0){
-                echo json_encode([
-                    'error' => trans('words.AgendaBusy'),
-                ]);
-                /* flash()->error(trans('words.AgendaBusy'));
-                return redirect()->back()->withErrors('AgendaBusy')->withInput();  */
-            }else{     
-        /* }else{
- */
+        //Si la agenda ya esta ocupada
+        if($contHorasError > 0){
+            echo json_encode([
+                'error' => trans('words.AgendaBusy'),
+            ]);
+        }else{     
+
             //Si paso las validaciones cree una Agenda
-            $agenda = InspectorAgenda::create($request->all());
+            $agenda = InspectorAgenda::create([
+                'inspector_id'  => $request['inspector_id'],
+                'city_id'       => $request['city_id'],
+                'start_date'    => $request['start_date'],
+                'end_date'      => $request['end_date'],
+            ]);
             $agenda->slug = md5($agenda->id);
             $agenda->save();
-
-            /* flash(trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasAdded'));
-
-            return redirect()->back();  */
 
             echo json_encode([
                 'status' => trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasAdded'),
             ]);
         }
-
-       
-        /* //Si paso las validaciones cree una Agenda
-        $agenda = InspectorAgenda::create($request->all());
-        $agenda->slug = md5($agenda->id);
-        $agenda->save();
-
-        flash(trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasAdded'));
-
-        return redirect()->back();  */
     }
 
     /**
@@ -348,9 +329,17 @@ class InspectorAgendaController extends Controller
         // $result = InspectorAgenda::select(DB::raw('CONCAT(date,"T",start_time) AS start, CONCAT(date,"T",end_time) AS end, slug'))->get();
         
         $result = InspectorAgenda::join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
-                ->join('headquarters', 'headquarters.id', '=', 'inspector_agendas.headquarters_id')
-                ->select(DB::raw('CONCAT(date,"T",start_time) AS start, CONCAT(date,"T",end_time) AS end, inspector_agendas.slug, headquarters.name AS headquarter, inspectors.name AS inspector, inspector_id, headquarters_id'))->get();
-        
+                ->join('cities', 'cities.id', '=', 'inspector_agendas.city_id')
+                ->select('inspectors.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'cities.name AS city', 'inspectors.name AS inspector', 'inspector_id', 'city_id', 'cities.countries_id AS country_id')->get();
+        // $i =InspectorAgenda::find(1);
+        // dd($result->toArray());
+        // dd($i->city->countries);
+        //dd($i->full_date);
+        foreach($result as $item){
+            $item->end = $item->end.'T23:59:59';
+            // $item->start = $item->start.'T00:00:00';
+            // echo $item->end.'<br>';
+        }
         echo json_encode($result);
        
     }
@@ -476,4 +465,21 @@ class InspectorAgendaController extends Controller
         ]); */
     }
 
+    public function cities(Request $request){
+        
+        // $result = InspectorAgenda::select(DB::raw('CONCAT(date,"T",start_time) AS start, CONCAT(date,"T",end_time) AS end, slug'))->get();
+        
+        /* $result = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
+                ->join('inspection_types', 'inspection_types.id', '=', 'inspection_appointments.inspection_type_id')
+                ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')
+                ->select(DB::raw('CONCAT(date,"T",start_time) AS start, CONCAT(date,"T",end_time) AS end, inspection_appointments.id, inspection_types.name AS type, inspectors.name AS inspector, CONCAT("alert-",appointment_states.color) AS className, inspector_id, inspection_type_id, appointment_location_id, appointment_states_id'))->get();
+         */
+        $result = Citie::select('id', 'name')
+                    ->where('countries_id', '=', $request->id)
+                    ->get();
+
+        echo json_encode($result);
+       
+    }
+    
 }
