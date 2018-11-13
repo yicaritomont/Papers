@@ -98,6 +98,9 @@ return[
     'WhatYouLike' => 'What would you like to do?',
 
     'ChangeCompany' => 'Change company in Session',
+    'InspectorExist' => 'Inspector Exist',
+    'InspectorCompany' => 'Relationship inspector-company already exists',
+    'RelationshipInspectorCompany' => 'Relationship inspector-company created',
 
 ];
 ?>

@@ -32,8 +32,10 @@
                 <th>@lang('words.Phone')</th>
                 <th>@lang('words.Addres')</th>
                 <th>@lang('words.Email')</th>
-                <th>{{trans_choice('words.Profession',2)}}</th>
+                <th>{{trans_choice('words.Company',2)}}</th>
+                <th>{{trans_choice('words.Profession',2)}}</th>                
                 <th>{{trans_choice('words.InspectorType',2)}}</th>
+                <th>@lang('words.Id')</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_inspectors','delete_inspectors')
                     <th class="text-center">@lang('words.Actions')</th>
@@ -49,8 +51,20 @@
                     <td>{{ $item->phone}}</td>
                     <td>{{ $item->addres}}</td>
                     <td>{{ $item->email}}</td>
+                    <td>
+                    @foreach($item->companies as $company)
+                        <ul>
+                            <li>{{$company->name}}</li>
+                        </ul>
+                    @endforeach
+                    
                      <td>{{ $item->profession['name']}}</td>
                     <td>{{ $item->inspectorType['name']}}</td>
+                    <td>
+                        <a target="_blank" href="{{ route('validateInspector',$item->id)  }}" class="btn btn-xs btn-primary">
+                            <i class="fa fa-eye"></i> @lang('words.Whatch') @lang('words.Inspectors')
+                        </a>                        
+                    </td>
                     <td>{{ $item->created_at->toFormattedDateString() }}</td>
 
                     @can('edit_inspectors','delete_inspectors')

@@ -198,19 +198,6 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        /*if ( Auth::user()->id == $id ) {
-            flash()->warning('Deletion of currently logged in user is not allowed :(')->important();
-            return redirect()->back();
-        }
-
-        if( User::findOrFail($id)->delete() ) {
-            flash()->success('User has been deleted');
-        } else {
-            flash()->success('User not deleted');
-        }
-
-        return redirect()->back();*/
-
         $user = User::find($id);
         
         //Valida que exista el servicio
@@ -276,10 +263,10 @@ class UserController extends Controller
 
     public function ShowMultiple()
     { 
-        // Verifica nuevamente que el usuario autenticado es un veterinario
+        // Verifica nuevamente que el usuario no sea administrador
         if(Auth::user()->roles->pluck('id')[0] != 1)
         {
-            $companias = UserCompanie::where('user_id',Auth::user()->id)->where('status',1)->get();            
+            $companias = UserCompanie::with('company')->where('user_id',Auth::user()->id)->where('status',1)->get();            
             return view('auth.index',compact('companias'));
         }
     }

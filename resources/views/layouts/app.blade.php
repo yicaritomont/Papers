@@ -207,7 +207,13 @@
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">
                                         <li><a href="{{route('perfiles.index')}}">@lang('header.Profile')</a></li>  
-                                        <li><a href="{{route('elegirCompania')}}">@lang('header.ChangeCompany')</a></li>                                      
+                                        {{-- Compañia en session --}}
+                                        @if(Auth::user()->roles->pluck('id')[0] != 1)
+                                            @if(session()->get('Session_Company') != "")
+                                                <li><a href="{{route('elegirCompania')}}">@lang('header.ChangeCompany')</a></li>
+                                            @endif
+                                        @endif
+                                                                              
                                         <li><a href="javascript:;">@lang('header.Help')</a></li>
                                         <li>
                                             <a href="{{ route('logout') }}"

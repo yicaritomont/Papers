@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,6 +25,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('reminder', 'RemindersController'); 
 Route::get('reminder',['as'=>'reminder','uses' => 'RemindersController@getRemind']);
 Route::post('postRemind',['as'=>'postRemind','uses' => 'RemindersController@postRemind']);
+Route::get('validateInspector/{id}', ['as' =>'validateInspector','uses' => 'InspectorController@IdCardInspector' ]);
 
 Route::get('ajxVerifyPassword','PerfilController@VerifyPassword');
 
@@ -62,14 +62,18 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('companies', 'CompanyController');
     Route::resource('inspectionappointments', 'InspectionAppointmentController');
     Route::resource('inspectoragendas', 'InspectorAgendaController');
+
+    Route::get('ajxVerifyInspector','InspectorController@VerifyInspector');
 });
-
-
-Route::get('lang/{lang}', function($lang) {
-    Session::put('lang', $lang);
-    return Redirect::back();
-  })->middleware('web')->name('change_lang');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+/**
+ * Ruta exclusiva para el manejo del lenguaje
+ */
+Route::get('lang/{lang}', function($lang) {
+    Session::put('lang', $lang);
+    return Redirect::back();
+  })->middleware('web')->name('change_lang');

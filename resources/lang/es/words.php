@@ -96,5 +96,8 @@ return[
     'WhatYouLike' => '¿Qué desea Hacer?',
 
     'ChangeCompany' => 'Cambiar compañia en sesión',
+    'InspectorExist' => 'Inspector Ya existe',
+    'InspectorCompany' => 'Relación inspector-compañia, ya existe',
+    'RelationshipInspectorCompany' => 'Relación inspector-company creada',
 ];
 ?>

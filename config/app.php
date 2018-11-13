@@ -25,7 +25,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env' => env('APP_ENV', 'local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -181,6 +181,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\MadeMenuProvider::class,
         Maddhatter\LaravelFullcalendar\ServiceProvider::class,
+        LaravelQRCode\Providers\QRCodeServiceProvider::class,     
     ],
 
     /*
@@ -232,6 +233,7 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'MadeMenu' => App\Providers\MadeMenuProvider::class,
+        'QRCode' => LaravelQRCode\Facades\QRCode::class,  
 
     ],
 
