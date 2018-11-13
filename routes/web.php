@@ -30,6 +30,8 @@ Route::post('postRemind',['as'=>'postRemind','uses' => 'RemindersController@post
 Route::get('ajxVerifyPassword','PerfilController@VerifyPassword');
 
 Route::group( ['middleware' => ['auth']], function() {
+    Route::get('users/companyTable/{company}', 'UserController@companyTable')->name('users.companyTable');
+    Route::get('inspectors/companyTable/{company}', 'InspectorController@companyTable')->name('inspectors.companyTable');
     Route::get('users/company/{company?}', 'UserController@index')->name('users.company');
     Route::get('inspectors/company/{company?}', 'InspectorController@index')->name('inspectors.company');
     Route::get('inspectoragendas/list', 'InspectorAgendaController@list')->name('inspectoragendas.view');
@@ -67,7 +69,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('inspectoragendas', 'InspectorAgendaController');
     Route::resource('contracts', 'ContractController');
 
-    Route::get('datatable/{model}/{entity}/{identificador?}/{relations?}', 'GeneralController@datatable')->name('datatable');
+    Route::get('datatable/{model}/{entity}/{identificador?}/{relations?}/{where?}', 'GeneralController@datatable')->name('datatable');
 });
 
 

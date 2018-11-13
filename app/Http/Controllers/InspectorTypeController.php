@@ -17,7 +17,7 @@ class InspectorTypeController extends Controller
      */
     public function index()
     {
-        $result = InspectorType::latest()->with('inspection_subtypes')->paginate();
+        $result = InspectorType::all()->count();
 
         return view('inspector_type.index', compact('result'));
     }

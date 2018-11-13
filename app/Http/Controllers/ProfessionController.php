@@ -15,7 +15,7 @@ class ProfessionController extends Controller
      */
     public function index()
     {
-        $result = Profession::latest()->paginate();
+        $result = Profession::all()->count();
 
         return view('profession.index', compact('result'));
     }
@@ -63,6 +63,7 @@ class ProfessionController extends Controller
      */
     public function edit($id)
     {
+        //dd($type);
         $type = Profession::find($id);
         $permissions = Permission::all('name', 'id');
 

@@ -14,6 +14,7 @@ class UserController extends Controller
 {
     use Authorizable;
 
+    private $compania;
     /**
      * Display a listing of the resource.
      *
@@ -22,14 +23,15 @@ class UserController extends Controller
     public function index($company_slug=null)
     {
         if(isset($company_slug)){
-            $companies = Company::where('slug','=',$company_slug)->get();
-            // $company = Company::find($cpy[0]->id);
-            $result = $companies[0]->users;
-            // dd($cpy[0]->users);
+            $companies = Company::select('slug', 'name')->where('companies.slug', $company_slug)->get();
+
+            $result = User::all()->count();
+
             return view('user.index', compact('result', 'companies'));
         }
 
-        $result = User::latest()->paginate();
+        // $result = User::latest()->paginate();
+        $result = User::all()->count();
 
         return view('user.index', compact('result'));
     }
@@ -271,5 +273,24 @@ class UserController extends Controller
         $user->syncRoles($roles);
 
         return $user;
+    }
+
+    public function companyTable($company){
+
+        $result = User::query()
+                ->join('user_company', 'user_company.user_id', '=', 'users.id')
+                ->join('companies', 'companies.id', '=', 'user_company.company_id')
+                ->select('users.*')
+                ->where('companies.slug', '=', $company)
+                ->with('roles')
+                ->get();
+
+        return datatables()
+            ->of($result)
+            ->addColumn('entity', 'users')
+            ->addColumn('action', 'id')
+            ->addColumn('actions', 'shared/_actions')
+            ->rawColumns(['actions'])
+            ->toJson();
     }
 }

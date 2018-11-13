@@ -103,5 +103,6 @@ return[
     'ContractName' => "Nombre del contrato",
     'ContractDate' => "Fecha del contrato",
     'Contract' => 'Contrato|Contratos',
+    'errorClientInactive' => 'No se puede realizar la acción, ya que el cliente esta inactivo',
 ];
 ?>

@@ -26,22 +26,16 @@
                     <th class="text-center">Actions</th>
                 @endcan
             </tr>
-            </thead>
-            
-        </table>
-
-        
+            </thead>   
+        </table>  
     </div>
-    {{-- <div class="text-center">
-            {{ $result->links() }}
-    </div> --}}
 
     <input type="hidden" name="permisos" value="{{ app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('delete_permissions') }}">
 @endsection
 
 @section('scripts')
     <script>  
-        //Se valida el idioma
+        
         $(document).ready(function() {
 
             var dataTableObject = {
@@ -49,13 +43,13 @@
                 serverSide: true,
             };
 
+            //Se valida el idioma
             if(window.Laravel.language == 'es'){
                 dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
             }
 
             @can('delete_permissions')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Permission', 'entity' => 'permissions', 'identificador' => 'name']) }}";
-                //dataTableObject.ajax = "{{ url('datatable/Permission/permissions/name') }}";
                 dataTableObject.columns = [
                     {data: 'id'},
                     {data: 'name'},
@@ -70,10 +64,8 @@
                     {data: 'created_at'},
                 ];
             @endcan
-            
 
-            var table = $('.dataTable').DataTable(dataTableObject);     
-                    
+            var table = $('.dataTable').DataTable(dataTableObject);                   
             new $.fn.dataTable.FixedHeader( table );
         });
     </script>

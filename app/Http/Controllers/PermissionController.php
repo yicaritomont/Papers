@@ -14,9 +14,6 @@ class PermissionController extends Controller
     //
     public function index()
     {
-
-        //$result = Post::latest()->with('user')->paginate();
-        // $result = Permission::latest()->get();
         $result = Permission::all()->count();
         return view('permission.index', compact('result'));
     }

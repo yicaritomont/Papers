@@ -16,7 +16,7 @@ class ContractController extends Controller
      */
     public function index()
     {
-        $result = Contract::latest()->with(['company', 'client'])->paginate();
+        $result = Contract::all()->count();
         
         return view('contract.index', compact('result'));
     }

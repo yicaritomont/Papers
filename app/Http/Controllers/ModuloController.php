@@ -12,7 +12,7 @@ class ModuloController extends Controller
     public function index()
     {
         //$result = Post::latest()->with('user')->paginate();
-        $result = Modulo::latest()->paginate(15);
+        $result = Modulo::all()->count();
         return view('modulo.index', compact('result'));
     }
 
@@ -31,7 +31,7 @@ class ModuloController extends Controller
         $modulo = new Modulo();
 
         $modulo->name   = $request->name;
-        $modulo->state = 1;
+        $modulo->status = 1;
         
         $modulo->save();
         $menssage = \Lang::get('validation.MessageCreated');
@@ -56,7 +56,6 @@ class ModuloController extends Controller
         $modulo = Modulo::findOrFail($id);
 
         $modulo->name   = $request->name;
-        $modulo->state = 1;
         
         $modulo->save();
         $menssage = \Lang::get('validation.MessageCreated');
@@ -71,17 +70,17 @@ class ModuloController extends Controller
         //Valida que exista el servicio
         if($modulo)
         {
-		    switch ($modulo->state) 
+		    switch ($modulo->status) 
 		    {
-			    case 1 : $modulo->state = 0;
+			    case 1 : $modulo->status = 0;
 				         $accion = 'Desactivó';
 				    break;
     			
-			    case 0 : $modulo->state = 1;
+			    case 0 : $modulo->status = 1;
 				         $accion = 'Activó';
 				    break;
     
-			    default : $modulo->state = 0;
+			    default : $modulo->status = 0;
     
 			        break;
 		    } 

@@ -7,6 +7,7 @@ use App\User;
 use App\Role;
 use App\Company;
 use App\Contract;
+use App\Headquarters;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -18,13 +19,9 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //$result = Client::all();
-        $result = Client::with('user')->get();
-        /* $r = Client::join('users', 'users.id', '=', 'clients.user_id')
-            ->select('clients.id', 'identification', 'phone', 'cell_phone', 'slug', 'clients.status', 'clients.created_at', 'users.name AS name')
-            ->get();
-        dd($r);
-        dd($result); */
+
+        $result = Client::all()->count();
+
         return view('client.index', compact('result'));
     }
 
@@ -202,17 +199,21 @@ class ClientController extends Controller
     {
         if($client)
         {
+            //Se activan o desactivan las sedes que tiene el cliente
 		    switch ($client->status) 
 		    {
                 case 1 :
+                    Headquarters::where('client_id', $client->id)->update(['status' => 0]);
                     $client->status = 0;     
 				    break;
     			
                 case 0 :
+                    Headquarters::where('client_id', $client->id)->update(['status' => 1]);
                     $client->status = 1;
 				    break;
     
                 default :
+                    Headquarters::where('client_id', $client->id)->update(['status' => 0]);
                     $client->status = 0;
 			        break;
 		    } 

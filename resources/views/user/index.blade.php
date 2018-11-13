@@ -7,9 +7,9 @@
         <div class="col-md-5">            
 
             @if(isset($companies))
-                <h3 class="modal-title">{{ str_plural(trans('words.User'), $result->count()) }} @lang('words.Of') {{ $companies[0]->name }}  </h3>
+                <h3 class="modal-title">{{ str_plural(trans('words.User'), $result) }} @lang('words.Of') {{ $companies[0]->name }}  </h3>
             @else
-                <h3 class="modal-title">{{ $result->total() }} {{ str_plural('User', $result->count()) }} </h3>
+                <h3 class="modal-title">{{ $result }} {{ str_plural(trans('words.User'), $result) }} </h3>
             @endif
         </div>
         <div class="col-md-7 page-action text-right">
@@ -23,7 +23,7 @@
     </div>
 
     <div class="result-set">
-        <table class="table table-bordered table-striped table-hover" id="data-table">
+        <table class="table table-bordered table-hover dataTable nowrap" id="data-table">
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
@@ -36,48 +36,63 @@
                 @endcan
             </tr>
             </thead>
-            <tbody>
-            @foreach($result as $item)
-                <tr>
-                    <td>{{ $item->id }}</td>
-                    <td>{{ $item->name }}</td>
-                    <td>{{ $item->email }}</td>
-                    <td>{{ $item->roles->implode('name', ', ') }}</td>
-                    <td>{{ $item->created_at->toFormattedDateString() }}</td>
-                    <td>
-                        @can('edit_users')
-                            <a href="{{ route('users.edit', $item->id)  }}" class="btn btn-xs btn-info">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                        @endcan
-                        @can('delete_users')
-                        {!! Form::open( ['method' => 'delete', 'url' => route('users.destroy', ['user' => $item->id]), 'style' => 'display: inline']) !!}                            
-                            @if($item->status == 1)
-                                <button class="btn  btn-xs btn-success"><span class='glyphicon glyphicon-ok-sign'></span></button>
-                            @else
-                                <button class="btn  btn-xs btn-danger"><span class='glyphicon glyphicon-remove-sign'></button>
-                            @endif    
-                        {!! Form::close() !!}
-                        @endcan
-                    </td>  
-                    <!--@can('edit_users')
-                    <td class="text-center">
-                        @include('shared._actions', [
-                            'entity' => 'users',
-                            'id' => $item->id
-                        ])
-                    </td>
-                    @endcan !-->
-                </tr>
-            @endforeach
-            </tbody>
         </table>
-
-        <div class="text-center">
-            @if(!isset($companies))
-                {{ $result->links() }}
-            @endif
-        </div>
     </div>
+@endsection
 
+@section('scripts')
+    <script>  
+        
+        $(document).ready(function() {
+
+            var dataTableObject = {
+                responsive: true,
+                serverSide: true,
+            };
+
+            //Se valida el idioma
+            if(window.Laravel.language == 'es'){
+                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
+            }
+
+            @can('edit_users', 'delete_users')
+                @if(isset($companies))
+                    dataTableObject.ajax = "{{ route('users.companyTable', $companies[0]->slug) }}";
+                @else
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles']) }}";
+                @endif
+
+                dataTableObject.columns = [
+                    {data: 'id'},
+                    {data: 'name'},
+                    {data: 'email'},
+                    {data: 'roles'},
+                    {data: 'created_at'},
+                    {data: 'actions', className: 'text-center'},
+                ];
+                dataTableObject.columnDefs = [{
+                    //En la columna 3 (roles) se recorre el areglo y luego se muestran los nombres de cada posición
+                    targets: 3,
+                    createdCell: function(td, cellData, rowData, row, col){
+                        $(td).html('');
+                        cellData.forEach(function(element){
+                            $(td).append(element.name+' ');
+                        });
+                    }
+                }]
+            @else
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'entity' => 'users']) }}";
+                dataTableObject.columns = [
+                    {data: 'id'},
+                    {data: 'name'},
+                    {data: 'email'},
+                    {data: 'email'},
+                    {data: 'created_at'},
+                ];
+            @endcan          
+
+            var table = $('.dataTable').DataTable(dataTableObject);                       
+            new $.fn.dataTable.FixedHeader( table );
+        });
+    </script>
 @endsection

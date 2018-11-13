@@ -17,8 +17,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        //
-        $result = Menu::latest()->paginate(15);
+        $result = Menu::all()->count();
         return view('menu.index', compact('result'));
     }
 
@@ -29,9 +28,8 @@ class MenuController extends Controller
      */
     public function create()
     {
-        //
-        $modulos            = Modulo::where('state',1)->pluck('name', 'id');
-        $menu               = Menu::where('state',1)->whereRaw('id = menu_id')->pluck('name', 'id');
+        $modulos            = Modulo::where('status',1)->pluck('name', 'id');
+        $menu               = Menu::where('status',1)->whereRaw('id = menu_id')->pluck('name', 'id');
         $cuantos_menu = count($menu);
         if($cuantos_menu<=0)
         {
@@ -118,7 +116,7 @@ class MenuController extends Controller
             $menu->menu_id  = $request->menu_id;
         }
         
-        $menu->state = 1;
+        $menu->status = 1;
         
         $menu->save();
         $menssage = \Lang::get('validation.MessageCreated');
@@ -147,8 +145,8 @@ class MenuController extends Controller
     public function edit($id)
     {
         //
-        $modulos           = Modulo::where('state',1)->pluck('name', 'id');
-        $menu               = Menu::where('state',1)->whereRaw('id = menu_id')->pluck('name', 'id');
+        $modulos           = Modulo::where('status',1)->pluck('name', 'id');
+        $menu               = Menu::where('status',1)->whereRaw('id = menu_id')->pluck('name', 'id');
         $cuantos_menu = count($menu);
         if($cuantos_menu<=0)
         {
@@ -224,7 +222,6 @@ class MenuController extends Controller
         $menu->url   = $request->url;
         $menu->modulo_id   = $request->modulo_id;
         $menu->menu_id  = $request->menu_id;
-        $menu->state = 1;
         
         $menu->save();
         $menssage = \Lang::get('validation.MessageCreated');
@@ -245,17 +242,17 @@ class MenuController extends Controller
         //Valida que exista el servicio
         if($menu)
         {
-		    switch ($menu->state) 
+		    switch ($menu->status) 
 		    {
-			    case 1 : $menu->state = 0;
+			    case 1 : $menu->status = 0;
 				         $accion = 'Desactivó';
 				    break;
     			
-			    case 0 : $menu->state = 1;
+			    case 0 : $menu->status = 1;
 				         $accion = 'Activó';
 				    break;
     
-			    default : $menu->state = 0;
+			    default : $menu->status = 0;
     
 			        break;
 		    } 

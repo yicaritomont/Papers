@@ -43,6 +43,7 @@
             window.Laravel = {!! json_encode([
                 'csrfToken' => csrf_token(),
                 'language' => app()->getLocale(),
+                'url' => URL::to('/')
             ]) !!};
         </script>
     </head>

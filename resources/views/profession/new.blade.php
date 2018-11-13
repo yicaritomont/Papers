@@ -12,7 +12,7 @@
                 </div>
                 <div class="panel-body black-letter">
                     {!! Form::open(['route' => ['professions.store'] ]) !!}
-                        @include('inspector_type._form')
+                        @include('profession._form')
                         <!-- Submit Form Button -->                        
                         {!! Form::submit(trans('words.Create'), ['class' => 'btn-body']) !!}
                     {!! Form::close() !!}

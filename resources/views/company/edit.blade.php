@@ -13,20 +13,7 @@
             <div class="panel-body black-letter">
                 {!! Form::model($company, ['method' => 'PUT', 'route' => ['companies.update',  $company->slug ]]) !!}
                         @include('company._form')
-
-                        <!-- Status of Company Form Select -->
-                        <div class="form-group @if ($errors->has('name')) has-error @endif">
-                            <div>
-                                <input type="radio" id="active" name="status" value="1" {{ $company->status  === 1 ? 'checked' : '' }} />
-                                <label for="active">@lang('words.Active')</label>
-                            </div>
-                            <div>
-                                <input type="radio" id="inactive" name="status" value="0" {{ $company->status === 0 ? 'checked' : '' }} />
-                                <label for="inactive">@lang('words.Inactive')</label>
-                            </div>
-                            @if ($errors->has('status')) <p class="help-block">{{ $errors->first('status') }}</p> @endif
-                        </div>
-
+                        
                         <!-- Submit Form Button -->                           
                         <input class="btn-body" type="submit" value="@lang('words.SaveChanges')">
                 {!! Form::close() !!}

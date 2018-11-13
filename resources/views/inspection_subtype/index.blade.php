@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.InspectionSubtype',$result->count()) }}</h3>
+            <h3 class="modal-title">{{ $result }} {{ trans_choice('words.InspectionSubtype',$result) }}</h3>
         </div>
         <div class="col-md-7 page-action text-right">
             @can('add_inspectionsubtypes')
@@ -15,7 +15,7 @@
     </div>
 
     <div class="result-set">
-        <table class="table table-bordered table-striped table-hover" id="data-table">
+        <table class="table table-bordered table-hover dataTable nowrap" id="data-table">
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
@@ -27,30 +27,47 @@
                 @endcan
             </tr>
             </thead>
-            <tbody>
-                @foreach($result as $item)
-                <tr>
-                    <td>{{ $item->id }}</td>
-                    <td>{{ $item->name }}</td>
-                    <td>{{ $item->inspection_types['name'] }}</td>
-                    <td>{{ $item->created_at->toFormattedDateString() }}</td>
-
-                    @can('edit_inspectionsubtypes','delete_inspectionsubtypes')
-                        <td class="text-center">
-                            @include('shared._actions', [
-                                'entity' => 'inspectionsubtypes',
-                                'id' => $item->id
-                            ])
-                        </td>
-                    @endcan
-                </tr>
-                @endforeach
-            </tbody>
         </table>
-
-        <div class="text-center">
-            {{ $result->links() }}
-        </div>
     </div>
 
+@endsection
+
+@section('scripts')
+    <script>  
+        
+        $(document).ready(function() {
+
+            var dataTableObject = {
+                responsive: true,
+                serverSide: true,
+            };
+
+            //Se valida el idioma
+            if(window.Laravel.language == 'es'){
+                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
+            }
+
+            @can('edit_inspectionsubtypes','delete_inspectionsubtypes')
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionSubtype', 'entity' => 'inspectionsubtypes', 'identificador' => 'id', 'relations' => 'inspection_types']) }}";
+                dataTableObject.columns = [
+                    {data: 'id'},
+                    {data: 'name'},
+                    {data: 'inspection_types.name'},
+                    {data: 'created_at'},
+                    {data: 'actions', className: 'text-center'},
+                ];
+            @else
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionSubtype', 'entity' => 'inspectionsubtypes']) }}";
+                dataTableObject.columns = [
+                    {data: 'id'},
+                    {data: 'name'},
+                    {data: 'inspection_types.name'},
+                    {data: 'created_at'},
+                ];
+            @endcan
+  
+            var table = $('.dataTable').DataTable(dataTableObject);                  
+            new $.fn.dataTable.FixedHeader( table );
+        });
+    </script>
 @endsection
