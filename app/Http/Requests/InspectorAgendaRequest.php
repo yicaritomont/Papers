@@ -24,11 +24,11 @@ class InspectorAgendaRequest extends FormRequest
     public function rules()
     {
         return [
-            'date' => 'required',
-            'start_time' => 'required',
-            'end_time' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
             'inspector_id' => 'required',
-            'headquarters_id' => 'required',
+            'country' => 'required',
+            'city_id' => 'required',
         ];
     }
 }

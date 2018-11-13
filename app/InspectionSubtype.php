@@ -11,12 +11,11 @@ class InspectionSubtype extends Model
      *
      * @var array
      */
-    protected $fillable = ['inspection_type_id', 'name'
-    ];
+    protected $fillable = ['inspection_type_id', 'name'];
 
-    public function inspectionType()
+    public function inspection_types()
     {
-        return $this->belongsTo('inspection_types','inspection_type_id','id');
+        return $this->belongsTo(InspectionType::class, 'inspection_type_id', 'id');
     }
 
 }

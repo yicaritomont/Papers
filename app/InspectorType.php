@@ -13,12 +13,18 @@ class InspectorType extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name',
+        'inspection_subtypes_id'
     ];
 
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function inspection_subtypes()
+    {
+        return $this->belongsTo(InspectionSubtype::class, 'inspection_subtypes_id', 'id');
     }
 
 }

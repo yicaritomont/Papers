@@ -2,6 +2,11 @@
 
 @section('title', 'Create')
 
+@section('styles')
+    <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap-datepicker.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap-clockpicker.css')}}">
+@endsection
+
 @section('content')
 
     <div class="col-xs-12 col-sm-8 col-md-6 col-md-offset-3">
@@ -20,4 +25,33 @@
             </div>                 
         
     </div>
+@endsection
+
+@section('scripts')
+
+    <script src="{{asset('js/bootstrap-datepicker.min.js')}}"></script>
+    <script src="{{asset('js/bootstrap-datepicker.es.min.js')}}"></script>
+    <script src="{{asset('js/bootstrap-clockpicker.js')}}"></script>
+    
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            //Campo hora
+            $('.clockpicker').clockpicker();
+
+            //Campo fecha
+            $('.input-group.date').datepicker({
+                autoclose: true,
+                format: 'yyyy-mm-dd',
+                todayHighlight: true,
+                orientation: "bottom auto",
+                @if(app()->getLocale()=='es')
+                language: "es",
+                @endif
+            });
+
+
+        })
+    </script>
 @endsection

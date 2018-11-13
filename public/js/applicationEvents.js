@@ -1,3 +1,5 @@
+
+
 $(window).ready(inicial);
 
 function inicial (argument) 
@@ -183,3 +185,4 @@ function verifyPassword()
             );
     }
 }
+

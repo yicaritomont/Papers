@@ -18,6 +18,7 @@ class CreateAppointmentStatesTable extends Migration
             $table->collation = 'utf8_unicode_ci';
             $table->increments('id');
             $table->string('name')->unique();
+            $table->string('color', 50);
             $table->timestamps();
         });
     }

@@ -13,7 +13,7 @@
                 </div>
                 <div class="panel-body black-letter">
                     {!! Form::model($type,['method' => 'PUT', 'route' => [ 'professions.update', $type->id]]) !!}
-                        @include('inspector_type._form')
+                        @include('profession._form')
 
                         {!! Form::submit(trans('words.SaveChanges'), ['class' => 'btn btn-primary'])!!}
                     {!! Form::close() !!}

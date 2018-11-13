@@ -17,7 +17,7 @@ class ModuloSeeder extends Seeder
 			array(
 				'id'       => 1,
                 'name'     => 'Aplicación',
-                'state' => 1
+                'status' => 1
 			)            
 		);
 

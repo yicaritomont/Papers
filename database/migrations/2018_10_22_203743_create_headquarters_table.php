@@ -19,7 +19,7 @@ class CreateHeadquartersTable extends Migration
             $table->Integer('cities_id')->unsigned();
             $table->string('name', 40);
             $table->string('address', 60);
-            $table->integer('status')->nullable();
+            $table->integer('status')->default('1');
             $table->string('slug', 40)->unique()->nullable();
 
             $table->foreign('client_id')

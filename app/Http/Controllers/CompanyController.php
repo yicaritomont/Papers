@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Company;
 use App\Http\Requests\CompanyRequest;
 use Illuminate\Http\Request;
+use DB;
+use App\Inspector;
 
 class CompanyController extends Controller
 {
@@ -15,9 +17,7 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $result = Company::latest()->paginate(15);
-        //dd($result);
-        return view('company.index', compact('result'));
+        return view('company.index');
     }
 
     /**
@@ -39,7 +39,6 @@ class CompanyController extends Controller
     public function store(CompanyRequest $request)
     {
         $company = Company::create($request->all());
-        $company->status = 1;
         $company->slug = md5($company->id);
         $company->save();
 
@@ -96,8 +95,51 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-        $company->delete();
-        flash()->success(trans_choice('words.Company',1).' '.trans('words.HasEliminated'));
-        return back();
+        if($company)
+        {
+		    switch ($company->status) 
+		    {
+                case 1 :
+                    $company->status = 0; 
+                    $this->inactivateInspcetors(0, $company->id);
+				    break;
+    			
+                case 0 :
+                    $company->status = 1;
+                    $this->inactivateInspcetors(1, $company->id);
+				    break;
+    
+                default :
+                    $company->status = 0;
+                    $this->inactivateInspcetors(0, $company->id);
+			        break;
+		    } 
+    
+		    $company->save();
+            $menssage = \Lang::get('validation.MessageCreated');
+            flash()->success($menssage);
+		    return redirect()->route('companies.index');
+        }
+        else
+        {
+            $menssage = \Lang::get('validation.MessageError');
+            flash()->success($menssage);
+            return redirect()->route('companies.index');
+        }
+    }
+
+    public function inactivateInspcetors($status, $company_id){
+        //Se consultan todos los inspectores de la compañia seleccionada
+        $inspectors = Inspector::join('company_inspector', 'company_inspector.inspector_id', '=', 'inspectors.id')
+                ->select('inspectors.*')
+                ->where('company_inspector.company_id', '=', $company_id)
+                ->get();
+
+        foreach($inspectors as $inspector){
+            //Si el inspector tiene una compañia
+            if($inspector->companies->count() == 1){
+                Inspector::where('id', $inspector->id)->update(['status' => $status]);
+            }
+        }
     }
 }

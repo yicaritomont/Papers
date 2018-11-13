@@ -32,6 +32,6 @@ class CreateLastsPasswordUsersTable extends Migration
     public function down()
     {
         //
-        Schema::drop('password_reminders');
+        Schema::dropIfExists('password_reminders');
     }
 }
