@@ -25,7 +25,7 @@
                                         <img class="img-responsive avatar-view" src="{{asset($usuario->picture)}}" alt="Avatar" title="Change the avatar">
                                     </div>
                                     <h3>{{ strtoupper($usuario->name) }}</h3>
-                                   
+                                   {{$infoInspector->status}}
                                 </div>
                                 <table class="table table-responsive">
                                     <tr>
