@@ -17,9 +17,7 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $result = Company::all()->count();
-        
-        return view('company.index', compact('result'));
+        return view('company.index');
     }
 
     /**

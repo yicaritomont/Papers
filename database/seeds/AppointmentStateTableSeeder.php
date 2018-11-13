@@ -25,7 +25,7 @@ class AppointmentStateTableSeeder extends Seeder
 			),
 			array(
 				'id'         => 3,
-				'name'     => 'PENDIENTE',
+				'name'     => 'SOLICITADO',
 				'color'		=> 'warning',
             ),
             array(

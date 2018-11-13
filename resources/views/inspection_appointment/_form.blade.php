@@ -12,7 +12,6 @@
 
 <div class="form-group @if ($errors->has('inspection_subtype_id')) has-error @endif">
     {!! Form::label('inspection_subtype_id', trans('words.InspectionType')) !!}
-    {{-- {!! Form::select('inspection_subtype_id', null, null, ['class' => 'input-body','require', 'placeholder'=>trans('words.ChooseOption')]) !!} --}}
     <select id="inspection_subtype_id" name="inspection_subtype_id" class="input-body inspection_subtype_id">
         <option selected value>@lang('words.ChooseOption')</option>
     </select>
@@ -35,36 +34,22 @@
     {!! Form::text('date', null, ['class' => 'input-body', 'placeholder' => 'date']) !!}
     @if ($errors->has('date')) <p class="help-block">{{ $errors->first('date') }}</p> @endif
 </div> --}}
-<div class="form-group @if ($errors->has('date')) has-error @endif">
-    {!! Form::label('date', trans('words.Date')) !!}
-    <div class="input-group date">
-        {!! Form::text('date', isset($agenda) ? $agenda['date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+<div class="form-group @if ($errors->has('start_date')) has-error @endif">
+    {!! Form::label('start_date', trans('words.startDate')) !!}
+    <div class="input-group start_date">
+        {!! Form::text('start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
         <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
     </div>
     @if ($errors->has('date')) <p class="help-block">{{ $errors->first('date') }}</p> @endif
 </div>
 
-<div class="form-group @if ($errors->has('start_time')) has-error @endif">
-    {!! Form::label('start_time', trans('words.StartTime')) !!}
-    <div class="input-group clockpicker" data-autoclose="true">
-        {!! Form::text('start_time', isset($agenda) ? $agenda['start_time'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
-        <span class="input-group-addon">
-            <span class="glyphicon glyphicon-time"></span>
-        </span>
+<div class="form-group @if ($errors->has('end_date')) has-error @endif">
+    {!! Form::label('end_date', trans('words.EndDate')) !!}
+    <div class="input-group end_date">
+        {!! Form::text('end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+        <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
     </div>
-    
-    @if ($errors->has('start_time')) <p class="help-block">{{ $errors->first('start_time') }}</p> @endif
-</div>
-
-<div class="form-group @if ($errors->has('end_time')) has-error @endif">
-    {!! Form::label('end_time', trans('words.EndTime')) !!}
-    <div class="input-group clockpicker" data-autoclose="true">
-        {!! Form::text('end_time', isset($agenda) ? $agenda['end_time'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
-        <span class="input-group-addon">
-            <span class="glyphicon glyphicon-time"></span>
-        </span>
-    </div>
-    @if ($errors->has('end_time')) <p class="help-block">{{ $errors->first('end_time') }}</p> @endif
+    @if ($errors->has('date')) <p class="help-block">{{ $errors->first('date') }}</p> @endif
 </div>
 
 @if(isset($agenda))

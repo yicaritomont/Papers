@@ -17,9 +17,7 @@ class InspectorTypeController extends Controller
      */
     public function index()
     {
-        $result = InspectorType::all()->count();
-
-        return view('inspector_type.index', compact('result'));
+        return view('inspector_type.index');
     }
 
     /**

@@ -14,8 +14,7 @@ class PermissionController extends Controller
     //
     public function index()
     {
-        $result = Permission::all()->count();
-        return view('permission.index', compact('result'));
+        return view('permission.index');
     }
 
     public function create()

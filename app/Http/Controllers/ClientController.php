@@ -19,10 +19,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-
-        $result = Client::all()->count();
-
-        return view('client.index', compact('result'));
+        return view('client.index');
     }
 
     /**

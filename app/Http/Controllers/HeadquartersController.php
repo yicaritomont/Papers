@@ -18,9 +18,7 @@ class HeadquartersController extends Controller
      */
     public function index()
     {
-        $result = Headquarters::all()->count();
-
-        return view('headquarters.index', compact('result'));
+        return view('headquarters.index');
     }
 
     /**

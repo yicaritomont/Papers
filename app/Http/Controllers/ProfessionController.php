@@ -15,9 +15,7 @@ class ProfessionController extends Controller
      */
     public function index()
     {
-        $result = Profession::all()->count();
-
-        return view('profession.index', compact('result'));
+        return view('profession.index');
     }
 
      /**

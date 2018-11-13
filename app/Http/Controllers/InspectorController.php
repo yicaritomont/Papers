@@ -24,16 +24,14 @@ class InspectorController extends Controller
      */
     public function index($company_slug=null)
     {
-        $result =Inspector::all()->count();
-
         if(isset($company_slug)){
             $companies = Company::select('slug', 'name')->where('slug','=',$company_slug)->get();
             
-            return view('inspector.index', compact('result', 'companies'));
+            return view('inspector.index', compact('companies'));
         }
 
 
-        return view('inspector.index', compact('result'));
+        return view('inspector.index');
     }
 
     /**

@@ -25,15 +25,10 @@ class UserController extends Controller
         if(isset($company_slug)){
             $companies = Company::select('slug', 'name')->where('companies.slug', $company_slug)->get();
 
-            $result = User::all()->count();
-
-            return view('user.index', compact('result', 'companies'));
+            return view('user.index', compact('companies'));
         }
 
-        // $result = User::latest()->paginate();
-        $result = User::all()->count();
-
-        return view('user.index', compact('result'));
+        return view('user.index');
     }
 
     /**

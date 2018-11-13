@@ -104,5 +104,7 @@ return[
     'ContractDate' => "Date of the contract",
     'Contract' => 'Contract|Contracts',
     'errorClientInactive' => 'The action can not be performed, since the client is inactive',
+    'StartDate' => 'Start Date',
+    'EndDate' => 'End Date',
 ];
 ?>

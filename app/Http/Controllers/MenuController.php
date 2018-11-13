@@ -17,8 +17,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $result = Menu::all()->count();
-        return view('menu.index', compact('result'));
+        return view('menu.index');
     }
 
     /**

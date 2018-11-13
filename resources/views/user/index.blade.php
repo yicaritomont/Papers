@@ -7,9 +7,9 @@
         <div class="col-md-5">            
 
             @if(isset($companies))
-                <h3 class="modal-title">{{ str_plural(trans('words.User'), $result) }} @lang('words.Of') {{ $companies[0]->name }}  </h3>
+                <h3 class="modal-title">{{ str_plural(trans('words.User'), 2) }} @lang('words.Of') {{ $companies[0]->name }}  </h3>
             @else
-                <h3 class="modal-title">{{ $result }} {{ str_plural(trans('words.User'), $result) }} </h3>
+                <h3 class="modal-title"> {{ str_plural(trans('words.User'), 2) }} </h3>
             @endif
         </div>
         <div class="col-md-7 page-action text-right">

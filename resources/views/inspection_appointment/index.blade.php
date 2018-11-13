@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', trans_choice('words.InspectorAgenda', 1))
+@section('title', trans_choice('words.Inspectionappointment', 1))
 
 @section('styles')
     <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap-datepicker.min.css')}}">

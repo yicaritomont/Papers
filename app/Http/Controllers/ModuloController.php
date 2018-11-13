@@ -11,9 +11,7 @@ class ModuloController extends Controller
     //
     public function index()
     {
-        //$result = Post::latest()->with('user')->paginate();
-        $result = Modulo::all()->count();
-        return view('modulo.index', compact('result'));
+        return view('modulo.index');
     }
 
     public function create()

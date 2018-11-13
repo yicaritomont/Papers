@@ -16,9 +16,7 @@ class ContractController extends Controller
      */
     public function index()
     {
-        $result = Contract::all()->count();
-        
-        return view('contract.index', compact('result'));
+        return view('contract.index');
     }
 
     /**

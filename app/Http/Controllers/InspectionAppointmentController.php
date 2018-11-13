@@ -22,6 +22,7 @@ class InspectionAppointmentController extends Controller
      */
     public function index()
     {
+        // dd(Carbon::now);
         $result = InspectionAppointment::latest()->with(['inspector', 'appointmentState', 'inspectionSubtype'])->paginate();
         $inspectors = Inspector::pluck('name', 'id');
         $appointment_states = AppointmentState::pluck('name', 'id');
