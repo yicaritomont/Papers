@@ -17,7 +17,7 @@ class CreateMenusTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('url');
-            $table->integer('state');
+            $table->integer('status');
             $table->integer('menu_id')->unsigned();
             $table->integer('modulo_id')->unsigned();
             $table->timestamps();

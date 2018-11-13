@@ -3,9 +3,10 @@
 @section('title', trans('words.Client'))
 
 @section('content')
+
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ str_plural(trans('words.Client'), $result->count()) }} </h3>
+            <h3 class="modal-title">{{ str_plural(trans('words.Client'), 2) }} </h3>
         </div>
         <div class="col-md-7 page-action text-right">
             @can('add_clients')
@@ -15,46 +16,64 @@
     </div>
 
     <div class="result-set">
-        <table class="table table-bordered table-striped table-hover" id="data-table">
+        <table class="table table-bordered table-hover dataTable nowrap" id="data-table">
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
+                <th>@lang('words.Identification')</th>
                 <th>@lang('words.Name')</th>
-                <th>@lang('words.Lastname')</th>
                 <th>@lang('words.Phone')</th>
                 <th>@lang('words.Email')</th>
                 <th>@lang('words.CellPhone')</th>
                 <th>@lang('words.CreatedAt')</th>
-                @can('edit_posts', 'delete_posts')
+                @can('edit_clients', 'delete_clients')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
             </tr>
             </thead>
-            <tbody>
-            @foreach($result as $item)
-                <tr>
-                    <td>{{ $item->id }}</td>
-                    <td>{{ $item->name }}</td>
-                    <td>{{ $item->lastname }}</td>
-                    <td>{{ $item->phone }}</td>
-                    <td>{{ $item->email }}</td>
-                    <td>{{ $item->cell_phone }}</td>
-                    <td>{{ $item->created_at->toFormattedDateString() }}</td>
-                    @can('edit_clients', 'delete_clients')
-                    <td class="text-center">
-                        @include('shared._actions', [
-                            'entity' => 'clients',
-                            'id' => $item->slug
-                        ])
-                    </td>
-                    @endcan
-                </tr>
-            @endforeach
-            </tbody>
+            
         </table>
-
-        <div class="text-center">
-            {{ $result->links() }}
-        </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>  
+        
+        $(document).ready(function() {
+
+            var dataTableObject = {
+                responsive: true,
+                serverSide: true,
+            };
+
+            //Se valida el idioma
+            if(window.Laravel.language == 'es'){
+                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
+            }
+
+            @can('edit_clients', 'delete_clients')
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}";
+                dataTableObject.columns = [
+                    {data: 'id'},
+                    {data: 'identification'},
+                    {data: 'user.name'},
+                    {data: 'phone'},
+                    {data: 'user.email'},
+                    {data: 'cell_phone'},
+                    {data: 'created_at'},
+                    {data: 'actions', className: 'text-center'},
+                ];
+            @else
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'entity' => 'clients']) }}";
+                dataTableObject.columns = [
+                    {data: 'id'},
+                    {data: 'name'},
+                    {data: 'created_at'},
+                ];
+            @endcan
+            
+            var table = $('.dataTable').DataTable(dataTableObject);              
+            new $.fn.dataTable.FixedHeader( table );
+        });
+    </script>
 @endsection

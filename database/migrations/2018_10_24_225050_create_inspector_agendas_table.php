@@ -16,18 +16,17 @@ class CreateInspectorAgendasTable extends Migration
         Schema::create('inspector_agendas', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('inspector_id')->unsigned();
-            $table->integer('headquarters_id')->unsigned();
-            $table->date('date');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->integer('city_id')->unsigned();
+            $table->date('start_date');
+            $table->date('end_date');
             $table->string('slug', 40)->unique()->nullable();
 
             $table->foreign('inspector_id')
                 ->references('id')->on('inspectors')
                 ->onDelete('cascade');
 
-            $table->foreign('headquarters_id')
-                ->references('id')->on('headquarters')
+            $table->foreign('city_id')
+                ->references('id')->on('cities')
                 ->onDelete('cascade');
             $table->timestamps();
         });

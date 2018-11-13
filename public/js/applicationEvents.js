@@ -1,3 +1,5 @@
+
+
 $(window).ready(inicial);
 
 function inicial (argument) 

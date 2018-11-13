@@ -18,11 +18,7 @@ class HeadquartersController extends Controller
      */
     public function index()
     {
-        $result = Headquarters::latest()->with(['client', 'cities'])->paginate();
-
-        //dd(\App\Cities::all());
-        // dd($result[0]->cities->name);
-        return view('headquarters.index', compact('result'));
+        return view('headquarters.index');
     }
 
     /**
@@ -32,11 +28,14 @@ class HeadquartersController extends Controller
      */
     public function create()
     {
-        $clients = Client::select(DB::raw('CONCAT(name ," ", lastname) AS name'), 'id')->get();
-      /*   dd($headquarters->pluck('nombre_completo', 'id'));
-        $clients = Client::all(); */
-        $cities = Citie::all();
-        //dd($c[0]->name);
+        $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+                        ->select('clients.id AS id', 'users.name AS name')
+                        ->where('clients.status', 1)
+                        ->get()
+                        ->pluck('name', 'id');
+
+        $cities = Citie::all()->pluck('name', 'id');
+        
         return view('headquarters.new', compact(['clients', 'cities']));
     }
 
@@ -48,14 +47,16 @@ class HeadquartersController extends Controller
      */
     public function store(HeadquartersRequest $request)
     {
-        $headquarters = Headquarters::create($request->all());
-        $headquarters->status = 1;
-        $headquarters->slug = md5($headquarters->id);
-        $headquarters->save();
-
-        // $request->user()->posts()->create($request->all());
+        if(Client::findOrFail($request['client_id'])->status == 1){
+            $headquarters = Headquarters::create($request->all());
+            $headquarters->slug = md5($headquarters->id);
+            $headquarters->save();
+            
+            flash(trans('words.Headquarters').' '.trans('words.HasAdded'));
+        }else{
+            flash()->error(trans('words.errorClientInactive'));
+        }
         
-        flash(trans('words.Headquarters').' '.trans('words.HasAdded'));
 
         return redirect()->back(); 
     }
@@ -79,9 +80,14 @@ class HeadquartersController extends Controller
      */
     public function edit(Headquarters $headquarters)
     {
-        $clients = Client::all();
-        $cities = Citie::all();
-        //dd($headquarters);
+        $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+                        ->select('clients.id AS id', 'users.name AS name')
+                        ->where('clients.status', 1)
+                        ->get()
+                        ->pluck('name', 'id');
+
+        $cities = Citie::all()->pluck('name', 'id');
+        
         return view('headquarters.edit', compact(['headquarters', 'clients', 'cities']));
     }
 
@@ -94,12 +100,14 @@ class HeadquartersController extends Controller
      */
     public function update(HeadquartersRequest $request, Headquarters $headquarters)
     {
-        //dd($request->all());
+        if(Client::findOrFail($request['client_id'])->status == 1){
+            $headquarters->update($request->all());
 
-        $headquarters->update($request->all());
+            flash()->success(trans('words.Headquarters').' '.trans('words.HasUpdated'));
+        }else{
+            flash()->error(trans('words.errorClientInactive'));
+        }
 
-        //flash()->success('Client has been updated.');
-        flash()->success(trans('words.Headquarters').' '.trans('words.HasUpdated'));
         return redirect()->route('headquarters.index');
     }
 
@@ -111,9 +119,37 @@ class HeadquartersController extends Controller
      */
     public function destroy(Headquarters $headquarters)
     {
-        //dd($headquarters);
-        $headquarters->delete();
+        if($headquarters)
+        {
+		    switch ($headquarters->status) 
+		    {
+                case 1 :
+                    $headquarters->status = 0;     
+				    break;
+    			
+                case 0 :
+                    $headquarters->status = 1;
+				    break;
+    
+                default :
+                    $headquarters->status = 0;
+			        break;
+		    } 
+    
+		    $headquarters->save();
+            $menssage = \Lang::get('validation.MessageCreated');
+            flash()->success($menssage);
+		    return redirect()->route('headquarters.index');
+        }
+        else
+        {
+            $menssage = \Lang::get('validation.MessageError');
+            flash()->success($menssage);
+            return redirect()->route('headquarters.index');
+        }	
+
+        /* $headquarters->delete();
         flash()->success(trans('words.Headquarters').' '.trans('words.HasEliminated'));
-        return back();
+        return back(); */
     }
 }

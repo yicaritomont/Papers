@@ -32,18 +32,16 @@ class InspectorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($company=null)
+    public function index($company_slug=null)
     {
-        if(isset($company)){
-            $companyObj = Company::where('slug','=',$company)->get();
-            $result = $companyObj[0]->inspectors;
-            // dd($result);
-            return view('inspector.index', compact('result', 'companyObj'));
+        if(isset($company_slug)){
+            $companies = Company::select('slug', 'name')->where('slug','=',$company_slug)->get();
+            
+            return view('inspector.index', compact('companies'));
         }
 
-        $result =Inspector::latest()->with(['profession','inspectorType','companies'])->paginate();
 
-        return view('inspector.index', compact('result'));
+        return view('inspector.index');
     }
 
     /**
@@ -75,12 +73,13 @@ class InspectorController extends Controller
 
         print_r($_POST);
         $this->validate($request, [
-            'name' => 'bail|required|min:2',
-            'identification' => 'required|numeric',
-            'phone' => 'required|string',
-            'addres' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'roles' => 'required',
+            'name'              => 'bail|required|min:2',
+            'identification'    => 'required|unique:inspectors|numeric',
+            'phone'             => 'required|string',
+            'addres'            => 'required|string',
+            'email'             => 'required|email',
+            'profession_id'     => 'required',
+            'inspector_type_id' => 'required'
         ]); 
         
         // Verifica si se recibe un id de inspector 
@@ -216,12 +215,65 @@ class InspectorController extends Controller
      */
     public function destroy($id)
     {
-        if (Inspector::findOrFail($id)->delete()) {
+        $inspector = Inspector::findOrFail($id);
+
+        if($inspector)
+        {
+		    switch ($inspector->status) 
+		    {
+                case 1 :
+                    $inspector->status = 0;     
+				    break;
+    			
+                case 0 :
+                    $inspector->status = 1;
+				    break;
+    
+                default :
+                    $inspector->status = 0;
+			        break;
+		    } 
+    
+		    $inspector->save();
+            $menssage = \Lang::get('validation.MessageCreated');
+            flash()->success($menssage);
+		    return redirect()->route('inspectors.index');
+        }
+        else
+        {
+            $menssage = \Lang::get('validation.MessageError');
+            flash()->success($menssage);
+            return redirect()->route('inspectors.index');
+        }
+
+        //Antigua eliminación
+       /*  if (Inspector::findOrFail($id)->delete()) {
             flash()->success(trans('words.Inspectors').' '.trans('words.HasEliminated'));
         } else {
             flash()->success(trans('words.Inspectors').' '.trans('words.NotDeleted'));
         }
-        return redirect()->back();
+        return redirect()->back(); */
+    }
+
+    public function companyTable($company){
+
+        $result = Inspector::query()
+                ->join('company_inspector', 'company_inspector.inspector_id', '=', 'inspectors.id')
+                ->join('companies', 'companies.id', '=', 'company_inspector.company_id')
+                ->select('inspectors.*')
+                ->where('companies.slug', '=', $company)
+                ->with('companies', 'profession', 'inspectorType')
+                ->get();
+
+        // dd($result);
+
+        return datatables()
+            ->of($result)
+            ->addColumn('entity', 'inspectors')
+            ->addColumn('action', 'id')
+            ->addColumn('actions', 'shared/_actions')
+            ->rawColumns(['actions'])
+            ->toJson();
     }
 
 

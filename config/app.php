@@ -179,9 +179,9 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\MadeMenuProvider::class,
-        Maddhatter\LaravelFullcalendar\ServiceProvider::class,
+        App\Providers\MadeMenuProvider::class,       
         LaravelQRCode\Providers\QRCodeServiceProvider::class,     
+        Yajra\DataTables\DataTablesServiceProvider::class,
     ],
 
     /*
@@ -234,7 +234,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'MadeMenu' => App\Providers\MadeMenuProvider::class,
         'QRCode' => LaravelQRCode\Facades\QRCode::class,  
-
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
 
 ];

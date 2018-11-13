@@ -15,6 +15,7 @@ class UserController extends Controller
 {
     use Authorizable;
 
+    private $compania;
     /**
      * Display a listing of the resource.
      *
@@ -23,16 +24,12 @@ class UserController extends Controller
     public function index($company_slug=null)
     {
         if(isset($company_slug)){
-            $companies = Company::where('slug','=',$company_slug)->get();
-            // $company = Company::find($cpy[0]->id);
-            $result = $companies[0]->users;
-            // dd($cpy[0]->users);
-            return view('user.index', compact('result', 'companies'));
+            $companies = Company::select('slug', 'name')->where('companies.slug', $company_slug)->get();
+
+            return view('user.index', compact('companies'));
         }
 
-        $result = User::latest()->paginate();
-
-        return view('user.index', compact('result'));
+        return view('user.index');
     }
 
     /**
@@ -288,7 +285,24 @@ class UserController extends Controller
 
             return Redirect::to('alertasVeterinario')->with('success_message', 'Ha iniciado Sesión Exitosamente en la Agremiaci&oacute;n '.$asociacion_session->nombre);
         }*/
+    }
 
+    public function companyTable($company){
 
+        $result = User::query()
+                ->join('user_company', 'user_company.user_id', '=', 'users.id')
+                ->join('companies', 'companies.id', '=', 'user_company.company_id')
+                ->select('users.*')
+                ->where('companies.slug', '=', $company)
+                ->with('roles')
+                ->get();
+
+        return datatables()
+            ->of($result)
+            ->addColumn('entity', 'users')
+            ->addColumn('action', 'id')
+            ->addColumn('actions', 'shared/_actions')
+            ->rawColumns(['actions'])
+            ->toJson();
     }
 }
