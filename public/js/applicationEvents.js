@@ -7,6 +7,7 @@ function inicial (argument)
      //Eventos de los botones para solicitud de turno cliente interno
      $('#password_update').keyup(verifyPassword);
      $('#password-confirm').blur(verifyPassword);
+     $('#identificacion_inspector').blur(verifyInspector);
 }
 
 
@@ -186,3 +187,40 @@ function verifyPassword()
     }
 }
 
+function verifyInspector()
+{
+    var idInspector = $(this).val();
+    if(idInspector != "")
+    {
+        $.ajax({                                                    
+            type: "GET",
+            url: obtenerUrl()+"/public/ajxVerifyInspector",   
+            dataType:'json',
+            data: {idInspector:idInspector}
+            }).done(function( response) 
+                {       
+                    if(!jQuery.isEmptyObject(response.notificacion))
+                    { 
+                        renderizarNotificacionModal('modal_notificacion','cont-notificacion-modal',response.notificacion);
+                        $('#id_inspector').val(response.data[0].id);
+                        $('#nombre_inspector').val(response.data[0].name);
+                        $('#profesion_inspector').val(response.data[0].profession_id);
+                        $('#tipo_inspector').val(response.data[0].inspector_type_id);
+                        $('#telefono_inspector').val(response.data[0].phone);
+                        $('#direccion_inspector').val(response.data[0].addres);
+                        $('#correo_inspector').val(response.data[0].email);
+                    }
+                    else
+                    {
+                        $('#id_inspector').val("");
+                        $('#nombre_inspector').val("");
+                        $('#profesion_inspector').val("");
+                        $('#tipo_inspector').val("");
+                        $('#telefono_inspector').val("");
+                        $('#direccion_inspector').val("");
+                        $('#correo_inspector').val("");
+                    }
+                }
+            );
+    }
+}

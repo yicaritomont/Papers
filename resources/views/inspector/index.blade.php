@@ -33,9 +33,9 @@
                 <th>@lang('words.Addres')</th>
                 <th>@lang('words.Email')</th>
                 <th>{{trans_choice('words.Company',2)}}</th>
-                <th>{{trans_choice('words.Profession',1)}}</th>
-                <th>{{trans_choice('words.InspectorType',1)}}</th>
-                <th>@lang('words.CreatedAt')</th>
+                <th>{{trans_choice('words.Profession',2)}}</th>                
+                <th>{{trans_choice('words.InspectorType',2)}}</th>                
+                <th>@lang('words.CreatedAt')</th>               
                 @can('edit_inspectors','delete_inspectors')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
@@ -81,16 +81,26 @@
                     {data: 'created_at'},
                     {data: 'actions', className: 'text-center'},
                 ];
-                dataTableObject.columnDefs = [{
-                    //En la columna 6 (companies) se recorre el areglo y luego se muestran los nombres de cada posición
-                    targets: 6,
-                    createdCell: function(td, cellData, rowData, row, col){
-                        $(td).html('');
-                        cellData.forEach(function(element){
-                            $(td).append(element.name+' ');
-                        });
-                    }
-                }]
+                dataTableObject.columnDefs = [
+                    {
+                        //En la columna 6 (companies) se recorre el areglo y luego se muestran los nombres de cada posición
+                        targets: 6,
+                        createdCell: function(td, cellData, rowData, row, col){
+                            $(td).html('');
+                            cellData.forEach(function(element){
+                                $(td).append(element.name+' ');
+                            });
+                        }
+                    },
+                    {
+                        //En la columna 10 (actions) se agrega el boton de ver inspector
+                        targets: 10,
+                        createdCell: function(td, cellData, rowData, row, col){                        
+                            $(td).append('<a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+rowData.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") @lang("words.Inspectors")</a>');
+                        
+                        }
+                    },
+                ]
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'entity' => 'inspectors']) }}";
                 dataTableObject.columns = [

@@ -54,6 +54,8 @@ return[
     //404 page
     '404' => 'Oops! Looks like you got lost',
     'TakeMeBack' => 'Take Me Back',
+
+
     'Identification' => 'Identification',
     'Phone' => 'Phone',
     'Addres' => 'Addres',
@@ -93,6 +95,12 @@ return[
     'Delete' => 'Delete',
     'Close' => 'Close',
     'WhatYouLike' => 'What would you like to do?',
+
+    'ChangeCompany' => 'Change company in Session',
+    'InspectorExist' => 'Inspector Exist',
+    'InspectorCompany' => 'Relationship inspector-company already exists',
+    'RelationshipInspectorCompany' => 'Relationship inspector-company created',
+
     'calendarView' => 'Calendar view',
     'tableView' => 'Table view',
     'AgendaBusy' => 'The agenda is busy',

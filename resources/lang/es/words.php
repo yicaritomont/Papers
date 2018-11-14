@@ -93,6 +93,11 @@ return[
     'Delete' => 'Eliminar',
     'Close' => 'Cerrar',
     'WhatYouLike' => '¿Qué desea Hacer?',
+
+    'ChangeCompany' => 'Cambiar compañia en sesión',
+    'InspectorExist' => 'Inspector Ya existe',
+    'InspectorCompany' => 'Relación inspector-compañia, ya existe',
+    'RelationshipInspectorCompany' => 'Relación inspector-company creada',
     'calendarView' => 'Vista Calendario',
     'tableView' => 'Vista tabla',
     'AgendaBusy' => 'La agenda está ocupada',

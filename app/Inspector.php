@@ -12,7 +12,7 @@ class Inspector extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'identification', 'phone', 'addres', 'email', 'profession_id', 'inspector_type_id', 'city_id',
+        'id','name', 'identification', 'phone', 'addres', 'email', 'profession_id', 'inspector_type_id', 'city_id','user_id',
     ];
 
     public function profession()
@@ -37,4 +37,6 @@ class Inspector extends Model
     public function inspector_agendas(){
         return $this->hasMany('App\InspectorAgenda');
     }
+
+
 }
