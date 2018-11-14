@@ -70,17 +70,31 @@ class InspectorController extends Controller
      */
     public function store(Request $request)
     {   
-
-        print_r($_POST);
-        $this->validate($request, [
-            'name'              => 'bail|required|min:2',
-            'identification'    => 'required|unique:inspectors|numeric',
-            'phone'             => 'required|string',
-            'addres'            => 'required|string',
-            'email'             => 'required|email',
-            'profession_id'     => 'required',
-            'inspector_type_id' => 'required'
-        ]); 
+        if($request->id_inspector != "")
+        {
+            $this->validate($request, [
+                'name'              => 'bail|required|min:2',
+                'identification'    => 'required|numeric',
+                'phone'             => 'required|string',
+                'addres'            => 'required|string',
+                'email'             => 'required|email',
+                'profession_id'     => 'required',
+                'inspector_type_id' => 'required'
+            ]); 
+        }
+        else
+        {
+            $this->validate($request, [
+                'name'              => 'bail|required|min:2',
+                'identification'    => 'required|unique:inspectors|numeric',
+                'phone'             => 'required|string',
+                'addres'            => 'required|string',
+                'email'             => 'required|email',
+                'profession_id'     => 'required',
+                'inspector_type_id' => 'required'
+            ]); 
+        }
+        
         
         // Verifica si se recibe un id de inspector 
         if($request->id_inspector != "")

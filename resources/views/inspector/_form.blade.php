@@ -20,11 +20,7 @@
     {!! Form::select('inspector_type_id',$inspector_types,null, array('class' => 'input-body','required', 'placeholder' => trans('words.ChooseOption'))) !!}
     @if ($errors->has('inspector_type_id')) <p class="help-block">{{ $errors->first('inspector_type_id') }}</p> @endif
 </div>
-<div class="form-group @if ($errors->has('identification')) has-error @endif">
-    <label for="name">@lang('words.Identification')</label>
-    {!! Form::text('identification', null, ['class' => 'input-body', 'placeholder' => 'Identification']) !!}
-    @if ($errors->has('identification')) <p class="help-block">{{ $errors->first('identification') }}</p> @endif
-</div>
+
 <div class="form-group @if ($errors->has('phone')) has-error @endif">
     <label for="name">@lang('words.Phone')</label>
     {!! Form::text('phone', null, ['class' => 'input-body', 'placeholder' => 'Phone','id' => 'telefono_inspector']) !!}
