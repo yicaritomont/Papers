@@ -105,6 +105,11 @@ class InspectorController extends Controller
             if(count($validaRelacion)<=0)
             {
                 $inspector->companies()->attach($request->companies);
+                //consulta el usuario del inspector
+                $usuarioInsp = usuario_rol::where('user',$request->id_inspector)->where('rol_id',$request->roles[0])->first();
+                $userInspector = User::find($usuarioInsp->user_id);
+                $userInspector->companies()->attach($request->companies);
+                
                 flash()->success(trans('words.RelationshipInspectorCompany'));
             }
             else
