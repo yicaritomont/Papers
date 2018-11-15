@@ -21,17 +21,3 @@
         
     </div>
 @endsection
-
-@section('scripts')
-    <script>
-        $(document).ready(function() {
-        var ValueClient = '{{ old('client_id') }}';
-        var ValueCities = '{{ old('cities_id') }}';
-        
-        if(ValueClient !== '') {
-            $('#client_id').val(ValueClient);
-            $('#cities_id').val(ValueCities);
-        }
-        });
-    </script>
-@endsection

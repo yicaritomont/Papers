@@ -14,7 +14,7 @@
             {!! Form::model($inspector,['method' => 'PUT', 'route' => [ 'inspectors.update', $inspector->id]]) !!}
             @include('inspector._form')
 
-            {!! Form::submit('Save Changes', ['class' => 'btn btn-primary'])!!}
+            {!! Form::submit(trans('words.SaveChanges'), ['class' => 'btn btn-primary'])!!}
             {!! Form::close() !!}
         </div>
     </div>

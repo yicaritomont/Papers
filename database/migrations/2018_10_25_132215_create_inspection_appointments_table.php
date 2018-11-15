@@ -16,11 +16,12 @@ class CreateInspectionAppointmentsTable extends Migration
         Schema::create('inspection_appointments', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('inspector_id');
-            $table->unsignedInteger('appointment_states_id');
+            $table->unsignedInteger('appointment_states_id')->default(1);
             $table->unsignedInteger('appointment_location_id');
-            $table->unsignedInteger('inspection_type_id');
+            $table->unsignedInteger('inspection_subtype_id');
             
-            $table->dateTime('date');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->timestamps();
 
             $table->foreign('inspector_id')
@@ -32,8 +33,8 @@ class CreateInspectionAppointmentsTable extends Migration
             $table->foreign('appointment_location_id')
                 ->references('id')->on('appointment_locations')
                 ->onDelete('cascade');
-            $table->foreign('inspection_type_id')
-                ->references('id')->on('inspection_types')
+            $table->foreign('inspection_subtype_id')
+                ->references('id')->on('inspection_subtypes')
                 ->onDelete('cascade');
                 
         });

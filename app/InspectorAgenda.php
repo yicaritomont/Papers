@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class InspectorAgenda extends Model
 {
 
-    protected $fillable = ['inspector_id', 'headquarters_id', 'date', 'start_time', 'end_time'];
+    protected $fillable = ['inspector_id', 'start_date', 'end_date', 'city_id', 'slug'];
 
     public function getRouteKeyName()
     {
@@ -19,9 +19,14 @@ class InspectorAgenda extends Model
         return $this->belongsTo(Inspector::class);
     }
 
-    public function headquarters()
+    public function city()
     {
-        return $this->belongsTo(Headquarters::class);
+        return $this->belongsTo(Citie::class);
+    }
+
+    public function getFullDateAttribute()
+    {
+        return "{$this->city->name} {$this->city->countries->name}";
     }
 
 }

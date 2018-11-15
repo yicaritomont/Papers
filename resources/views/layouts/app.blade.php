@@ -11,6 +11,7 @@
 
         <title>@yield('title') {{ config('app.name') }}</title>
 
+        @yield('styles')
         <!--  -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
@@ -30,20 +31,26 @@
         <!-- bootstrap-daterangepicker -->
         <link href="{{asset('vendors/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 
-        @yield('styles')
-
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.css')}}" rel="stylesheet">
+
+        <!-- Datatable -->
+        <link rel="stylesheet" type="text/css" href="{{asset('dataTable/css/dataTables.bootstrap.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('dataTable/css/fixedHeader.bootstrap.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('dataTable/css/responsive.bootstrap.min.css')}}">
+
         <script>
             window.Laravel = {!! json_encode([
                 'csrfToken' => csrf_token(),
+                'language' => app()->getLocale(),
+                'url' => URL::to('/')
             ]) !!};
         </script>
     </head>
 
     <body class="{{ Request::path() == 'login' || Request::path() == 'password/reset' ? 'body-content' : '' }} nav-md">
         <div class="container body">
-        @if (Auth::check())
+        @if (Auth::check() && Request::path() != 'elegirCompania')
             <div class="main_container">
                 <div class="col-md-3 left_col">
 
@@ -51,6 +58,7 @@
 
                         <div class="navbar nav_title" style="border: 0;">
                             <a href="{{ route('home') }}" class="site_title"><i class="fa fa-home"></i> </a>
+
                         </div>
 
                         <div class="clearfix"></div>
@@ -63,6 +71,12 @@
                             <div class="profile_info">
                                 <span>@lang('header.Welcome'),</span>
                                 <h2>{{ Auth::user()->name }}</h2>
+                                {{-- Compañia en session --}}
+                                @if(Auth::user()->roles->pluck('id')[0] != 1)
+                                    @if(session()->get('Session_Company') != "")
+                                        <b>{{ App\Company::find(session()->get('Session_Company'))->name }}</b>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                         <!-- /menu profile quick info -->
@@ -282,7 +296,15 @@
                                         <span class=" fa fa-angle-down"></span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">
+
                                         <li><a href="{{route('perfiles.index')}}">@lang('header.Profile')</a></li>
+                                        {{-- Compañia en session --}}
+                                        @if(Auth::user()->roles->pluck('id')[0] != 1)
+                                            @if(session()->get('Session_Company') != "")
+                                                <li><a href="{{route('elegirCompania')}}">@lang('header.ChangeCompany')</a></li>
+                                            @endif
+                                        @endif
+
                                         <li><a href="javascript:;">@lang('header.Help')</a></li>
                                         <li>
                                             <a href="{{ route('logout') }}"
@@ -389,6 +411,7 @@
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.min.js')}}"></script>
+<<<<<<< HEAD
 
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
@@ -396,6 +419,19 @@
     <!-- text editor -->
     <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
 
+=======
+
+    <!-- Datatable -->
+    <script src="{{ asset('dataTable/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/dataTables.fixedHeader.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/responsive.bootstrap.min.js') }}"></script>
+
+    <!-- Js to application -->
+    <script src="{{asset('js/applicationEvents.js')}}"></script>
+
+>>>>>>> upstream/master
 	@yield('scripts')
   </body>
 </html>

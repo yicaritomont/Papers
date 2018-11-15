@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ str_plural(trans('words.Permission'), $result->count()) }} </h3>
+            <h3 class="modal-title"> {{ str_plural(trans('words.Permission'), 2) }} </h3>
         </div>
         <div class="col-md-7 page-action text-right">
             @can('add_permissions')
@@ -15,7 +15,7 @@
     </div>
 
     <div class="result-set">
-        <table class="table table-bordered table-striped table-hover" id="data-table">
+        <table id="dataTable" class="table table-bordered table-hover dataTable nowrap">
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
@@ -26,30 +26,47 @@
                     <th class="text-center">Actions</th>
                 @endcan
             </tr>
-            </thead>
-            <tbody>
-            @foreach($result as $item)
-                <tr>
-                    <td>{{ $item->id }}</td>
-                    <td>{{ $item->name }}</td>                    
-                    <td>{{ $item->created_at->toFormattedDateString() }}</td>
-                    @can('delete_permissions')
-                    <td class="text-center">
-                        @include('shared._actions', [
-                            'entity' => 'permissions',
-                            'id' => $item->name
-                        ])
-                    </td>
-                    @endcan
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-
-        
+            </thead>   
+        </table>  
     </div>
-    <div class="text-center">
-            {{ $result->links() }}
-        </div>
 
+    <input type="hidden" name="permisos" value="{{ app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('delete_permissions') }}">
+@endsection
+
+@section('scripts')
+    <script>  
+        
+        $(document).ready(function() {
+
+            var dataTableObject = {
+                responsive: true,
+                serverSide: true,
+            };
+
+            //Se valida el idioma
+            if(window.Laravel.language == 'es'){
+                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
+            }
+
+            @can('delete_permissions')
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Permission', 'entity' => 'permissions', 'identificador' => 'name']) }}";
+                dataTableObject.columns = [
+                    {data: 'id'},
+                    {data: 'name'},
+                    {data: 'created_at'},
+                    {data: 'actions', className: 'text-center'},
+                ];
+            @else
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Permission', 'entity' => 'permissions']) }}";
+                dataTableObject.columns = [
+                    {data: 'id'},
+                    {data: 'name'},
+                    {data: 'created_at'},
+                ];
+            @endcan
+
+            var table = $('.dataTable').DataTable(dataTableObject);                   
+            new $.fn.dataTable.FixedHeader( table );
+        });
+    </script>
 @endsection

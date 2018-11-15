@@ -9,5 +9,6 @@ return
     'Setting' => 'Herramientas',
     'Help' => 'Ayuda',
     'Logout' => 'Cerrar Sesión',
+    'ChangeCompany' => 'Cambiar de Compañia',
 ];
 ?>

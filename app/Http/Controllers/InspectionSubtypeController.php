@@ -16,9 +16,7 @@ class InspectionSubtypeController extends Controller
      */
     public function index()
     {
-         $result = InspectionSubtype::latest()->paginate();
-
-        return view('inspection_subtype.index', compact('result'));
+        return view('inspection_subtype.index');
     }
 
     /**
@@ -44,7 +42,7 @@ class InspectionSubtypeController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'bail|required|unique:inspection_subtypes|min:2'
+            'name' => 'bail|required|min:2'
         ]);
         if(InspectionSubtype::create($request->except('permision'))) {
            flash(trans('words.InspectionSubtype').' '.trans('words.HasAdded'));

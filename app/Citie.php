@@ -17,4 +17,9 @@ class Citie extends Model
     {
         return $this->hasMany(Headquarters::class);
     }
+
+    public function countries()
+    {
+        return $this->belongsTo(Country::class);
+    }
 }

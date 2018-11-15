@@ -56,6 +56,8 @@ return[
     //404 page
     '404' => 'Oops! Looks like you got lost',
     'TakeMeBack' => 'Take Me Back',
+
+
     'Identification' => 'Identification',
     'Phone' => 'Phone',
     'Addres' => 'Addres',
@@ -84,17 +86,35 @@ return[
     'Activity' => 'Activity',
     'Whatch' => 'Whatch',
     'Of' => 'of',
-    'Inspectionappointment' => 'Inspection Appointment',
+    'Inspectionappointment' => 'Inspection Appointment|Inspection Appointments',
     'AppointmentLocation' => 'Appointment Location',
     'InspectionSubtype' => 'Inspection Subtype|Inspection Subtypes',
     'Email' => 'Email',
     'Date' => 'Date',
     'StartTime' => 'Start Time',
     'EndTime' => 'End Time',
-    'InspectorAgenda' => 'Inspector Agenda',
+    'InspectorAgenda' => "Inspector Agenda|Inspector's Agenda",
     'Delete' => 'Delete',
     'Close' => 'Close',
-    'AvailableAppointments' => 'AvailableAppointments',
     'WhatYouLike' => 'What would you like to do?',
+
+    'ChangeCompany' => 'Change company in Session',
+    'InspectorExist' => 'Inspector Exist',
+    'InspectorCompany' => 'Relationship inspector-company already exists',
+    'RelationshipInspectorCompany' => 'Relationship inspector-company created',
+
+    'calendarView' => 'Calendar view',
+    'tableView' => 'Table view',
+    'AgendaBusy' => 'The agenda is busy',
+    'IncorrectDate' => 'There are no agendas that day',
+    'IncorrectHours' => 'Incorrect hours range',
+    'IncorrectAppointments' => 'The appointment is busy',
+    'AgendaDeleteError' => "There are appointments assigned in the current agenda, you can't delete it.",
+    'ContractName' => "Name of the contract",
+    'ContractDate' => "Date of the contract",
+    'Contract' => 'Contract|Contracts',
+    'errorClientInactive' => 'The action can not be performed, since the client is inactive',
+    'StartDate' => 'Start Date',
+    'EndDate' => 'End Date',
 ];
 ?>
