@@ -36,6 +36,8 @@ return[
     'Status' => 'Estado',
     'Url' => 'URL',
     'Modules' => 'Módulos',
+    'Preformato' => 'Preformato|Preformatos',
+    'Format' => 'Format|Formats',
     'Menu' => 'Menú',
     'Padre' => 'Padre',
     'MenuPadre' => 'Menú Padre',

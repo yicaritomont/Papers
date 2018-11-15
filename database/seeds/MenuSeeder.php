@@ -23,6 +23,8 @@ class MenuSeeder extends Seeder
             ['id' => '8' , 'name' => 'Inspectores' , 'url' => 'inspectors','state' => 1,'menu_id' => 8 , 'modulo_id' => 1],
             ['id' => '9' , 'name' => 'Agenda del inspector' , 'url' => 'inspectoragendas','state' => 1,'menu_id' => 8 , 'modulo_id' => 1],            
             ['id' => '10' , 'name' => 'Citas de Inspección' , 'url' => 'inspectionappointments','state' => 1,'menu_id' => 8 , 'modulo_id' => 1],
+            ['id' => '11' , 'name' => 'Preformatos' , 'url' => 'preformatos','state' => 1,'menu_id' => 1 , 'modulo_id' => 1],
+            ['id' => '12' , 'name' => 'Formatos' , 'url' => 'formatos','state' => 1,'menu_id' => 8 , 'modulo_id' => 1],
 
         ];
 

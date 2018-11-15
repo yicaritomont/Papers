@@ -88,6 +88,11 @@ class Permission extends \Spatie\Permission\Models\Permission
             'add_inspectoragendas',
             'edit_inspectoragendas',
             'delete_inspectoragendas',
+
+            'view_preformatos',
+            'add_preformatos',
+            'edit_preformatos',
+            'delete_preformatos',
         ];
     }
 
