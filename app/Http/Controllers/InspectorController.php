@@ -79,9 +79,9 @@ class InspectorController extends Controller
         $inspector->inspector_type_id = $request->inspector_type_id;
         // if (Inspector::create($request->except('permissions','companies'))) {
         if ($inspector->save()) {
-            flash(trans('words.Inspectors').' '.trans('words.HasAdded'));
+            flash(trans_choice('words.Inspector', 1).' '.trans('words.HasAdded'));
         } else {
-            flash()->error(trans('words.UnableCreate').' '.trans('words.Inspectors'));
+            flash()->error(trans('words.UnableCreate').' '.trans_choice('words.Inspector', 1));
         }
         // $inspector->save();
         $inspector->companies()->attach($request->companies);
@@ -138,7 +138,7 @@ class InspectorController extends Controller
         $inspector->save();
         $inspector->companies()->sync($request->companies);
 
-        flash()->success(trans('words.Inspectors').' '.trans('words.HasUpdated'));
+        flash()->success(trans_choice('words.Inspector', 1).' '.trans('words.HasUpdated'));
 
         return redirect()->route('inspectors.index');
     }

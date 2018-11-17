@@ -2,51 +2,55 @@
 
 @section('title', trans_choice('words.Inspectionappointment', 1))
 
-@section('styles')
-    <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap-datepicker.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap-clockpicker.css')}}">
-
-    <!-- FullCalendar -->
-    <link rel="stylesheet" type="text/css" href="{{asset('css/fullcalendar.min.css')}}">
-@endsection
-
 @section('content')
 
     <div class="msgAlert"></div>    
     
-    <div class="col-md-8 col-md-offset-2">
-        <div class="panel panel-default">
-            <div class="panel-heading">{{-- @lang('words.InspectorAgenda') --}}
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-5">
+                            @if(isset($id))
+                                <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Inspectionappointment', $result->count()) }}  @lang('words.Of') {{ $result[0]->inspector['name'] }}  </h3>
+                            @else
+                                <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Inspectionappointment', $result->count()) }} </h3>
+                            @endif
+                        </div>
+                        <div class="col-md-7 page-action text-right">
+                            @if(isset($id))
+                                <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
+                            @endif
+                        </div>
+                    </div>                        
+                </div>
                 <div class="row">
-                    <div class="col-md-5">
-                        @if(isset($id))
-                            <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Inspectionappointment', $result->count()) }}  @lang('words.Of') {{ $result[0]->inspector['name'] }}  </h3>
-                        @else
-                            <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Inspectionappointment', $result->count()) }} </h3>
-                        @endif
-                        {{-- <h3 class="">@lang('words.AvailableAppointments')</h3> --}}
+                    <div class="col-md-12">
+                        <div class="panel-body">
+                            <div id="calendar"></div>
+                        </div>
                     </div>
-                    <div class="col-md-7 page-action text-right">
-                        @if(isset($id))
-                            <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
-                        @endif
-                    </div>
-                </div>                        
+                </div>
             </div>
-            <div class="panel-body">
-                <div id="calendar"></div>
-            </div>
-            
+
+            <ul style="list-style-type:none">
+                @foreach($appointment_states as $state)
+                    <li><span class="glyphicon glyphicon-bookmark tag-{{ $state->color }}"></span> {{$state->name}}</li>
+                @endforeach
+            </ul>  
         </div>
+    </div>
+
         
-        <ul style="list-style-type:none">
+        {{-- <ul style="list-style-type:none">
             <li><span class="glyphicon glyphicon-bookmark" style="color:#26b99ae0"></span> Activo</li>
             <li><span class="glyphicon glyphicon-bookmark" style="color:#e74c3ce0"></span> Inactivo</li>
             <li><span class="glyphicon glyphicon-bookmark" style="color:#f39c12e0"></span> Pendiente</li>
             <li><span class="glyphicon glyphicon-bookmark" style="color:#3498dbe0"></span> En proceso</li>
             <li><span class="glyphicon glyphicon-bookmark" style="color:#544948e0"></span> Finalizado</li>
-        </ul>  
-    </div>
+        </ul>   --}}
+    {{-- </div> --}}
 
     <!-- Modal Crear -->
     <div class="modal fade" id="modalCreate" role="dialog">
@@ -61,7 +65,7 @@
                 <div class="modal-body">
                     <div class="msgError"></div>
 
-                    {!! Form::open(['route' => ['inspectionappointments.store'], 'class' => 'formCalendar', 'id' => 'formCreateAgenda', 'data-modal'=>'modalCreate']) !!}
+                    {!! Form::open(['route' => ['inspectionappointments.store'], 'class' => 'formCalendar', 'id' => 'formCreateAgenda', 'data-modal'=>'#modalCreate']) !!}
                         @include('inspection_appointment._form')
 
                         <!-- Submit Form Button -->                        
@@ -86,20 +90,73 @@
                     <h3 class="modal-title text-center">@lang('words.WhatYouLike')</h3>
                 </div>
                 <div class="modal-body">
-                        <div class="msgError"></div>
+                    <div class="msgError"></div>
 
-                        {!! Form::open(['method' => 'PUT', 'class' => 'formCalendar', 'id' => 'editAppointment', 'data-modal'=>'modalEditDel']) !!}
-                            @include('inspection_appointment._form')
-                            <!-- Submit Form Button -->                        
-                            {!! Form::submit(trans('words.Edit'), ['class' => 'btn btn-primary']) !!}
-                        {!! Form::close() !!}
-                        
-                        <form method="POST" onsubmit="return confirm('Seguro que quieres borrarlo?')" id="deleteAppointment" class="formCalendar" data-modal="modalEditDel" style="display: inline">
+                    <div class="content-btn">
+                        <button data-toggle="#showCita" class="btn btn-primary showCalendar">@lang("words.Watch")</button>
+                        <form method="POST" id="deleteAppointment" class="formCalendar" data-modal="#modalEditDel" style="display: inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger" id="">@lang('words.Delete')</button>
+                            <button type="button" onclick="confirmModal('#deleteAppointment', '{{trans('words.DeleteMessage')}}', 'warning')" class="btn btn-danger" id="">@lang('words.Delete')</button>
                         </form>
-                    </form>
+                        <div class="btns"></div>
+                    </div>
+
+                    {!! Form::open(['method' => 'PUT', 'class' => 'formCalendar formSlide', 'id' => 'editAppointment', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
+                        {{-- @include('inspection_appointment._form') --}}
+
+                        <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
+                            {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
+                            {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body', 'placeholder'=>trans('words.ChooseOption')]) !!}
+                            @if ($errors->has('inspector_id')) <p class="help-block">{{ $errors->first('inspector_id') }}</p> @endif
+                        </div>
+
+                        <div class="form-group @if ($errors->has('start_date')) has-error @endif">
+                            {!! Form::label('start_date', trans('words.StartDate')) !!}
+                            <div class="input-group date">
+                                {!! Form::text('start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                            @if ($errors->has('start_date')) <p class="help-block">{{ $errors->first('start_date') }}</p> @endif
+                        </div>
+
+                        <div class="form-group @if ($errors->has('end_date')) has-error @endif">
+                            {!! Form::label('end_date', trans('words.EndDate')) !!}
+                            <div class="input-group date">
+                                {!! Form::text('end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                            @if ($errors->has('end_date')) <p class="help-block">{{ $errors->first('end_date') }}</p> @endif
+                        </div>
+
+                        <!-- Submit Form Button -->                        
+                        {!! Form::submit(trans('words.Edit'), ['class' => 'btn btn-primary btn-block']) !!}
+                    {!! Form::close() !!}
+
+                    {!! Form::open(['method' => 'PUT', 'class' => 'formCalendar formSlide', 'id' => 'completeAppointment', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
+                        <div class="form-group @if ($errors->has('start_date')) has-error @endif">
+                            {!! Form::label('start_date', trans('words.StartDate')) !!}
+                            <div class="input-group date">
+                                {!! Form::text('start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                            @if ($errors->has('start_date')) <p class="help-block">{{ $errors->first('start_date') }}</p> @endif
+                        </div>
+
+                        <div class="form-group @if ($errors->has('end_date')) has-error @endif">
+                            {!! Form::label('end_date', trans('words.EndDate')) !!}
+                            <div class="input-group date">
+                                {!! Form::text('end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                            @if ($errors->has('end_date')) <p class="help-block">{{ $errors->first('end_date') }}</p> @endif
+                        </div>
+                        <!-- Submit Form Button -->                        
+                        {!! Form::submit(trans('words.Complete'), ['class' => 'btn btn-primary btn-block']) !!}
+                    {!! Form::close() !!}
+
+                    <div class="formSlide" id="showCita" style="display:none"></div>
+                
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">@lang('words.Close')</button>
@@ -116,29 +173,7 @@
 
 @section('scripts')
 
-    <script src="{{asset('js/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{asset('js/bootstrap-datepicker.es.min.js')}}"></script>
-    <script src="{{asset('js/bootstrap-clockpicker.js')}}"></script>
-    
-    @if($errors->any())
-        <script>
-            $('#date').attr('disabled', 'disabled');
-            console.log($('#date').val());
-            $('.input-group.date').append('<input type="hidden" name="date" value="'+$("#date").val()+'">');
-            $('#modalCreate').modal('show');
-        </script>
-    @endif
-
-    <!-- FullCalendar -->
-    <script src="{{asset('js/moment.min.js')}}"></script>
-    <script src="{{asset('js/fullcalendar.min.js')}}"></script>
-
-    {{-- Cambiar el idioma del calendario --}}
-    @if(app()->getLocale()=='es')
-        <script src="{{asset('js/es.js')}}"></script>
-    @endif
-
-    <script type="text/javascript" >
+    <script type="text/javascript">
 
         $(document).ready(function(){
 
@@ -157,9 +192,12 @@
                 @endif
             });
             
-            $(document).on('submit','.formCalendar',function(e){
+            /*$(document).on('submit','.formCalendar',function(e){
+                
+                //console.log(confirm('Seguro que quieres borrarlo?'));
+                
                 var idForm = $(this).attr('id');
-                var modal = this.dataset.modal;
+                var modal = $(this).data('modal');
                 console.log(idForm);
                 console.log(modal);
                 console.log($('#'+idForm).serialize());
@@ -178,7 +216,7 @@
 
                     if(res.error == null){
                         console.log("LLego");
-                        $('#'+modal).modal('hide');
+                        $(modal).modal('hide');
                         $('#'+idForm)[0].reset();
                         $('.msgError').html('');
                         $("#calendar").fullCalendar('refetchEvents');
@@ -186,15 +224,21 @@
                         if(res.status != null){
                             $('.msgAlert').html('');
                             $('.msgAlert').append(alert('success', res.status));
+                            $('.msgAlert').fadeIn('slow');
+
+                            setTimeout(function(){
+                                $('.msgAlert').fadeOut('slow');
+                            },4000);
                         }
                     }else{
                         console.log("Errorrrrr");
                         $('.msgError').html('');
-                        $('.msgError').append(alert('danger', res.error));                       
+                        $('.msgError').append(alert('danger', res.error));
                     }
                 })
                 .fail(function(res){
                     console.log('error\n'+res);
+                    console.log(res);
                 })
                 .always(function(res){
                     console.log('complete\n'+res);
@@ -205,7 +249,7 @@
                         $('.msgError').append(alert('danger', value));
                     });
                 });
-            });
+            });*/
 
             $('.inspection_type_id').on('change',function(event, cita){
                 /*console.log($(this).val());
@@ -243,29 +287,19 @@
             });
         });
 
-        function alert(color, msg){
-            return '<div class="alert alert-'+color+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+msg+'</div>';
-        }
-
         //Calendario
         $("#calendar").fullCalendar({
             selectable: true,//Permite seleccionar
             nowIndicator: true,//Indicador del tiempo actual
             eventLimit: true, //Para que aparezca "ver más" en caso de muchas citas
-            eventRender: function(eventObj, $el) {
-                $el.popover({//Ventana desplegable al hacer hover a un evento
-                    title: eventObj.inspector,
-                    content: eventObj.type+' - '+eventObj.subType,
-                    trigger: 'hover',
-                    placement: 'top',
-                    container: 'body'
-                });
-            },
+            displayEventTime: false,
             @can('add_inspectionappointments')
-                customButtons: {//Boton de crear
+                //Boton de crear
+                customButtons: {
                     createButton: {
                         text: '{{trans('words.Create')}}',
                         click: function() {
+                            $('.msgError').html('');
                             $('#modalCreate #date').removeAttr("disabled");
                             $('#formCreateAgenda')[0].reset();
                             $('#modalCreate').modal('show');
@@ -282,64 +316,88 @@
             events: $('#url').val()+'/events',
 
             eventClick: function(calEvent, jsEvent, view) {
-                //Separar en fecha[0] y hora[1]
+                /*//Separar en fecha[0] y hora[1]
                 var start = calEvent.start.format().split('T');
                 var end =  calEvent.end.format().split('T');
-                console.log(calEvent.inspector_id);
-                console.log(calEvent.inspection_type_id);
-                console.log(calEvent.appointment_location_id);
-                console.log(calEvent.appointment_states_id);
-                console.log(start[0]);
-                console.log(start[1]);
-                console.log(end[0]);
-                console.log(end[1]);
-                
+                console.log(calEvent.contract_id);
+                console.log(calEvent.client_id);*/
+                                
                 //Se rellena el formulario de editar con los valores correspondientes
-                //$('#modalEditDel #date').val(start[0]);
-                $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
-                $('#modalEditDel #inspection_type_id').val(calEvent.inspection_type_id);
+                /* $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
+                $('#modalEditDel #start_date').val(start[0]);
+                $('#modalEditDel #end_date').val(end[0]); */
+
+                /*$('#modalEditDel #inspection_type_id').val(calEvent.inspection_type_id);
                 $('#modalEditDel #inspection_type_id').trigger('change',calEvent);
                 $('#modalEditDel #appointment_location_id').val(calEvent.appointment_location_id);
                 $('#modalEditDel #appointment_states_id').val(calEvent.appointment_states_id);
-                $('#modalEditDel #date').val(start[0]);
-                $('#modalEditDel #start_time').val(start[1]);
-                $('#modalEditDel #end_time').val(end[1]);
+                $('#modalEditDel #estimated_start_date').val(start[0]);
+                $('#modalEditDel #estimated_end_date').val(end[0]);
+                $('#modalEditDel #contract_id').val(calEvent.contract_id);
+                $('#modalEditDel #client_id').val(calEvent.client_id);*/
 
-                console.log('Subtipo: '+calEvent.inspection_subtype_id);
+                //Resetar y setear el action el formulario de completar
+                $('#completeAppointment')[0].reset();
+                $('#completeAppointment').attr('action', $('#url').val()+'/'+calEvent.id+'/complete');
+
                 //Cambiar el action del formulario
-                $('#editAppointment').attr('action',  $('#url').val()+'/'+calEvent.id);
                 $('#deleteAppointment').attr('action', $('#url').val()+'/'+calEvent.id);
+                $('.showCalendar').attr('data-route', $('#url').val()+'/'+calEvent.id);
+                /* $('#editAppointment').attr('action',  $('#url').val()+'/'+calEvent.id);
+                $('#completeAppointment').attr('action', $('#url').val()+'/'+calEvent.id+'/complete');
+ */
+                
+                if(calEvent.appointment_states_id == 1){
+                    $('.btns').html('<button class="btn btn-info btn-form-slide" data-toggle="#completeAppointment">@lang("words.Complete")</button>');
+                }else if(calEvent.appointment_states_id == 2){
+                    $('.btns').html('<button data-toggle="#editAppointment" class="btn btn-primary editCalendar" data-route="'+$('#url').val()+'/'+calEvent.id+'/edit'+'">@lang("words.Edit")</button>');
+                }else{
+                    $('.btns').html('');
+                }
+                console.log('Estado: '+calEvent.appointment_states_id);
 
                 //Se limpia las alertas
                 $('.msgError').html('');
+
+                //Ocultar los formularios desplegables
+                $(".formSlide").hide();
+
                 $('#modalEditDel').modal('show');
             },
             select: function(startDate, endDate, jsEvent, view) {
                 //Separar en fecha[0] y hora[1]
                 var start = startDate.format().split('T');
-                var end =  endDate.format().split('T');
 
-                //console.log(end[0]);
-                //console.log(start[0]);
-                
-                //Validar si se selecciono un día u horas en un rango de dos días
-                if(end[1] != undefined && end[0] == start[0]){
+                var ed = new Date(endDate.format());
+                ed = ed.getFullYear()+'-'+ ("0" + (ed.getMonth() + 1)).slice(-2) +'-'+("0" + ed.getDate()).slice(-2);
+         
+                //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
+                if(start != ed){
                     $('#formCreateAgenda')[0].reset();
                     $('.msgError').html('');
-                    $('#date').val(start[0]);
-                    $('#start_time').val(start[1]);
-                    $('#end_time').val(end[1]);
-                    $('#date').attr('disabled', 'disabled');
-                    $('.input-group.date').append('<input type="hidden" name="date" value="'+start[0]+'">');
+                    $('#estimated_start_date').val(start[0]);
+                    $('#estimated_end_date').val(ed);
                     $('#modalCreate').modal('show');
                 }
             },
             dayClick: function(date, jsEvent, view) {
+                $('.msgError').html('');
                 $('#formCreateAgenda')[0].reset();
-                $('#modalCreate #date').val(date.format());
-                $('#modalCreate #date').removeAttr("disabled");
+                $('#modalCreate #estimated_start_date').val(date.format());
+                $('#modalCreate #estimated_end_date').val(date.format());
                 $('#modalCreate').modal('show');
-            }
+            },
+            editable: true,
+            eventDrop: function(calEvent, delta, revertFunc){
+                var end = calEvent.end.format().split('T');
+
+                $('#editAppointment').attr('action', $('#url').val()+'/'+calEvent.id);
+                $('#modalEditDel #start_date').val(calEvent.start.format());
+                $('#modalEditDel #end_date').val(end[0]);
+                $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
+
+                confirmModal('#editAppointment', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
+            },
         });
 
     </script>   

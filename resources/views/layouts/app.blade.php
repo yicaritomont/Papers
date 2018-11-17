@@ -11,10 +11,12 @@
 
         <title>@yield('title') {{ config('app.name') }}</title>
         
-        @yield('styles')
         <!--  -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/styles.css') }}" rel="stylesheet">   
+        {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
+        <link href="{{ asset('css/styles.css') }}" rel="stylesheet"> 
+        
+        <!-- FullCalendar -->
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/fullCalendar/fullcalendar.min.css')}}">  
         <!-- Bootstrap -->
         <link href="{{asset('vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
         <!-- Font Awesome -->
@@ -32,12 +34,23 @@
         <link href="{{asset('vendors/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 
         <!-- Custom Theme Style -->
-        <link href="{{asset('build/css/custom.css')}}" rel="stylesheet">
+        <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
+
+        <!-- DatePicker -->
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/datePicker/bootstrap-datepicker.min.css')}}">
+    
+        <!-- ClockPicker -->
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/clockPicker/bootstrap-clockpicker.css')}}">
 
         <!-- Datatable -->
-        <link rel="stylesheet" type="text/css" href="{{asset('dataTable/css/dataTables.bootstrap.min.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{asset('dataTable/css/fixedHeader.bootstrap.min.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{asset('dataTable/css/responsive.bootstrap.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/dataTables.bootstrap.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/fixedHeader.bootstrap.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/responsive.bootstrap.min.css')}}">
+
+        <!-- SweetAlert -->
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
+
+        @yield('styles')
 
         <script>
             window.Laravel = {!! json_encode([
@@ -48,7 +61,7 @@
         </script>
     </head>
 
-    <body class="{{ Request::path() == 'login' || Request::path() == 'password/reset' ? 'body-content' : '' }} nav-md">
+    <body class="{{ Request::path() == 'login' || Request::path() == 'password/reset' ? 'body-content' : '' }} nav-md pr-0" style="">
         <div class="container body">
         @if (Auth::check())
             <div class="main_container">
@@ -261,15 +274,13 @@
                 <div class="right_col" role="main">                    
                     
                     <div class="content-page">
-                    <div id="flash-msg">
-                        @include('flash::message')
-                    </div>
-                    @yield('content')
+                        <div id="flash-msg">
+                            @include('flash::message')
+                        </div>
+                        @yield('content')
                     </div>
                 </div>
-            </div>
-            
-            
+            </div>  
         </div>
         
 
@@ -311,19 +322,42 @@
     <script src="{{asset('vendors/moment/min/moment.min.js')}}"></script>
     <script src="{{asset('vendors/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
 
-    <!-- Custom Theme Scripts -->
-    <script src="{{asset('build/js/custom.min.js')}}"></script>
+    <!-- DatePicker -->
+    <script src="{{asset('js/lib/datePicker/bootstrap-datepicker.min.js')}}"></script>
+    <script src="{{asset('js/lib/datePicker/bootstrap-datepicker.es.min.js')}}"></script>
+
+    <!-- ClockPicker -->
+    <script src="{{asset('js/lib/clockPicker/bootstrap-clockpicker.js')}}"></script>
+
+    <!-- FullCalendar -->
+    <script src="{{asset('js/lib/fullCalendar/moment.min.js')}}"></script>
+    <script src="{{asset('js/lib/fullCalendar/fullcalendar.min.js')}}"></script>
+
+    <!-- Cambiar el idioma del calendario -->
+    @if(app()->getLocale()=='es')
+        <script src="{{ asset('js/lib/fullCalendar/es.js') }}"></script>
+        {{-- <script src="{{resource_path('lang/es/dataTable.js')}}"></script> --}}
+    @endif
 	
     <!-- Datatable -->
-    <script src="{{ asset('dataTable/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('dataTable/js/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('dataTable/js/dataTables.fixedHeader.min.js') }}"></script>
-    <script src="{{ asset('dataTable/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('dataTable/js/responsive.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/lib/dataTable/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('js/lib/dataTable/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/lib/dataTable/dataTables.fixedHeader.min.js') }}"></script>
+    <script src="{{ asset('js/lib/dataTable/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('js/lib/dataTable/responsive.bootstrap.min.js') }}"></script>
+    
+    <!-- SweetAlert -->
+    <script src="{{ asset('js/lib/sweetAlert/sweetalert2.min.js') }}"></script>
+    {{-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> --}}
+    {{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"> --}}
     
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
 
 	@yield('scripts')
+
+    <!-- Custom Theme Scripts -->
+    <script src="{{asset('build/js/custom.js')}}"></script>
   </body>
 </html>

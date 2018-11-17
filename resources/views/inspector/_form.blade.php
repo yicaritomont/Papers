@@ -6,12 +6,12 @@
     @if ($errors->has('name')) <p class="help-block">{{ $errors->first('name') }}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('profession_id')) has-error @endif">
-    <label for="name">@lang('words.Profession')</label>
+    <label for="name">{{trans_choice('words.Profession', 1)}}</label>
     {!! Form::select('profession_id',$professions,null, array('class' => 'input-body', 'required', 'placeholder' => trans('words.ChooseOption'))) !!}
     @if ($errors->has('profession_id')) <p class="help-block">{{ $errors->first('profession_id') }}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('inspector_type_id')) has-error @endif">
-    <label for="name">@lang('words.InspectorType')</label>
+    <label for="name">{{trans_choice('words.InspectorType', 1)}}</label>
     {!! Form::select('inspector_type_id',$inspector_types,null, array('class' => 'input-body','required', 'placeholder' => trans('words.ChooseOption'))) !!}
     @if ($errors->has('inspector_type_id')) <p class="help-block">{{ $errors->first('inspector_type_id') }}</p> @endif
 </div>

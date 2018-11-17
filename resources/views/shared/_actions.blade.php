@@ -15,7 +15,7 @@
         {!! Form::close() !!}
 
     @else
-        {!! Form::open( ['method' => 'delete', 'url' => route($entity.'.destroy', ['user' => ${$action}]), 'style' => 'display: inline', 'onSubmit' => 'return confirm("'.trans("words.MsgDel").'")']) !!}
+        {!! Form::open( ['method' => 'delete', 'url' => route($entity.'.destroy', ['user' => ${$action}]), 'style' => 'display: inline', 'onSubmit' => 'return confirm("'.trans("words.DeleteMessage").'")']) !!}
             <button type="submit" class="btn-delete btn btn-xs btn-danger">
                 <i class="glyphicon glyphicon-trash"></i>
             </button>

@@ -2,11 +2,6 @@
 
 @section('title', trans('words.Edit').' '.trans_choice('words.Contract', 1).' '.$contract->name)
 
-@section('styles')
-    <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap-datepicker.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap-clockpicker.css')}}">
-@endsection
-
 @section('content')
     <div class="col-xs-12 col-sm-8 col-md-6 col-md-offset-3">
         <a href="{{ route('contracts.index') }}" class="btn btn-default btn-sm"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
@@ -41,10 +36,6 @@
 @endsection
 
 @section('scripts')
-
-    <script src="{{asset('js/bootstrap-datepicker.min.js')}}"></script>
-    <script src="{{asset('js/bootstrap-datepicker.es.min.js')}}"></script>
-    <script src="{{asset('js/bootstrap-clockpicker.js')}}"></script>
     
     <script type="text/javascript">
 
