@@ -7,7 +7,7 @@
 
 <div class="form-group @if ($errors->has('name')) has-error @endif">
     <label for="name">@lang('words.Name')</label>
-    {!! Form::text('name', null, ['class' => 'input-body', 'placeholder' => 'Name' , 'id' => 'nombre_inspector']) !!}
+    {!! Form::text('name', isset($user) ? $user->name : null, ['class' => 'input-body', 'placeholder' => 'Name' , 'id' => 'nombre_inspector']) !!}
     @if ($errors->has('name')) <p class="help-block">{{ $errors->first('name') }}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('profession_id')) has-error @endif">
@@ -48,14 +48,8 @@
 </div>
 <div class="form-group @if ($errors->has('email')) has-error @endif">
     <label for="name">@lang('words.Email')</label>
-    {!! Form::text('email', null, ['class' => 'input-body', 'placeholder' => 'Email','id' => 'correo_inspector']) !!}
+    {!! Form::text('email', isset($user) ? $user->email : null, ['class' => 'input-body', 'placeholder' => 'Email','id' => 'correo_inspector']) !!}
     @if ($errors->has('email')) <p class="help-block">{{ $errors->first('email') }}</p> @endif
-</div>
-
-<div class="form-group @if ($errors->has('roles')) has-error @endif">
-    {!! Form::label('roles[]', 'Roles') !!}
-    {!! Form::select('roles[]', $roles, isset($user) ? $user->roles->pluck('id')->toArray() : null,  ['class' => 'input-body', 'multiple']) !!}
-    @if ($errors->has('roles')) <p class="help-block">{{ $errors->first('roles') }}</p> @endif
 </div>
 
 @if(Auth::user()->roles->pluck('id')[0] != 1)
