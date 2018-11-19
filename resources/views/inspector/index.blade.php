@@ -65,16 +65,16 @@
                 @if(isset($companies))
                     dataTableObject.ajax = "{{ route('inspectors.companyTable', $companies[0]->slug) }}";
                 @else
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType']) }}";
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
                 @endif
 
                 dataTableObject.columns = [
                     {data: 'id'},
-                    {data: 'name'},
+                    {data: 'user.name'},
                     {data: 'identification'},
                     {data: 'phone'},
                     {data: 'addres'},
-                    {data: 'email'},
+                    {data: 'user.email'},
                     {data: 'companies'},
                     {data: 'profession.name'},
                     {data: 'inspector_type.name'},
@@ -88,7 +88,7 @@
                         createdCell: function(td, cellData, rowData, row, col){
                             $(td).html('');
                             cellData.forEach(function(element){
-                                $(td).append(element.name+' ');
+                                $(td).append(element.user.name+' ');
                             });
                         }
                     },

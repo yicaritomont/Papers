@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Company;
+use App\User;
 use App\Http\Requests\CompanyRequest;
 use Illuminate\Http\Request;
 use DB;
@@ -38,13 +39,34 @@ class CompanyController extends Controller
      */
     public function store(CompanyRequest $request)
     {
-        $company = Company::create($request->all());
-        $company->slug = md5($company->id);
-        $company->save();
+        $request['roles'] = 3;
 
-        flash(trans_choice('words.Company',1).' '.trans('words.HasAdded'));
+        $user = new User();
+        
+        $user->picture = 'images/user.png';
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->get('password'));
 
-        return redirect()->back();  
+        
+        if($user->save())
+        {
+            $request['user_id'] = $user->id;
+            $company = Company::create($request->except('name', 'email'));
+            $company->slug = md5($company->id);
+            $company->save();
+            
+            $user->syncPermissions($request, $user);
+            $user->companies()->attach($company);
+
+            flash(trans_choice('words.Company',1).' '.trans('words.HasAdded'));
+
+            return redirect()->back();  
+
+        }else{
+            flash()->error('Unable to create company.');
+            return redirect()->route('company.index');
+        }
     }
 
     /**
@@ -69,7 +91,8 @@ class CompanyController extends Controller
      */
     public function edit(Company $company)
     {
-        return view('company.edit', compact('company'));
+        $user = $company->user;
+        return view('company.edit', compact('company', 'user'));
     }
 
     /**
@@ -79,9 +102,33 @@ class CompanyController extends Controller
      * @param  \App\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function update(CompanyRequest $request, Company $company)
+    public function update(Request $request, Company $company)
     {
-        $company->update($request->all());
+        $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'phone' => 'required',
+            'email' => 'required|email|unique:users,email,'.$company->user->id,
+            'activity' => 'required',
+        ]);
+
+        $request['roles'] = 3;
+
+        $user = $company->user;
+
+        // Update user
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        // check for password change
+        if($request->get('password')) {
+            $user->password = bcrypt($request->get('password'));
+        }
+
+        $user->syncPermissions($request, $user);
+        $user->save();
+
+        $company->update($request->except('name', 'email'));
 
         flash()->success(trans_choice('words.Company',1).' '.trans('words.HasUpdated'));
         return redirect()->route('companies.index');
