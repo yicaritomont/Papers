@@ -1,8 +1,9 @@
 <?php
 namespace App\Http\Controllers\Auth;
-use Auth;
+//use Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 use Request;
 use Illuminate\Http\Session;
 use App\User;
@@ -114,9 +115,11 @@ class LoginController extends Controller
                 $user->last_login = new DateTime();
                 $user->save();
 
+                auth()->logoutOtherDevices($_POST['password']);
                 // Si el usuario es diferente al administrador, debe seleccionar la compañia en la que iniciara la sesion
                 if(Auth::user()->roles->pluck('id')[0] != 1)
                 {
+                    
                     return redirect()->route('elegirCompania');
                 }
                 if ($days <= 10)
@@ -131,8 +134,4 @@ class LoginController extends Controller
             }
         }
     }
-
-
-
-
 }
