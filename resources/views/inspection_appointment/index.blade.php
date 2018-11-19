@@ -36,16 +36,16 @@
             <div class="panel-body">
                 <div id="calendar"></div>
             </div>
+            <ul style="list-style-type:none">
+                <li><span class="glyphicon glyphicon-bookmark" style="color:#26b99ae0"></span> Activo</li>
+                <li><span class="glyphicon glyphicon-bookmark" style="color:#e74c3ce0"></span> Inactivo</li>
+                <li><span class="glyphicon glyphicon-bookmark" style="color:#f39c12e0"></span> Pendiente</li>
+                <li><span class="glyphicon glyphicon-bookmark" style="color:#3498dbe0"></span> En proceso</li>
+                <li><span class="glyphicon glyphicon-bookmark" style="color:#544948e0"></span> Finalizado</li>
+            </ul>  
             
         </div>
         
-        <ul style="list-style-type:none">
-            <li><span class="glyphicon glyphicon-bookmark" style="color:#26b99ae0"></span> Activo</li>
-            <li><span class="glyphicon glyphicon-bookmark" style="color:#e74c3ce0"></span> Inactivo</li>
-            <li><span class="glyphicon glyphicon-bookmark" style="color:#f39c12e0"></span> Pendiente</li>
-            <li><span class="glyphicon glyphicon-bookmark" style="color:#3498dbe0"></span> En proceso</li>
-            <li><span class="glyphicon glyphicon-bookmark" style="color:#544948e0"></span> Finalizado</li>
-        </ul>  
     </div>
 
     <!-- Modal Crear -->

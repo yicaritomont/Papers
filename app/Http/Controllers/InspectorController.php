@@ -39,8 +39,6 @@ class InspectorController extends Controller
             
             return view('inspector.index', compact('companies'));
         }
-
-
         return view('inspector.index');
     }
 
@@ -51,15 +49,14 @@ class InspectorController extends Controller
      */
     public function create()
     {
-        $inspectors = Inspector::pluck('name', 'id');
+        //$inspectors = Inspector::pluck('name', 'id');
         $professions = Profession::pluck('name','id');
         $inspector_types = InspectorType::pluck('name','id');
         $countries = Country::pluck('name','id');
         $cities = Citie::pluck('name','id');
-        $companies = Company::pluck('name', 'id');        
-        $roles = Role::where('id',2)->pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');  
 
-        return View::make('inspector.new', compact('inspectors','professions','inspector_types','countries','cities','companies','roles'));
+        return View::make('inspector.new', compact('professions','inspector_types','countries','cities','companies'));
     }
 
      /**
@@ -77,7 +74,7 @@ class InspectorController extends Controller
                 'identification'    => 'required|numeric',
                 'phone'             => 'required|string',
                 'addres'            => 'required|string',
-                'email'             => 'required|email',
+                'email'             => 'required|email|unique',
                 'profession_id'     => 'required',
                 'inspector_type_id' => 'required'
             ]); 
@@ -89,7 +86,7 @@ class InspectorController extends Controller
                 'identification'    => 'required|unique:inspectors|numeric',
                 'phone'             => 'required|string',
                 'addres'            => 'required|string',
-                'email'             => 'required|email',
+                'email'             => 'required|email|unique',
                 'profession_id'     => 'required',
                 'inspector_type_id' => 'required'
             ]); 
@@ -105,9 +102,7 @@ class InspectorController extends Controller
             if(count($validaRelacion)<=0)
             {
                 $inspector->companies()->attach($request->companies);
-                //consulta el usuario del inspector
-                $usuarioInsp = usuario_rol::where('user',$request->id_inspector)->where('rol_id',$request->roles[0])->first();
-                $userInspector = User::find($usuarioInsp->user_id);
+                $userInspector = User::find($inspector->user_id);
                 $userInspector->companies()->attach($request->companies);
                 
                 flash()->success(trans('words.RelationshipInspectorCompany'));
@@ -120,50 +115,45 @@ class InspectorController extends Controller
         }
         else
         {
-            $inspector = new Inspector();
-            $inspector->name = $request->name;
-            $inspector->identification = $request->identification;
-            $inspector->phone = $request->phone;
-            $inspector->addres = $request->addres;
-            $inspector->email = $request->email;
-            $inspector->profession_id = $request->profession_id;
-            $inspector->inspector_type_id = $request->inspector_type_id;
-          
-            if ($inspector->save()) 
-            {
-                flash(trans('words.Inspectors').' '.trans('words.HasAdded'));
-                $inspector->companies()->attach($request->companies);
-            } 
-            else 
-            {
-                flash()->error(trans('words.UnableCreate').' '.trans('words.Inspectors'));
-            }
-
             // Crea el usuario para el inspector
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password = bcrypt('secret');
             $user->picture = 'images/user.png';
-            //$user->save();
+            
             if($user->save())
             {
                 // Consulta el identificador del inspector
                 $id_inspector_registrado = Inspector::where('identification',$request->identification)->first();
-             
-                // consulta el identificador del usuario creado
-                $id_usuario_creado = User::where('email',$request->email)->first();
                
-                $user->assignRole('inspector');
-                $user->syncPermissions($request, $id_usuario_creado);
-                $user->companies()->attach($request->companies);
-                $usuario_rol = new usuario_rol();
-                $usuario_rol->user = $id_inspector_registrado->id;
-                $usuario_rol->user_id = $id_usuario_creado->id;
-                $usuario_rol->rol_id = $request->roles[0];
-                $usuario_rol->save();
+                $user->assignRole('Inspector');
+                $user->syncPermissions($request, $user);
+                $user->companies()->attach($request->companies);              
+                
+                $inspector = new Inspector();                
+                $inspector->identification = $request->identification;
+                $inspector->phone = $request->phone;
+                $inspector->addres = $request->addres;                
+                $inspector->profession_id = $request->profession_id;
+                $inspector->inspector_type_id = $request->inspector_type_id;
+                $inspector->user_id = $user->id;
+              
+                if ($inspector->save()) 
+                {
+                    flash(trans('words.Inspectors').' '.trans('words.HasAdded'));
+                    $inspector->companies()->attach($request->companies);
+                } 
+                else 
+                {
+                    flash()->error(trans('words.UnableCreate').' '.trans('words.Inspectors'));
+                }
             }
-            
+            else
+            {
+                flash()->error(trans('words.UnableCreate').' '.trans('words.Inspectors'));
+            }
+                    
         }
         return redirect()->route('inspectors.index');
        
@@ -184,9 +174,10 @@ class InspectorController extends Controller
         $countries = Country::pluck('name','id');
         $cities = Citie::pluck('name','id');
         $permissions = Permission::all('name', 'id');
-        $companies = Company::pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
+        $user = $inspector->user;
 
-        return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities', 'companies'));
+        return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities', 'companies','user'));
     }
 
      /**
@@ -216,9 +207,18 @@ class InspectorController extends Controller
         ]);
         }
         $inspector->fill($request->except('permissions'));
+        
+        $user = $inspector->user;
+        // Update user
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->syncPermissions($request, $user);
+        $user->save();
+        $user->companies()->sync($request->companies);
 
         $inspector->save();
         $inspector->companies()->sync($request->companies);
+
 
         flash()->success(trans('words.Inspectors').' '.trans('words.HasUpdated'));
 
@@ -330,7 +330,12 @@ class InspectorController extends Controller
         // Se trae la información del usuario
         $usuario = User::find($usuarioInspector->user_id);
         $code = "";
-                
+        /*$signa = new ManejadorPeticionesController();
+        $obtenerToken = $signa->obtenerAuthToken();
+        echo "<pre>";
+        print_r($obtenerToken);
+        echo "</pre>";
+        exit();*/
         return view('inspector.card', compact('infoInspector','usuario'));
        
     }

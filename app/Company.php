@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Company extends Model
 {
 
-    protected $fillable = ['name', 'address', 'phone', 'email', 'status', 'activity'];
+    protected $fillable = ['name', 'address', 'phone', 'email', 'status', 'activity','user_id'];
 
     public function getRouteKeyName()
     {
@@ -22,6 +22,10 @@ class Company extends Model
     public function inspectors()
     {
         return $this->belongsToMany(Inspector::class, 'company_inspector');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 
 }

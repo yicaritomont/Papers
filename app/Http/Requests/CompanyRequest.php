@@ -29,7 +29,7 @@ class CompanyRequest extends FormRequest
                 'name' => 'required',
                 'address' => 'required',
                 'phone' => 'required',
-                'email' => 'required|email|unique:companies,email,'.$this->route('company')->id,
+                'email' => 'required|email|unique:users,email,'.$this->route('company')->id,
                 'activity' => 'required',
                 // 'slug' => 'required|unique:companies,slug,'.$this->route('company')->id
             ];
@@ -40,7 +40,7 @@ class CompanyRequest extends FormRequest
             'name' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            'email' => 'required|email|unique:companies,email',
+            'email' => 'required|email|unique:users,email',
             'activity' => 'required',
             // 'slug' => 'required|unique:companies,slug'
         ];

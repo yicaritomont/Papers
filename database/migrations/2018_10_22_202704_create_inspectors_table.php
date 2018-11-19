@@ -14,26 +14,25 @@ class CreateInspectorsTable extends Migration
     public function up()
     {
         Schema::create('inspectors', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
+            $table->increments('id');            
             $table->string('identification');
             $table->string('phone');
-            $table->string('addres');
-            $table->string('email');
+            $table->string('addres');            
             $table->integer('status')->default('1');
             $table->unsignedInteger('profession_id');
             $table->unsignedInteger('inspector_type_id');
-            //$table->unsignedInteger('city_id');
-
+            $table->unsignedInteger('user_id');
+             
              $table->foreign('profession_id')
                 ->references('id')->on('professions')
                 ->onDelete('cascade');
             $table->foreign('inspector_type_id')
                 ->references('id')->on('inspector_types')
+                ->onDelete('cascade');            
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
                 ->onDelete('cascade');
-            /*$table->foreign('city_id')
-                ->references('id')->on('cities')
-                ->onDelete('cascade');*/
 
             $table->timestamps();
         });
