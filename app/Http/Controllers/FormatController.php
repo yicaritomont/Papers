@@ -29,6 +29,9 @@ class FormatController extends Controller
     {
         $format = Format::pluck('name', 'id');
         $formato = Preformato::where('id',1)->first();
+        $formato->format = str_replace(
+          array ('*company_logo*','*iso_logo*','*client*','*project*','*num_page*','*tot_pages*','*contract*','*date_contract*','*date_contractual*','*company*'),
+          array('Empresa Prueba','logo','Facundo Cabrera','Proyecto 1','1','5','6757868','20/11/2018','21/11/2018','Empresa Prueba'),$formato->format);
 
         return view('format.new', compact('format', 'formato'));
     }
