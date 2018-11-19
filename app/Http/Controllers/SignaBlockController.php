@@ -76,11 +76,7 @@ class SignaBlockController
         {
             return false;
         }
-    }
-
-    /**
-     * 
-     */
+    }   
 
 }
 ?>
