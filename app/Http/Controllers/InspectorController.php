@@ -36,7 +36,7 @@ class InspectorController extends Controller
     {
         if(isset($company_slug)){
             $companies = Company::select('slug', 'name')->where('slug','=',$company_slug)->get();
-            
+
             return view('inspector.index', compact('companies'));
         }
 
@@ -51,12 +51,18 @@ class InspectorController extends Controller
      */
     public function create()
     {
+        $cities = Citie::with('country')->get();
+        $cities_contry = [];
+        //echo "<pre>";print_r($cities);"</pre>";exit();
+        foreach ($cities as $key => $value) {
+            $cities[$value->id] = $value->name;
+        }
         $inspectors = Inspector::pluck('name', 'id');
         $professions = Profession::pluck('name','id');
         $inspector_types = InspectorType::pluck('name','id');
         $countries = Country::pluck('name','id');
         $cities = Citie::pluck('name','id');
-        $companies = Company::pluck('name', 'id');        
+        $companies = Company::pluck('name', 'id');
         $roles = Role::where('id',2)->pluck('name', 'id');
 
         return View::make('inspector.new', compact('inspectors','professions','inspector_types','countries','cities','companies','roles'));
@@ -69,7 +75,7 @@ class InspectorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         if($request->id_inspector != "")
         {
             $this->validate($request, [
@@ -80,7 +86,7 @@ class InspectorController extends Controller
                 'email'             => 'required|email',
                 'profession_id'     => 'required',
                 'inspector_type_id' => 'required'
-            ]); 
+            ]);
         }
         else
         {
@@ -92,14 +98,14 @@ class InspectorController extends Controller
                 'email'             => 'required|email',
                 'profession_id'     => 'required',
                 'inspector_type_id' => 'required'
-            ]); 
+            ]);
         }
-        
-        
-        // Verifica si se recibe un id de inspector 
+
+
+        // Verifica si se recibe un id de inspector
         if($request->id_inspector != "")
         {
-            $inspector = Inspector::find($request->id_inspector);            
+            $inspector = Inspector::find($request->id_inspector);
             // Valida la relacion de la compañia con el inspector
             $validaRelacion = company_inspector::where('inspector_id',$inspector->id)->where('company_id',$request->companies)->get();
             if(count($validaRelacion)<=0)
@@ -109,14 +115,14 @@ class InspectorController extends Controller
                 $usuarioInsp = usuario_rol::where('user',$request->id_inspector)->where('rol_id',$request->roles[0])->first();
                 $userInspector = User::find($usuarioInsp->user_id);
                 $userInspector->companies()->attach($request->companies);
-                
+
                 flash()->success(trans('words.RelationshipInspectorCompany'));
             }
             else
             {
                 flash()->error(trans('words.InspectorCompany'));
-            }           
-            
+            }
+
         }
         else
         {
@@ -128,13 +134,13 @@ class InspectorController extends Controller
             $inspector->email = $request->email;
             $inspector->profession_id = $request->profession_id;
             $inspector->inspector_type_id = $request->inspector_type_id;
-          
-            if ($inspector->save()) 
+
+            if ($inspector->save())
             {
                 flash(trans('words.Inspectors').' '.trans('words.HasAdded'));
                 $inspector->companies()->attach($request->companies);
-            } 
-            else 
+            }
+            else
             {
                 flash()->error(trans('words.UnableCreate').' '.trans('words.Inspectors'));
             }
@@ -150,10 +156,10 @@ class InspectorController extends Controller
             {
                 // Consulta el identificador del inspector
                 $id_inspector_registrado = Inspector::where('identification',$request->identification)->first();
-             
+
                 // consulta el identificador del usuario creado
                 $id_usuario_creado = User::where('email',$request->email)->first();
-               
+
                 $user->assignRole('inspector');
                 $user->syncPermissions($request, $id_usuario_creado);
                 $user->companies()->attach($request->companies);
@@ -163,11 +169,11 @@ class InspectorController extends Controller
                 $usuario_rol->rol_id = $request->roles[0];
                 $usuario_rol->save();
             }
-            
+
         }
         return redirect()->route('inspectors.index');
-       
-       
+
+
     }
 
      /**
@@ -204,9 +210,9 @@ class InspectorController extends Controller
 
         //Get the inspector
         $inspector = Inspector::findOrFail($id);
-        
+
         if($inspector->identification != $request->identification) {
-             
+
             $this->validate($request, [
             'name' => 'bail|required|min:2',
             'identification' => 'required|unique:inspectors|numeric',
@@ -238,21 +244,21 @@ class InspectorController extends Controller
 
         if($inspector)
         {
-		    switch ($inspector->status) 
+		    switch ($inspector->status)
 		    {
                 case 1 :
-                    $inspector->status = 0;     
+                    $inspector->status = 0;
 				    break;
-    			
+
                 case 0 :
                     $inspector->status = 1;
 				    break;
-    
+
                 default :
                     $inspector->status = 0;
 			        break;
-		    } 
-    
+		    }
+
 		    $inspector->save();
             $menssage = \Lang::get('validation.MessageCreated');
             flash()->success($menssage);
@@ -296,17 +302,17 @@ class InspectorController extends Controller
     }
 
 
-    /** 
-     * 
+    /**
+     *
     */
     public function VerifyInspector()
     {
         if($_GET['idInspector'] != "")
         {
-            
+
             // search a inspector
-            $inspector = Inspector::where('identification',$_GET['idInspector'])->get();            
-            
+            $inspector = Inspector::where('identification',$_GET['idInspector'])->get();
+
             if(count($inspector)>0)
             {
                 return json_encode($response = ['notificacion' => trans('words.InspectorExist') ,'data' => $inspector ]);
@@ -315,7 +321,7 @@ class InspectorController extends Controller
             {
                 return json_encode($response = []);
             }
-             
+
         }
     }
 
@@ -330,9 +336,9 @@ class InspectorController extends Controller
         // Se trae la información del usuario
         $usuario = User::find($usuarioInspector->user_id);
         $code = "";
-                
+
         return view('inspector.card', compact('infoInspector','usuario'));
-       
+
     }
 
     /**
@@ -342,8 +348,25 @@ class InspectorController extends Controller
     {
         //$url = new QR_Url('https://werneckbh.github.io/qr-code/');
         $url = new QR_Url($_SERVER["HTTP_HOST"].'/roles-permissions/public/validateInspector/'.$id);
-        $url->setSize(4)->setMargin(2)->svg();       
-            
+        $url->setSize(4)->setMargin(2)->svg();
+
     }
-    
+
+    /**
+	 * Resolves the ajax requests
+	 *
+	 * @param  $_GET
+	 * @return Response
+	 */
+    public function asincronia()
+    {
+        if(isset($_GET['country']))
+        {
+            $id = $_GET['country'];
+            $citiesCountry = Citie::where('country','countries_id',$id);
+            $citiesCountry[''] = 'Seleccione..';
+            json_encode($response = ['citiesCountry'=>$citiesCountry]);
+        }
+    return $response;
+    }
 }

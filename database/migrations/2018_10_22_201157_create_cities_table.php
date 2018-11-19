@@ -17,6 +17,7 @@ class CreateCitiesTable extends Migration
             $table->increments('id');
             $table->Integer('countries_id')->unsigned();
             $table->string('name', 45);
+            $table->string('numcode');
 
             $table->foreign('countries_id')
                 ->references('id')->on('countries')

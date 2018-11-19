@@ -21,10 +21,11 @@ class MenuSeeder extends Seeder
             ['id' => '6' , 'name' => 'Sedes' , 'url' => 'headquarters','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
             ['id' => '7' , 'name' => 'Compañias' , 'url' => 'companies','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
             ['id' => '8' , 'name' => 'Inspectores' , 'url' => 'inspectors','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
-            ['id' => '9' , 'name' => 'Agenda del inspector' , 'url' => 'inspectoragendas','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],            
+            ['id' => '9' , 'name' => 'Agenda del inspector' , 'url' => 'inspectoragendas','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
             ['id' => '10' , 'name' => 'Citas de Inspección' , 'url' => 'inspectionappointments','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
             ['id' => '11' , 'name' => 'Contratos' , 'url' => 'contracts','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
-            
+            ['id' => '12' , 'name' => 'Formato expedición e inspección' , 'url' => 'formats', 'status' => 1 , 'menu_id' => 8, 'modulo_id' => 1],
+
         ];
 
 		foreach ($Menus as $Menu) {

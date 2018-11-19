@@ -8,7 +8,7 @@ class Permission extends \Spatie\Permission\Models\Permission
 
     public static function defaultPermissions()
     {
-        
+
         return [
             'view_users',
             'add_users',
@@ -21,7 +21,7 @@ class Permission extends \Spatie\Permission\Models\Permission
             'delete_roles',
 
             'view_permissions',
-            'add_permissions',            
+            'add_permissions',
             'delete_permissions',
 
             'view_modulos',
@@ -88,6 +88,16 @@ class Permission extends \Spatie\Permission\Models\Permission
             'add_inspectoragendas',
             'edit_inspectoragendas',
             'delete_inspectoragendas',
+
+            'view_preformatos',
+            'add_preformatos',
+            'edit_preformatos',
+            'delete_preformatos',
+
+            'view_formats',
+            'add_formats',
+            'edit_formats',
+            'delete_formats',
 
             'view_contracts',
             'add_contracts',
