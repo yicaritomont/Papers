@@ -47,11 +47,11 @@ class LoginController extends Controller
     {
         // Know a name or usnea name is comming
         //print_r($_POST);
-        
+
         // Get data form
         $data = [
             'email'     => $_POST['email'],
-            'password'  => $_POST['password'],            
+            'password'  => $_POST['password'],
             'status'    => 1
         ];
 
@@ -68,7 +68,7 @@ class LoginController extends Controller
             /*if ($user->login_attempts > 2 && $user->login_attempts <5)
             {
                 $now = Carbon::now();
-                $last_login_attempt = new Carbon($user->last_login_attempt);   
+                $last_login_attempt = new Carbon($user->last_login_attempt);
                 if ($now->diffInSeconds($last_login_attempt) < 60)
                 {
                     // Devuelvo un mensaje indicando que debe esperar para volver a intentar
@@ -100,7 +100,7 @@ class LoginController extends Controller
                 // Arrojo mensaje de alerta indicando que la password es incorrecta
                 flash()->error( 'Clave Incorrecta');
                 return redirect()->back();
-                
+
             }
             else
             {
@@ -114,29 +114,26 @@ class LoginController extends Controller
                 $user->last_ip_session = Request::getClientIp();
                 $user->last_login = new DateTime();
                 $user->save();
-                
-                print_r(Auth::user()->roles->pluck('id'));
-                echo "llll".Auth::user()->roles->pluck('id');
-                
+
                 // Si el usuario es diferente al administrador, debe seleccionar la compañia en la que iniciara la sesion
                 if(Auth::user()->roles->pluck('id')[0] != 1)
                 {
-                    return redirect()->route('elegirCompania');      
+                    return redirect()->route('elegirCompania');
                 }
-                if ($days <= 10) 
+                if ($days <= 10)
                 {
                     return redirect()->intended('/home')->with('warning_message', '¡Su contraseña expirará en '.$days.' dias!');
 
-                } 
-                else 
+                }
+                else
                 {
-                    return redirect()->intended('/home');                  
+                    return redirect()->intended('/home');
                 }
             }
-        }        
+        }
     }
 
-    
+
 
 
 }
