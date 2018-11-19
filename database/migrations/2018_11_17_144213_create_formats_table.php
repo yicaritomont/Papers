@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFormatoTable extends Migration
+class CreateFormatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,12 @@ class CreateFormatoTable extends Migration
      */
     public function up()
     {
-        Schema::create('formatos', function (Blueprint $table) {
+        Schema::create('formats', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('preformato_id')->unsigned();
             $table->string('name');
-            $table->longText('formato');
+            $table->longText('format');
             $table->integer('state');
             $table->timestamps();
-
-            $table->foreign('preformato_id')->references('id')->on('preformatos');
         });
     }
 
@@ -32,6 +29,6 @@ class CreateFormatoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('formatos');
+        Schema::dropIfExists('formats');
     }
 }

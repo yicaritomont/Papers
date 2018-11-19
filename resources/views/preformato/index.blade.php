@@ -13,7 +13,7 @@
     </div>
 
     <div class="result-set">
-        <table class="table table-bordered table-striped table-hover" id="data-table">
+        <table class="table table-bordered table-striped table-hover dataTable nowrap" id="data-table">
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
@@ -24,24 +24,44 @@
                 @endcan
             </tr>
             </thead>
-            <tbody>
-                @foreach($result as $item)
-                <tr>
-                    <td>{{ $item->id }}</td>
-                    <td>{{ $item->name }}</td>
-                    <td>{{ $item->created_at->toFormattedDateString() }}</td>
-
-                    @can('edit_preformatos','delete_preformatos')
-                        <td class="text-center">
-                            @include('shared._actions', [
-                                'entity' => 'preformatos',
-                                'id' => $item->id
-                            ])
-                        </td>
-                    @endcan
-                </tr>
-                @endforeach
-            </tbody>
         </table>
     </div>
 @endsection
+
+    @section('scripts')
+        <script>
+
+            $(document).ready(function() {
+
+                var dataTableObject = {
+                    responsive: true,
+                    serverSide: true,
+                };
+
+                //Se valida el idioma
+                if(window.Laravel.language == 'es'){
+                    dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};
+                }
+
+                @can('edit_preformatos','delete_preformatos')
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Preformato', 'entity' => 'preformatos', 'identificador' => 'id']) }}";
+                    dataTableObject.columns = [
+                        {data: 'id'},
+                        {data: 'name'},
+                        {data: 'created_at'},
+                        {data: 'actions', className: 'text-center'},
+                    ];
+                @else
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Preformato', 'entity' => 'preformatos']) }}";
+                    dataTableObject.columns = [
+                        {data: 'id'},
+                        {data: 'name'},
+                        {data: 'created_at'},
+                    ];
+                @endcan
+
+                var table = $('.dataTable').DataTable(dataTableObject);
+                new $.fn.dataTable.FixedHeader( table );
+            });
+        </script>
+    @endsection

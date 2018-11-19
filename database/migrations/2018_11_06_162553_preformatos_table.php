@@ -17,11 +17,14 @@ class PreformatosTable extends Migration
             $table->increments('id');
             $table->integer('inspection_subtype_id')->unsigned();
             $table->string('name');
-            $table->longText('preformato');
+            $table->longText('format');
             $table->integer('state');
             $table->timestamps();
 
-            $table->foreign('inspection_subtype_id')->references('id')->on('inspection_subtypes');
+            $table->foreign('inspection_subtype_id')
+              ->references('id')
+              ->on('inspection_subtypes')
+              ->onDelete('cascade');
         });
     }
 

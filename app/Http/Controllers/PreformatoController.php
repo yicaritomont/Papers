@@ -44,13 +44,13 @@ class PreformatoController extends Controller
         $this->validate($request, [
             'name' => 'required|unique:preformatos|min:2',
             'inspection_subtype_id' => 'required',
-            'preformato' => 'required',
+            'format' => 'required',
         ]);
 
         $preformato = new Preformato();
         $preformato->name = $request->name;
         $preformato->inspection_subtype_id = $request->inspection_subtype_id;
-        $preformato->preformato = $request->preformato;
+        $preformato->format = $request->format;
         $preformato->state = 1;
 
         if ($preformato->save()) {
@@ -96,7 +96,7 @@ class PreformatoController extends Controller
     {
         $preformato = Preformato::findOrFail($id);
 
-        if ($preformato->name != $request->name) 
+        if ($preformato->name != $request->name)
             { $this->validate($request, [
                 'name' => 'required|unique:preformatos|min:2',
                 'inspection_subtype_id' => 'required',

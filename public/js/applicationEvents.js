@@ -9,6 +9,7 @@ function inicial (argument)
      $('#password-confirm').blur(verifyPassword);
      $('#identificacion_inspector').blur(verifyInspector);
       //$('.id_country').change(mostrarCiudades);
+    $('#boton_guardar_html').click(guardarHtml);
 }
 
 
@@ -248,4 +249,43 @@ function verifyInspector()
                 }
             );
     }
+}
+
+function guardarHtml() {
+  camposLlenos();
+  var contenedorHtml = $('#contenedorHtml').html();
+  $('#format_expediction').val(contenedorHtml);
+  $('#form_expediction').submit();
+}
+
+function camposLlenos() {
+  $('body').find('input').each(function(e){
+    let objInput = $(this);
+    if(objInput.val() != '') {
+      objInput.attr('value',objInput.val());
+    }
+  });
+
+  $('body').find('textarea').each(function(e){
+    let objInput = $(this);
+    if(objInput.val() != '') {
+      var valor = objInput.val();
+      objInput.val('');
+      objInput.append(valor);
+    }
+  });
+
+  $('body').find(':checkbox').each(function(e){
+    let objInput = $(this);
+    if(objInput.is(":checked")) {
+      objInput.attr('checked','checked');
+    }
+  });
+
+  $('body').find(':radio').each(function(e){
+    let objInput = $(this);
+    if(objInput.is(":checked")) {
+      objInput.attr('checked','checked');
+    }
+  });
 }

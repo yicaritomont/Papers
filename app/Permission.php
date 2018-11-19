@@ -93,7 +93,12 @@ class Permission extends \Spatie\Permission\Models\Permission
             'add_preformatos',
             'edit_preformatos',
             'delete_preformatos',
-            
+
+            'view_formats',
+            'add_formats',
+            'edit_formats',
+            'delete_formats',
+
             'view_contracts',
             'add_contracts',
             'edit_contracts',

@@ -131,7 +131,7 @@
                                                         </li>
                                                     @endcan
 
-                                                    <!--@can('view_preformatos')
+                                                    @can('view_preformatos')
                                                         <li class="{{ Request::is('preformatos*') ? 'active' : '' }}">
                                                             <a href="{{ route('preformatos.index') }}">
                                                                 <span class="text-info glyphicon glyphicon-pushpin"></span> {{trans_choice('words.Preformato',2)}}
@@ -139,7 +139,7 @@
                                                         </li>
                                                     @endcan
 
-                                                     @can('view_professions')
+                                                     <!--@can('view_professions')
                                                         <li class="{{ Request::is('professions*') ? 'active' : '' }}">
                                                             <a href="{{ route('professions.index') }}">
                                                                 <span class="text-primary glyphicon glyphicon-education"></span>{{trans_choice('words.Profession',2)}}
@@ -411,15 +411,9 @@
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.min.js')}}"></script>
-<<<<<<< HEAD
-
-    <!-- Js to application -->
-    <script src="{{asset('js/applicationEvents.js')}}"></script>
-
+    
     <!-- text editor -->
     <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
-
-=======
 
     <!-- Datatable -->
     <script src="{{ asset('dataTable/js/jquery.dataTables.min.js') }}"></script>
@@ -430,8 +424,6 @@
 
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
-
->>>>>>> upstream/master
 	@yield('scripts')
   </body>
 </html>

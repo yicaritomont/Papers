@@ -28,7 +28,7 @@
 </div>
 <div class="form-group  @if ($errors->has('name')) has-error @endif" id="container_cities">
     <label for="name">@lang('words.City')</label>
-    {!! Form::select('city_id',$cities_country,null, array('class' => 'input-body','required')) !!}
+    {!! Form::select('city_id',$cities,null, array('class' => 'input-body','required')) !!}
     @if ($errors->has('city')) <p class="help-block">{{ $errors->first('city') }}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('identification')) has-error @endif">

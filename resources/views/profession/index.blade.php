@@ -32,8 +32,8 @@
 @endsection
 
 @section('scripts')
-    <script>  
-        
+    <script>
+
         $(document).ready(function() {
 
             var dataTableObject = {
@@ -43,7 +43,7 @@
 
             //Se valida el idioma
             if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
+                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};
             }
 
             @can('edit_professions','delete_professions')
@@ -62,8 +62,8 @@
                     {data: 'created_at'},
                 ];
             @endcan
-            
-            var table = $('.dataTable').DataTable(dataTableObject);                 
+
+            var table = $('.dataTable').DataTable(dataTableObject);
             new $.fn.dataTable.FixedHeader( table );
         });
     </script>

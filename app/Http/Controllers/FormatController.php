@@ -28,9 +28,9 @@ class FormatController extends Controller
     public function create()
     {
         $format = Format::pluck('name', 'id');
-        $preformatos = Preformato::where('id',1)->first();
+        $formato = Preformato::where('id',1)->first();
 
-        return view('format.new', compact('format', 'preformatos'));
+        return view('format.new', compact('format', 'formato'));
     }
 
     /**
@@ -41,8 +41,19 @@ class FormatController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+
+        $format = new Format();
+        $format->name = 'empresa prueba';
+        $format->format = $request->format_expediction;
+        $format->state = 1;
+
+      if ($format->save()) {
+          flash(trans_choice('words.format',1).' '.trans('words.HasAdded'));
+      } else {
+          flash()->error(trans('words.UnableCreate').' '.trans_choice('words.format',1));
+      }
+      return redirect()->route('formats.index');
+  }
 
     /**
      * Display the specified resource.
@@ -63,7 +74,8 @@ class FormatController extends Controller
      */
     public function edit($id)
     {
-        //
+        $formato = Format::find($id);
+        return view('format.edit', compact('formato'));
     }
 
     /**
@@ -75,7 +87,21 @@ class FormatController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $formato = Format::findOrFail($id);
+        if ($formato->name != $request->name){
+           $this->validate($request, [
+                //'name' => 'required|unique:formats|min:2',
+                'format_expediction' => 'required',
+            ]);
+        }
+
+        $formato->name = 'empresa prueba modificada';
+        $formato->format = $request->format_expediction;
+        $formato->state = 1;
+        $formato->save();
+
+        flash()->success(trans_choice('words.Format',1).' '.trans('words.HasUpdated'));
+        return redirect()->route('formats.index');
     }
 
     /**

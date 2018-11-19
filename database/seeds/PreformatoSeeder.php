@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Preformato;
 
 class PreformatoSeeder extends Seeder
 {
@@ -9,14 +10,13 @@ class PreformatoSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public static function run()
     {
         $preformatos = array(
-        {
           array('id' => 1,
             'inspection_subtype_id' => 1,
             'name' => 'expediting & inspection',
-           'preformato' => '<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+           'format' => '<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
 	<tbody>
 		<tr>
 			<td colspan="2" rowspan="2" style="text-align:center">*company_logo*</td>
@@ -374,8 +374,10 @@ H. Final Control</p>
 			<td><input type="text" /></td>
 		</tr>
 	</tbody>
-</table>', 'state' => '1'),
-          });
+</table>',
+'state' => 1),
+
+);
 
           foreach ($preformatos as $preformato) {
             Preformato::create($preformato);
