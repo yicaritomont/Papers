@@ -122,6 +122,7 @@ class DatabaseSeeder extends Seeder
         ChangePasswordDaysSeeder::run();
         ModuloSeeder::run();
         MenuSeeder::run();
-        
+        PreformatoSeeder::run();
+
     }
 }
