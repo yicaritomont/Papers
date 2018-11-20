@@ -7,8 +7,10 @@ use App\Role;
 use App\Company;
 use App\Permission;
 use App\Authorizable;
+use App\UserCompanie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -194,19 +196,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        /*if ( Auth::user()->id == $id ) {
-            flash()->warning('Deletion of currently logged in user is not allowed :(')->important();
-            return redirect()->back();
-        }
-
-        if( User::findOrFail($id)->delete() ) {
-            flash()->success('User has been deleted');
-        } else {
-            flash()->success('User not deleted');
-        }
-
-        return redirect()->back();*/
-
+        Log::info('ID a destruir: '.$id);
         $user = User::find($id);
         
         //Valida que exista el servicio
@@ -229,14 +219,18 @@ class UserController extends Controller
     
 		    $user->save();
             $menssage = \Lang::get('validation.MessageCreated');
-            flash()->success($menssage);
-		    return redirect()->route('users.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }
         else
         {
             $menssage = \Lang::get('validation.MessageError');
-            flash()->success($menssage);
-            return redirect()->route('users.index');
+            /* flash()->success($menssage);
+            return redirect()->route('users.index'); */
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }	
     }
 
@@ -268,6 +262,35 @@ class UserController extends Controller
         $user->syncRoles($roles);
 
         return $user;
+    }
+
+    public function ShowMultiple()
+    { 
+        // Verifica nuevamente que el usuario no sea administrador
+        if(Auth::user()->roles->pluck('id')[0] != 1)
+        {
+            $companias = UserCompanie::with('company')->where('user_id',Auth::user()->id)->where('status',1)->get();            
+            return view('auth.index',compact('companias'));
+        }
+    }
+
+    public function PostMultiple($id)
+    {
+        $company_session = Company::find($id);
+
+        session(['Session_Company' => $id]);
+        //Session::put('Session_Company', $id);
+        flash()->success('Ha iniciado Sesión Exitosamente en la Compañia '.$company_session->name);
+        return redirect()->to('/home');
+
+
+        /*if( Session::has('qr') )
+        {
+            return Redirect::route('examenesequidos.index')->with('success_message','Ahora puede registrar los exámenes que le faltan al équido.');
+        }else{
+
+            return Redirect::to('alertasVeterinario')->with('success_message', 'Ha iniciado Sesión Exitosamente en la Agremiaci&oacute;n '.$asociacion_session->nombre);
+        }*/
     }
 
     public function companyTable($company){

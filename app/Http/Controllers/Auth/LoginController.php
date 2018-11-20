@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Request;
 use Illuminate\Http\Session;
 use App\User;
+use App\UserCompanie;
 use Carbon\Carbon;
 use DateTime;
 use App\ChangePasswordDay;
@@ -45,7 +46,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         // Know a name or usnea name is comming
-        print_r($_POST);
+        //print_r($_POST);
         
         // Get data form
         $data = [
@@ -113,7 +114,15 @@ class LoginController extends Controller
                 $user->last_ip_session = Request::getClientIp();
                 $user->last_login = new DateTime();
                 $user->save();
-     
+                
+                print_r(Auth::user()->roles->pluck('id'));
+                echo "llll".Auth::user()->roles->pluck('id');
+                
+                // Si el usuario es diferente al administrador, debe seleccionar la compañia en la que iniciara la sesion
+                if(Auth::user()->roles->pluck('id')[0] != 1)
+                {
+                    return redirect()->route('elegirCompania');      
+                }
                 if ($days <= 10) 
                 {
                     return redirect()->intended('/home')->with('warning_message', '¡Su contraseña expirará en '.$days.' dias!');
@@ -126,4 +135,8 @@ class LoginController extends Controller
             }
         }        
     }
+
+    
+
+
 }

@@ -19,7 +19,7 @@ class CreateInspectorsTable extends Migration
             $table->string('identification');
             $table->string('phone');
             $table->string('addres');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->integer('status')->default('1');
             $table->unsignedInteger('profession_id');
             $table->unsignedInteger('inspector_type_id');

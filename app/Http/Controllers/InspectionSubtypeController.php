@@ -109,11 +109,14 @@ class InspectionSubtypeController extends Controller
     public function destroy($id)
     {
         if (InspectionSubtype::findOrFail($id)->delete()) {
-            flash()->success(trans('words.InspectionSubtype').' '.trans('words.HasEliminated'));
+            echo json_encode([
+                'status' => trans('words.InspectionSubtype').' '.trans('words.HasEliminated'),
+            ]);
         } else {
-            flash()->success(trans('words.InspectionSubtype').' '.trans('words.NotDeleted'));
-            flash()->success('Inspection type not deleted');
+            echo json_encode([
+                'status' => trans('words.InspectionSubtype').' '.trans('words.NotDeleted'),
+            ]);
         }
-        return redirect()->back();
+
     }
 }

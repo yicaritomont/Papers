@@ -5,7 +5,7 @@
 @section('content')
     <div class="msgAlert"></div>    
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">              
                     <div class="row">
@@ -17,7 +17,7 @@
                             @endif
                         </div>
                         <div class="col-md-4 text-right">
-                            <a class="btn btn-info" href="{{ route('inspectoragendas.view') }}">@lang('words.tableView')</a>
+                            {{-- <a class="btn btn-info" href="{{ route('inspectoragendas.view') }}">@lang('words.tableView')</a> --}}
                             @if(isset($id))
                                 <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
                             @endif
@@ -164,7 +164,8 @@
             selectable: true,//Permite seleccionar
             nowIndicator: true,//Indicador del tiempo actual
             eventLimit: true, //Para que aparezca "ver más" en caso de muchas citas
-            displayEventTime: false,            
+            displayEventTime: false,//Para que no aparezca la fecha en el titulo
+            contentHeight: 'auto', //Height auto
             @can('add_inspectoragendas')
                 //Boton de crear
                 customButtons: {
@@ -209,12 +210,14 @@
                 
                 //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
                 if(start != ed){
-                    limpiarForm(start[0], ed);
+                    //limpiarForm(start[0], ed);
+                    limpiarForm(start[0], ed, '#formCreateAgenda', '', '.city_id');
                     $('#modalCreate').modal('show');
                 }
             },
             dayClick: function(date, jsEvent, view) {
-                limpiarForm(date.format());
+                //limpiarForm(date.format());
+                limpiarForm(date.format(), null, '#formCreateAgenda', '', '.city_id');
                 $('#modalCreate').modal('show');
             },
             editable: true,

@@ -421,57 +421,7 @@ class InspectionAppointmentController extends Controller
      * @return JSON
      */
     public function events()
-    {       
-        /* $solicitadas = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
-        ->join('inspection_subtypes', 'inspection_subtypes.id', '=', 'inspection_appointments.inspection_subtype_id')
-        ->join('inspection_types', 'inspection_types.id', '=', 'inspection_subtypes.inspection_type_id')
-        ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')
-        ->join('contracts', 'contracts.id', '=', 'inspection_appointments.contract_id')
-        ->select('estimated_start_date AS start',
-            'estimated_end_date AS end',
-            'inspectors.name AS title',
-            'inspection_appointments.contract_id',
-            'inspection_appointments.client_id',
-            'inspection_appointments.id',
-            'inspection_types.name AS type',
-            'inspection_subtypes.name AS subType',
-            'inspectors.name AS inspector',
-            'appointment_states.color AS className',
-            'inspector_id',
-            'inspection_subtype_id',
-            'inspection_subtypes.inspection_type_id',
-            'appointment_location_id',
-            'appointment_states_id')
-        ->where([
-            ['appointment_states_id', 1],
-        ]); */
-
-       /*  $result = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
-        ->join('inspection_subtypes', 'inspection_subtypes.id', '=', 'inspection_appointments.inspection_subtype_id')
-        ->join('inspection_types', 'inspection_types.id', '=', 'inspection_subtypes.inspection_type_id')
-        ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')
-        ->join('contracts', 'contracts.id', '=', 'inspection_appointments.contract_id')
-        ->select('start_date AS start',
-            'end_date AS end',
-            'inspectors.name AS title',
-            'inspection_appointments.contract_id',
-            'inspection_appointments.client_id',
-            'inspection_appointments.id',
-            'inspection_types.name AS type',
-            'inspection_subtypes.name AS subType',
-            'inspectors.name AS inspector',
-            'appointment_states.color AS className',
-            'inspector_id',
-            'inspection_subtype_id',
-            'inspection_subtypes.inspection_type_id',
-            'appointment_location_id',
-            'appointment_states_id')
-        ->where('appointment_states_id', 2)
-        ->orWhere('appointment_states_id', 3)
-        ->orWhere('appointment_states_id', 4)
-        ->union($solicitadas)
-        ->get(); */
-
+    {
         $solicitadas = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
             ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
             ->select('estimated_start_date AS start',
@@ -492,7 +442,7 @@ class InspectionAppointmentController extends Controller
                 'inspectors.name AS title',
                 'inspector_id',
                 'inspection_appointments.id',
-                'appointment_states.color AS className',
+                'appointment_states.color',
                 'appointment_states_id')
         ->where('appointment_states_id', 2)
         ->orWhere('appointment_states_id', 3)
@@ -503,7 +453,6 @@ class InspectionAppointmentController extends Controller
         //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario y un alert al className para los colores de los eventos
         foreach($result as $item){
             $item->end = $item->end.'T23:59:59';
-            $item->className = 'alert-'.$item->className;
         }
         
         echo json_encode($result);      

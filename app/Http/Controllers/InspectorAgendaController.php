@@ -300,8 +300,6 @@ class InspectorAgendaController extends Controller
             $result = InspectorAgenda::where('inspector_id','=',$id)->orderBy('date', 'desc')->with('inspector', 'headquarters')->paginate();
             return view('inspector_agenda.'.$view, compact('result', 'id'));
         }elseif($view == 'index'){
-            /* $inspector = Inspector::where('id','=',$id)->get();
-            $result = $inspector[0]->inspector_agendas; */
             $result = InspectorAgenda::where('inspector_id','=',$id)->orderBy('date', 'desc')->with('inspector', 'headquarters')->paginate();
             $headquarters = Headquarters::all();
             $inspectors = Inspector::all();
@@ -345,26 +343,32 @@ class InspectorAgendaController extends Controller
             }
         }
 
-        //Si la agenda ya esta ocupada
-        if($contError > 0){
+        if($request->start_date < date('Y-m-d')){
             echo json_encode([
-                'error' => trans('words.AgendaBusy'),
+                'error' => trans('words.DateGreater'),
             ]);
-        }else{     
+        }else{
+            //Si la agenda ya esta ocupada
+            if($contError > 0){
+                echo json_encode([
+                    'error' => trans('words.AgendaBusy'),
+                ]);
+            }else{     
 
-            //Si paso las validaciones cree una Agenda
-            $agenda = InspectorAgenda::create([
-                'inspector_id'  => $request['inspector_id'],
-                'city_id'       => $request['city_id'],
-                'start_date'    => $request['start_date'],
-                'end_date'      => $request['end_date'],
-            ]);
-            $agenda->slug = md5($agenda->id);
-            $agenda->save();
+                //Si paso las validaciones cree una Agenda
+                $agenda = InspectorAgenda::create([
+                    'inspector_id'  => $request['inspector_id'],
+                    'city_id'       => $request['city_id'],
+                    'start_date'    => $request['start_date'],
+                    'end_date'      => $request['end_date'],
+                ]);
+                $agenda->slug = md5($agenda->id);
+                $agenda->save();
 
-            echo json_encode([
-                'status' => trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasAdded'),
-            ]);
+                echo json_encode([
+                    'status' => trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasAdded'),
+                ]);
+            }
         }
     }
 
@@ -426,9 +430,9 @@ class InspectorAgendaController extends Controller
 
         //Se consulta todas las Agendas filtradas por un inspector
         $inspectorAgendas = InspectorAgenda::where([
-                                        ['inspector_id', '=', $request->input('inspector_id')],
-                                        ['slug', '!=', $slug]
-                                    ])->get();
+            ['inspector_id', '=', $request->input('inspector_id')],
+            ['slug', '!=', $slug]
+        ])->get();
 
         foreach($inspectorAgendas as $agenda){
             if(($request->input('end_date') < $agenda->end_date && $request->input('start_date') < $agenda->start_date && $request->input('end_date') < $agenda->start_date) || ($request->input('end_date') > $agenda->end_date && $request->input('start_date') > $agenda->start_date && $request->input('start_date') > $agenda->end_date)){
@@ -438,72 +442,76 @@ class InspectorAgendaController extends Controller
             }
         }
 
-
-        //Si la agenda ya esta ocupada
-        if($contAgendaError > 0){
+        if($request->start_date < date('Y-m-d')){
             echo json_encode([
-                'error' => trans('words.AgendaBusy'),
-            ]); 
+                'error' => trans('words.DateGreater'),
+            ]);
         }else{
+            //Si la agenda ya esta ocupada
+            if($contAgendaError > 0){
+                echo json_encode([
+                    'error' => trans('words.AgendaBusy'),
+                ]); 
+            }else{
 
-            
-            /* ------------------Validacion editar-citas------------------- */
-            
-            //Se consulta la agenda por el identificador
-            $agenda = InspectorAgenda::where('slug', '=', $slug)->get()[0];
+                
+                /* ------------------Validacion editar-citas------------------- */
+                
+                //Se consulta la agenda por el identificador
+                $agenda = InspectorAgenda::where('slug', '=', $slug)->get()[0];
 
+                
             
-        
-            //Se consultas las citas filtrado por el inspector de la agenda a eliminar
-            $citas = InspectionAppointment::where('inspector_id', '=', $agenda->inspector_id)->get();
-            
-            foreach($citas as $cita){
-                /* if($agenda->date == $cita->date){
-                    if($agenda->start_time <= $cita->start_time && $agenda->end_time >= $cita->end_time){
-                        if($request->start_time > $cita->start_time || $request->end_time < $cita->end_time){
+                //Se consultas las citas filtrado por el inspector de la agenda a eliminar
+                $citas = InspectionAppointment::where('inspector_id', '=', $agenda->inspector_id)->get();
+                
+                foreach($citas as $cita){
+                    /* if($agenda->date == $cita->date){
+                        if($agenda->start_time <= $cita->start_time && $agenda->end_time >= $cita->end_time){
+                            if($request->start_time > $cita->start_time || $request->end_time < $cita->end_time){
+                                $contCitasError++;
+                            }
+                        }
+                    } */
+                    //Se valida si la agenda a editar contiene una o más citas
+                    if($cita->start_date >= $agenda->start_date && $cita->end_date <= $agenda->end_date){
+                        //Comprueba si las fechas ingresadas de la agenda afectan las citas
+                        if($request->start_date > $cita->start_date || $request->end_date < $cita->end_date){
+                            $contCitasError++;
+                        }
+
+                        //Validar si el inspector tiene citas en esa agenda no permita cambiar de inspector la agenda
+                        if($agenda->inspector_id != $request->inspector_id){
                             $contCitasError++;
                         }
                     }
-                } */
-                //Se valida si la agenda a editar contiene una o más citas
-                if($cita->start_date >= $agenda->start_date && $cita->end_date <= $agenda->end_date){
-                    //Comprueba si las fechas ingresadas de la agenda afectan las citas
-                    if($request->start_date > $cita->start_date || $request->end_date < $cita->end_date){
-                        $contCitasError++;
-                    }
-
-                    //Validar si el inspector tiene citas en esa agenda no permita cambiar de inspector la agenda
-                    if($agenda->inspector_id != $request->inspector_id){
-                        $contCitasError++;
-                    }
-                }
-            }
-            
-            if($contCitasError>0){
-                echo json_encode([
-                    'error' => trans('words.AgendaUpdateError'),
-                ]);
-            }else{
-                if($request['drop'] != null){
-                    $agenda->update([
-                        'start_date'    => $request['start_date'],
-                        'end_date'      => $request['end_date'],
-                        'inspector_id'  => $request['inspector_id'],
-                    ]);
-                }else{
-                    $agenda->update($request->all());
                 }
                 
-                /* echo json_encode([
-                    'status' => $request->all(),
-                ]); */
+                if($contCitasError>0){
+                    echo json_encode([
+                        'error' => trans('words.AgendaUpdateError'),
+                    ]);
+                }else{
+                    if($request['drop'] != null){
+                        $agenda->update([
+                            'start_date'    => $request['start_date'],
+                            'end_date'      => $request['end_date'],
+                            'inspector_id'  => $request['inspector_id'],
+                        ]);
+                    }else{
+                        $agenda->update($request->all());
+                    }
+                    
+                    /* echo json_encode([
+                        'status' => $request->all(),
+                    ]); */
 
-                echo json_encode([
-                    'status' => trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasUpdated'),
-                ]);
-            }        
-        }      
-        
+                    echo json_encode([
+                        'status' => trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasUpdated'),
+                    ]);
+                }        
+            }  
+        }
     }
     
     /**

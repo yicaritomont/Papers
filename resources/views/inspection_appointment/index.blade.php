@@ -7,7 +7,7 @@
     <div class="msgAlert"></div>    
     
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
@@ -18,25 +18,21 @@
                                 <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Inspectionappointment', $result->count()) }} </h3>
                             @endif
                         </div>
-                        <div class="col-md-7 page-action text-right">
+                        <div class="col-md-7 text-right">
                             @if(isset($id))
                                 <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
                             @endif
                         </div>
                     </div>                        
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="panel-body">
-                            <div id="calendar"></div>
-                        </div>
-                    </div>
-                </div>
+                <div class="panel-body">
+                    <div id="calendar"></div>
+                </div>        
             </div>
 
             <ul style="list-style-type:none">
                 @foreach($appointment_states as $state)
-                    <li><span class="glyphicon glyphicon-bookmark tag-{{ $state->color }}"></span> {{$state->name}}</li>
+                    <li><span class="glyphicon glyphicon-bookmark" style="color:{{ $state->color }}"></span> {{$state->name}}</li>
                 @endforeach
             </ul>  
         </div>
@@ -65,7 +61,7 @@
                 <div class="modal-body">
                     <div class="msgError"></div>
 
-                    {!! Form::open(['route' => ['inspectionappointments.store'], 'class' => 'formCalendar', 'id' => 'formCreateAgenda', 'data-modal'=>'#modalCreate']) !!}
+                    {!! Form::open(['route' => ['inspectionappointments.store'], 'class' => 'formCalendar', 'id' => 'formCreateAppointmet', 'data-modal'=>'#modalCreate']) !!}
                         @include('inspection_appointment._form')
 
                         <!-- Submit Form Button -->                        
@@ -191,65 +187,6 @@
                 language: "es",
                 @endif
             });
-            
-            /*$(document).on('submit','.formCalendar',function(e){
-                
-                //console.log(confirm('Seguro que quieres borrarlo?'));
-                
-                var idForm = $(this).attr('id');
-                var modal = $(this).data('modal');
-                console.log(idForm);
-                console.log(modal);
-                console.log($('#'+idForm).serialize());
-
-                e.preventDefault();                
-                
-                $.ajax({
-                    url:$(this).attr('action'),
-                    type:'POST',
-                    data:$('#'+idForm).serialize(),
-                    
-                })
-                .done(function(res){
-                    console.log('done\n'+res);
-                    var res = JSON.parse(res);   
-
-                    if(res.error == null){
-                        console.log("LLego");
-                        $(modal).modal('hide');
-                        $('#'+idForm)[0].reset();
-                        $('.msgError').html('');
-                        $("#calendar").fullCalendar('refetchEvents');
-
-                        if(res.status != null){
-                            $('.msgAlert').html('');
-                            $('.msgAlert').append(alert('success', res.status));
-                            $('.msgAlert').fadeIn('slow');
-
-                            setTimeout(function(){
-                                $('.msgAlert').fadeOut('slow');
-                            },4000);
-                        }
-                    }else{
-                        console.log("Errorrrrr");
-                        $('.msgError').html('');
-                        $('.msgError').append(alert('danger', res.error));
-                    }
-                })
-                .fail(function(res){
-                    console.log('error\n'+res);
-                    console.log(res);
-                })
-                .always(function(res){
-                    console.log('complete\n'+res);
-                })
-                .error(function(res){
-                    $('.msgError').html('');
-                    $.each( res.responseJSON.errors, function( key, value ) {
-                        $('.msgError').append(alert('danger', value));
-                    });
-                });
-            });*/
 
             $('.inspection_type_id').on('change',function(event, cita){
                 /*console.log($(this).val());
@@ -292,7 +229,8 @@
             selectable: true,//Permite seleccionar
             nowIndicator: true,//Indicador del tiempo actual
             eventLimit: true, //Para que aparezca "ver más" en caso de muchas citas
-            displayEventTime: false,
+            displayEventTime: false,//Para que no aparezca la fecha en el titulo
+            contentHeight: 'auto', //Height auto
             @can('add_inspectionappointments')
                 //Boton de crear
                 customButtons: {
@@ -301,7 +239,7 @@
                         click: function() {
                             $('.msgError').html('');
                             $('#modalCreate #date').removeAttr("disabled");
-                            $('#formCreateAgenda')[0].reset();
+                            $('#formCreateAppointmet')[0].reset();
                             $('#modalCreate').modal('show');
                         }
                     }
@@ -373,18 +311,16 @@
          
                 //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
                 if(start != ed){
-                    $('#formCreateAgenda')[0].reset();
+                    /*$('#formCreateAppointmet')[0].reset();
                     $('.msgError').html('');
                     $('#estimated_start_date').val(start[0]);
-                    $('#estimated_end_date').val(ed);
+                    $('#estimated_end_date').val(ed);*/
+                    limpiarForm(start[0], ed, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
                     $('#modalCreate').modal('show');
                 }
             },
             dayClick: function(date, jsEvent, view) {
-                $('.msgError').html('');
-                $('#formCreateAgenda')[0].reset();
-                $('#modalCreate #estimated_start_date').val(date.format());
-                $('#modalCreate #estimated_end_date').val(date.format());
+                limpiarForm(date.format(), null, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
                 $('#modalCreate').modal('show');
             },
             editable: true,

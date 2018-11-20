@@ -138,14 +138,16 @@ class HeadquartersController extends Controller
     
 		    $headquarters->save();
             $menssage = \Lang::get('validation.MessageCreated');
-            flash()->success($menssage);
-		    return redirect()->route('headquarters.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }
         else
         {
             $menssage = \Lang::get('validation.MessageError');
-            flash()->success($menssage);
-            return redirect()->route('headquarters.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }	
 
         /* $headquarters->delete();

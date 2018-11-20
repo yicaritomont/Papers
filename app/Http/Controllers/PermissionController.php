@@ -84,8 +84,9 @@ class PermissionController extends Controller
 
             $menssage .= " ".\Lang::get('validation.PermissionAdmin');
         }
-        flash()->success($menssage);
-        return redirect()->route('permissions.index');		   
+        echo json_encode([
+            'status' => $menssage,
+        ]);		   
     }
 
     /// Next Functions only for acces in a permission controller. 

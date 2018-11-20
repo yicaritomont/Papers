@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,11 +25,22 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('reminder', 'RemindersController'); 
 Route::get('reminder',['as'=>'reminder','uses' => 'RemindersController@getRemind']);
 Route::post('postRemind',['as'=>'postRemind','uses' => 'RemindersController@postRemind']);
+Route::get('validateInspector/{id}', ['as' =>'validateInspector','uses' => 'InspectorController@IdCardInspector' ]);
 
 Route::get('ajxVerifyPassword','PerfilController@VerifyPassword');
 
 Route::group( ['middleware' => ['auth']], function() {
 
+    // Rutas para la eleccion de inicio de session 
+    Route::get('elegirCompania', array('as' => 'elegirCompania', 'uses'=>'UserController@ShowMultiple'));
+    Route::get('enviaCompania/{id}',array('as'=>'enviaCompania','uses'=>'UserController@PostMultiple'));
+
+    // Consultar los usuarios de una compañia
+    Route::get('user/{company?}', 'UserController@index')->name('users.company');
+
+    // Consultar los inspectores de una compañia
+    Route::get('inspector/{company?}', 'InspectorController@index')->name('inspectors.company');
+    
     //Consultar los usuarios de una compañia D?
     Route::get('users/company/{company?}', 'UserController@index')->name('users.company');
 
@@ -41,7 +51,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('inspectoragendas/list', 'InspectorAgendaController@list')->name('inspectoragendas.view');
 
     //Consultar agendas de un inspector y en una vista dada D?
-    Route::get('inspectoragendas/inspector/{id}/{view}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
+    // Route::get('inspectoragendas/inspector/{id}/{view}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
 
     //Acciones ajax de agendas
     Route::post('inspectoragendas/ajax', 'InspectorAgendaController@storeAjax')->name('inspectoragendas.store.ajax');
@@ -51,6 +61,9 @@ Route::group( ['middleware' => ['auth']], function() {
     //Eventos Calendario
     Route::get('inspectionappointments/events', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
     Route::get('inspectoragendas/events', 'InspectorAgendaController@events')->name('inspectoragendas.events');
+
+    //Consultar las agendas de un inspector
+    // Route::get('inspectoragendas/{id}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
     
     //Completar las citas
     Route::put('inspectionappointments/{inspectionappointment}/complete', 'InspectionAppointmentController@complete')->name('inspectionappointments.complete');
@@ -97,16 +110,20 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('companies', 'CompanyController');
     Route::resource('inspectionappointments', 'InspectionAppointmentController');
     Route::resource('inspectoragendas', 'InspectorAgendaController');
+
+    Route::get('ajxVerifyInspector','InspectorController@VerifyInspector');
     Route::resource('contracts', 'ContractController');
 
 });
 
+Auth::routes();
 
+Route::get('/home', 'HomeController@index')->name('home');
+
+/**
+ * Ruta exclusiva para el manejo del lenguaje
+ */
 Route::get('lang/{lang}', function($lang) {
     Session::put('lang', $lang);
     return Redirect::back();
   })->middleware('web')->name('change_lang');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');

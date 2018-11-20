@@ -9,5 +9,6 @@ return
     'Setting' => 'Setting',
     'Help' => 'Help',
     'Logout' => 'LogOut',
+    'ChangeCompany' => 'Change Company',
 ];
 ?>

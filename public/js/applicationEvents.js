@@ -5,6 +5,7 @@ function inicial (argument)
      //Eventos de los botones para solicitud de turno cliente interno
      $('#password_update').keyup(verifyPassword);
      $('#password-confirm').blur(verifyPassword);
+     $('#identificacion_inspector').blur(verifyInspector);
 }
 
 
@@ -236,7 +237,7 @@ $(window).resize(function(){
 });
 
 function changeTopToast(){
-    var calendar = $('.panel-default').offset()
+    var calendar = $('.content-page .row div').offset()
     $('.swal2-top-end').css('top', calendar.top);
 }
 
@@ -247,6 +248,48 @@ const toast = swal.mixin({
     timer: 4000,
 });
 
+// Ajax para los formularios de eliminar exceptuando los calendarios
+$(document).on('submit','.formDelete',function(e){
+    console.log($(this).attr('action'));
+    e.preventDefault();    
+    
+    console.log($(this).serialize());
+    
+    $.ajax({
+        url:$(this).attr('action'),
+        type:'POST',
+        data:$(this).serialize(),
+    })
+    .done(function(res){
+        var res = JSON.parse(res);
+
+        //Si no exite algun error
+        if(!res.error){
+            
+            toast({
+                type: 'success',
+                title: res.status
+            });
+
+            changeTopToast();
+
+            $('.dataTable').DataTable().ajax.reload();
+        }else{
+            toast({
+                type: 'error',
+                title: res.error
+            });
+            changeTopToast();            
+        }
+    })
+    .fail(function(res){
+        console.log('error\n'+res);
+        console.log(res);
+    })
+    .always(function(res){
+        console.log('complete\n'+res);
+    })
+});
 
 // Ajax para los formularios editar y eliminar de los calendarios
 $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
@@ -331,7 +374,6 @@ $('.showCalendar').on('click', function(e){
     }else{
         $.ajax({
             url:$(this).attr('data-route'),
-            contentType:"application/x-javascript; charset:utf-8",
             type:'GET',       
         })
         .done(function(res){
@@ -394,15 +436,59 @@ $(document).on('click', '.editCalendar', function(e){
 });
 
 //Limpiar el formulario de crear agenda
-function limpiarForm(startDate, endDate){
+/* function limpiarForm(startDate, endDate){
     if (!endDate) endDate = startDate;
     $('.msgError').html('');
     $('#formCreateAgenda')[0].reset();
     $('#formCreateAgenda #start_date').val(startDate);
     $('#formCreateAgenda #end_date').val(endDate);
     $('#formCreateAgenda .city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+} */
+function limpiarForm(startDate, endDate, form, fielDate, select){
+    if (!endDate) endDate = startDate;
+    $('.msgError').html('');
+    $(form)[0].reset();
+    $(form+' #'+fielDate+'start_date').val(startDate);
+    $(form+' #'+fielDate+'end_date').val(endDate);
+    $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
 }
 
-//$(document).on('click', '.btn-form-slide', slideForms(this));
-
 $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
+
+function verifyInspector()
+{
+    var idInspector = $(this).val();
+    if(idInspector != "")
+    {
+        $.ajax({                                                    
+            type: "GET",
+            url: obtenerUrl()+"/public/ajxVerifyInspector",   
+            dataType:'json',
+            data: {idInspector:idInspector}
+            }).done(function( response) 
+                {       
+                    if(!jQuery.isEmptyObject(response.notificacion))
+                    { 
+                        renderizarNotificacionModal('modal_notificacion','cont-notificacion-modal',response.notificacion);
+                        $('#id_inspector').val(response.data[0].id);
+                        $('#nombre_inspector').val(response.data[0].name);
+                        $('#profesion_inspector').val(response.data[0].profession_id);
+                        $('#tipo_inspector').val(response.data[0].inspector_type_id);
+                        $('#telefono_inspector').val(response.data[0].phone);
+                        $('#direccion_inspector').val(response.data[0].addres);
+                        $('#correo_inspector').val(response.data[0].email);
+                    }
+                    else
+                    {
+                        $('#id_inspector').val("");
+                        $('#nombre_inspector').val("");
+                        $('#profesion_inspector').val("");
+                        $('#tipo_inspector').val("");
+                        $('#telefono_inspector').val("");
+                        $('#direccion_inspector').val("");
+                        $('#correo_inspector').val("");
+                    }
+                }
+            );
+    }
+}

@@ -258,13 +258,15 @@ class MenuController extends Controller
     
 		    $menu->save();
             $menssage = \Lang::get('validation.MessageCreated');
-            flash()->success($menssage);
-		    return redirect()->route('menus.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);	
         }else
             {
             	$menssage = \Lang::get('validation.MessageError');
-                flash()->success($menssage);
-                return redirect()->route('menus.index');
+                echo json_encode([
+                    'status' => $menssage,
+                ]);	
             }
     }
 

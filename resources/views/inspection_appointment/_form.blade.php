@@ -6,13 +6,13 @@
 </div>
 
 <div class="form-group @if ($errors->has('inspection_type_id')) has-error @endif">
-    {!! Form::label('inspection_type_id', trans('words.InspectionType')) !!}
+    {!! Form::label('inspection_type_id', trans_choice('words.InspectionType', 1)) !!}
     {!! Form::select('inspection_type_id',$inspection_types,null, ['class' => ['input-body', 'inspection_type_id'] ,'require', 'data-route'=>route('inspectionappointments.subtypes'), 'placeholder'=>trans('words.ChooseOption')]) !!}
     @if ($errors->has('inspection_types')) <p class="help-block">{{ $errors->first('inspection_types') }}</p> @endif
 </div>
 
 <div class="form-group @if ($errors->has('inspection_subtype_id')) has-error @endif">
-    {!! Form::label('inspection_subtype_id', trans('words.InspectionType')) !!}
+    {!! Form::label('inspection_subtype_id', trans_choice('words.InspectionSubtype', 1)) !!}
     <select id="inspection_subtype_id" name="inspection_subtype_id" class="input-body inspection_subtype_id">
         <option selected value>@lang('words.ChooseOption')</option>
     </select>
