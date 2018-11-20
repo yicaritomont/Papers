@@ -36,47 +36,45 @@ class ManejadorPeticionesController
     }
 
     /**
-     * Funcion para realizat la solicitud 
+     * Funcion para realizar la solicitud de firma documentos
      */
-
-    
+    public function registrarDocumento($token,$documento)
+    {
+        $controller = new SignaBlockController;
+        $response = $controller->documento($token,$documento);
+        if($response)
+        {
+            if($response->result == "OK")
+            {
+                return $response->data->tx_hash;
+            }
+        }
+        return response()->json($this->jsonError);
+    }
 
     /**
-     * Funciones para manejar las peticiones para nodalblock
+     * Funcion para obtener la infomacion de la transaccion del documento firmado
      */
-    public function reportarDatos(string $datos)
+    public function documentoInfo($token,$documento)
     {
-        $hash       = HashUtilidades::generarHash($datos);
-        $controller = new NodalBlockController();
-        $response   = $controller->reportarHash($hash);
+        $controller = new SignaBlockController;
+        $response = $controller->documentoInfo($token,$documento);
         if($response)
         {
-            return response()->json(json_decode($response->getBody()));
+            if($response->result == "OK")
+            {
+                return $response->data;
+            }
         }
-        return response()->json($this->jsonError) ;
+        return response()->json($this->jsonError);
     }
 
-    public function validarDatos(string $datos)
+    /**
+     * funcion para obtener la el certificado de la transaccion del documetno firmado
+     */
+    public function documentoCertificado($token,$documento)
     {
-        $hash       = HashUtilidades::generarHash($datos);
-        $controller = new NodalBlockController();
-        $response   = $controller->validarHash($hash);
-        if($response)
-        {
-            return response()->json(json_decode($response->getBody()));
-        }
-        return response()->json($this->jsonError) ;
+        $controller = new SignaBlockController;
     }
 
-    public function certificarDatos(string $datos)
-    {
-        $hash       = HashUtilidades::generarHash($datos);
-        $controller = new NodalBlockController();
-        $response   = $controller->certificarHash($hash);
-        if($response)
-        {
-            return response()->json(json_decode($response->getBody()));
-        }
-        return response()->json($this->jsonError) ;
-    }
 }

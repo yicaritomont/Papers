@@ -43,8 +43,8 @@ class SignaBlockController
                 'client_id' => $this->client_id,
                 'api_key'   => $this->api_key
             ]
-        ]);
-        return json_decode($res->getBody());
+            ]);
+            return json_decode($res->getBody());
         }
         catch (RequestException $e)
         {
@@ -62,11 +62,66 @@ class SignaBlockController
     public function documento($token,$documento)
     {
         $client = $this->crearCliente();
-        try {
+        try 
+        {
             $res = $client->request('POST',$this->baseUrl.'documento',[
                 'multipart' => [
                     'file' => $documento
                 ],
+                'headers'   => [
+                    'auhorization' => $token
+                ]
+            ]);
+            return json_decode($res->getBody());
+        } 
+        catch (RequestException $e) 
+        {
+            return false;
+        }
+    }   
+
+    /**
+     * Signa Envio a endpoint documento/info (GET)
+     * Recupera la informacion del documento
+     * Requerido CABECERA authorization (TOKEN)
+     * Envia como parametros el document_hash
+     * Retorna informacion de la transaccion
+     */
+
+    public function documentoInfo($token,$document_hash)
+    {
+        $client = $this->crearCliente();
+        try 
+        {
+            $res = $client->request('GET',$this->baseUrl.'documento/info',[
+                'document_hash' => $document_hash,
+                'headers'   => [
+                    'auhorization' => $token
+                ]
+            ]);
+            return json_decode($res->getBody());
+        } 
+        catch (RequestException $e) 
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Signa Envio a endpoint documento/certificado (GET)
+     * Genera certificado pdf con la informacion de la transaccion
+     * Requerido CABECERA authorization (TOKEN)
+     * Envia como parametos el document_hash
+     * Retorna el base 64 del pdf
+     */
+
+    public function documentoCertificado($token,$document_hash)
+    {
+        $client = $this->crearCliente();
+        try 
+        {
+            $res = $client->request('GET',$this->baseUrl.'documento/certificado',[
+                'document_hash' => $document_hash,
                 'headers'   => [
                     'auhorization' => $token
                 ]

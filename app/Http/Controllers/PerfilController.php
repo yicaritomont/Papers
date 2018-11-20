@@ -122,7 +122,7 @@ class PerfilController extends Controller
                 $rol = 1;
             }
             
-            $confirmPassword = "";
+            $confirmPassword = null;
             if(isset($_GET['confirmPassword']))
             {
                 $confirmPassword = $_GET['confirmPassword'];
