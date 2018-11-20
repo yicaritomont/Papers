@@ -39,37 +39,23 @@
         
         $(document).ready(function() {
 
-            var dataTableObject = {
-                responsive: true,
-                serverSide: true,
-            };
-
-            //Se valida el idioma
-            if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("js/lib/dataTable/Spanish.json") }}'};           
-            }
+            //Se definen las columnas (Sin actions)
+            var columns = [
+                {data: 'id'},
+                {data: 'name'},
+                {data: 'client.user.name'},
+                {data: 'cities.name'},
+                {data: 'address'},
+                {data: 'created_at'},
+            ];
 
             @can('edit_headquarters', 'delete_headquarters')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'client.user.name'},
-                    {data: 'cities.name'},
-                    {data: 'address'},
-                    {data: 'created_at'},
-                    {data: 'actions', className: 'text-center'},
-                ];
+                columns.push({data: 'actions', className: 'text-center'},)
+                dataTableObject.columns = columns;
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'entity' => 'headquarters']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'client.identification'},
-                    {data: 'cities.name'},
-                    {data: 'address'},
-                    {data: 'created_at'},
-                ];
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'relations' => 'cities,client,client.user']) }}";
+                dataTableObject.columns = columns;
             @endcan
             
             var table = $('.dataTable').DataTable(dataTableObject);               

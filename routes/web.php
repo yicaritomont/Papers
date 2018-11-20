@@ -39,9 +39,6 @@ Route::group( ['middleware' => ['auth']], function() {
 
     // Consultar los usuarios de una compañia
     Route::get('user/{company?}', 'UserController@index')->name('users.company');
-
-    // Consultar los inspectores de una compañia
-    Route::get('inspector/{company?}', 'InspectorController@index')->name('inspectors.company');
     
     //Consultar los usuarios de una compañia D?
     Route::get('users/company/{company?}', 'UserController@index')->name('users.company');
@@ -81,7 +78,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('inspectionappointments/inspector/{id?}', 'InspectionAppointmentController@inspector')->name('inspectionappointments.inspector');
     
     //Consultar datos para dataTable
-    Route::get('datatable/{model}/{entity}/{identificador?}/{relations?}/{where?}', 'GeneralController@datatable')->name('datatable');
+    Route::get('datatable/{model}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatable')->name('datatable');
     
     //Consultar los usuarios de una compañia para dataTable
     Route::get('users/companyTable/{company}', 'UserController@companyTable')->name('users.companyTable');

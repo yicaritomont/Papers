@@ -35,8 +35,7 @@ class InspectorController extends Controller
     public function index($company_slug=null)
     {
         if(isset($company_slug)){
-            $companies = Company::select('slug', 'name')->where('slug','=',$company_slug)->get();
-
+            $companies = Company::with('user')->where('slug','=',$company_slug)->get()->first();
             return view('inspector.index', compact('companies'));
         }
         return view('inspector.index');
@@ -76,7 +75,8 @@ class InspectorController extends Controller
                 'addres'            => 'required|string',
                 'email'             => 'required|email|unique:users,email',
                 'profession_id'     => 'required',
-                'inspector_type_id' => 'required'
+                'inspector_type_id' => 'required',
+                'companies'         => 'required|min:1',
             ]);
         }
         else
@@ -88,10 +88,12 @@ class InspectorController extends Controller
                 'addres'            => 'required|string',
                 'email'             => 'required|email|unique:users,email',
                 'profession_id'     => 'required',
-                'inspector_type_id' => 'required'
+                'inspector_type_id' => 'required',
+                'companies'         => 'required|min:1',
             ]);
         }
 
+        $request['roles'] = 2;
 
         // Verifica si se recibe un id de inspector
         if($request->id_inspector != "")
@@ -128,7 +130,7 @@ class InspectorController extends Controller
                 $id_inspector_registrado = Inspector::where('identification',$request->identification)->first();
                
                 $user->assignRole('Inspector');
-                $user->syncPermissions($request, $user);
+                UserController::syncPermissions($request, $user);
                 $user->companies()->attach($request->companies);              
                 
                 $inspector = new Inspector();                
@@ -141,17 +143,17 @@ class InspectorController extends Controller
               
                 if ($inspector->save()) 
                 {
-                    flash(trans('words.Inspectors').' '.trans('words.HasAdded'));
+                    flash(trans_choice('words.Inspector', 1).' '.trans('words.HasAdded'));
                     $inspector->companies()->attach($request->companies);
                 } 
                 else 
                 {
-                    flash()->error(trans('words.UnableCreate').' '.trans('words.Inspectors'));
+                    flash()->error(trans('words.UnableCreate').' '.trans_choice('words.Inspector', 1));
                 }
             }
             else
             {
-                flash()->error(trans('words.UnableCreate').' '.trans('words.Inspectors'));
+                flash()->error(trans('words.UnableCreate').' '.trans_choice('words.Inspector', 1));
             }
                     
         }
@@ -189,35 +191,42 @@ class InspectorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'bail|required|min:2'
-        ]);
-
         //Get the inspector
         $inspector = Inspector::findOrFail($id);
 
-        if($inspector->identification != $request->identification) {
-
-            $this->validate($request, [
-            'name' => 'bail|required|min:2',
-            'identification' => 'required|unique:inspectors|numeric',
-            'phone' => 'required|string',
-            'addres' => 'required|string',
-            'email' => 'required|email',
+        $this->validate($request, [
+            'name'              => 'bail|required|min:2',
+            'identification'    => 'required|numeric|unique:inspectors,identification,'.$id,
+            'phone'             => 'required|string',
+            'addres'            => 'required|string',
+            'email'             => 'required|email|unique:users,email,'.$inspector->user_id,
+            'profession_id'     => 'required',
+            'inspector_type_id' => 'required',
+            'companies'         => 'required|min:1'
         ]);
-        }
-        $inspector->fill($request->except('permissions'));
+
+        $request['roles'] = 2;
+            
+        // $inspector->fill($request->except('permissions'));
         
         $user = $inspector->user;
         // Update user
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->syncPermissions($request, $user);
         $user->save();
-        $user->companies()->sync($request->companies);
 
-        $inspector->save();
+        UserController::syncPermissions($request, $user);
+        $user->companies()->sync($request->companies);
         $inspector->companies()->sync($request->companies);
+        
+        $inspector->update([
+            'identification'    => $request['identification'],
+            'phone'             => $request['phone'],
+            'address'           => $request['addres'],
+            'profession_id'     => $request['profession_id'],
+            'inspector_type_id' => $request['inspector_type_id'],
+            'user_id'           => $user->id,
+        ]);
 
         flash()->success(trans_choice('words.Inspector', 1).' '.trans('words.HasUpdated'));
 
@@ -275,17 +284,15 @@ class InspectorController extends Controller
         return redirect()->back(); */
     }
 
-    public function companyTable($company){
-
+    public function companyTable($company)
+    {
         $result = Inspector::query()
                 ->join('company_inspector', 'company_inspector.inspector_id', '=', 'inspectors.id')
                 ->join('companies', 'companies.id', '=', 'company_inspector.company_id')
                 ->select('inspectors.*')
                 ->where('companies.slug', '=', $company)
-                ->with('companies', 'profession', 'inspectorType')
+                ->with('companies', 'profession', 'inspectorType', 'user', 'companies.user')
                 ->get();
-
-        // dd($result);
 
         return datatables()
             ->of($result)
@@ -306,7 +313,7 @@ class InspectorController extends Controller
         {
 
             // search a inspector
-            $inspector = Inspector::where('identification',$_GET['idInspector'])->get();
+            $inspector = Inspector::with('user')->where('identification',$_GET['idInspector'])->get();
 
             if(count($inspector)>0)
             {

@@ -29,7 +29,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        $companies = Company::pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
         return view('client.new', compact('companies'));                    
     }
 
@@ -77,7 +77,7 @@ class ClientController extends Controller
         
         if($user->save())
         {
-            $this->syncPermissions($request, $user);
+            UserController::syncPermissions($request, $user);
             $user->companies()->attach($request->companies);
                          
             $client = Client::create([
@@ -125,7 +125,7 @@ class ClientController extends Controller
         $client = Client::findOrFail($client->id);
         //dd($client);
         $user = $client->user;
-        $companies = Company::pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
         return view('client.edit', compact('user', 'client', 'companies'));
     }
 
@@ -173,8 +173,8 @@ class ClientController extends Controller
         if($request->get('password')) {
             $user->password = bcrypt($request->get('password'));
         }
-
-        $this->syncPermissions($request, $user);
+ 
+        UserController::syncPermissions($request, $user);
         $user->save();
         $user->companies()->sync($request->companies);
 
@@ -228,28 +228,5 @@ class ClientController extends Controller
                 'status' => $menssage,
             ]);
         }
-    }
-
-    private function syncPermissions(Request $request, $user)
-    {
-        // Get the submitted roles
-        $roles = $request->get('roles', []);
-        $permissions = $request->get('permissions', []);
-
-        // Get the roles
-        $roles = Role::find($roles);
-
-        // check for current role changes
-        if( ! $user->hasAllRoles( $roles ) ) {
-            // reset all direct permissions for user
-            $user->permissions()->sync([]);
-        } else {
-            // handle permissions
-            $user->syncPermissions($permissions);
-        }
-
-        $user->syncRoles($roles);
-
-        return $user;
     }
 }

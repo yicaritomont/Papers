@@ -55,9 +55,9 @@
 
         <script>
             window.Laravel = {!! json_encode([
-                'csrfToken' => csrf_token(),
-                'language' => app()->getLocale(),
-                'url' => URL::to('/')
+                'csrfToken'     => csrf_token(),
+                'language'      => app()->getLocale(),
+                'url'           => URL::to('/'),
             ]) !!};
         </script>
     </head>
@@ -180,7 +180,7 @@
                                                     @can('view_inspectors')
                                                         <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
                                                             <a href="{{ route('inspectors.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-sunglasses"></span> {{trans_choice('words.Inspectors',2)}}
+                                                                <span class="text-white glyphicon glyphicon-sunglasses"></span> {{trans_choice('words.Inspector',2)}}
                                                             </a>
                                                         </li>
                                                     @endcan
@@ -281,21 +281,6 @@
                                     </ul>
                             </div>
                         </div>
-                        <!-- /sidebar menu -->
-                        <div class="sidebar-footer hidden-small">
-                            <a data-toggle="tooltip" data-placement="top" title="Settings">
-                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-                            </a>
-                            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-                            </a>
-                            <a data-toggle="tooltip" data-placement="top" title="Lock">
-                                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-                            </a>
-                            <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
-                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                            </a>
-                        </div>
                         @endif
                     </div>
                 </div>
@@ -392,13 +377,7 @@
                         @yield('content')
                     </div>
                 </div>
-<<<<<<< HEAD
             </div>  
-=======
-            </div>
-
-
->>>>>>> upstream/master
         </div>
 
 
@@ -440,7 +419,6 @@
     <script src="{{asset('vendors/moment/min/moment.min.js')}}"></script>
     <script src="{{asset('vendors/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
 
-<<<<<<< HEAD
     <!-- DatePicker -->
     <script src="{{asset('js/lib/datePicker/bootstrap-datepicker.min.js')}}"></script>
     <script src="{{asset('js/lib/datePicker/bootstrap-datepicker.es.min.js')}}"></script>
@@ -467,25 +445,10 @@
     
     <!-- SweetAlert -->
     <script src="{{ asset('js/lib/sweetAlert/sweetalert2.min.js') }}"></script>
-    {{-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> --}}
-    {{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"> --}}
-    
-=======
-    <!-- Custom Theme Scripts -->
-    <script src="{{asset('build/js/custom.min.js')}}"></script>
     
     <!-- text editor -->
     <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
 
-    <!-- Datatable -->
-    <script src="{{ asset('dataTable/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('dataTable/js/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('dataTable/js/dataTables.fixedHeader.min.js') }}"></script>
-    <script src="{{ asset('dataTable/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('dataTable/js/responsive.bootstrap.min.js') }}"></script>
-
->>>>>>> upstream/master
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
 	@yield('scripts')

@@ -39,33 +39,27 @@
         
         $(document).ready(function() {
 
-            var dataTableObject = {
-                responsive: true,
-                serverSide: true,
-            };
-
-            //Se valida el idioma
-            if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("js/lib/dataTable/Spanish.json") }}'};           
-            }
+            //Se definen las columnas (Sin actions)
+            var columns = [
+                {data: 'id'},
+                {data: 'user.name'},
+                {data: 'address'},
+                {data: 'phone'},
+                {data: 'user.email'},
+                {data: 'activity'},
+                {data: 'created_at'},
+            ];
 
             @can('edit_companies', 'delete_companies')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'user.name'},
-                    {data: 'address'},
-                    {data: 'phone'},
-                    {data: 'user.email'},
-                    {data: 'activity'},
-                    {data: 'created_at'},
-                    {data: 'actions', className: 'text-center'},
-                ];
+                
+                columns.push({data: 'actions', className: 'text-center'},)
+                dataTableObject.columns = columns;
+
                 dataTableObject.columnDefs = [{
                     //En la columna 7 (actions) se agregan nuevos botones
                     targets: 7,
                     createdCell: function(td, cellData, rowData, row, col){
-                        console.log(rowData.slug);
                         var btn = '';
                         @can('view_users')
                             btn += '<a href="'+window.Laravel.url+'/users/company/'+rowData.slug+'" class="btn btn-xs btn-primary">';
@@ -75,23 +69,13 @@
                         @can('view_inspectors')
                             btn += '<a href="'+window.Laravel.url+'/inspectors/company/'+rowData.slug+'" class="btn btn-xs btn-primary">';
                             btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a>';
-                                     
                         @endcan
-                        console.log('Botones '+btn)
                         $(td).append(btn);
                     }
-                }]
+                }];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'entity' => 'companies']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'address'},
-                    {data: 'phone'},
-                    {data: 'email'},
-                    {data: 'activity'},
-                    {data: 'created_at'},
-                ];
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'relations' => 'user']) }}";
+                dataTableObject.columns = columns;
             @endcan      
 
             var table = $('.dataTable').DataTable(dataTableObject);                
