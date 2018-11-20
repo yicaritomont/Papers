@@ -199,8 +199,6 @@ function verifyPassword()
     }
 }
 
-<<<<<<< HEAD
-=======
 //Retorna los mensajes de alerta en base al
 function alert(color, msg){
     return '<div class="alert alert-'+color+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+msg+'</div>';
@@ -494,7 +492,6 @@ $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
     });
 }*/
 
->>>>>>> upstream/master
 function verifyInspector()
 {
     var idInspector = $(this).val();
