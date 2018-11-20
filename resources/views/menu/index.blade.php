@@ -39,35 +39,24 @@
         
         $(document).ready(function() {
 
-            var dataTableObject = {
-                responsive: true,
-                serverSide: true,
-            };
-
-            //Se valida el idioma
-            if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("js/lib/dataTable/Spanish.json") }}'};           
-            }
+            //Se definen las columnas (Sin actions)
+            var columns = [
+                {data: 'id'},
+                {data: 'name'},
+                {data: 'url'},
+                {data: 'menu.name'},
+                {data: 'modulo.name'},
+                {data: 'created_at'},
+            ];
 
             @can('edit_menus', 'delete_menus')
                 
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Menu', 'entity' => 'menus', 'identificador' => 'id', 'relations' => 'menu,modulo']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'url'},
-                    {data: 'menu.name'},
-                    {data: 'modulo.name'},
-                    {data: 'created_at'},
-                    {data: 'actions', className: 'text-center'},
-                ];
+                columns.push({data: 'actions', className: 'text-center'},)
+                dataTableObject.columns = columns;
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Menu', 'entity' => 'menus']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'created_at'},
-                ];
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Menu', 'relations' => 'menu,modulo']) }}";
+                dataTableObject.columns = columns;
             @endcan
             
             var table = $('.dataTable').DataTable(dataTableObject);                  

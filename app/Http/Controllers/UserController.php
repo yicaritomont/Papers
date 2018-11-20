@@ -25,8 +25,7 @@ class UserController extends Controller
     public function index($company_slug=null)
     {
         if(isset($company_slug)){
-            $companies = Company::select('slug', 'name')->where('companies.slug', $company_slug)->get();
-
+            $companies = Company::with('user')->where('slug','=',$company_slug)->get()->first();
             return view('user.index', compact('companies'));
         }
 
@@ -40,7 +39,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $companies = Company::pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $roles = Role::pluck('name', 'id');
 
         return view('user.new', compact('roles', 'companies'));
@@ -127,7 +126,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $companies = Company::pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $user = User::find($id);
         $roles = Role::pluck('name', 'id');
         $permissions = Permission::all('name', 'id');
@@ -241,7 +240,7 @@ class UserController extends Controller
      * @param $user
      * @return string
      */
-    private function syncPermissions(Request $request, $user)
+    public static function syncPermissions(Request $request, $user)
     {
         // Get the submitted roles
         $roles = $request->get('roles', []);
@@ -300,7 +299,7 @@ class UserController extends Controller
                 ->join('companies', 'companies.id', '=', 'user_company.company_id')
                 ->select('users.*')
                 ->where('companies.slug', '=', $company)
-                ->with('roles')
+                ->with('roles' ,'companies' ,'companies.user')
                 ->get();
 
         return datatables()

@@ -19,7 +19,7 @@
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
-                <th>@lang('words.Inspectors')</th>
+                <th>@choice('words.Inspector', 1)</th>
                 <th>@lang('words.InspectionType')</th>
                 <th>@lang('words.Date')</th>
                 <th>@lang('words.StartTime')</th>

@@ -36,31 +36,21 @@
         
         $(document).ready(function() {
 
-            var dataTableObject = {
-                responsive: true,
-                serverSide: true,
-            };
-
-            //Se valida el idioma
-            if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("js/lib/dataTable/Spanish.json") }}'};           
-            }
+            //Se definen las columnas (Sin actions)
+            var columns = [
+                {data: 'id'},
+                {data: 'name'},
+                {data: 'created_at'},
+            ];
 
             @can('edit_modulos', 'delete_modulos')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Modulo', 'entity' => 'modulos', 'identificador' => 'id']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'created_at'},
-                    {data: 'actions', className: 'text-center'},
-                ];
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Modulo', 'entity' => 'modulos', 'identificador' => 'id', 'relations' => 'none']) }}";
+
+                columns.push({data: 'actions', className: 'text-center'},)
+                dataTableObject.columns = columns;
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Modulo', 'entity' => 'modulos']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'created_at'},
-                ];
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Modulo']) }}";
+                dataTableObject.columns = columns;
             @endcan           
 
             var table = $('.dataTable').DataTable(dataTableObject);         
