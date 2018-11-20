@@ -36,6 +36,8 @@ return[
     'Status' => 'Estado',
     'Url' => 'URL',
     'Modules' => 'Módulos',
+    'Preformato' => 'Preformato|Preformatos',
+    'Format' => 'Formato|Formatos',
     'Menu' => 'Menú',
     'Padre' => 'Padre',
     'MenuPadre' => 'Menú Padre',
@@ -53,7 +55,7 @@ return[
     //404 page
     '404' => 'Oops! Parece que se ha perdido.',
     'TakeMeBack' => 'Regresar',
-    
+
     'Identification' => 'Identificacion',
     'Phone' => 'Telefono',
     'Addres' => 'Dirección',

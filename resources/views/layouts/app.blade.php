@@ -24,7 +24,7 @@
         <link href="{{asset('vendors/nprogress/nprogress.css')}}" rel="stylesheet">
         <!-- iCheck -->
         <link href="{{asset('vendors/iCheck/skins/flat/green.css')}}" rel="stylesheet">
-        
+
         <!-- bootstrap-progressbar -->
         <link href="{{asset('vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css')}}" rel="stylesheet">
         <!-- JQVMap -->
@@ -67,19 +67,19 @@
         @if (Auth::check() && Request::path() != 'elegirCompania')
             <div class="main_container">
                 <div class="col-md-3 left_col">
-                
+
                     <div class="left_col scroll-view">
-                    
+
                         <div class="navbar nav_title" style="border: 0;">
                             <a href="{{ route('home') }}" class="site_title"><i class="fa fa-home"></i> </a>
-                            
+
                         </div>
-                        
+
                         <div class="clearfix"></div>
-                        
+
                         <!-- menu profile quick info -->
                         <div class="profile clearfix">
-                            <div class="profile_pic">                        
+                            <div class="profile_pic">
                                 <img src="{{asset(Auth::user()->picture)}}" alt="..." class="img-circle profile_img">
                             </div>
                             <div class="profile_info">
@@ -94,7 +94,7 @@
                             </div>
                         </div>
                         <!-- /menu profile quick info -->
-                       
+
                         <br />
 
                         <!-- sidebar menu -->
@@ -111,7 +111,7 @@
                                                                 <span class="text-info glyphicon glyphicon-user"></span> @lang('words.ManageUsers')
                                                             </a>
                                                         </li>
-                                                    @endcan                                                    
+                                                    @endcan
 
                                                     @can('view_permissions')
                                                         <li class="{{ Request::is('permissions*') ? 'active' : '' }}">
@@ -119,7 +119,7 @@
                                                                 <span class="text-danger glyphicon glyphicon-wrench"></span> @lang('words.ManagePermission')
                                                             </a>
                                                         </li>
-                                                    @endcan 
+                                                    @endcan
 
                                                     @can('view_roles')
                                                         <li class="{{ Request::is('roles*') ? 'active' : '' }}">
@@ -143,11 +143,94 @@
                                                                 <span class="text-success glyphicon glyphicon-th-list"></span> @lang('words.ManageMenu')
                                                             </a>
                                                         </li>
-                                                    @endcan                                                    
-                                                     
+                                                    @endcan
+
+                                                    @can('view_preformatos')
+                                                        <li class="{{ Request::is('preformatos*') ? 'active' : '' }}">
+                                                            <a href="{{ route('preformatos.index') }}">
+                                                                <span class="text-info glyphicon glyphicon-pushpin"></span> {{trans_choice('words.Preformato',2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+
+                                                     <!--@can('view_professions')
+                                                        <li class="{{ Request::is('professions*') ? 'active' : '' }}">
+                                                            <a href="{{ route('professions.index') }}">
+                                                                <span class="text-primary glyphicon glyphicon-education"></span>{{trans_choice('words.Profession',2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+
+                                                     @can('view_inspectortypes')
+                                                        <li class="{{ Request::is('inspectortypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectortypes.index') }}">
+                                                                <span class="text-info glyphicon glyphicon-pushpin"></span> {{trans_choice('words.InspectorType',2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+
+                                                    @can('view_clients')
+                                                        <li class="{{ Request::is('clients*') ? 'active' : '' }}">
+                                                            <a href="{{ route('clients.index') }}">
+                                                                <span class="text-warning glyphicon glyphicon-user"></span> {{str_plural(trans('words.Client'),2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+
+                                                    @can('view_inspectors')
+                                                        <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectors.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-sunglasses"></span> {{trans_choice('words.Inspectors',2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+
+                                                    @can('view_inspectiontypes')
+                                                        <li class="{{ Request::is('inspectiontypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectiontypes.index') }}">
+                                                                <span class="text-dark glyphicon glyphicon-folder-open"></span> {{trans_choice('words.InspectionType',2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                     @can('view_inspectionsubtypes')
+                                                        <li class="{{ Request::is('nspectionsubtypes*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectionsubtypes.index') }}">
+                                                                <span class="text-dark glyphicon glyphicon-refresh"></span> {{trans_choice('words.InspectionSubtype',2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+                                                    @can('view_headquarters')
+                                                        <li class="{{ Request::is('headquarters*') ? 'active' : '' }}">
+                                                            <a href="{{ route('headquarters.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-home"></span> {{str_plural(trans('words.Headquarters'),2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+
+                                                    @can('view_companies')
+                                                        <li class="{{ Request::is('companies*') ? 'active' : '' }}">
+                                                            <a href="{{ route('companies.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.Company',2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan
+
+                                                     @can('view_inspectionappointments')
+                                                        <li class="{{ Request::is('inspectionappointments*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectionappointments.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-copy"></span> {{trans_choice('words.Inspectionappointment',2)}}
+                                                    @endcan
+
+                                                    @can('view_inspectoragendas')
+                                                        <li class="{{ Request::is('inspectoragendas*') ? 'active' : '' }}">
+                                                            <a href="{{ route('inspectoragendas.index') }}">
+                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.InspectorAgenda',2)}}
+                                                            </a>
+                                                        </li>
+                                                    @endcan -->
                                                 @endif
                                             </ul>
-                                        </li> 
+                                        </li>
                                         <!--<li><a><i class="fa fa-suitcase"></i> App <span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">
                                                 @can('view_posts')
@@ -185,7 +268,7 @@
                                                                                     <a href="{{ route($child->url.'.index') }}"><span></span>{{$child->name}}</a>
                                                                                 </li>
                                                                             @endforeach
-                                                                        </ul> 
+                                                                        </ul>
                                                                     @endif
                                                                 </li>
                                                             @endcan
@@ -194,12 +277,25 @@
                                                 </li>
                                             @endforeach
                                         @endif
-                                                                              
+
                                     </ul>
-                            </div>                                
+                            </div>
                         </div>
                         <!-- /sidebar menu -->
-
+                        <div class="sidebar-footer hidden-small">
+                            <a data-toggle="tooltip" data-placement="top" title="Settings">
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Lock">
+                                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                            </a>
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -214,11 +310,11 @@
                             <div class="navbar-header">
                                 <!-- Branding Image -->
                                 <a class="navbar-brand" href="{{ url('/') }}">
-                                    <span>@yield('title') {{ config('app.name') }}</span>                     
+                                    <span>@yield('title') {{ config('app.name') }}</span>
                                 </a>
                             </div>
-                            
-                            
+
+
                             <ul class="nav navbar-nav navbar-right">
                                 @if (Auth::check())
                                 <li class="">
@@ -227,14 +323,15 @@
                                         <span class=" fa fa-angle-down"></span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                        <li><a href="{{route('perfiles.index')}}">@lang('header.Profile')</a></li>  
+
+                                        <li><a href="{{route('perfiles.index')}}">@lang('header.Profile')</a></li>
                                         {{-- Compañia en session --}}
                                         @if(Auth::user()->roles->pluck('id')[0] != 1)
                                             @if(session()->get('Session_Company') != "")
                                                 <li><a href="{{route('elegirCompania')}}">@lang('header.ChangeCompany')</a></li>
                                             @endif
                                         @endif
-                                                                              
+
                                         <li><a href="javascript:;">@lang('header.Help')</a></li>
                                         <li>
                                             <a href="{{ route('logout') }}"
@@ -249,7 +346,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                               
+
                                 <li role="presentation" class="dropdown">
                                     <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-envelope-o"></i>
@@ -267,7 +364,7 @@
                                                     Film festivals used to be do-or-die moments for movie makers. They were where...
                                                 </span>
                                             </a>
-                                        </li>                                        
+                                        </li>
                                         <li>
                                             <div class="text-center">
                                                 <a>
@@ -278,7 +375,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                @endif                                                                                   
+                                @endif
                                 <li><a href="{{ route('change_lang', ['lang' => 'es']) }}"><span class="badge badge-primary">ES</span></a></li>
                                 <li><a href="{{ route('change_lang', ['lang' => 'en']) }}"><span class="badge badge-primary">EN</span></a></li>
                             </ul>
@@ -286,8 +383,8 @@
                     </div>
                 </div>
                 <!-- /top navigation -->
-                <div class="right_col" role="main">                    
-                    
+                <div class="right_col" role="main">
+
                     <div class="content-page">
                         <div id="flash-msg">
                             @include('flash::message')
@@ -295,9 +392,15 @@
                         @yield('content')
                     </div>
                 </div>
+<<<<<<< HEAD
             </div>  
+=======
+            </div>
+
+
+>>>>>>> upstream/master
         </div>
-        
+
 
     <!-- jQuery -->
     <script src="{{asset('vendors/jquery/dist/jquery.min.js')}}"></script>
@@ -337,6 +440,7 @@
     <script src="{{asset('vendors/moment/min/moment.min.js')}}"></script>
     <script src="{{asset('vendors/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
 
+<<<<<<< HEAD
     <!-- DatePicker -->
     <script src="{{asset('js/lib/datePicker/bootstrap-datepicker.min.js')}}"></script>
     <script src="{{asset('js/lib/datePicker/bootstrap-datepicker.es.min.js')}}"></script>
@@ -367,9 +471,23 @@
     {{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"> --}}
     
+=======
+    <!-- Custom Theme Scripts -->
+    <script src="{{asset('build/js/custom.min.js')}}"></script>
+    
+    <!-- text editor -->
+    <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
+
+    <!-- Datatable -->
+    <script src="{{ asset('dataTable/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/dataTables.fixedHeader.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/responsive.bootstrap.min.js') }}"></script>
+
+>>>>>>> upstream/master
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
-
 	@yield('scripts')
 
     <!-- Custom Theme Scripts -->

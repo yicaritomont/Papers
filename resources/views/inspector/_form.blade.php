@@ -7,7 +7,7 @@
 
 <div class="form-group @if ($errors->has('name')) has-error @endif">
     <label for="name">@lang('words.Name')</label>
-    {!! Form::text('name', null, ['class' => 'input-body', 'placeholder' => 'Name' , 'id' => 'nombre_inspector']) !!}
+    {!! Form::text('name', isset($user) ? $user->name : null, ['class' => 'input-body', 'placeholder' => 'Name' , 'id' => 'nombre_inspector']) !!}
     @if ($errors->has('name')) <p class="help-block">{{ $errors->first('name') }}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('profession_id')) has-error @endif">
@@ -21,8 +21,23 @@
     @if ($errors->has('inspector_type_id')) <p class="help-block">{{ $errors->first('inspector_type_id') }}</p> @endif
 </div>
 
-<div class="form-group @if ($errors->has('phone')) has-error @endif">
-    <label for="name">@lang('words.Phone')</label>
+<div class="form-group @if ($errors->has('identification')) has-error @endif">
+    <label for="name">@lang('words.Country')</label>
+    {!! Form::select('country_id',$countries,null, array('class' => 'input-body id_country', 'required')) !!}
+    @if ($errors->has('country')) <p class="help-block">{{ $errors->first('country') }}</p> @endif
+</div>
+<div class="form-group  @if ($errors->has('name')) has-error @endif" id="container_cities">
+    <label for="name">@lang('words.City')</label>
+    {!! Form::select('city_id',$cities,null, array('class' => 'input-body','required')) !!}
+    @if ($errors->has('city')) <p class="help-block">{{ $errors->first('city') }}</p> @endif
+</div>
+<div class="form-group @if ($errors->has('identification')) has-error @endif">
+    <label for="name">@lang('words.Identification')</label>
+    {!! Form::text('identification', null, ['class' => 'input-body', 'placeholder' => 'Identification']) !!}
+    @if ($errors->has('identification')) <p class="help-block">{{ $errors->first('identification') }}</p> @endif
+</div>
+
+<div class="form-group @if ($errors->has('name')) has-error @endif">    <label for="name">@lang('words.Phone')</label>
     {!! Form::text('phone', null, ['class' => 'input-body', 'placeholder' => 'Phone','id' => 'telefono_inspector']) !!}
     @if ($errors->has('phone')) <p class="help-block">{{ $errors->first('phone') }}</p> @endif
 </div>
@@ -33,14 +48,8 @@
 </div>
 <div class="form-group @if ($errors->has('email')) has-error @endif">
     <label for="name">@lang('words.Email')</label>
-    {!! Form::text('email', null, ['class' => 'input-body', 'placeholder' => 'Email','id' => 'correo_inspector']) !!}
+    {!! Form::text('email', isset($user) ? $user->email : null, ['class' => 'input-body', 'placeholder' => 'Email','id' => 'correo_inspector']) !!}
     @if ($errors->has('email')) <p class="help-block">{{ $errors->first('email') }}</p> @endif
-</div>
-
-<div class="form-group @if ($errors->has('roles')) has-error @endif">
-    {!! Form::label('roles[]', 'Roles') !!}
-    {!! Form::select('roles[]', $roles, isset($user) ? $user->roles->pluck('id')->toArray() : null,  ['class' => 'input-body', 'multiple']) !!}
-    @if ($errors->has('roles')) <p class="help-block">{{ $errors->first('roles') }}</p> @endif
 </div>
 
 @if(Auth::user()->roles->pluck('id')[0] != 1)
@@ -61,10 +70,10 @@
 <!-- Modal Notificacion-->
 <div class="modal fade" id="modal_notificacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-custom">
-                <div class="modal-content">                                          
-                    <div class="modal-body modal-body-custom">                                                        
+                <div class="modal-content">
+                    <div class="modal-body modal-body-custom">
                         <div class="panel panel-success pan">
-                            <div class="panel-body">                                                                  
+                            <div class="panel-body">
                                 <div class="text-center">
                                     <div id="cont-notificacion-modal" class="title-modal"></div>
                                 </div>
@@ -73,7 +82,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>                                          
+                    </div>
                 </div>
             </div>
         </div>

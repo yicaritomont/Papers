@@ -32,8 +32,8 @@
 @endsection
 
 @section('scripts')
-    <script>  
-        
+    <script>
+
         $(document).ready(function() {
 
             var dataTableObject = {
@@ -62,8 +62,8 @@
                     {data: 'created_at'},
                 ];
             @endcan
-            
-            var table = $('.dataTable').DataTable(dataTableObject);                 
+
+            var table = $('.dataTable').DataTable(dataTableObject);
             new $.fn.dataTable.FixedHeader( table );
         });
     </script>

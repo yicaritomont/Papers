@@ -1,18 +1,20 @@
 $(window).ready(inicial);
 
-function inicial (argument) 
-{   
+function inicial (argument)
+{
      //Eventos de los botones para solicitud de turno cliente interno
      $('#password_update').keyup(verifyPassword);
      $('#password-confirm').blur(verifyPassword);
      $('#identificacion_inspector').blur(verifyInspector);
+      //$('.id_country').change(mostrarCiudades);
+    $('#boton_guardar_html').click(guardarHtml);
 }
 
 
 function obtenerUrl()
 {
     //Obtiene la url del documento actual desde el directorio padre
-    var rutaAbsoluta =  window.location.pathname; 
+    var rutaAbsoluta =  window.location.pathname;
     //Convierte en un array que contiene los string separados por el slash "/"
     var vector = rutaAbsoluta.split('/');
 
@@ -26,9 +28,9 @@ function renderizarNotificacionModal(idModal,idContenedor,mensaje)
 {
     $('#'+idModal).modal('show');
     $('#'+idContenedor).empty();
-    $('#'+idContenedor).html(mensaje);    
-    setTimeout("ocultarModal('"+idModal+"')", 5000);    
-} 
+    $('#'+idContenedor).html(mensaje);
+    setTimeout("ocultarModal('"+idModal+"')", 5000);
+}
 
 function ocultarModal(idModal)
 {
@@ -39,21 +41,21 @@ function ocultarModal(idModal)
 function verifyPassword()
 {
     var newPassword = $(this).val();
-    var userPassword = $('#user_password').val();   
+    var userPassword = $('#user_password').val();
     var confirmPassword = $('#password-confirm').val();
     if(newPassword != "")
     {
         $('#changePassword').attr('disabled','disabled');
-        $.ajax({                                                    
+        $.ajax({
             type: "GET",
-            url: obtenerUrl()+"/public/ajxVerifyPassword",   
+            url: obtenerUrl()+"/public/ajxVerifyPassword",
             dataType:'json',
             data: {newPassword:newPassword , userPassword : userPassword ,confirmPassword : confirmPassword}
-            }).done(function( response) 
-                {       
+            }).done(function( response)
+                {
                     if(!jQuery.isEmptyObject(response.notificacion))
-                    {   
-                        
+                    {
+
                         $('#changePassword').removeAttr('disabled');
                         $('#div_info_lengthPwd').html("");
                         $('#div_info_lengthNumber').html("");
@@ -62,7 +64,7 @@ function verifyPassword()
                         $('#div_info_beforePass').html("");
                         $('#div_info_keyWordPass').html("");
                         $('#div_info_confirmPass').html("");
-                        $('#div_info_lengthPwd').removeClass("text-danger");  
+                        $('#div_info_lengthPwd').removeClass("text-danger");
                         $('#div_info_lengthNumber').removeClass("text-danger");
                         $('#div_info_lengthLower').removeClass("text-danger");
                         $('#div_info_lengthUpper').removeClass("text-danger");
@@ -80,36 +82,36 @@ function verifyPassword()
                             {
                                 //alert(response.message.message.lengthPwd);
                                 $('#div_info_lengthPwd').html(response.message.message.lengthPwd);
-                                $('#div_info_lengthPwd').addClass("text-danger");                                
+                                $('#div_info_lengthPwd').addClass("text-danger");
                             }
                             else
                             {
                                 $('#div_info_lengthPwd').html("");
-                                $('#div_info_lengthPwd').removeClass("text-danger");        
+                                $('#div_info_lengthPwd').removeClass("text-danger");
                             }
 
                             if(response.message.message.lengthNumber)
                             {
                                 //alert(response.message.message.lengthNumber);
                                 $('#div_info_lengthNumber').html(response.message.message.lengthNumber);
-                                $('#div_info_lengthNumber').addClass("text-danger");          
+                                $('#div_info_lengthNumber').addClass("text-danger");
                             }
                             else
                             {
                                 $('#div_info_lengthNumber').html("");
-                                $('#div_info_lengthNumber').removeClass("text-danger");        
+                                $('#div_info_lengthNumber').removeClass("text-danger");
                             }
 
                             if(response.message.message.lengthLower)
                             {
                                // alert(response.message.message.lengthLower);
                                 $('#div_info_lengthLower').html(response.message.message.lengthLower);
-                                $('#div_info_lengthLower').addClass("text-danger");          
+                                $('#div_info_lengthLower').addClass("text-danger");
                             }
                             else
                             {
                                 $('#div_info_lengthLower').html("");
-                                $('#div_info_lengthLower').removeClass("text-danger");        
+                                $('#div_info_lengthLower').removeClass("text-danger");
                             }
 
                             if(response.message.message.lengthUpper)
@@ -146,8 +148,8 @@ function verifyPassword()
                                 $('#div_info_keyWordPass').html("");
                                 $('#div_info_keyWordPass').removeClass('text-danger');
                             }
-                            
-                            
+
+
                             if(response.message.message.confirmPass)
                             {
                                 $('#div_info_confirmPass').html(response.message.message.confirmPass);
@@ -164,12 +166,12 @@ function verifyPassword()
                             $('#div_info_lengthPwd').html("");
                             $('#div_info_lengthNumber').html("");
                             $('#div_info_lengthLower').html("");
-                            $('#div_info_lengthUpper').html("");   
-                            $('#div_info_beforePass').html(""); 
-                            $('#div_info_keyWordPass').html("");     
-                            $('#div_info_confirmPass').html("");                   
+                            $('#div_info_lengthUpper').html("");
+                            $('#div_info_beforePass').html("");
+                            $('#div_info_keyWordPass').html("");
+                            $('#div_info_confirmPass').html("");
                             $('#changePassword').removeAttr('disabled');
-                            $('#div_info_lengthPwd').removeClass("text-danger");  
+                            $('#div_info_lengthPwd').removeClass("text-danger");
                             $('#div_info_lengthNumber').removeClass("text-danger");
                             $('#div_info_lengthLower').removeClass("text-danger");
                             $('#div_info_lengthUpper').removeClass("text-danger");
@@ -177,8 +179,8 @@ function verifyPassword()
                             $('#div_info_keyWordPass').removeClass("text-danger");
                             $('#div_info_confirmPass').removeClass("text-danger");
                             //renderizarNotificacionModal('modal_notificacion','cont-notificacion-modal','OK');
-                        } 
-                                                
+                        }
+
                     }
                 }
             );
@@ -454,21 +456,44 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
 }
 
 $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
+/*function mostrarCiudades()
+{
+    var country = $('.id_country').val();
+    $.ajax({
+        type: "GET",
+        url: obtenerUrl() + '/public/ajxCountry',
+        datType: 'json',
+        data: { country: country }
+    }).done(function (response)
+    {
+        alert(response);
+        var select = '<select name="" id="citie_id" class="form-control">'
+            $.map(response.citiesCountry,function(name, id)
+            {
+                select += '<option values="'+id+'">'+name+'</option>'
+            });
+            select += '</select>';
+            $('#container_cities').empty();
+            $('#container_cities').html(select);
+            $('#ciie_id').chosen({ no_results_text: "No se encuentra" });
+
+    });
+}*/
 
 function verifyInspector()
 {
     var idInspector = $(this).val();
     if(idInspector != "")
     {
-        $.ajax({                                                    
+        $.ajax({
             type: "GET",
-            url: obtenerUrl()+"/public/ajxVerifyInspector",   
+            url: obtenerUrl()+"/public/ajxVerifyInspector",
             dataType:'json',
             data: {idInspector:idInspector}
-            }).done(function( response) 
-                {       
+            }).done(function( response)
+                {
                     if(!jQuery.isEmptyObject(response.notificacion))
-                    { 
+                    {
                         renderizarNotificacionModal('modal_notificacion','cont-notificacion-modal',response.notificacion);
                         $('#id_inspector').val(response.data[0].id);
                         $('#nombre_inspector').val(response.data[0].name);
@@ -491,4 +516,43 @@ function verifyInspector()
                 }
             );
     }
+}
+
+function guardarHtml() {
+  camposLlenos();
+  var contenedorHtml = $('#contenedorHtml').html();
+  $('#format_expediction').val(contenedorHtml);
+  $('#form_expediction').submit();
+}
+
+function camposLlenos() {
+  $('body').find('input').each(function(e){
+    let objInput = $(this);
+    if(objInput.val() != '') {
+      objInput.attr('value',objInput.val());
+    }
+  });
+
+  $('body').find('textarea').each(function(e){
+    let objInput = $(this);
+    if(objInput.val() != '') {
+      var valor = objInput.val();
+      objInput.val('');
+      objInput.append(valor);
+    }
+  });
+
+  $('body').find(':checkbox').each(function(e){
+    let objInput = $(this);
+    if(objInput.is(":checked")) {
+      objInput.attr('checked','checked');
+    }
+  });
+
+  $('body').find(':radio').each(function(e){
+    let objInput = $(this);
+    if(objInput.is(":checked")) {
+      objInput.attr('checked','checked');
+    }
+  });
 }

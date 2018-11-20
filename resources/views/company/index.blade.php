@@ -50,13 +50,13 @@
             }
 
             @can('edit_companies', 'delete_companies')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'entity' => 'companies', 'identificador' => 'slug']) }}";
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}";
                 dataTableObject.columns = [
                     {data: 'id'},
-                    {data: 'name'},
+                    {data: 'user.name'},
                     {data: 'address'},
                     {data: 'phone'},
-                    {data: 'email'},
+                    {data: 'user.email'},
                     {data: 'activity'},
                     {data: 'created_at'},
                     {data: 'actions', className: 'text-center'},

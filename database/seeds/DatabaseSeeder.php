@@ -37,38 +37,48 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('Default Permissions added.');
 
-        // Confirm roles needed
-        if ($this->command->confirm('Create Roles for user, default is admin and user? [y|N]', true)) {
+        // Set default Roles
+    
+        $roles_array = ['Admin','Inspector','Compania','Cliente','Agendador'];
+        $input_roles = implode(",",$roles_array);
 
-            // Ask for roles from input
-            $input_roles = $this->command->ask('Enter roles in comma separate format.', 'Admin,User');
+        // add roles
+        foreach($roles_array as $role) 
+        {
+            $role = Role::firstOrCreate(['name' => trim($role)]);
 
-            // Explode roles
-            $roles_array = explode(',', $input_roles);
-
-            // add roles
-            foreach($roles_array as $role) {
-                $role = Role::firstOrCreate(['name' => trim($role)]);
-
-                if( $role->name == 'Admin' ) {
-                    // assign all permissions
-                    $role->syncPermissions(Permission::all());
-                    $this->command->info('Admin granted all the permissions');
-                } else {
-                    // for others by default only read access
-                    $role->syncPermissions(Permission::where('name', 'LIKE', 'view_%')->get());
-                }
-
-                // create one user for each role
-                $this->createUser($role);
+            if( $role->name == 'Admin' ) 
+            {
+                // assign all permissions
+                $role->syncPermissions(Permission::all());
+                $this->command->info('Admin granted all the permissions');
+            }  
+            elseif( $role->name == 'Inspector')
+            {
+                // Assing inspector permissions
+                $role->syncPermissions(Permission::where('name', 'view_inspectionappointments')->orWhere('name','LIKE','%_inspectoragendas')->get());
+            }
+            elseif( $role->name == "Compania")
+            {
+                // Assing compania permissions
+                $role->syncPermissions(Permission::where('name' , 'LIKE' , '%_clients')->orWhere('name' , 'LIKE' , '%_inspectors')->orWhere('name' , 'LIKE' , '%_contracts')->get());
+            }
+            elseif( $role->name == 'Cliente')
+            {
+                 // Assing Cliente permissions
+                 $role->syncPermissions(Permission::where('name', 'LIKE' ,'%_headquarters')->get());
+            }
+            elseif( $role->name == 'Agendador')
+            {
+                // Assing Agendador permissions                
+                $role->syncPermissions(Permission::where('name', 'LIKE' ,'%_inspectionappointments')->orWhere('name','LIKE' ,'%_inspectoragendas')->get());
             }
 
-            $this->command->info('Roles ' . $input_roles . ' added successfully');
-
-        } else {
-            Role::firstOrCreate(['name' => 'User']);
-            $this->command->info('Added only default user role.');
+            // create one user for each role
+            $this->createUser($role);
         }
+
+        $this->command->info('Roles ' . $input_roles . ' added successfully');
 
         $this->command->info('corriendo semillas');
         $this->sembrarSemillas();
@@ -112,6 +122,7 @@ class DatabaseSeeder extends Seeder
         ChangePasswordDaysSeeder::run();
         ModuloSeeder::run();
         MenuSeeder::run();
-        
+        PreformatoSeeder::run();
+
     }
 }

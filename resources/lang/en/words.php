@@ -29,6 +29,8 @@ return[
     'User' => 'User',
     'Permissions' => 'Permissions',
     'Permission' => 'Permission',
+    'Preformato' => 'Preformato|Preformatos',
+    'Format' => 'Format|Formats',
     'Created' => 'Created',
     'Deleted' => 'Deleted',
     'Save' => 'Save',
