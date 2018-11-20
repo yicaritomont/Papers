@@ -325,18 +325,54 @@ class InspectorController extends Controller
      */
     public function IdCardInspector($id)
     {
-        $infoInspector = Inspector::find($id);
-        // Se trae la infomacion de loa relacion de usuario
-        $usuarioInspector = usuario_rol::where('user',$infoInspector->id)->where('rol_id',2)->first();
+        $infoInspector = Inspector::find($id);        
         // Se trae la información del usuario
-        $usuario = User::find($usuarioInspector->user_id);
+        $usuario = User::find($infoInspector->user_id);
         $code = "";
-        /*$signa = new ManejadorPeticionesController();
+
+        /**
+         * El bloque comentado acontinuacion muestra como deben de realizar las peticiones para blokchain.
+         */
+        
+        /*
+        $concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
+        $hash = HashUtilidades::generarHash($concatenado);
+        $hash = HashUtilidades::generarHash('HolaSOyElhash');
+        $signa = new ManejadorPeticionesController();
         $obtenerToken = $signa->obtenerAuthToken();
+        $obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQyNzMxODM1LCJleHAiOjE1NDI3MzI3MzUsImlhdCI6MTU0MjczMTgzNSwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.jiMRvZ6MP1L-Ourpx6R2qbCRHrS3VVz4U5Cr9a4VDlE";
+
         echo "<pre>";
         print_r($obtenerToken);
         echo "</pre>";
-        exit();*/
+        if($obtenerToken != "")
+        {
+            $registrar_documento = $signa->registrarDocumento($obtenerToken,asset('images/imagenes_user/cropper.jpg'));           
+            
+            echo $hash;
+
+            echo "<br> REGISTRAR HASH";
+            // Registrar hash 
+            $registrar_hash = $signa->hash($obtenerToken,$hash);
+            echo "<pre>";
+            print_r($registrar_hash);
+            echo "</pre>";
+            
+            echo "<br>INFORMACION HASH";
+            // obtener informacion hash
+            $informacion_hash = $signa->hashInfo($obtenerToken,$hash);
+            echo "<pre>";
+            print_r($informacion_hash);
+            echo "</pre>";
+
+            echo "<br> CERTIFICADO HASH";
+            //obtener certificado de hash
+            $certificado_hash = $signa->hashCertificado($obtenerToken,$hash);
+            echo "<pre>";
+            print_r($certificado_hash);
+            echo "</pre>";
+        }
+        */
         return view('inspector.card', compact('infoInspector','usuario'));
 
     }

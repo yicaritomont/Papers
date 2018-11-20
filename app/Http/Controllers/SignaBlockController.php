@@ -62,16 +62,14 @@ class SignaBlockController
     public function documento($token,$documento)
     {
         $client = $this->crearCliente();
+        $body = fopen($documento, 'r');
         try 
         {
             $res = $client->request('POST',$this->baseUrl.'documento',[
-                'multipart' => [
-                    'file' => $documento
-                ],
-                'headers'   => [
-                    'auhorization' => $token
-                ]
+                'file' => $documento,
+                'headers'   => $this->headers($token)
             ]);
+                    
             return json_decode($res->getBody());
         } 
         catch (RequestException $e) 
@@ -79,6 +77,8 @@ class SignaBlockController
             return false;
         }
     }   
+
+
 
     /**
      * Signa Envio a endpoint documento/info (GET)
@@ -93,11 +93,9 @@ class SignaBlockController
         $client = $this->crearCliente();
         try 
         {
-            $res = $client->request('GET',$this->baseUrl.'documento/info',[
-                'document_hash' => $document_hash,
-                'headers'   => [
-                    'auhorization' => $token
-                ]
+            $res = $client->request('GET',$this->baseUrl.'documento/info/'.$document_hash,[
+                //'document_hash' => $document_hash,
+                'headers'   => $this->headers($token)
             ]);
             return json_decode($res->getBody());
         } 
@@ -120,12 +118,12 @@ class SignaBlockController
         $client = $this->crearCliente();
         try 
         {
-            $res = $client->request('GET',$this->baseUrl.'documento/certificado',[
-                'document_hash' => $document_hash,
-                'headers'   => [
-                    'auhorization' => $token
-                ]
+            $res = $client->request('GET',$this->baseUrl.'documento/certificado/'.$document_hash,[
+                //'document_hash' => $document_hash,
+                'headers'   => $this->headers($token)
             ]);
+
+            return json_decode($res->getBody());
         } 
         catch (RequestException $e) 
         {
@@ -133,5 +131,85 @@ class SignaBlockController
         }
     }
 
+    /**
+     * Signa Envio a endpont Hash (POST)
+     * Registrar el hash recibido como parametro.
+     * Requerido CABECERA authorization (TOKEN)
+     * Envia como parametos el hash
+     * Retorna tx_has de transaccióm
+     */
+
+    public function hash($token,$hash)
+    {
+        $client = $this->crearCliente();
+        try 
+        {
+            $res = $client->request('POST',$this->baseUrl.'hash',[
+                'form_params' => [
+                    'hash' => $hash
+                ],
+                'headers'   => $this->headers($token)
+            ]);
+            return json_decode($res->getBody());
+        } 
+        catch (RequestException $e) 
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Signa envia a enpoint hash/info (GET)
+     * Recupera la informacion de la transaccion hash 
+     * Requerido CABECERA authorization (TOKEN)
+     * Envia como parametro HASH
+     * Retorna la informacion  de la transaccion
+     */
+
+    public function hashInfo($token,$hash)
+    {
+        $client = $this->crearCliente();
+        try 
+        {
+            $res = $client->request('GET',$this->baseUrl.'hash/info/'.$hash,[                
+                //'hash' => $hash,                
+                'headers'   => [
+                    'authorization' => $token,
+                ]
+            ]);
+            return json_decode($res->getBody());
+        } 
+        catch (RequestException $e) 
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Signa Envio a endpoint hash/certificado (GET)
+     * Genera certificado pdf con la informacion de la transaccion
+     * Requerido CABECERA authorization (TOKEN)
+     * Envia como parametos el hash
+     * Retorna el base 64 del pdf
+     */
+
+    public function hashCertificado($token,$hash)
+    {    
+        $client = $this->crearCliente();
+        try 
+        {
+            $res = $client->request('GET',$this->baseUrl.'hash/certificado/'.$hash,[
+                //'hash' => $hash,
+                'headers'   => [
+                    'authorization' => $token,
+                ]
+            ]);
+            return json_decode($res->getBody());
+        } 
+        catch (RequestException $e) 
+        {
+            return false;
+        }
+    }
 }
 ?>
