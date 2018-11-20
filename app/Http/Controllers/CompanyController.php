@@ -37,8 +37,17 @@ class CompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CompanyRequest $request)
+    public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'phone' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'activity' => 'required',
+        ]);
+
         $request['roles'] = 3;
 
         $user = new User();
@@ -51,12 +60,17 @@ class CompanyController extends Controller
         
         if($user->save())
         {
-            $request['user_id'] = $user->id;
-            $company = Company::create($request->except('name', 'email'));
+            $company = Company::create([
+                'address'   => $request['address'],
+                'phone'     => $request['phone'],
+                'activity'  => $request['activity'],
+                'user_id' => $user->id    
+            ]);
+
             $company->slug = md5($company->id);
             $company->save();
             
-            $user->syncPermissions($request, $user);
+            UserController::syncPermissions($request, $user);
             $user->companies()->attach($company);
 
             flash(trans_choice('words.Company',1).' '.trans('words.HasAdded'));
@@ -125,7 +139,7 @@ class CompanyController extends Controller
             $user->password = bcrypt($request->get('password'));
         }
 
-        $user->syncPermissions($request, $user);
+        UserController::syncPermissions($request, $user);
         $user->save();
 
         $company->update($request->except('name', 'email'));

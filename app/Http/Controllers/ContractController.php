@@ -31,7 +31,7 @@ class ContractController extends Controller
                         ->get()
                         ->pluck('name', 'id');
 
-        $companies = Company::all()->pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
         /* dd($company); */
         return view('contract.new', compact(['clients', 'companies']));
     }

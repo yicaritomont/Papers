@@ -8,6 +8,17 @@ function inicial (argument)
      $('#identificacion_inspector').blur(verifyInspector);
       //$('.id_country').change(mostrarCiudades);
     $('#boton_guardar_html').click(guardarHtml);
+
+    //Se definen atributos generales de DataTable
+    dataTableObject = {
+        responsive: true,
+        serverSide: true,
+    };
+
+    //Se valida el idioma
+    if(window.Laravel.language == 'es'){
+        dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};     
+    }
 }
 
 
@@ -240,7 +251,7 @@ $(window).resize(function(){
 
 function changeTopToast(){
     var calendar = $('.content-page .row div').offset()
-    $('.swal2-top-end').css('top', calendar.top);
+    // $('.swal2-top-end').css('top', calendar.top);
 }
 
 const toast = swal.mixin({
@@ -483,11 +494,12 @@ $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
 function verifyInspector()
 {
     var idInspector = $(this).val();
+    alert(idInspector);
     if(idInspector != "")
     {
         $.ajax({
             type: "GET",
-            url: obtenerUrl()+"/public/ajxVerifyInspector",
+            url:  window.Laravel.url+"/ajxVerifyInspector",
             dataType:'json',
             data: {idInspector:idInspector}
             }).done(function( response)
@@ -496,19 +508,19 @@ function verifyInspector()
                     {
                         renderizarNotificacionModal('modal_notificacion','cont-notificacion-modal',response.notificacion);
                         $('#id_inspector').val(response.data[0].id);
-                        $('#nombre_inspector').val(response.data[0].name);
-                        $('#profesion_inspector').val(response.data[0].profession_id);
-                        $('#tipo_inspector').val(response.data[0].inspector_type_id);
+                        $('#nombre_inspector').val(response.data[0].user.name);
+                        $('#profession_id').val(response.data[0].profession_id);
+                        $('#inspector_type_id').val(response.data[0].inspector_type_id);
                         $('#telefono_inspector').val(response.data[0].phone);
                         $('#direccion_inspector').val(response.data[0].addres);
-                        $('#correo_inspector').val(response.data[0].email);
+                        $('#correo_inspector').val(response.data[0].user.email);
                     }
                     else
                     {
                         $('#id_inspector').val("");
                         $('#nombre_inspector').val("");
-                        $('#profesion_inspector').val("");
-                        $('#tipo_inspector').val("");
+                        $('#profession_id').val("");
+                        $('#inspector_type_id').val("");
                         $('#telefono_inspector').val("");
                         $('#direccion_inspector').val("");
                         $('#correo_inspector').val("");
