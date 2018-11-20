@@ -31,14 +31,14 @@
                 @endcan
             </tr>
             </thead>
-            
+
         </table>
     </div>
 @endsection
 
 @section('scripts')
-    <script>  
-        
+    <script>
+
         $(document).ready(function() {
 
             var dataTableObject = {
@@ -48,7 +48,7 @@
 
             //Se valida el idioma
             if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
+                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};
             }
 
             @can('edit_clients', 'delete_clients')
@@ -64,15 +64,19 @@
                     {data: 'actions', className: 'text-center'},
                 ];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'entity' => 'clients']) }}";
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}";
                 dataTableObject.columns = [
                     {data: 'id'},
-                    {data: 'name'},
+                    {data: 'identification'},
+                    {data: 'user.name'},
+                    {data: 'phone'},
+                    {data: 'user.email'},
+                    {data: 'cell_phone'},
                     {data: 'created_at'},
                 ];
             @endcan
-            
-            var table = $('.dataTable').DataTable(dataTableObject);              
+
+            var table = $('.dataTable').DataTable(dataTableObject);
             new $.fn.dataTable.FixedHeader( table );
         });
     </script>

@@ -8,8 +8,9 @@ function inicial (argument)
      $('#password_update').keyup(verifyPassword);
      $('#password-confirm').blur(verifyPassword);
      $('#identificacion_inspector').blur(verifyInspector);
-      //$('.id_country').change(mostrarCiudades);
     $('#boton_guardar_html').click(guardarHtml);
+    $('#cliente_formato').change(llenarCabeceraFormato);
+    $('#company_formato').change(cargarSelectClients);
 }
 
 
@@ -189,30 +190,6 @@ function verifyPassword()
     }
 }
 
-/*function mostrarCiudades()
-{
-    var country = $('.id_country').val();
-    $.ajax({
-        type: "GET",
-        url: obtenerUrl() + '/public/ajxCountry',
-        datType: 'json',
-        data: { country: country }
-    }).done(function (response)
-    {
-        alert(response);
-        var select = '<select name="" id="citie_id" class="form-control">'
-            $.map(response.citiesCountry,function(name, id)
-            {
-                select += '<option values="'+id+'">'+name+'</option>'
-            });
-            select += '</select>';
-            $('#container_cities').empty();
-            $('#container_cities').html(select);
-            $('#ciie_id').chosen({ no_results_text: "No se encuentra" });
-
-    });
-}*/
-
 function verifyInspector()
 {
     var idInspector = $(this).val();
@@ -289,3 +266,66 @@ function camposLlenos() {
     }
   });
 }
+
+  function llenarCabeceraFormato()
+  {
+      var select = $(this).val();
+      var company = $('#company_formato').val();
+      if(select != "")
+      {
+          $.ajax({
+              type: "GET",
+              url: obtenerUrl()+"/public/ajxllenarCabeceraFormato",
+              dataType:'json',
+              data: {select:select, company:company}
+              }).done(function(response)
+                  {
+                      if(!jQuery.isEmptyObject(response))
+                      {
+                          var plantilla_formato = $('#plantilla_formato').clone();
+                          var html_plantilla_formato = plantilla_formato.html();
+                          html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
+                          html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
+                          html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
+                          html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
+                          html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
+                          html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
+                          html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
+                          html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
+                          html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
+                          html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
+                          $('#contenedor_formato').html(html_plantilla_formato);
+                          $('#contenedor_formato').show();
+                        }
+              });
+          }
+    }
+
+    function cargarSelectClients()
+    {
+      var company = $('#company_formato').val();
+      if(company != '')
+      {
+          $.ajax({
+              type: "GET",
+              url: obtenerUrl()+"/public/ajxcargarSelectClients",
+              dataType:'json',
+              data: {company:company}
+              }).done(function(response)
+              {
+            var select = '<select name="client_id" id="cliente_formato" class="input-body">';
+                            select +='<option selected="selected">Seleccione una opción</option>';
+            $.map(response.clients, function(name, id)
+            {
+                select += '<option value="'+id+'">'+name+'</option>';
+            });
+            select+= '</select>';
+            $('#contenedor_client').empty();
+            $('#contenedor_client').html(select);
+            $('#plantilla_formato').css('display','none');
+            $('#contenedor_formato').css('display','none');
+            $('#cliente_formato').change(llenarCabeceraFormato);
+
+              });
+        }
+      }
