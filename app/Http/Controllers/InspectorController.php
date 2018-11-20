@@ -22,7 +22,6 @@ use QR_Code\QR_Code;
 use QR_Code\Types\QR_CalendarEvent;
 use Url;
 
-
 class InspectorController extends Controller
 {
     use Authorizable;
@@ -338,9 +337,15 @@ class InspectorController extends Controller
         $code = "";
 
         /**
+         * El bloque soguiente es para el consumo del WS de firma 
+         */
+        $signaFirma = new WsdlFirmaController();
+        $signaFirma->autenticarUsuario();
+
+        /**
          * El bloque comentado acontinuacion muestra como deben de realizar las peticiones para blokchain.
          */
-        
+
         /*
         $concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
         $hash = HashUtilidades::generarHash($concatenado);
@@ -389,7 +394,6 @@ class InspectorController extends Controller
      */
     public static function qrInfoInspector($id)
     {
-        //$url = new QR_Url('https://werneckbh.github.io/qr-code/');
         $url = new QR_Url($_SERVER["HTTP_HOST"].'/roles-permissions/public/validateInspector/'.$id);
         $url->setSize(4)->setMargin(2)->svg();
 

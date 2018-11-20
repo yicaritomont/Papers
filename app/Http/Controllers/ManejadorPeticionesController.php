@@ -3,6 +3,7 @@
 * ManejadorPeticionesController.php
 */
 namespace App\Http\Controllers;
+
 use App\Http\Controllers\HashUtilidades;
 use App\Http\Controllers\SignaBlockController;
 use GuzzleHttp\Client;

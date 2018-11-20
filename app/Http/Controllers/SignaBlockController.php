@@ -3,6 +3,7 @@
 * SignaBlockController.php
 */
 namespace App\Http\Controllers;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
