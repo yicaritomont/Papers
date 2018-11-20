@@ -41,39 +41,24 @@
 
         $(document).ready(function() {
 
-            var dataTableObject = {
-                responsive: true,
-                serverSide: true,
-            };
-
-            //Se valida el idioma
-            if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};
-            }
+            //Se definen las columnas (Sin actions)
+            var columns = [
+                {data: 'id'},
+                {data: 'identification'},
+                {data: 'user.name'},
+                {data: 'phone'},
+                {data: 'user.email'},
+                {data: 'cell_phone'},
+                {data: 'created_at'},
+            ];
 
             @can('edit_clients', 'delete_clients')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'identification'},
-                    {data: 'user.name'},
-                    {data: 'phone'},
-                    {data: 'user.email'},
-                    {data: 'cell_phone'},
-                    {data: 'created_at'},
-                    {data: 'actions', className: 'text-center'},
-                ];
+                columns.push({data: 'actions', className: 'text-center'},)
+                dataTableObject.columns = columns;
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'identification'},
-                    {data: 'user.name'},
-                    {data: 'phone'},
-                    {data: 'user.email'},
-                    {data: 'cell_phone'},
-                    {data: 'created_at'},
-                ];
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'relations' => 'user']) }}";
+                dataTableObject.columns = columns;
             @endcan
 
             var table = $('.dataTable').DataTable(dataTableObject);

@@ -31,7 +31,7 @@ class ContractController extends Controller
                         ->get()
                         ->pluck('name', 'id');
 
-        $companies = Company::all()->pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
         /* dd($company); */
         return view('contract.new', compact(['clients', 'companies']));
     }
@@ -147,14 +147,16 @@ class ContractController extends Controller
 
 		    $contract->save();
             $menssage = \Lang::get('validation.MessageCreated');
-            flash()->success($menssage);
-		    return redirect()->route('contracts.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }
         else
         {
             $menssage = \Lang::get('validation.MessageError');
-            flash()->success($menssage);
-            return redirect()->route('contracts.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }
     }
 }

@@ -85,13 +85,15 @@ class ModuloController extends Controller
     
 		    $modulo->save();
             $menssage = \Lang::get('validation.MessageCreated');
-            flash()->success($menssage);
-		    return redirect()->route('modulos.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);	
         }else
             {
             	$menssage = \Lang::get('validation.MessageError');
-                flash()->success($menssage);
-                return redirect()->route('modulos.index');
+                echo json_encode([
+                    'status' => $menssage,
+                ]);	
             }		        
 	}
 }

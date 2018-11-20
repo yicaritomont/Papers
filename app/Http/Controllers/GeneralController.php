@@ -7,13 +7,13 @@ use DB;
 
 class GeneralController extends Controller
 {
-    public function datatable($model, $entity, $action=null, $relations=null, $where=null){
+    public function datatable($model, $relations='none', $entity=null, $action=null){
         
         //El action se crea para saber que campo se va a usar como identificador en las acciones
         
         $object = 'App\\'.$model;
-
-        if($relations != null){
+        
+        if($relations != 'none'){
 
             //Dividir las relaciones en un array
             $relations = explode(',', $relations);

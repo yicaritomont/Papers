@@ -15,33 +15,33 @@ class AppointmentStateTableSeeder extends Seeder
        $appointment_stateS = array(
 			array(
 				'id'         => 1,
-				'name'     => 'ACTIVO',
-				'color'		=> 'success',
+				'name'     => 'Solicitado',
+				'color'		=> 'warning',
 			),
 			array(
 				'id'         => 2,
-				'name'     => 'CANCELADO',
-				'color'		=> 'danger',
+				'name'     => 'Activo',
+				'color'		=> 'success',
 			),
 			array(
 				'id'         => 3,
-				'name'     => 'SOLICITADO',
-				'color'		=> 'warning',
+				'name'     => 'En proceso',
+				'color'		=> 'info',
             ),
             array(
 				'id'         => 4,
-				'name'     => 'EN PROCESO',
-				'color'		=> 'info',
+				'name'     => 'Finalizado',
+				'color'		=> 'dark',
             ),
              array(
 				'id'         => 5,
-				'name'     => 'FINALIZADO',
-				'color'		=> 'dark',
+				'name'     => 'Reprogramado',
+				'color'		=> 'purple',
 			),
 			array(
 				'id'         => 6,
-				'name'     => 'REPROGRAMADO',
-				'color'		=> 'purple',
+				'name'     => 'Cancelado',
+				'color'		=> 'danger',
             ),
             
 		);

@@ -102,10 +102,13 @@ class ProfessionController extends Controller
     public function destroy($id)
     {
         if (Profession::findOrFail($id)->delete()) {
-            flash()->success('Profession has been deleted');
+            echo json_encode([
+                'status' => 'Profession has been deleted',
+            ]);
         } else {
-            flash()->success('Profession not deleted');
+            echo json_encode([
+                'status' => 'Profession not deleted',
+            ]);
         }
-        return redirect()->back();
     }
 }

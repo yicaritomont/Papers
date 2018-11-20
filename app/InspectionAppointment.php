@@ -12,7 +12,7 @@ class InspectionAppointment extends Model
      * @var array
      */
     protected $fillable = [
-        'inspector_id', 'inspection_subtype_id', 'appointment_location_id', 'appointment_states_id',  'date', 'start_time', 'end_time'
+        'inspector_id', 'inspection_subtype_id', 'appointment_location_id', 'appointment_states_id',  'contract_id', 'client_id', 'request_date', 'estimated_start_date', 'estimated_end_date', 'assignment_date', 'start_date', 'end_date'
     ];
 
     public function inspector()
@@ -33,5 +33,15 @@ class InspectionAppointment extends Model
     public function inspectionSubtype()
     {
         return $this->belongsTo('App\InspectionSubtype', 'inspection_subtype_id', 'id');
+    }
+
+    public function client()
+    {
+        return $this->belongsTo('App\Client', 'client_id', 'id');
+    }
+
+    public function contract()
+    {
+        return $this->belongsTo('App\Contract', 'contract_id', 'id');
     }
 }

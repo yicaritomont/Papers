@@ -28,7 +28,7 @@
 
 <!-- password Form Input -->
 <div class="form-group @if ($errors->has('password')) has-error @endif">
-    <label for="password">@lang('words.Password')</label>
+    {!! Form::label('password', trans('words.Password')) !!}
     {!! Form::password('password', ['class' => 'input-body']) !!}   
     @if ($errors->has('password')) <p class="help-block">{{ $errors->first('password') }}</p> @endif
 </div>

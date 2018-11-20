@@ -45,7 +45,7 @@
 
 <!-- Inspector of Headquarters Form Select -->
 <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
-    {!! Form::label('inspector_id', trans('words.Inspectors')) !!}
+    {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
     {{-- <select name="inspector_id" id="inspector_id" class="input-body">
         <option value="">@lang('words.ChooseOption')</option>
         @foreach($inspectors as $item)

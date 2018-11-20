@@ -7,7 +7,7 @@
         <div class="col-md-5">            
 
             @if(isset($companies))
-                <h3 class="modal-title">{{ str_plural(trans('words.User'), 2) }} @lang('words.Of') {{ $companies[0]->name }}  </h3>
+                <h3 class="modal-title">{{ str_plural(trans('words.User'), 2) }} @lang('words.Of') {{ $companies->user->name }}  </h3>
             @else
                 <h3 class="modal-title"> {{ str_plural(trans('words.User'), 2) }} </h3>
             @endif
@@ -29,6 +29,7 @@
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>
                 <th>@lang('words.Email')</th>
+                <th>@choice('words.Company', 2)</th>
                 <th>@lang('words.Roles')</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_users', 'delete_users')
@@ -45,51 +46,52 @@
         
         $(document).ready(function() {
 
-            var dataTableObject = {
-                responsive: true,
-                serverSide: true,
-            };
-
-            //Se valida el idioma
-            if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
-            }
+            //Se definen las columnas (Sin actions)
+            var columns = [
+                {data: 'id'},
+                {data: 'name'},
+                {data: 'email'},
+                {data: 'companies'},
+                {data: 'roles'},
+                {data: 'created_at'},
+            ];
 
             @can('edit_users', 'delete_users')
                 @if(isset($companies))
-                    dataTableObject.ajax = "{{ route('users.companyTable', $companies[0]->slug) }}";
+                    dataTableObject.ajax = "{{ route('users.companyTable', $companies->slug) }}";
                 @else
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles']) }}";
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}";
                 @endif
 
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'email'},
-                    {data: 'roles'},
-                    {data: 'created_at'},
-                    {data: 'actions', className: 'text-center'},
-                ];
-                dataTableObject.columnDefs = [{
-                    //En la columna 3 (roles) se recorre el areglo y luego se muestran los nombres de cada posición
-                    targets: 3,
+                columns.push({data: 'actions', className: 'text-center'},)
+                dataTableObject.columns = columns;
+            @else
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'relations' => 'roles,companies,companies.user']) }}";
+                dataTableObject.columns = columns;
+            @endcan
+
+            dataTableObject.columnDefs = [
+                {
+                    //En la columna 4 (roles) se recorre el areglo y luego se muestran los nombres de cada posición
+                    targets: 4,
                     createdCell: function(td, cellData, rowData, row, col){
                         $(td).html('');
                         cellData.forEach(function(element){
                             $(td).append(element.name+' ');
                         });
                     }
-                }]
-            @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'entity' => 'users']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'email'},
-                    {data: 'email'},
-                    {data: 'created_at'},
-                ];
-            @endcan          
+                },{
+                    //En la columna 3 (companies) se recorre el areglo y luego se muestran los nombres de cada posición
+                    targets: 3,
+                    createdCell: function(td, cellData, rowData, row, col){
+                        console.log(cellData);
+                        $(td).html('');
+                        cellData.forEach(function(element){
+                            $(td).append(element.user.name+' ');
+                        });
+                    }
+                }
+            ];       
 
             var table = $('.dataTable').DataTable(dataTableObject);                       
             new $.fn.dataTable.FixedHeader( table );

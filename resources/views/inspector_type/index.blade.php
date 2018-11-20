@@ -37,41 +37,30 @@
         
         $(document).ready(function() {
 
-            var dataTableObject = {
-                responsive: true,
-                serverSide: true,
-            };
-
-            //Se valida el idioma
-            if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
-            }
+            //Se definen las columnas (Sin actions)
+            var columns = [
+                {data: 'id'},
+                {data: 'name'},
+                {data: 'inspection_subtypes.name'},
+                {data: 'created_at'},
+            ];
 
             @can('edit_inspectortypes','delete_inspectortypes')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectorType', 'entity' => 'inspectortypes', 'identificador' => 'id', 'relations' => 'inspection_subtypes,inspection_subtypes.inspection_types']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'inspection_subtypes.name'},
-                    {data: 'created_at'},
-                    {data: 'actions', className: 'text-center'},
-                ];
-                dataTableObject.columnDefs = [{
-                    //En la columna 2 (inspection_subtypes) se arega el tipo de inspección
-                    targets: 2,
-                    createdCell: function(td, cellData, rowData, row, col){
-                        $(td).append(' - '+rowData.inspection_subtypes.inspection_types.name);
-                    }
-                }]
+                columns.push({data: 'actions', className: 'text-center'},)
+                dataTableObject.columns = columns;
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectorType', 'entity' => 'inspectortypes']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'inspection_subtypes.name'},
-                    {data: 'created_at'},
-                ];
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectorType', 'relations' => 'inspection_subtypes,inspection_subtypes.inspection_types']) }}";
+                dataTableObject.columns = columns;
             @endcan
+
+            dataTableObject.columnDefs = [{
+                //En la columna 2 (inspection_subtypes) se arega el tipo de inspección
+                targets: 2,
+                createdCell: function(td, cellData, rowData, row, col){
+                    $(td).append(' - '+rowData.inspection_subtypes.inspection_types.name);
+                }
+            }];
             
             var table = $('.dataTable').DataTable(dataTableObject);              
             new $.fn.dataTable.FixedHeader( table );
