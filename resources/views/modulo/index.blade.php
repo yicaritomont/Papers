@@ -43,7 +43,7 @@
 
             //Se valida el idioma
             if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
+                dataTableObject.language = {url:'{{ asset("js/lib/dataTable/Spanish.json") }}'};           
             }
 
             @can('edit_modulos', 'delete_modulos')

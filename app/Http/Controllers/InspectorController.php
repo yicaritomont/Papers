@@ -74,7 +74,7 @@ class InspectorController extends Controller
                 'identification'    => 'required|numeric',
                 'phone'             => 'required|string',
                 'addres'            => 'required|string',
-                'email'             => 'required|email|unique',
+                'email'             => 'required|email|unique:users,email',
                 'profession_id'     => 'required',
                 'inspector_type_id' => 'required'
             ]);
@@ -86,7 +86,7 @@ class InspectorController extends Controller
                 'identification'    => 'required|unique:inspectors|numeric',
                 'phone'             => 'required|string',
                 'addres'            => 'required|string',
-                'email'             => 'required|email|unique',
+                'email'             => 'required|email|unique:users,email',
                 'profession_id'     => 'required',
                 'inspector_type_id' => 'required'
             ]);
@@ -219,8 +219,7 @@ class InspectorController extends Controller
         $inspector->save();
         $inspector->companies()->sync($request->companies);
 
-
-        flash()->success(trans('words.Inspectors').' '.trans('words.HasUpdated'));
+        flash()->success(trans_choice('words.Inspector', 1).' '.trans('words.HasUpdated'));
 
         return redirect()->route('inspectors.index');
     }
@@ -255,14 +254,16 @@ class InspectorController extends Controller
 
 		    $inspector->save();
             $menssage = \Lang::get('validation.MessageCreated');
-            flash()->success($menssage);
-		    return redirect()->route('inspectors.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }
         else
         {
             $menssage = \Lang::get('validation.MessageError');
-            flash()->success($menssage);
-            return redirect()->route('inspectors.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }
 
         //Antigua eliminación

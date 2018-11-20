@@ -48,7 +48,7 @@
 
             //Se valida el idioma
             if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
+                dataTableObject.language = {url:'{{ asset("js/lib/dataTable/Spanish.json") }}'};           
             }
 
             @can('edit_clients', 'delete_clients')
@@ -67,7 +67,11 @@
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'entity' => 'clients']) }}";
                 dataTableObject.columns = [
                     {data: 'id'},
-                    {data: 'name'},
+                    {data: 'identification'},
+                    {data: 'user.name'},
+                    {data: 'phone'},
+                    {data: 'user.email'},
+                    {data: 'cell_phone'},
                     {data: 'created_at'},
                 ];
             @endcan

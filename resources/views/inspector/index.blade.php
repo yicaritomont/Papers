@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', trans_choice('words.Inspectors',2).', ')
+@section('title', trans_choice('words.Inspector',2).', ')
 
 @section('content')
     <div class="row">
         <div class="col-md-5">
 
             @if(isset($companies))
-                <h3 class="modal-title">{{ str_plural(trans('words.Inspector'), 2) }} @lang('words.Of') {{ $companies[0]->name }}</h3>
+                <h3 class="modal-title">{{ trans_choice('words.Inspector', 2) }} @lang('words.Of') {{ $companies[0]->name }}</h3>
             @else
-                <h3 class="modal-title"> {{ str_plural('inspector', 2) }}</h3>
+                <h3 class="modal-title"> {{ trans_choice('words.Inspector', 2) }}</h3>
             @endif
         </div>
         <div class="col-md-7 page-action text-right">
@@ -58,7 +58,7 @@
 
             //Se valida el idioma
             if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
+                dataTableObject.language = {url:'{{ asset("js/lib/dataTable/Spanish.json") }}'};           
             }
 
             @can('edit_inspectors','delete_inspectors')
@@ -96,7 +96,7 @@
                         //En la columna 10 (actions) se agrega el boton de ver inspector
                         targets: 10,
                         createdCell: function(td, cellData, rowData, row, col){                        
-                            $(td).append('<a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+rowData.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") @lang("words.Inspectors")</a>');
+                            $(td).append('<a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+rowData.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a>');
                         
                         }
                     },

@@ -217,18 +217,17 @@ class ClientController extends Controller
     
 		    $client->save();
             $menssage = \Lang::get('validation.MessageCreated');
-            flash()->success($menssage);
-		    return redirect()->route('clients.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }
         else
         {
             $menssage = \Lang::get('validation.MessageError');
-            flash()->success($menssage);
-            return redirect()->route('clients.index');
-        }	
-        /* $client->delete();
-        flash()->success(trans('words.Client').' '.trans('words.HasEliminated'));
-        return back(); */
+            echo json_encode([
+                'status' => $menssage,
+            ]);
+        }
     }
 
     private function syncPermissions(Request $request, $user)

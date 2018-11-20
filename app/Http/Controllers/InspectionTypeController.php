@@ -106,10 +106,13 @@ class InspectionTypeController extends Controller
     public function destroy($id)
     {
         if (InspectionType::findOrFail($id)->delete()) {
-            flash()->success('Inspection type has been deleted');
+            echo json_encode([
+                'status' => 'Inspection type has been deleted',
+            ]);	
         } else {
-            flash()->success('Inspection type not deleted');
+            echo json_encode([
+                'status' => 'Inspection type not deleted',
+            ]);	
         }
-        return redirect()->back();
     }
 }

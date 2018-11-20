@@ -46,7 +46,7 @@
 
             //Se valida el idioma
             if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};           
+                dataTableObject.language = {url:'{{ asset("js/lib/dataTable/Spanish.json") }}'};           
             }
 
             @can('edit_companies', 'delete_companies')
@@ -74,7 +74,7 @@
                         @endcan
                         @can('view_inspectors')
                             btn += '<a href="'+window.Laravel.url+'/inspectors/company/'+rowData.slug+'" class="btn btn-xs btn-primary">';
-                            btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") @lang("words.Inspectors")</a>';
+                            btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a>';
                                      
                         @endcan
                         console.log('Botones '+btn)

@@ -1,5 +1,3 @@
-
-
 $(window).ready(inicial);
 
 function inicial (argument)
@@ -189,6 +187,275 @@ function verifyPassword()
     }
 }
 
+//Retorna los mensajes de alerta en base al
+function alert(color, msg){
+    return '<div class="alert alert-'+color+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+msg+'</div>';
+}
+
+//Ocultar los formularios desplegables y solo mostrar el seleccionado
+/* $(document).on('click', 'button[data-toggle]', function(e) {
+    console.log('Clickeo');
+    var selector = $(this).data('toggle');
+    $('.formSlide:not('+selector+')').slideUp('slow');
+    $(selector).slideToggle('slow');
+}); */
+function slideForms(obj) {
+    var selector = obj.data('toggle');
+    $('.formSlide:not('+selector+')').slideUp('slow');
+    $(selector).slideToggle('slow');
+};
+
+//Funcion para el mensaje de confirmación de eliminación por Ajax
+function confirmModal(form, msg, type, revertFunc){
+    if(document.documentElement.lang == 'en'){
+        var confirmButtonText = 'Yes';
+    }else{
+        var confirmButtonText = 'Si';
+    }
+
+    swal({
+            title: msg,
+            type: type,
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: confirmButtonText,
+            cancelButtonText: 'No'
+        }).then((result) => {
+        if (result.value) {
+            if(revertFunc){
+                $(form).trigger('submit', [false, revertFunc]);
+            }else{
+                $(form).trigger('submit', true);
+            }
+        }else{
+            if (revertFunc) revertFunc();
+        }
+    }); 
+}
+
+$(window).resize(function(){  
+    changeTopToast();
+});
+
+function changeTopToast(){
+    var calendar = $('.content-page .row div').offset()
+    $('.swal2-top-end').css('top', calendar.top);
+}
+
+const toast = swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 4000,
+});
+
+// Ajax para los formularios de eliminar exceptuando los calendarios
+$(document).on('submit','.formDelete',function(e){
+    console.log($(this).attr('action'));
+    e.preventDefault();    
+    
+    console.log($(this).serialize());
+    
+    $.ajax({
+        url:$(this).attr('action'),
+        type:'POST',
+        data:$(this).serialize(),
+    })
+    .done(function(res){
+        var res = JSON.parse(res);
+
+        //Si no exite algun error
+        if(!res.error){
+            
+            toast({
+                type: 'success',
+                title: res.status
+            });
+
+            changeTopToast();
+
+            $('.dataTable').DataTable().ajax.reload();
+        }else{
+            toast({
+                type: 'error',
+                title: res.error
+            });
+            changeTopToast();            
+        }
+    })
+    .fail(function(res){
+        console.log('error\n'+res);
+        console.log(res);
+    })
+    .always(function(res){
+        console.log('complete\n'+res);
+    })
+});
+
+// Ajax para los formularios editar y eliminar de los calendarios
+$(document).on('submit','.formCalendar',function(e, salida, revertFunc){
+    var idForm = $(this).attr('id');
+    var modal = this.dataset.modal;
+    if(revertFunc){
+        var datos = $('#'+idForm).serialize()+'&drop=drop';
+    }else{
+        var datos = $('#'+idForm).serialize();
+    }
+
+    console.log(datos);
+
+    e.preventDefault();                
+    
+    $.ajax({
+        url:$(this).attr('action'),
+        type:'POST',
+        data:datos,
+        
+    })
+    .done(function(res){
+        var res = JSON.parse(res);   
+
+        //Si no exite algun error
+        if(!res.error){
+            
+            $(modal).modal('hide');
+            $('#'+idForm)[0].reset();
+            $('.msgError').html('');
+            $("#calendar").fullCalendar('refetchEvents');
+
+            toast({
+                type: 'success',
+                title: res.status
+            });
+
+            changeTopToast();
+        }else{
+            //Si la respuesta es en modal
+            if(salida == true){
+                swal('Error',res.error,'error');
+
+            //Si la respuesta es en toast
+            }else if(revertFunc){
+                revertFunc();
+                toast({
+                    type: 'error',
+                    title: res.error
+                });
+                changeTopToast();
+            }
+            else{
+                $('.msgError').html('');
+                $('.msgError').append(alert('danger', res.error)); 
+            }
+            
+        }
+    })
+    .fail(function(res){
+        console.log('error\n'+res);
+        console.log(res);
+    })
+    .always(function(res){
+        console.log('complete\n'+res);
+    })
+    .error(function(res){
+        $('.msgError').html('');
+        $.each( res.responseJSON.errors, function( key, value ) {
+            $('.msgError').append(alert('danger', value));
+        });
+    });
+});
+
+// Ajax para ver agendas y citas
+$('.showCalendar').on('click', function(e){
+    var objElement = $(this);
+
+    //Validar si no se muestra el div ejecute la peticion ajax, si es visible el div solo ocultelo
+    if($(objElement.data('toggle')).css('display') == 'block'){
+        slideForms(objElement);
+    }else{
+        $.ajax({
+            url:$(this).attr('data-route'),
+            type:'GET',       
+        })
+        .done(function(res){
+            var res = JSON.parse(res);
+            $(objElement.data('toggle')).html(res.html);
+            
+            slideForms(objElement);
+        })
+        .fail(function(res){
+            console.log('error\n'+res);
+        });
+    }
+});
+
+// Ajax para editar agendas y citas
+$(document).on('click', '.editCalendar', function(e){
+    var objElement = $(this);
+
+    //Validar si no se muestra el div ejecute la peticion ajax, si es visible el div solo ocultelo
+    if($(objElement.data('toggle')).css('display') == 'block'){
+        slideForms(objElement);
+    }else{
+        $.ajax({
+            url:$(this).attr('data-route'),
+            type:'GET',       
+        })
+        .done(function(res){
+            var res = JSON.parse(res);
+
+            if(objElement.data('toggle') == '#editAgenda')
+            {
+                var aFields = ['start_date', 'end_date', 'inspector_id'];
+    
+                //Se rellena el formulario de editar con los valores correspondientes
+                $.map(aFields, function(nomField){
+                    $('#modalEditDel #'+nomField).val(res.agenda[nomField]);
+                });
+    
+                $('#modalEditDel #country').val(res.agenda.city.countries_id);
+                $('#modalEditDel #country').trigger('change',res.agenda.city_id);    
+                $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+res.agenda.slug);
+
+            }else if(objElement.data('toggle') == '#editAppointment')
+            {
+                var aFields = ['inspector_id', 'start_date', 'end_date'];
+    
+                //Se rellena el formulario de editar con los valores correspondientes
+                $.map(aFields, function(nomField){
+                    $('#modalEditDel #'+nomField).val(res.cita[nomField]);
+                });
+    
+                $('#editAppointment').attr('action', $('#url').val()+'/'+res.cita.id);
+            }
+            slideForms(objElement);
+        })
+        .fail(function(res){
+            console.log('error\n'+res);
+        });
+    }
+});
+
+//Limpiar el formulario de crear agenda
+/* function limpiarForm(startDate, endDate){
+    if (!endDate) endDate = startDate;
+    $('.msgError').html('');
+    $('#formCreateAgenda')[0].reset();
+    $('#formCreateAgenda #start_date').val(startDate);
+    $('#formCreateAgenda #end_date').val(endDate);
+    $('#formCreateAgenda .city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+} */
+function limpiarForm(startDate, endDate, form, fielDate, select){
+    if (!endDate) endDate = startDate;
+    $('.msgError').html('');
+    $(form)[0].reset();
+    $(form+' #'+fielDate+'start_date').val(startDate);
+    $(form+' #'+fielDate+'end_date').val(endDate);
+    $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+}
+
+$(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
 /*function mostrarCiudades()
 {
     var country = $('.id_country').val();

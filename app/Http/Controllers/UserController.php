@@ -10,6 +10,7 @@ use App\Authorizable;
 use App\UserCompanie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -195,6 +196,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        Log::info('ID a destruir: '.$id);
         $user = User::find($id);
         
         //Valida que exista el servicio
@@ -217,14 +219,18 @@ class UserController extends Controller
     
 		    $user->save();
             $menssage = \Lang::get('validation.MessageCreated');
-            flash()->success($menssage);
-		    return redirect()->route('users.index');
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }
         else
         {
             $menssage = \Lang::get('validation.MessageError');
-            flash()->success($menssage);
-            return redirect()->route('users.index');
+            /* flash()->success($menssage);
+            return redirect()->route('users.index'); */
+            echo json_encode([
+                'status' => $menssage,
+            ]);
         }	
     }
 
