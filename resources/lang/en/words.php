@@ -43,6 +43,7 @@ return[
     'MenuPadre' => 'Parent Menu',
     'Active' => 'Active',
     'Inactive' => 'Inactive',
+    'Inspectionsubtype' => 'Inspection Subtype',
 
     //To App Latout Menu
     'ManagementTools' => 'Tools',

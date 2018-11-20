@@ -31,14 +31,14 @@
                 @endcan
             </tr>
             </thead>
-            
+
         </table>
     </div>
 @endsection
 
 @section('scripts')
-    <script>  
-        
+    <script>
+
         $(document).ready(function() {
 
             //Se definen las columnas (Sin actions)
@@ -60,8 +60,8 @@
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'relations' => 'user']) }}";
                 dataTableObject.columns = columns;
             @endcan
-            
-            var table = $('.dataTable').DataTable(dataTableObject);              
+
+            var table = $('.dataTable').DataTable(dataTableObject);
             new $.fn.dataTable.FixedHeader( table );
         });
     </script>
