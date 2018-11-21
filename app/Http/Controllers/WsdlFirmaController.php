@@ -16,16 +16,14 @@ class WsdlFirmaController extends Controller
     public function autenticarUsuario()
     {
         $parametros = [
-            'Usuario'       =>  '3b8e04871b98b9ba7c8799753f7ae4f9',
-            'Password'      =>  '177e2d984bfc26ebb46ed6fbe193b837',
+            'Usuario'       =>  'ACME_pruebas',
+            'Password'      =>  'A0000usr78X',
             'Aplicacion'    =>  'WSfirma'
         ];
-        $cliente = new ClienteSignaController();        
-        $respuesta_servicio = $cliente->invocar('AutenticarUsuario',$parametros);
-
+        $cliente = new ClienteSignaController('AutenticarUsuario',$parametros);
         echo '<pre>';
 		echo 'respuesta del servicio:';
-		print_r($respuesta_servicio);
+		print_r($cliente);
 		echo '</pre>';
     }
 }

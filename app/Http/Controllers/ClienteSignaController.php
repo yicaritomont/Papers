@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use nusoap_client;
 
 class ClienteSignaController extends Controller
 {
@@ -18,7 +19,7 @@ class ClienteSignaController extends Controller
     /*
     * Metodo Constructor
     */
-    public function ClienteSigna($servicio = '', $parametros = array())
+    public function __construct($servicio = '', $parametros = array())
     {
         /*
         * Incializa el los atributos del cliente
@@ -30,7 +31,7 @@ class ClienteSignaController extends Controller
         */
         if($servicio != '')
         {
-            $this->invocar($servicio = '', $parametros = array());
+            $this->invocar($servicio, $parametros);
         }
         return $this;
     }   
@@ -116,14 +117,19 @@ class ClienteSignaController extends Controller
         /*
         * Crea el cliente para SOAP
         */
-      
-        $urlServidor = "https://pre-wsfrma.thsigne.com/WSFirma.asmxwwsdl";   
+        
+        $urlServidor = "https://pre-wsfrma.thsigne.com/WSFirma.asmx?wsdl";   
+        
 
         $this->clienteSOAP = new nusoap_client($urlServidor, 'wsdl', '', '', '', ''); 
         $this->clienteSOAP->soap_defencoding = 'UTF-8';
-        $this->clienteSOAP->response_timeout = -1;
+        $this->clienteSOAP->response_timeout = -1;        
     }
 
+    private function AutenticarUsuario()
+    {
+
+    }
     /*
     * Funcion de apoyo que realiza la llamada al servicio establecido para
     * la instancia del cliente
@@ -136,7 +142,6 @@ class ClienteSignaController extends Controller
         }
         
         $this->result = $this->clienteSOAP->call($this->servicio, $this->parametros, '', '', false, true);
-
         if($this->clienteSOAP->fault)
         {
             echo '<h2>Fault (Atencion - La peticion contiene un cuerpo SOAP no valido)</h2><pre>'; print_r($result); echo '</pre>';
@@ -146,8 +151,8 @@ class ClienteSignaController extends Controller
             if($err)
             {
                 echo '<h2>Error</h2><pre>' . $err . '</pre>';
-
-                 echo '<h2>Request servicio</h2>';
+                
+                echo '<h2>Request servicio</h2>';
                 echo '<pre>' . htmlspecialchars($this->clienteSOAP->request, ENT_QUOTES) . '</pre>';
                 echo '<h2>Response</h2>';
                 echo '<pre>' . htmlspecialchars($this->clienteSOAP->response, ENT_QUOTES) . '</pre>';
@@ -157,7 +162,7 @@ class ClienteSignaController extends Controller
                 echo '<pre>' . htmlspecialchars($this->clienteSOAP->getError(), ENT_QUOTES) . '</pre>';
                 echo '<h2>Fault</h2>';
                 echo '<pre>' . htmlspecialchars($this->clienteSOAP->fault, ENT_QUOTES) . '</pre>';
-
+                
             }else
             {
                 /*
@@ -165,8 +170,9 @@ class ClienteSignaController extends Controller
                 * del servicio solicitado
                 */
                 $servicio = $this->servicio;
-                return $this->$servicio();
+                //return $this->$servicio();
             }
         }
+        return $this->result;
     }
 }
