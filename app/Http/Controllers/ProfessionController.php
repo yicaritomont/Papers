@@ -43,13 +43,13 @@ class ProfessionController extends Controller
         ]);
         if (Profession::create($request->except('permissions'))) {
 
-            flash('Profession has been created.');
-
+            $alert = ['success', trans_choice('words.Profession',1).' '.trans('words.HasAdded')];
+            
         } else {
-            flash()->error('Unable to create Profession.');
+            $alert = ['error', 'Unable to create Profession.'];
         }
 
-        return redirect()->route('professions.index');
+        return redirect()->route('professions.index')->with('alert', $alert);
 
     }
 
@@ -88,9 +88,9 @@ class ProfessionController extends Controller
 
         $profession->save();
 
-        flash()->success('Profession has been updated');
+        $alert = ['success', trans_choice('words.Profession',1).' '.trans('words.HasUpdated')];
 
-        return redirect()->route('professions.index');
+        return redirect()->route('professions.index')->with('alert', $alert);
     }
 
     /**

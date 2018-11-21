@@ -151,7 +151,7 @@
     margin: auto;
 }
 
-#flash-msg
+#flash-msg .alert
 {
     margin-top: 60px;
 }

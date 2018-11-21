@@ -250,8 +250,7 @@ $(window).resize(function(){
 });
 
 function changeTopToast(){
-    var calendar = $('.content-page .row div').offset()
-    // $('.swal2-top-end').css('top', calendar.top);
+    $('.swal2-top-end').css('top', $('.nav_menu').outerHeight());
 }
 
 const toast = swal.mixin({

@@ -8,9 +8,9 @@
 
         {!! Form::open( ['method' => 'delete', 'url' => route($entity.'.destroy', ['user' => ${$action}]), 'style' => 'display: inline', 'id' => 'd'.${$action}, 'class' => 'formDelete']) !!}                            
             @if($status == 1)
-                <button type="button" onclick="confirmModal('@php echo '#d'.${$action} @endphp', '{{trans('words.DeleteMessage')}}', 'warning')" class="btn  btn-xs btn-success btnDelete"><span class='glyphicon glyphicon-ok-sign'></span></button>
+                <button type="button" onclick="confirmModal('@php echo '#d'.${$action} @endphp', '{{trans('words.InactiveMessage')}}', 'warning')" class="btn  btn-xs btn-success btnDelete"><span class='glyphicon glyphicon-ok-sign'></span></button>
             @else
-                <button type="button" onclick="confirmModal('@php echo '#d'.${$action} @endphp', '{{trans('words.DeleteMessage')}}', 'warning')" class="btn  btn-xs btn-danger btnDelete"><span class='glyphicon glyphicon-remove-sign'></button>
+                <button type="button" onclick="confirmModal('@php echo '#d'.${$action} @endphp', '{{trans('words.ActiveMessage')}}', 'warning')" class="btn  btn-xs btn-danger btnDelete"><span class='glyphicon glyphicon-remove-sign'></button>
             @endif 
         {!! Form::close() !!}
 

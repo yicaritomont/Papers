@@ -33,8 +33,8 @@ class ModuloController extends Controller
         
         $modulo->save();
         $menssage = \Lang::get('validation.MessageCreated');
-        flash()->success($menssage);
-        return redirect()->route('modulos.index');
+        $alert = ['success', $menssage];
+        return redirect()->route('modulos.index')->with('alert', $alert);
         
     }
 
@@ -57,8 +57,8 @@ class ModuloController extends Controller
         
         $modulo->save();
         $menssage = \Lang::get('validation.MessageCreated');
-        flash()->success($menssage);
-        return redirect()->route('modulos.index');
+        $alert = ['success', $menssage];
+        return redirect()->route('modulos.index')->with('alert', $alert);
     }
 
     public function destroy($id)

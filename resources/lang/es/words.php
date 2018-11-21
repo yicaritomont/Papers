@@ -126,5 +126,7 @@ return[
     'RequestDate' => 'Fecha de solicitud',
     'AppointmentInformation' => 'Información de la Cita',
     'DateGreater' => 'La fecha debe ser mayor a la actual',
+    'ActiveMessage' => '¿Seguro que quieres activarlo?',
+    'InactiveMessage' => '¿Seguro que quieres inactivarlo?',
 ];
 ?>

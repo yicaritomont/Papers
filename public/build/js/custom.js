@@ -57,6 +57,7 @@ function init_sidebar() {
 var setContentHeight = function () {
 	// reset height
 	$RIGHT_COL.css('min-height', $(window).height());
+	// $('.container.body').css('height', $(window).height());
 };
 
   $SIDEBAR_MENU.find('a').on('click', function(ev) {
