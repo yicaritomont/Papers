@@ -131,5 +131,6 @@ return[
     'DateGreater' => 'The date must be greater than the current',
     'ActiveMessage' => '¿Are you sure you want to activate it?',
     'InactiveMessage' => '¿Are you sure you want to inactivate it?',
+    'To' => 'to',
 ];
 ?>

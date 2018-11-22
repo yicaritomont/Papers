@@ -21,6 +21,7 @@
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>
                 <th>@lang('words.CreatedAt')</th>
+                <th>@lang('words.UpdatedAt')</th>
                 @can('edit_inspectiontypes','delete_inspectiontypes')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
@@ -41,15 +42,18 @@
                 {data: 'id'},
                 {data: 'name'},
                 {data: 'created_at'},
+                {data: 'updated_at'},
             ];
 
             @can('edit_inspectiontypes','delete_inspectiontypes')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionType', 'entity' => 'inspectiontypes', 'identificador' => 'id', 'relations' => 'none']) }}";
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionType']) }}";
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
             
             var table = $('.dataTable').DataTable(dataTableObject);                    

@@ -26,7 +26,7 @@
 </div>
 
 <div class="form-group @if ($errors->has('contract_id')) has-error @endif">
-    {!! Form::label('contract_id', trans_choice('words.Contract', 2)) !!}
+    {!! Form::label('contract_id', trans_choice('words.Contract', 1)) !!}
     {!! Form::select('contract_id',$contracts, null, ['class' => 'input-body','require', 'placeholder'=>trans('words.ChooseOption')]) !!}
     @if ($errors->has('contract_id')) <p class="help-block">{{ $errors->first('contract_id') }}</p> @endif
 </div>
@@ -50,7 +50,7 @@
 <div class="form-group @if ($errors->has('estimated_start_date')) has-error @endif">
     {!! Form::label('estimated_start_date', trans('words.StartDate')) !!}
     <div class="input-group date">
-        {!! Form::text('estimated_start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+        {!! Form::text('estimated_start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
         <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
     </div>
     @if ($errors->has('estimated_start_date')) <p class="help-block">{{ $errors->first('estimated_start_date') }}</p> @endif
@@ -59,7 +59,7 @@
 <div class="form-group @if ($errors->has('estimated_end_date')) has-error @endif">
     {!! Form::label('estimated_end_date', trans('words.EndDate')) !!}
     <div class="input-group date">
-        {!! Form::text('estimated_end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+        {!! Form::text('estimated_end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
         <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
     </div>
     @if ($errors->has('estimated_end_date')) <p class="help-block">{{ $errors->first('estimated_end_date') }}</p> @endif

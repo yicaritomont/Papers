@@ -1,9 +1,9 @@
-<!-- Start Date of Inspector Agenda Form Date -->
+{{-- <!-- Start Date of Inspector Agenda Form Date -->
 <div class="form-group @if ($errors->has('start_date')) has-error @endif">
     {!! Form::label('start_date', trans('words.StartDate')) !!}
     <div class="input-group date">
-        {!! Form::text('start_date', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
-        <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
+        {!! Form::text('start_date', null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
+        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
     </div>
     @if ($errors->has('start_date')) <p class="help-block">{{ $errors->first('start_date') }}</p> @endif
 </div>
@@ -12,10 +12,22 @@
 <div class="form-group @if ($errors->has('end_date')) has-error @endif">
     {!! Form::label('end_date', trans('words.EndDate')) !!}
     <div class="input-group date">
-        {!! Form::text('end_date', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
-        <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
+        {!! Form::text('end_date', null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
+        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
     </div>
     @if ($errors->has('end_date')) <p class="help-block">{{ $errors->first('end_date') }}</p> @endif
+</div> --}}
+
+<!-- End Date of Inspector Agenda Form Date -->
+<div class="form-group @if ($errors->has('start_date')) has-error @endif">
+    {!! Form::label('start_date', trans('words.StartDate').' - ') !!}
+    {!! Form::label('end_date', trans('words.EndDate')) !!}
+    
+    <div class="input-daterange input-group date" id="datepicker">
+        <input type="text" class="form-control input-date" name="start_date" id="start_date" autocomplete="off">
+        <span class="input-group-addon">@lang('words.To')</span>
+        <input type="text" class="form-control input-date" name="end_date" id="end_date" autocomplete="off">
+    </div>
 </div>
 
 {{-- <!-- Start Time of Inspector Agenda Form Time -->
@@ -56,7 +68,7 @@
             >{{$item->name}}</option>
         @endforeach
     </select> --}}
-    {!!Form::select('inspector_id', $inspectors->pluck('name', 'id'), isset($inspectorAgenda) ? $inspectorAgenda->inspector_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
+    {!!Form::select('inspector_id', $inspectors, isset($inspectorAgenda) ? $inspectorAgenda->inspector_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
     @if ($errors->has('inspector_id')) <p class="help-block">{{ $errors->first('inspector_id') }}</p> @endif
 </div>
 

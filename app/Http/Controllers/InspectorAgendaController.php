@@ -24,7 +24,7 @@ class InspectorAgendaController extends Controller
     {
 
         $result = InspectorAgenda::with(['inspector'])->paginate();
-        $inspectors = Inspector::all();
+        $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
         $countries = Country::all()->pluck('name', 'id');
 
         return view('inspector_agenda.index', compact('result', 'inspectors', 'countries'));
@@ -113,11 +113,12 @@ class InspectorAgendaController extends Controller
         setlocale(LC_TIME,app()->getLocale());
 
         $agenda = InspectorAgenda::join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
+            ->join('users', 'users.id', '=', 'inspectors.user_id')
             ->join('cities', 'cities.id', '=', 'inspector_agendas.city_id')
             ->join('countries', 'countries.id', '=', 'cities.countries_id')
             ->select('cities.name AS city',
                     'countries.name AS country',
-                    'inspectors.name AS inspector',
+                    'users.name AS inspector',
                     'start_date',
                     'end_date')
             ->where('inspector_agendas.slug', $slug)
@@ -377,24 +378,18 @@ class InspectorAgendaController extends Controller
      *
      * @return JSON
      */
-    public function events(){
-        //echo "XD";
-        // $result = InspectorAgenda::select(DB::raw('CONCAT(date,"T",start_time) AS start, CONCAT(date,"T",end_time) AS end, slug'))->get();
-        
-        /* $result = InspectorAgenda::join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
-                ->join('cities', 'cities.id', '=', 'inspector_agendas.city_id')
-                ->select('inspectors.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'cities.name AS city', 'inspectors.name AS inspector', 'inspector_id', 'city_id', 'cities.countries_id AS country_id')->get();
-         */
-
+    public function events()
+    {
         $result = InspectorAgenda::join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
-                ->select('inspectors.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'inspector_id')->get();
-        
+                ->join('users', 'users.id', '=', 'inspectors.user_id')
+                ->select('users.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'inspector_id')->get();
+                
         //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario
         foreach($result as $item){
             $item->end = $item->end.'T23:59:59';
         }
         echo json_encode($result);
-       
+
     }
 
     /**
@@ -458,13 +453,34 @@ class InspectorAgendaController extends Controller
                 /* ------------------Validacion editar-citas------------------- */
                 
                 //Se consulta la agenda por el identificador
-                $agenda = InspectorAgenda::where('slug', '=', $slug)->get()[0];
+                $agenda = InspectorAgenda::where('slug', '=', $slug)->get()->first();
 
                 
             
-                //Se consultas las citas filtrado por el inspector de la agenda a eliminar
-                $citas = InspectionAppointment::where('inspector_id', '=', $agenda->inspector_id)->get();
-                
+                //Se consultas las citas filtrado por el inspector de la agenda a eliminar, se exceptuan las citas reprogramadas (5) y/o canceladas (6)
+                /* $citas = InspectionAppointment::where([
+                    ['inspector_id', '=', $agenda->inspector_id],
+                    ['appointment_states_id', '!=', 5],
+                    ['appointment_states_id', '!=', 6],
+                ])->get(); */
+
+                //Se consultas las citas filtrado por el inspector de la agenda a eliminar, se exceptuan las citas reprogramadas (5) y/o canceladas (6)
+                $citas1 = InspectionAppointment::select('start_date', 'end_date')
+                    ->where([
+                        ['inspector_id', '=', $agenda->inspector_id],
+                        ['appointment_states_id', '!=', 1],
+                        ['appointment_states_id', '!=', 5],
+                        ['appointment_states_id', '!=', 6],
+                ]);
+
+                //Se consultas las citas filtrado por el inspector de la agenda a eliminar, por estado solicitado y se une con la consulta anterior
+                $citas = InspectionAppointment::select('estimated_start_date AS start_date', 'estimated_end_date AS end_date')
+                    ->where([
+                        ['inspector_id', '=', $agenda->inspector_id],
+                        ['appointment_states_id', 1],
+                    ])->union($citas1)
+                ->get();
+                          
                 foreach($citas as $cita){
                     /* if($agenda->date == $cita->date){
                         if($agenda->start_time <= $cita->start_time && $agenda->end_time >= $cita->end_time){
@@ -528,8 +544,12 @@ class InspectorAgendaController extends Controller
         //Se consulta la agenda por el identificador
         $agenda = InspectorAgenda::where('slug','=',$slug)->get()[0];
         
-        //Se consultas las citas filtrado por el inspector de la agenda a eliminar
-        $citas = InspectionAppointment::where('inspector_id', '=', $agenda->inspector_id)->get();
+        //Se consultas las citas filtrado por el inspector de la agenda a eliminar, se exceptuan las citas reprogramadas (5) y/o canceladas (6)
+        $citas = InspectionAppointment::where([
+            ['inspector_id', '=', $agenda->inspector_id],
+            ['appointment_states_id', '!=', 5],
+            ['appointment_states_id', '!=', 6],
+        ])->get();
 
         //Se valida en todas que si las citas que tiene un inspector no esten en el rango de dias de la agenda
         foreach($citas as $cita){
@@ -554,19 +574,18 @@ class InspectorAgendaController extends Controller
     }
 
     public function cities(Request $request){
-        
-        // $result = InspectorAgenda::select(DB::raw('CONCAT(date,"T",start_time) AS start, CONCAT(date,"T",end_time) AS end, slug'))->get();
-        
-        /* $result = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
-                ->join('inspection_types', 'inspection_types.id', '=', 'inspection_appointments.inspection_type_id')
-                ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')
-                ->select(DB::raw('CONCAT(date,"T",start_time) AS start, CONCAT(date,"T",end_time) AS end, inspection_appointments.id, inspection_types.name AS type, inspectors.name AS inspector, CONCAT("alert-",appointment_states.color) AS className, inspector_id, inspection_type_id, appointment_location_id, appointment_states_id'))->get();
-         */
-        $result = Citie::select('id', 'name')
-                    ->where('countries_id', '=', $request->id)
-                    ->get();
 
-        echo json_encode($result);
+        $result = Citie::select('id', 'name')
+            ->where('countries_id', '=', $request->id)
+        ->get();
+
+        $city = '';
+
+        foreach($result as $row){
+            $city .= '<option value="'.$row->id.'">'.$row->name.'</option>';
+        }
+
+        echo json_encode($city);
        
     }
     

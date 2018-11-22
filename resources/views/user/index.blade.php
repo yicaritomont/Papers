@@ -32,6 +32,7 @@
                 <th>@choice('words.Company', 2)</th>
                 <th>@lang('words.Roles')</th>
                 <th>@lang('words.CreatedAt')</th>
+                <th>@lang('words.UpdatedAt')</th> 
                 @can('edit_users', 'delete_users')
                 <th class="text-center">@lang('words.Actions')</th>
                 @endcan
@@ -54,6 +55,7 @@
                 {data: 'companies'},
                 {data: 'roles'},
                 {data: 'created_at'},
+                {data: 'updated_at'},
             ];
 
             @can('edit_users', 'delete_users')
@@ -65,33 +67,36 @@
 
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'relations' => 'roles,companies,companies.user']) }}";
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
-            dataTableObject.columnDefs = [
+            dataTableObject.columnDefs.push(
                 {
                     //En la columna 4 (roles) se recorre el areglo y luego se muestran los nombres de cada posición
                     targets: 4,
-                    createdCell: function(td, cellData, rowData, row, col){
-                        $(td).html('');
-                        cellData.forEach(function(element){
-                            $(td).append(element.name+' ');
+                    render: function(data, type, row){
+                        var res = '';
+                        data.forEach(function(element){
+                            res += element.name+' ';
                         });
+                        return res;
                     }
                 },{
                     //En la columna 3 (companies) se recorre el areglo y luego se muestran los nombres de cada posición
                     targets: 3,
-                    createdCell: function(td, cellData, rowData, row, col){
-                        console.log(cellData);
-                        $(td).html('');
-                        cellData.forEach(function(element){
-                            $(td).append(element.user.name+' ');
+                    render: function(data, type, row){
+                        var res = '';
+                        data.forEach(function(element){
+                            res += element.user.name+' ';
                         });
+                        return res;
                     }
                 }
-            ];       
+            );       
 
             var table = $('.dataTable').DataTable(dataTableObject);                       
             new $.fn.dataTable.FixedHeader( table );

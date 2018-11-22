@@ -370,12 +370,12 @@
                 <!-- /top navigation -->
                 <div class="right_col" role="main">
 
-                    <div class="content-page">
+                    {{-- <div class="content-page"> --}}
                         {{-- <div id="flash-msg">
                             @include('flash::message')
                         </div> --}}
                         @yield('content')
-                    </div>
+                    {{-- </div> --}}
                 </div>
             </div>  
         </div>
@@ -449,8 +449,12 @@
     <!-- text editor -->
     <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
 
+    <!-- Moment timezone -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data-2012-2022.min.js"></script>
+
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
+
 	@yield('scripts')
 
     <!-- Custom Theme Scripts -->

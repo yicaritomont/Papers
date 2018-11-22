@@ -4,19 +4,21 @@
 
 @section('content')
 
-    <div class="col-xs-12 col-sm-8 col-md-6 col-md-offset-3">    
-        <div class="panel panel-default">
-            <div class="panel-header-form">
-                <h3 class="panel-titles">@lang('words.Edit') {{ $user-> name }}</h3>                    
-            </div>
-            <div class="panel-body black-letter">
-                {!! Form::model($user, ['method' => 'PUT', 'route' => ['perfiles.update',  $user->id ],'enctype' => "multipart/form-data" ]) !!}                        
-                        @include('perfil._form')
-                        <!-- Submit Form Button -->                           
-                        <input class="btn-body" type="submit" value="@lang('words.SaveChanges')">
-                {!! Form::close() !!}
-            </div>
-        </div>   
+    <div class="row">
+        <div class="col-xs-12 col-sm-8 col-md-6 col-md-offset-3">    
+            <div class="panel panel-default">
+                <div class="panel-header-form">
+                    <h3 class="panel-titles">@lang('words.Edit') {{ $user-> name }}</h3>                    
+                </div>
+                <div class="panel-body black-letter">
+                    {!! Form::model($user, ['method' => 'PUT', 'route' => ['perfiles.update',  $user->id ],'enctype' => "multipart/form-data" ]) !!}                        
+                            @include('perfil._form')
+                            <!-- Submit Form Button -->                           
+                            <input class="btn-body" type="submit" value="@lang('words.SaveChanges')">
+                    {!! Form::close() !!}
+                </div>
+            </div>   
+        </div>
     </div>
 
     <div class="wrapper wrapper-content animated fadeInRight">

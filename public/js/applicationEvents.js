@@ -19,8 +19,38 @@ function inicial (argument)
     if(window.Laravel.language == 'es'){
         dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};     
     }
+
+    //Campo fecha
+
+    var datePickerObj = {
+        autoclose: true,
+        format: 'yyyy-mm-dd',
+        todayHighlight: true,
+        orientation: "bottom auto",
+        forceParse: false,
+    };
+
+    if(window.Laravel.language == 'es') datePickerObj.language = 'es';
+
+    $('.input-group.date').datepicker(datePickerObj);
+
+    /* console.log($(window).height());
+    console.log('Alto: '+$('.container.body').height());
+
+    console.log(window.innerHeight);
+    console.log($(window).outerHeight()); */
 }
 
+function setDataTable(targets){
+    return {
+        targets:targets,
+        render: function(data, type, row, meta){
+            var date = moment.tz(data.replace(' ', 'T')+'Z', moment.tz.guess());
+
+            return date.format('MMMM DD YYYY, h:mm:ss a');
+        }
+    };
+}
 
 function obtenerUrl()
 {
@@ -567,3 +597,81 @@ function camposLlenos() {
     }
   });
 }
+
+function calendar(obj){
+    $("#calendar").fullCalendar({
+        selectable: true,//Permite seleccionar
+        nowIndicator: true,//Indicador del tiempo actual
+        eventLimit: true, //Para que aparezca "ver más" en caso de muchas citas
+        displayEventTime: false,//Para que no aparezca la fecha en el titulo
+        contentHeight: 'auto', //Height auto
+        customButtons: obj.customButtons,
+        header:{
+            "left":"prev,next today,createButton",
+            "center":"title",
+            "right":"month,agendaWeek,listMonth"
+        },
+        events: obj.events,
+        eventClick: obj.eventClick,
+        select: obj.select,
+        dayClick: obj.dayClick,
+        editable: true,
+        eventDrop: obj.eventDrop,
+    });
+}
+
+$('.country').on('change',function(event, city_id){
+    $.ajax({
+        url:this.dataset.route,
+        type:'POST',
+        data:{
+            id: $(this).val(),
+            _token: $('#_token').val(),
+        }
+    })
+    .done(function(res){
+        // console.log('done\n'+res);
+        res = JSON.parse(res);
+        $('.city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+        $('.city_id').append(res);
+
+        if(city_id != undefined){
+            $('#modalEditDel #city_id').val(city_id);
+        }
+    })
+    .fail(function(res){
+        alert('Error\n'+res);
+    });
+});
+
+$('.inspection_type_id').on('change',function(event, cita){
+    $.ajax({
+        url:this.dataset.route,
+        type:'POST',
+        data:{
+            id: $(this).val(),
+            _token: $('#_token').val(),
+        }
+    })
+    .done(function(res){
+        
+        console.log('done\n'+res);
+        console.log(JSON.parse(res).status);
+        $('.inspection_subtype_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+        $.each(JSON.parse(res), function( key, value ) {
+            //$('.msgError').append(alert('danger', value));
+            console.log('Id: '+value.id+'\nName: '+value.name);
+            $('.inspection_subtype_id').append('<option value="'+value.id+'">'+value.name+'</option>');
+        });
+
+        if(cita != undefined){
+            $('#modalEditDel #inspection_subtype_id').val(cita.inspection_subtype_id);
+        }
+    })
+    .fail(function(res){
+        alert('oiga mire vea, no hay internet.');
+    })
+    .always(function(res){
+        console.log('complete\n'+res);
+    });
+});
