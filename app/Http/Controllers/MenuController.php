@@ -119,8 +119,8 @@ class MenuController extends Controller
         
         $menu->save();
         $menssage = \Lang::get('validation.MessageCreated');
-        flash()->success($menssage);
-        return redirect()->route('menus.index');
+        $alert = ['success', $menssage];
+        return redirect()->route('menus.index')->with('alert', $alert);
         
     }
 
@@ -224,8 +224,8 @@ class MenuController extends Controller
         
         $menu->save();
         $menssage = \Lang::get('validation.MessageCreated');
-        flash()->success($menssage);
-        return redirect()->route('menus.index');
+        $alert = ['success', $menssage];
+        return redirect()->route('menus.index')->with('alert', $alert);
     }
 
     /**

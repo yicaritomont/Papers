@@ -3,9 +3,11 @@
 @section('title', trans_choice('words.InspectorAgenda', 1))
 
 @section('content')
-    <div class="msgAlert"></div>    
+
+    <div class="msgAlert"></div>
+        
     <div class="row">
-        <div class="col-xs-12 col-md-8 col-md-offset-2">
+        <div class="col-12 col-lg-8 col-lg-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">              
                     <div class="row">
@@ -87,7 +89,35 @@
                         {!! Form::submit(trans('words.Edit'), ['class' => 'btn btn-primary btn-block']) !!}
                     {!! Form::close() !!}
 
-                    <div class="formSlide" id="showAgenda" style="display:none"></div>
+                    <div class="formSlide" id="showAgenda" style="display:none">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center active" colspan="2" style="font-size:2em">@lang('words.AgendaInformation')</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <th>@lang('words.StartDate'): </th>
+                                <td id="cell-start_date"></td>
+                            </tr>
+                            <tr>
+                                <th>@lang('words.EndDate'): </th>
+                                <td id="cell-end_date"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.Inspector', 1): </th>
+                                <td id="cell-inspector"></td>
+                            </tr>
+                            <tr>
+                                <th>@lang('words.Country'): </th>
+                                <td id="cell-country"></td>
+                            </tr>
+                            <tr>
+                                <th>@lang('words.City'): </th>
+                                <td id="cell-city"></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button style="display:inline" type="button" class="btn btn-default" data-dismiss="modal">@lang('words.Close')</button>
@@ -106,132 +136,75 @@
 
     <script type="text/javascript" >
 
-        $(document).ready(function(){
+        //Se define un objeto que contenga las caracteristicas particulares de cada calendario y luego se definen
+        var calendarObj = {};
+        calendarObj.customButtons = null;
+        calendarObj.events = $('#url').val()+'/events';
+        calendarObj.eventClick = function(event)
+        {
+            //Cambiar el action del formulario
+            $('#deleteAgenda').attr('action', $('#url').val()+'/ajax/'+event.slug);
+            $('.showCalendar').attr('data-route', $('#url').val()+'/'+event.slug);
+            $('.editCalendar').attr('data-route', $('#url').val()+'/'+event.slug+'/edit');
 
-            //Campo hora
-            $('.clockpicker').clockpicker();
+            //Se limpia las alertas
+            $('.msgError').html('');
 
-            //Campo fecha
-            $('.input-group.date').datepicker({
-                forceParse: false,
-                autoclose: true,
-                format: 'yyyy-mm-dd',
-                todayHighlight: true,
-                orientation: "bottom auto",
-                @if(app()->getLocale()=='es')
-                language: "es",
-                @endif
-            });
+            //Ocultar los formularios desplegables
+            $(".formSlide").hide();
 
-            $('.country').on('change',function(event, city_id){
-                console.log($(this).val());
-                console.log(this.dataset.route);
-                console.log($('#_token').val());
-                $.ajax({
-                    url:this.dataset.route,
-                    type:'POST',
-                    data:{
-                        id: $(this).val(),
-                        _token: $('#_token').val(),
-                    }
-                })
-                .done(function(res){
-                    
-                    console.log('done\n'+res);
-                    console.log(JSON.parse(res).status);
-                    $('.city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-                    $.each(JSON.parse(res), function( key, value ) {
-                        //$('.msgError').append(alert('danger', value));
-                        console.log('Id: '+value.id+'\nName: '+value.name);
-                        $('.city_id').append('<option value="'+value.id+'">'+value.name+'</option>');
-                    });
+            $('#modalEditDel').modal('show');
+        };
+        calendarObj.select = function(startDate, endDate, jsEvent, view)
+        {
+            //Separar en fecha[0] y hora[1]
+            var start = startDate.format().split('T');
 
-                    if(city_id != undefined){
-                        $('#modalEditDel #city_id').val(city_id);
-                    }
-                })
-                .fail(function(res){
-                    alert('Error\n'+res);
-                })
-                .always(function(res){
-                    console.log('complete\n'+res);
-                });
-            });
-        });
-
-        //Calendario
-        $("#calendar").fullCalendar({
-            selectable: true,//Permite seleccionar
-            nowIndicator: true,//Indicador del tiempo actual
-            eventLimit: true, //Para que aparezca "ver más" en caso de muchas citas
-            displayEventTime: false,//Para que no aparezca la fecha en el titulo
-            contentHeight: 'auto', //Height auto
-            @can('add_inspectoragendas')
-                //Boton de crear
-                customButtons: {
-                    createButton: {
-                        text: '{{trans('words.Create')}}',
-                        click: function() {
-                            $('#modalCreate #date').removeAttr("disabled");
-                            $('#formCreateAgenda')[0].reset();
-                            $('#modalCreate').modal('show');
-                        }
-                    }
-                },
-            @endcan
-            header:{
-                "left":"prev,next today,createButton",
-                "center":"title",
-                "right":"month,agendaWeek,listMonth"
-            },
-            events: $('#url').val()+'/events',
-
-            eventClick: function(calEvent, jsEvent, view) {
-                //Cambiar el action del formulario
-                $('#deleteAgenda').attr('action', $('#url').val()+'/ajax/'+calEvent.slug);
-                $('.showCalendar').attr('data-route', $('#url').val()+'/'+calEvent.slug);
-                $('.editCalendar').attr('data-route', $('#url').val()+'/'+calEvent.slug+'/edit');
-
-                //Se limpia las alertas
-                $('.msgError').html('');
-
-                //Ocultar los formularios desplegables
-                $(".formSlide").hide();
-
-                $('#modalEditDel').modal('show');
-            },
-            select: function(startDate, endDate, jsEvent, view) {
-                //Separar en fecha[0] y hora[1]
-                var start = startDate.format().split('T');
-
-                //Como al seleccionar los días la fecha final al día le agrega uno de más, hay que hacer la converción
-                var ed = new Date(endDate.format());  
-                ed = ed.getFullYear()+'-'+ ("0" + (ed.getMonth() + 1)).slice(-2) +'-'+("0" + ed.getDate()).slice(-2);
-                
-                //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
-                if(start != ed){
-                    //limpiarForm(start[0], ed);
-                    limpiarForm(start[0], ed, '#formCreateAgenda', '', '.city_id');
-                    $('#modalCreate').modal('show');
-                }
-            },
-            dayClick: function(date, jsEvent, view) {
-                //limpiarForm(date.format());
-                limpiarForm(date.format(), null, '#formCreateAgenda', '', '.city_id');
+            //Como al seleccionar los días la fecha final al día le agrega uno de más, hay que hacer la conversión
+            var ed = new Date(endDate.format());  
+            ed = ed.getFullYear()+'-'+ ("0" + (ed.getMonth() + 1)).slice(-2) +'-'+("0" + ed.getDate()).slice(-2);
+            
+            //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
+            if(start != ed)
+            {
+                limpiarForm(start[0], ed, '#formCreateAgenda', '', '.city_id');
                 $('#modalCreate').modal('show');
-            },
-            editable: true,
-            eventDrop: function(calEvent, delta, revertFunc){
-                var end = calEvent.end.format().split('T');
+            }
+        };
+        calendarObj.dayClick = function(date, jsEvent, view)
+        {
+            limpiarForm(date.format(), null, '#formCreateAgenda', '', '.city_id');
+            $('#modalCreate').modal('show');
+        };
+        calendarObj.eventDrop = function(calEvent, delta, revertFunc)
+        {
+            var end = calEvent.end.format().split('T');
 
-                $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+calEvent.slug);
-                $('#modalEditDel #start_date').val(calEvent.start.format());
-                $('#modalEditDel #end_date').val(end[0]);
-                $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
+            $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+calEvent.slug);
+            $('#modalEditDel #start_date').val(calEvent.start.format());
+            $('#modalEditDel #end_date').val(end[0]);
+            $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
 
-                confirmModal('#editAgenda', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
-            },
-        });
+            confirmModal('#editAgenda', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
+        };
+
+
+        @can('add_inspectoragendas')
+            calendarObj.customButtons = {
+                createButton: {
+                    text: '{{trans('words.Create')}}',
+                    click: function() {
+                        $('.msgError').html('');
+                        $('#modalCreate #date').removeAttr("disabled");
+                        $('#formCreateAgenda')[0].reset();
+                        $('#modalCreate').modal('show');
+                    }
+                }
+            };
+        @endcan
+
+        //Se llama la función que inicializará el calendario de acuerdo al objeto enviado
+        calendar(calendarObj);
 
     </script>    
 @endsection

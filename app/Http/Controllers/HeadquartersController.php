@@ -36,7 +36,7 @@ class HeadquartersController extends Controller
 
         $cities = Citie::all()->pluck('name', 'id');
         
-        return view('headquarters.new', compact(['clients', 'cities']));
+        return view('headquarters.new', compact('clients', 'cities'));
     }
 
     /**
@@ -51,14 +51,14 @@ class HeadquartersController extends Controller
             $headquarters = Headquarters::create($request->all());
             $headquarters->slug = md5($headquarters->id);
             $headquarters->save();
-            
-            flash(trans('words.Headquarters').' '.trans('words.HasAdded'));
+
+            $alert = ['success', trans('words.Headquarters').' '.trans('words.HasAdded')];
         }else{
-            flash()->error(trans('words.errorClientInactive'));
+            $alert = ['error', trans('words.errorClientInactive')];
         }
         
 
-        return redirect()->back(); 
+        return redirect()->back()->with('alert', $alert); 
     }
 
     /**
@@ -103,12 +103,12 @@ class HeadquartersController extends Controller
         if(Client::findOrFail($request['client_id'])->status == 1){
             $headquarters->update($request->all());
 
-            flash()->success(trans('words.Headquarters').' '.trans('words.HasUpdated'));
+            $alert = ['success', trans('words.Headquarters').' '.trans('words.HasUpdated')];
         }else{
-            flash()->error(trans('words.errorClientInactive'));
+            $alert = ['error', trans('words.errorClientInactive')];
         }
 
-        return redirect()->route('headquarters.index');
+        return redirect()->route('headquarters.index')->with('alert', $alert);
     }
 
     /**

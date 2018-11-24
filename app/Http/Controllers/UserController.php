@@ -92,16 +92,15 @@ class UserController extends Controller
 
             $this->syncPermissions($request, $user);
             $user->companies()->attach($request->companies);
-            //flash('User has been created.');
-            return redirect()->route('users.index')
-		    	        ->with('success_message','User has been created');
+
+            $alert = ['success', trans('words.User').' '.trans('words.HasAdded')];
+            return redirect()->route('users.index')->with('alert', $alert);
 
         } 
         else 
         {
-            //echo "Unable to ";
-            flash()->error('Unable to create user.');
-            return redirect()->route('users.index');
+            $alert = ['error', 'Unable to create user.'];
+            return redirect()->route('users.index')->with('alert', $alert);
         }
 
         //return redirect()->route('users.index');
@@ -181,9 +180,9 @@ class UserController extends Controller
         $user->save();
         $user->companies()->sync($request->companies);
 
-        flash()->success('User has been updated.');
+        $alert = ['success', trans('words.User').' '.trans('words.HasUpdated')];
 
-        return redirect()->route('users.index');
+        return redirect()->route('users.index')->with('alert', $alert);
     }
 
     /**

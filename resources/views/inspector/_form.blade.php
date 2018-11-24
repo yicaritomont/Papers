@@ -1,12 +1,12 @@
 <div class="form-group @if ($errors->has('identification')) has-error @endif">
-    <label for="name">@lang('words.Identification')</label>
+    <label for="identificacion_inspector">@lang('words.Identification')</label>
     {!! Form::text('identification', null, ['class' => 'input-body', 'placeholder' => 'Identification','id' => isset($user) ? '' : 'identificacion_inspector']) !!}
     @if ($errors->has('identification')) <p class="help-block">{{ $errors->first('identification') }}</p> @endif
     {!! Form::hidden('id_inspector',null,['id' => 'id_inspector']) !!}
 </div>
 
 <div class="form-group @if ($errors->has('name')) has-error @endif">
-    <label for="name">@lang('words.Name')</label>
+    <label for="nombre_inspector">@lang('words.Name')</label>
     {!! Form::text('name', isset($user) ? $user->name : null, ['class' => 'input-body', 'placeholder' => 'Name' , 'id' => 'nombre_inspector']) !!}
     @if ($errors->has('name')) <p class="help-block">{{ $errors->first('name') }}</p> @endif
 </div>
@@ -21,28 +21,29 @@
     @if ($errors->has('inspector_type_id')) <p class="help-block">{{ $errors->first('inspector_type_id') }}</p> @endif
 </div>
 
-<div class="form-group @if ($errors->has('country')) has-error @endif">
-    <label for="name">@lang('words.Country')</label>
+<div class="form-group @if ($errors->has('country_id')) has-error @endif">
+    {!! Form::label('country_id', trans('words.Country')) !!}
     {!! Form::select('country_id',$countries,null, array('class' => 'input-body id_country', 'required')) !!}
-    @if ($errors->has('country')) <p class="help-block">{{ $errors->first('country') }}</p> @endif
+    @if ($errors->has('country_id')) <p class="help-block">{{ $errors->first('country') }}</p> @endif
 </div>
-<div class="form-group  @if ($errors->has('city')) has-error @endif" id="container_cities">
-    <label for="name">@lang('words.City')</label>
+<div class="form-group  @if ($errors->has('city_id')) has-error @endif" id="container_cities">
+    {!! Form::label('city_id', trans('words.City')) !!}
     {!! Form::select('city_id',$cities,null, array('class' => 'input-body','required')) !!}
-    @if ($errors->has('city')) <p class="help-block">{{ $errors->first('city') }}</p> @endif
+    @if ($errors->has('city_id')) <p class="help-block">{{ $errors->first('city') }}</p> @endif
 </div>
 
-<div class="form-group @if ($errors->has('name')) has-error @endif">    <label for="name">@lang('words.Phone')</label>
+<div class="form-group @if ($errors->has('phone')) has-error @endif">
+    <label for="telefono_inspector">@lang('words.Phone')</label>
     {!! Form::text('phone', null, ['class' => 'input-body', 'placeholder' => 'Phone','id' => 'telefono_inspector']) !!}
     @if ($errors->has('phone')) <p class="help-block">{{ $errors->first('phone') }}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('addres')) has-error @endif">
-    <label for="name">@lang('words.Addres')</label>
+    <label for="direccion_inspector">@lang('words.Addres')</label>
     {!! Form::text('addres', null, ['class' => 'input-body', 'placeholder' => 'Addres','id' => 'direccion_inspector']) !!}
     @if ($errors->has('addres')) <p class="help-block">{{ $errors->first('addres') }}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('email')) has-error @endif">
-    <label for="name">@lang('words.Email')</label>
+    <label for="correo_inspector">@lang('words.Email')</label>
     {!! Form::text('email', isset($user) ? $user->email : null, ['class' => 'input-body', 'placeholder' => 'Email','id' => 'correo_inspector']) !!}
     @if ($errors->has('email')) <p class="help-block">{{ $errors->first('email') }}</p> @endif
 </div>

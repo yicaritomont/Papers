@@ -20,7 +20,6 @@
                   <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.Create') !!}</span>
                     {!! Form::close() !!}
                 </div>
-            </div>
-
+        </div>
     </div>
 @endsection

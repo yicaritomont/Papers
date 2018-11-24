@@ -57,7 +57,7 @@ return[
     '404' => 'Oops! Parece que se ha perdido.',
     'TakeMeBack' => 'Regresar',
 
-    'Identification' => 'Identificacion',
+    'Identification' => 'Identificación',
     'Phone' => 'Telefono',
     'Addres' => 'Dirección',
     'Email' => 'Correo',
@@ -72,7 +72,7 @@ return[
     'Status' => 'Estado',
     'Headquarters' => 'Sede',
     'City' => 'Ciudad',
-    'Country' => 'Pais',
+    'Country' => 'País',
     'ChooseOption' => 'Seleccione una opción',
     'Active' => 'Activo',
     'Inactive' => 'Inactivo',
@@ -127,5 +127,9 @@ return[
     'RequestDate' => 'Fecha de solicitud',
     'AppointmentInformation' => 'Información de la Cita',
     'DateGreater' => 'La fecha debe ser mayor a la actual',
+    'ActiveMessage' => '¿Seguro que quieres activarlo?',
+    'InactiveMessage' => '¿Seguro que quieres inactivarlo?',
+    'To' => 'hasta',
+    'UpdatedAt' => 'Actualizado en',
 ];
 ?>

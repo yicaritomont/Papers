@@ -22,6 +22,7 @@
                 <th>@lang('words.Name')</th>
                 <th>{{ trans_choice('words.InspectionSubtype',1) }}</th>
                 <th>@lang('words.CreatedAt')</th>
+                <th>@lang('words.UpdatedAt')</th>
                 @can('edit_inspectortypes','delete_inspectortypes')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
@@ -43,24 +44,31 @@
                 {data: 'name'},
                 {data: 'inspection_subtypes.name'},
                 {data: 'created_at'},
+                {data: 'updated_at'},
             ];
+
+            
 
             @can('edit_inspectortypes','delete_inspectortypes')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectorType', 'entity' => 'inspectortypes', 'identificador' => 'id', 'relations' => 'inspection_subtypes,inspection_subtypes.inspection_types']) }}";
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectorType', 'relations' => 'inspection_subtypes,inspection_subtypes.inspection_types']) }}";
                 dataTableObject.columns = columns;
+                dataTableObject..columnDefs = [setDataTable([-1, -2])];
             @endcan
 
-            dataTableObject.columnDefs = [{
-                //En la columna 2 (inspection_subtypes) se arega el tipo de inspección
-                targets: 2,
-                createdCell: function(td, cellData, rowData, row, col){
-                    $(td).append(' - '+rowData.inspection_subtypes.inspection_types.name);
-                }
-            }];
+            dataTableObject.columnDefs.push(
+                {
+                    //En la columna 2 (inspection_subtypes) se arega el tipo de inspección
+                    targets: 2,
+                    render: function(data, type, row){
+                        return data + ' - '+row.inspection_subtypes.inspection_types.name;
+                    }
+                },
+            );
             
             var table = $('.dataTable').DataTable(dataTableObject);              
             new $.fn.dataTable.FixedHeader( table );

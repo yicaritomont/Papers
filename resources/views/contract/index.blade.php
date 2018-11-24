@@ -24,6 +24,7 @@
                 <th>{{trans_choice('words.Company',1)}}</th>
                 <th>@lang('words.Client')</th>
                 <th>@lang('words.CreatedAt')</th>
+                <th>@lang('words.UpdatedAt')</th> 
                 @can('edit_contracts', 'delete_contracts')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
@@ -47,15 +48,18 @@
                 {data: 'company.user.name'},
                 {data: 'client.user.name'},
                 {data: 'created_at'},
+                {data: 'updated_at'},
             ];
 
             @can('edit_contracts', 'delete_contracts')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Contract', 'entity' => 'contracts', 'identificador' => 'id', 'relations' => 'company,client,client.user,company.user']) }}";
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Contract', 'relations' => 'company,client,client.user,company.user']) }}";
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
             var table = $('.dataTable').DataTable(dataTableObject);                
