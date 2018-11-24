@@ -7,11 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class Format extends Model
 {
     protected $filable = [
-      'preformato_id', ' format', 'state',
+      'company_id','client_id','preformat_id', ' format', 'state',
     ];
 
     public function preformato()
     {
-      return $this->belongsTo('App\Preformato', 'preformato_id', 'id');
+      return $this->belongsTo('App\Preformato', 'preformat_id', 'id');
+    }
+
+    public function client()
+    {
+      return $this->belongsTo('App\Client', 'client_id', 'id');
+    }
+
+    public function company()
+    {
+      return $this->belongsTo('App\Company', 'company_id', 'id');
     }
 }

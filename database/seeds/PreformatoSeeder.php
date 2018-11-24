@@ -53,7 +53,7 @@ class PreformatoSeeder extends Seeder
 	<tbody>
 		<tr>
 			<td style="width:30%"><strong>CONTACT :</strong></td>
-			<td style="width:70%"><input name="*contact*" style="width:100%" type="text" /></td>
+			<td style="width:70%"><input style="width:100%" type="text" /></td>
 		</tr>
 	</tbody>
 </table>
@@ -374,7 +374,619 @@ H. Final Control</p>
 			<td><input type="text" /></td>
 		</tr>
 	</tbody>
-</table>',
+</table>
+
+<p>&nbsp;</p>
+
+<p><strong>3.&nbsp;<u>M.S. Pinions (assembly H.S Wheels)</u></strong></p>
+
+<p>_The Process fir all the&nbsp;<strong><u>M.S. Pinion (Lef side)&nbsp;</u></strong>will be:</p>
+
+<p>&nbsp;</p>
+
+<p>A.&nbsp; &nbsp;Purchase<br />
+B.&nbsp; &nbsp;Turning<br />
+C.&nbsp; &nbsp;Raw cutting<br />
+D.&nbsp; &nbsp;Gas Carbusing<br />
+E.&nbsp; &nbsp;Finishing Machining<br />
+F.&nbsp; &nbsp;Cylindrical Grinding<br />
+G.&nbsp; &nbsp;Teeth Grinding<br />
+H.&nbsp; &nbsp;Final Control</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:20%">&nbsp;</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">A</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">B</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">C</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">D</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">E</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">F</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">G</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">H</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa; width:20%">
+			<p>M.S Pinion<br />
+			Left Side</p>
+			</td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>_Quality control</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:10%">&nbsp;</td>
+			<td style="background-color:#cccccc; width:50%">Documents</td>
+			<td style="background-color:#cccccc; width:40%">Date</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">1</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">2</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">3</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">4</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>The process for all the <strong><u>M.S pinion (Right side)</u></strong>&nbsp;will be:</p>
+
+<p>A. Purchase<br />
+B.&nbsp; Turning<br />
+C.&nbsp; Raw cutting<br />
+D.&nbsp; Gas Carburising<br />
+E.&nbsp; Finishing Machining<br />
+F.&nbsp; Cylindrical Grinding<br />
+G.&nbsp; Teeth Grining<br />
+H.&nbsp; Final Control</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:20%">&nbsp;</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">A</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">B</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">C</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">D</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">E</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">F</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">G</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">H</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa; width:20%">
+			<p>M.S Pinion Right Side</p>
+			</td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>_Quality control</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:10%">&nbsp;</td>
+			<td style="background-color:#cccccc; width:50%">Documents</td>
+			<td style="background-color:#cccccc; width:40%">Date</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">1</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">2</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">3</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">4</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;<strong>4.&nbsp;<u>H.S. Wheels (assembly M.S Pinions)</u></strong></p>
+
+<p>_The process for all the&nbsp;<strong><u>H.S Wheel (left side)</u></strong>&nbsp;will be:</p>
+
+<p>A.&nbsp; Purchase<br />
+B.&nbsp; Raw cutting<br />
+C.&nbsp; Gas Carburising<br />
+D.&nbsp; Finishing Machining<br />
+E.&nbsp; MS Pinion Assembly<br />
+F.&nbsp; &nbsp;Balancing<br />
+G.&nbsp; Final Control<br />
+&nbsp;</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:20%">&nbsp;</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">A</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">B</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">C</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">D</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">E</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">F</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">G</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa; width:20%">
+			<p>H.S. Wheels</p>
+
+			<p>Left Side</p>
+			</td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>_Quality control</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:10%">&nbsp;</td>
+			<td style="background-color:#cccccc; width:50%">Documents</td>
+			<td style="background-color:#cccccc; width:40%">Date</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">1</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">2</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">3</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">4</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>_The process for all the&nbsp;<strong><u>H.S. Wheel (Right side)</u></strong>&nbsp;will be:</p>
+
+<p>A.&nbsp; Purchase<br />
+B.&nbsp; Raw cutting<br />
+C.&nbsp; Gas Carburising<br />
+D.&nbsp; Finishing Machinin<br />
+E.&nbsp; MS Pinion Assembly<br />
+F.&nbsp; &nbsp;Balancing<br />
+G.&nbsp; Final Control<br />
+&nbsp;</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:20%">&nbsp;</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">A</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">B</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">C</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">D</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">E</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">F</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">G</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa; width:20%">
+			<p>H.S. Wheels</p>
+
+			<p>Right Side</p>
+			</td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>_Quality control</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:10%">&nbsp;</td>
+			<td style="background-color:#cccccc; width:50%">Documents</td>
+			<td style="background-color:#cccccc; width:40%">Date</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">1</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">2</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">3</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">4</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p><strong>5.&nbsp;<u>Output Shaft + L.S. Wheel</u></strong></p>
+
+<p><strong>_</strong>The Process for all the&nbsp;<strong><u>Ouput Shaft</u></strong>&nbsp; will be:</p>
+
+<p>A.&nbsp; Purchase<br />
+B.&nbsp; Turning<br />
+C.&nbsp; Cutting<br />
+D.&nbsp; Final Control<br />
+&nbsp;</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:20%">&nbsp;</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">A</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">B</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">C</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">D</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa; width:20%">
+			<p>OUTPUT<br />
+			SHAFT</p>
+			</td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>_The process for all the&nbsp;<u>&nbsp;<strong>L.S. Wheel</strong></u>&nbsp; will be:</p>
+
+<p>A.&nbsp; Purchase<br />
+B.&nbsp; Raw cutting<br />
+C.&nbsp; Gas Carburising<br />
+D.&nbsp; Finishing Turning<br />
+E.&nbsp; Output Shaft Assembly<br />
+F.&nbsp; Boring<br />
+G.&nbsp; Teeth Grinding<br />
+H.&nbsp; Final Control<br />
+&nbsp;</p>
+
+<table border="1" cellpadding="1" cellspacing="1" dir="ltr" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:20%">&nbsp;</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">A</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">B</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">C</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">D</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">E</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">F</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">G</td>
+			<td style="background-color:#cccccc; text-align:center; width:10%">H</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa; width:20%">
+			<p style="text-align:center">L. S.</p>
+
+			<p style="text-align:center">Wheel</p>
+			</td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>_Quality control&nbsp;&nbsp;<strong><u>Output Shaft + L.S. Wheel</u></strong></p>
+
+<p>&nbsp;</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:10%">&nbsp;</td>
+			<td style="background-color:#cccccc; width:50%">Documents</td>
+			<td style="background-color:#cccccc; width:40%">Date</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">1</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">2</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">3</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">4</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">5</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">6</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">7</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">8</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">9</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">10</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa">11</td>
+			<td><input type="text" /></td>
+			<td><input type="text" /></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p><strong>6.&nbsp;<u>Gears&nbsp; Cases</u></strong></p>
+
+<p>_The process for all the&nbsp;<strong><u>Gears&nbsp; Cases</u></strong>&nbsp; will be:</p>
+
+<p>A.&nbsp; Purchase<br />
+B.&nbsp; Machining<br />
+C.&nbsp; Cutting<br />
+D.&nbsp; Control<br />
+E. Gears Preparation (Assembly)<br />
+F.&nbsp; Piping (Assembly)<br />
+G. Gears Assembly (Assembly)<br />
+&nbsp;</p>
+
+<table border="1" cellpadding="1" cellspacing="1" dir="ltr" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:20%">&nbsp;</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">A</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">B</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">C</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">D</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">E</td>
+			<td style="background-color:#cccccc; text-align:center; width:11%">F</td>
+			<td style="background-color:#cccccc; text-align:center; width:12%">G</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa; width:20%">
+			<p style="text-align:center">Gears</p>
+
+			<p style="text-align:center">Cases</p>
+			</td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p><strong>8.&nbsp;<u>&nbsp;Assembly</u></strong></p>
+
+<p>_The process for all the&nbsp;<strong><u>Assembly</u></strong>&nbsp; will be:</p>
+
+<p>A.&nbsp; Gears Preparation<br />
+B.&nbsp; Piping<br />
+C.&nbsp; Gears Assembly<br />
+D.&nbsp; Teeth contact setting<br />
+E. Final Assembly<br />
+F. Running Test inspection</p>
+
+<table border="1" cellpadding="1" cellspacing="1" dir="ltr" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:20%">&nbsp;</td>
+			<td style="background-color:#cccccc; text-align:center; width:13%">A</td>
+			<td style="background-color:#cccccc; text-align:center; width:14%">B</td>
+			<td style="background-color:#cccccc; text-align:center; width:13%">C</td>
+			<td style="background-color:#cccccc; text-align:center; width:13%">D</td>
+			<td style="background-color:#cccccc; text-align:center; width:14%">E</td>
+			<td style="background-color:#cccccc; text-align:center; width:13%">F</td>
+		</tr>
+		<tr>
+			<td style="background-color:#aaaaaa; width:20%">
+			<p style="text-align:center">Assembly</p>
+			</td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p><strong>9.&nbsp;&nbsp;<u>Running Test</u></strong>&nbsp;</p>
+
+<p>During the last visit, Cemengal and the client were in the running test. Basically all the dates were notificated by CMD and it was not possible to open the gear cases because the running test was working during the visit.</p>
+
+<p>CMD informed to Cemengal that to obtain an intermediate date it will be necessary to ask CMD and they will provide it.</p>
+
+<p>The running tet was working since april, the 30, 2015 and will be finished until may, the 08, 2015 approximately.</p>
+
+<div style="background:#072360; border:1px solid #cccccc"><span style="color:#ffffff">4 - NON SATISFACTORY RESULTS:</span></div>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td>Description and results</td>
+		</tr>
+	</tbody>
+</table>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td><textarea cols="80" rows="10"></textarea></td>
+		</tr>
+	</tbody>
+</table>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<div style="background:#072360; border:1px solid #cccccc"><span style="color:#ffffff">5 - CORRECTIVE:</span></div>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+	<tbody>
+		<tr>
+			<td style="width:50%"><strong>Detail of the corrective terms to apply:</strong></td>
+			<td style="width:25%"><strong>Beginning ate</strong></td>
+			<td style="width:25%"><strong>Endinng date</strong></td>
+		</tr>
+		<tr>
+			<td colspan="3">
+			<ul>
+				<li>&nbsp;&nbsp;<strong>Supplier :</strong></li>
+			</ul>
+			</td>
+		</tr>
+		<tr>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+		</tr>
+		<tr>
+			<td colspan="3">
+			<ul>
+				<li>&nbsp; &nbsp;<strong>CEMENGAL</strong></li>
+			</ul>
+			</td>
+		</tr>
+		<tr>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+			<td><textarea></textarea></td>
+		</tr>
+	</tbody>
+</table>
+<p>&nbsp;</p>',
 'state' => 1),
 
 );

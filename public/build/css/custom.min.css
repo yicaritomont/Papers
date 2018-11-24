@@ -3661,14 +3661,16 @@ ul.project_files li a i {
     background-color: #ffff!important
 }
 
-
-/*!
- * bootstrap-vertical-tabs - v1.2.1
- * https://dbtek.github.io/bootstrap-vertical-tabs
- * 2014-11-07
- * Copyright (c) 2014 İsmail Demirbilek
- * License: MIT
- */
+ table>tbody>tr>td>textarea {
+ 	width: 100% !important;
+ }
+ table>tbody>tr>td>input {
+ 	width: 100%;
+ }
+ #contenedor_formato {
+   overflow-y: scroll;
+   height:500px;
+ }
 
 .tabs-left,
 .tabs-right {

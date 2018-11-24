@@ -7,8 +7,8 @@ function inicial (argument)
      $('#password-confirm').blur(verifyPassword);
      $('#identificacion_inspector').blur(verifyInspector);
     $('#boton_guardar_html').click(guardarHtml);
-    $('#cliente_formato').change(llenarCabeceraFormato);
     $('#company_formato').change(cargarSelectClients);
+    $('#format_preformato').change(llenarCabeceraFormato);
 
     //Se definen atributos generales de DataTable
     dataTableObject = {
@@ -346,8 +346,8 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
         var datos = $('#'+idForm).serialize();
     }
 
-    e.preventDefault();                
-    
+    e.preventDefault();
+
     $.ajax({
         url:$(this).attr('action'),
         type:'POST',
@@ -437,20 +437,20 @@ $('.showCalendar').on('click', function(e){
         .done(function(res){
             var res = JSON.parse(res);
             /* $(objElement.data('toggle')).html(res.html);
-            
+
             slideForms(objElement); */
 
             if(res.cita){
                 showAppointment(res.cita);
             }else if(res.agenda){
                 $.each(res.agenda, function(key, value){
-                    if(key.substr(-4) == 'date'){     
+                    if(key.substr(-4) == 'date'){
                         value = moment(value, 'YYYY-MM-DD').format('dddd D MMMM YYYY');
                     }
-    
+
                     $('#cell-'+key).html(value);
                 });
-    
+
             }
             slideForms(objElement);
         })
@@ -612,10 +612,17 @@ function verifyInspector()
     }
 }
 
-function guardarHtml() {
+function guardarHtml(e) {
+  e.preventDefault();
   camposLlenos();
-  var contenedorHtml = $('#contenedorHtml').html();
+
+    var contenedorHtml = $('#contenedor_formato').html();
+
+    if($('#contenedor_formato').css('display') == 'none'){
+      var contenedorHtml = $('#plantilla_formato').html();
+    }
   $('#format_expediction').val(contenedorHtml);
+  $('#plantilla_formato').css('display','none');
   $('#form_expediction').submit();
 }
 
@@ -707,7 +714,7 @@ $('.inspection_type_id').on('change',function(event, cita){
         }
     })
     .done(function(res){
-        
+
         console.log('done\n'+res);
         console.log(JSON.parse(res).status);
         $('.inspection_subtype_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
@@ -716,7 +723,6 @@ $('.inspection_type_id').on('change',function(event, cita){
             console.log('Id: '+value.id+'\nName: '+value.name);
             $('.inspection_subtype_id').append('<option value="'+value.id+'">'+value.name+'</option>');
         });
-
         if(cita != undefined){
             $('#modalEditDel #inspection_subtype_id').val(cita.inspection_subtype_id);
         }
@@ -728,10 +734,10 @@ $('.inspection_type_id').on('change',function(event, cita){
         console.log('complete\n'+res);
     });
 });
-
 function llenarCabeceraFormato()
 {
-    var select = $(this).val();
+    var preformato = $(this).val();
+    var select = $('#cliente_formato').val();
     var company = $('#company_formato').val();
     if(select != "")
     {
@@ -739,29 +745,46 @@ function llenarCabeceraFormato()
             type: "GET",
             url: obtenerUrl()+"/public/ajxllenarCabeceraFormato",
             dataType:'json',
-            data: {select:select, company:company}
+            data: {select:select, company:company, preformato:preformato}
             }).done(function(response)
                 {
                     if(!jQuery.isEmptyObject(response))
                     {
-                        var plantilla_formato = $('#plantilla_formato').clone();
-                        var html_plantilla_formato = plantilla_formato.html();
-                        html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
-                        html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
-                        html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
-                        html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
-                        html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
-                        html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
-                        html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
-                        html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
-                        html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
-                        html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
+                      var html_plantilla_formato = response.preformato.format;
+                      if( preformato != '')
+                      {
+                        if(preformato == 1)
+                        {
+                          //var plantilla_formato = $('#plantilla_formato').clone();
+                          html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
+                          html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
+                          html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
+                          html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
+                          html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
+                          html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
+                          html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
+                          html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
+                          html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
+                          html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
+                        }
+                        console.log(response);
                         $('#contenedor_formato').html(html_plantilla_formato);
                         $('#contenedor_formato').show();
+                      } else {
+                        $('#plantilla_formato').css('display','none');
+                        $('#contenedor_formato').css('display','none');
+                      }
                     }
             });
         }
-}
+  }
+  
+      function limpiarFormulario()
+      {
+        $('#format_preformato').val('');
+        $('#plantilla_formato').css('display','none');
+        $('#contenedor_formato').css('display','none');
+      }
 
 function cargarSelectClients()
 {

@@ -2414,7 +2414,7 @@ textarea {
     width: 200px;
 }
 table>tbody>tr>td>textarea {
-	width: 100%;
+	width: 100% !important;
 }
 table>tbody>tr>td>input {
 	width: 100%;
