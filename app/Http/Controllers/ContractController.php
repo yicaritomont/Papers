@@ -129,21 +129,21 @@ class ContractController extends Controller
 
         if($contract)
         {
-		    switch ($contract->status) 
+		    switch ($contract->status)
 		    {
                 case 1 :
-                    $contract->status = 0;     
+                    $contract->status = 0;
 				    break;
-    			
+
                 case 0 :
                     $contract->status = 1;
 				    break;
-    
+
                 default :
                     $contract->status = 0;
 			        break;
-		    } 
-    
+		    }
+
 		    $contract->save();
             $menssage = \Lang::get('validation.MessageCreated');
             echo json_encode([
@@ -156,6 +156,6 @@ class ContractController extends Controller
             echo json_encode([
                 'status' => $menssage,
             ]);
-        }	
+        }
     }
 }

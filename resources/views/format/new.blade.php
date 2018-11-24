@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', trans('words.Create').' '.trans_choice('words.Formato', 1).', ')
+@section('title', trans('words.Create').' '.trans_choice('words.Format', 1).', ')
 
 @section('content')
     <div class="row">

@@ -32,7 +32,7 @@
                 @endcan
             </tr>
             </thead>
-            
+
         </table>
     </div>
 @endsection

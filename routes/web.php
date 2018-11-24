@@ -33,7 +33,7 @@ Route::get('ajxCountry','InspectorController@asincronia');
 
 Route::group( ['middleware' => ['auth']], function() {
 
-    // Rutas para la eleccion de inicio de session 
+    // Rutas para la eleccion de inicio de session
     Route::get('elegirCompania', array('as' => 'elegirCompania', 'uses'=>'UserController@ShowMultiple'));
     Route::get('enviaCompania/{id}',array('as'=>'enviaCompania','uses'=>'UserController@PostMultiple'));
 
@@ -106,6 +106,9 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('inspectionsubtypes','InspectionSubtypeController');
     Route::resource('preformatos','PreformatoController');
     Route::resource('formats','FormatController');
+    Route::get('formats/informationFormat','FormatController@informationFormat')->name('formats.informationFormat');
+    Route::get('ajxllenarCabeceraFormato','FormatController@llenarCabeceraFormato');
+    Route::get('ajxcargarSelectClients','FormatController@cargarSelectClients');
     Route::resource('clients', 'ClientController');
     Route::resource('headquarters', 'HeadquartersController');
     Route::resource('companies', 'CompanyController');

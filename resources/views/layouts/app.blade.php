@@ -450,7 +450,7 @@
     <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
 
     <!-- Moment timezone -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data-2012-2022.min.js"></script>
+    <script src="{{ asset('js/lib/momentTz/moment-timezone-with-data-2012-2022.min.js') }}"></script>
 
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
