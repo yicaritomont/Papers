@@ -7,8 +7,8 @@ function inicial (argument)
      $('#password-confirm').blur(verifyPassword);
      $('#identificacion_inspector').blur(verifyInspector);
     $('#boton_guardar_html').click(guardarHtml);
-    $('#cliente_formato').change(llenarCabeceraFormato);
     $('#company_formato').change(cargarSelectClients);
+    $('#format_preformato').change(llenarCabeceraFormato);
 
     //Se definen atributos generales de DataTable
     dataTableObject = {
@@ -531,10 +531,17 @@ function verifyInspector()
     }
 }
 
-function guardarHtml() {
+function guardarHtml(e) {
+  e.preventDefault();
   camposLlenos();
-  var contenedorHtml = $('#contenedorHtml').html();
+    
+    var contenedorHtml = $('#contenedor_formato').html();
+
+    if($('#contenedor_formato').css('display') == 'none'){
+      var contenedorHtml = $('#plantilla_formato').html();
+    }
   $('#format_expediction').val(contenedorHtml);
+  $('#plantilla_formato').css('display','none');
   $('#form_expediction').submit();
 }
 
@@ -572,7 +579,8 @@ function camposLlenos() {
 
   function llenarCabeceraFormato()
   {
-      var select = $(this).val();
+      var preformato = $(this).val();
+      var select = $('#cliente_formato').val();
       var company = $('#company_formato').val();
       if(select != "")
       {
@@ -580,26 +588,36 @@ function camposLlenos() {
               type: "GET",
               url: obtenerUrl()+"/public/ajxllenarCabeceraFormato",
               dataType:'json',
-              data: {select:select, company:company}
+              data: {select:select, company:company, preformato:preformato}
               }).done(function(response)
                   {
                       if(!jQuery.isEmptyObject(response))
                       {
-                          var plantilla_formato = $('#plantilla_formato').clone();
-                          var html_plantilla_formato = plantilla_formato.html();
-                          html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
-                          html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
-                          html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
-                          html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
-                          html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
-                          html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
-                          html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
-                          html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
-                          html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
-                          html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
+                        var html_plantilla_formato = response.preformato.format;
+                        if( preformato != '')
+                        {
+                          if(preformato == 1)
+                          {
+                            //var plantilla_formato = $('#plantilla_formato').clone();
+                            html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
+                            html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
+                            html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
+                            html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
+                            html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
+                            html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
+                            html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
+                            html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
+                            html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
+                            html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
+                          }
+                          console.log(response);
                           $('#contenedor_formato').html(html_plantilla_formato);
                           $('#contenedor_formato').show();
+                        } else {
+                          $('#plantilla_formato').css('display','none');
+                          $('#contenedor_formato').css('display','none');
                         }
+                      }
               });
           }
     }
@@ -627,8 +645,18 @@ function camposLlenos() {
             $('#contenedor_client').html(select);
             $('#plantilla_formato').css('display','none');
             $('#contenedor_formato').css('display','none');
-            $('#cliente_formato').change(llenarCabeceraFormato);
+            $('#format_preformato').val('');
+
+            $('#cliente_formato').change(limpiarFormulario);
+            //$('#cliente_formato').change(llenarCabeceraFormato);
 
               });
         }
+      }
+
+      function limpiarFormulario()
+      {
+        $('#format_preformato').val('');
+        $('#plantilla_formato').css('display','none');
+        $('#contenedor_formato').css('display','none');
       }

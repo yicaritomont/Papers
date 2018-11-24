@@ -33,9 +33,9 @@
                 <th>@lang('words.Addres')</th>
                 <th>@lang('words.Email')</th>
                 <th>{{trans_choice('words.Company',2)}}</th>
-                <th>{{trans_choice('words.Profession',2)}}</th>                
-                <th>{{trans_choice('words.InspectorType',2)}}</th>                
-                <th>@lang('words.CreatedAt')</th>               
+                <th>{{trans_choice('words.Profession',2)}}</th>
+                <th>{{trans_choice('words.InspectorType',2)}}</th>
+                <th>@lang('words.CreatedAt')</th>
                 @can('edit_inspectors','delete_inspectors')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
@@ -46,8 +46,8 @@
 @endsection
 
 @section('scripts')
-    <script>  
-        
+    <script>
+
         $(document).ready(function() {
 
             //Se definen las columnas (Sin actions)
@@ -92,9 +92,9 @@
                     {
                         //En la columna 10 (actions) se agrega el boton de ver inspector
                         targets: 10,
-                        createdCell: function(td, cellData, rowData, row, col){                        
+                        createdCell: function(td, cellData, rowData, row, col){
                             $(td).append('<a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+rowData.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a>');
-                        
+
                         }
                     },
                 )
@@ -104,8 +104,8 @@
             @endcan
 
             dataTableObject.columnDefs = columnDefs;
-            
-            var table = $('.dataTable').DataTable(dataTableObject);            
+
+            var table = $('.dataTable').DataTable(dataTableObject);
             new $.fn.dataTable.FixedHeader( table );
         });
     </script>
