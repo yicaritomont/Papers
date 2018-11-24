@@ -20,8 +20,40 @@ function inicial (argument)
     if(window.Laravel.language == 'es'){
         dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};
     }
+
+    //Campo fecha
+
+    var datePickerObj = {
+        autoclose: true,
+        format: 'yyyy-mm-dd',
+        todayHighlight: true,
+        orientation: "bottom auto",
+        forceParse: false,
+    };
+
+    if(window.Laravel.language == 'es') datePickerObj.language = 'es';
+
+    $('.input-group.date').datepicker(datePickerObj);
+
+    $('.input-group.date-range-inputs input').datepicker(datePickerObj);
+
+    /* console.log($(window).height());
+    console.log('Alto: '+$('.container.body').height());
+
+    console.log(window.innerHeight);
+    console.log($(window).outerHeight()); */
 }
 
+function setDataTable(targets){
+    return {
+        targets:targets,
+        render: function(data, type, row, meta){
+            var date = moment.tz(data.replace(' ', 'T')+'Z', moment.tz.guess());
+
+            return date.format('MMMM DD YYYY, h:mm:ss a');
+        }
+    };
+}
 
 function obtenerUrl()
 {
@@ -251,8 +283,7 @@ $(window).resize(function(){
 });
 
 function changeTopToast(){
-    var calendar = $('.content-page .row div').offset()
-    // $('.swal2-top-end').css('top', calendar.top);
+    $('.swal2-top-end').css('top', $('.nav_menu').outerHeight());
 }
 
 const toast = swal.mixin({
@@ -315,10 +346,8 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
         var datos = $('#'+idForm).serialize();
     }
 
-    console.log(datos);
-
-    e.preventDefault();
-
+    e.preventDefault();                
+    
     $.ajax({
         url:$(this).attr('action'),
         type:'POST',
@@ -371,12 +400,27 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
         console.log('complete\n'+res);
     })
     .error(function(res){
-        $('.msgError').html('');
-        $.each( res.responseJSON.errors, function( key, value ) {
-            $('.msgError').append(alert('danger', value));
+
+        $('.form-group').removeClass('has-error');
+        $('.errors').empty();
+
+        $('#'+idForm).find(':input').each(function(){
+            var idInput = $(this).attr('id');
+            if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
+                // console.log(res.responseJSON.errors[idInput]);
+                $(this).parents('.form-group').addClass('has-error');
+                // $(this).parents('.form-group').append(spanError(res.responseJSON.errors[idInput]));
+                $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput]));
+                /* console.log($(this).parents('.form-group'));
+                console.log($(this).attr('id')); */
+            }
         });
     });
 });
+
+function spanError(error){
+    return '<p class="help-block">'+error+'</p>';
+}
 
 // Ajax para ver agendas y citas
 $('.showCalendar').on('click', function(e){
@@ -392,8 +436,22 @@ $('.showCalendar').on('click', function(e){
         })
         .done(function(res){
             var res = JSON.parse(res);
-            $(objElement.data('toggle')).html(res.html);
+            /* $(objElement.data('toggle')).html(res.html);
+            
+            slideForms(objElement); */
 
+            if(res.cita){
+                showAppointment(res.cita);
+            }else if(res.agenda){
+                $.each(res.agenda, function(key, value){
+                    if(key.substr(-4) == 'date'){     
+                        value = moment(value, 'YYYY-MM-DD').format('dddd D MMMM YYYY');
+                    }
+    
+                    $('#cell-'+key).html(value);
+                });
+    
+            }
             slideForms(objElement);
         })
         .fail(function(res){
@@ -401,6 +459,25 @@ $('.showCalendar').on('click', function(e){
         });
     }
 });
+
+function showAppointment(Cita){
+    $('#cell-request_date').html(moment.tz(Cita.request_date.replace(' ', 'T')+'Z', moment.tz.guess()).format('MMMM DD YYYY, h:mm:ss a'));
+    $('#cell-inspector').html(Cita.inspector.user.name);
+    $('#cell-inspectionType').html(Cita.inspection_subtype.inspection_types.name);
+    $('#cell-inspectionSubtype').html(Cita.inspection_subtype.name);
+    $('#cell-client').html(Cita.client.user.name);
+    $('#cell-contract').html(Cita.contract.name);
+
+    if(Cita.appointment_states_id != 1){
+        $('#cell-assignment_date').html(moment.tz(Cita.assignment_date.replace(' ', 'T')+'Z', moment.tz.guess()).format('MMMM DD YYYY, h:mm:ss a')).parent().show();
+        $('#cell-estimated_start_date').html(moment(Cita.estimated_end_date, 'YYYY-MM-DD').format('dddd D MMMM YYYY')).parent().show();
+        $('#cell-estimated_end_date').html(moment(Cita.estimated_start_date, 'YYYY-MM-DD').format('dddd D MMMM YYYY')).parent().show();
+    }else{
+        $('#cell-assignment_date').empty().parent().hide();
+        $('#cell-estimated_start_date').empty().parent().hide();
+        $('#cell-estimated_end_date').empty().parent().hide();
+    }
+}
 
 // Ajax para editar agendas y citas
 $(document).on('click', '.editCalendar', function(e){
@@ -459,6 +536,10 @@ $(document).on('click', '.editCalendar', function(e){
     $('#formCreateAgenda .city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
 } */
 function limpiarForm(startDate, endDate, form, fielDate, select){
+
+    $('.form-group').removeClass('has-error');
+    $('.errors').empty();
+
     if (!endDate) endDate = startDate;
     $('.msgError').html('');
     $(form)[0].reset();
@@ -570,65 +651,143 @@ function camposLlenos() {
   });
 }
 
-  function llenarCabeceraFormato()
-  {
-      var select = $(this).val();
-      var company = $('#company_formato').val();
-      if(select != "")
-      {
-          $.ajax({
-              type: "GET",
-              url: obtenerUrl()+"/public/ajxllenarCabeceraFormato",
-              dataType:'json',
-              data: {select:select, company:company}
-              }).done(function(response)
-                  {
-                      if(!jQuery.isEmptyObject(response))
-                      {
-                          var plantilla_formato = $('#plantilla_formato').clone();
-                          var html_plantilla_formato = plantilla_formato.html();
-                          html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
-                          html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
-                          html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
-                          html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
-                          html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
-                          html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
-                          html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
-                          html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
-                          html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
-                          html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
-                          $('#contenedor_formato').html(html_plantilla_formato);
-                          $('#contenedor_formato').show();
-                        }
-              });
-          }
-    }
+function calendar(obj){
+    $("#calendar").fullCalendar({
+        selectable: true,//Permite seleccionar
+        nowIndicator: true,//Indicador del tiempo actual
+        eventLimit: true, //Para que aparezca "ver más" en caso de muchas citas
+        displayEventTime: false,//Para que no aparezca la fecha en el titulo
+        contentHeight: 'auto', //Height auto
+        customButtons: obj.customButtons,
+        header:{
+            "left":"prev,next today,createButton",
+            "center":"title",
+            "right":"month,agendaWeek,listMonth"
+        },
+        events: obj.events,
+        eventClick: obj.eventClick,
+        select: obj.select,
+        dayClick: obj.dayClick,
+        editable: true,
+        eventDrop: obj.eventDrop,
+    });
+}
 
-    function cargarSelectClients()
-    {
-      var company = $('#company_formato').val();
-      if(company != '')
-      {
-          $.ajax({
-              type: "GET",
-              url: obtenerUrl()+"/public/ajxcargarSelectClients",
-              dataType:'json',
-              data: {company:company}
-              }).done(function(response)
-              {
-            var select = '<select name="client_id" id="cliente_formato" class="input-body">';
-                            select +='<option selected="selected">Seleccione una opción</option>';
-            $.map(response.clients, function(name, id)
-            {
-                select += '<option value="'+id+'">'+name+'</option>';
-            });
-            select+= '</select>';
-            $('#contenedor_client').empty();
-            $('#contenedor_client').html(select);
-            $('#plantilla_formato').css('display','none');
-            $('#contenedor_formato').css('display','none');
-            $('#cliente_formato').change(llenarCabeceraFormato);
-
-              });
+$('.country').on('change',function(event, city_id){
+    $.ajax({
+        url:this.dataset.route,
+        type:'POST',
+        data:{
+            id: $(this).val(),
+            _token: $('#_token').val(),
         }
-      }
+    })
+    .done(function(res){
+        // console.log('done\n'+res);
+        res = JSON.parse(res);
+        $('.city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+        $('.city_id').append(res);
+
+        if(city_id != undefined){
+            $('#modalEditDel #city_id').val(city_id);
+        }
+    })
+    .fail(function(res){
+        alert('Error\n'+res);
+    });
+});
+
+$('.inspection_type_id').on('change',function(event, cita){
+    $.ajax({
+        url:this.dataset.route,
+        type:'POST',
+        data:{
+            id: $(this).val(),
+            _token: $('#_token').val(),
+        }
+    })
+    .done(function(res){
+        
+        console.log('done\n'+res);
+        console.log(JSON.parse(res).status);
+        $('.inspection_subtype_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+        $.each(JSON.parse(res), function( key, value ) {
+            //$('.msgError').append(alert('danger', value));
+            console.log('Id: '+value.id+'\nName: '+value.name);
+            $('.inspection_subtype_id').append('<option value="'+value.id+'">'+value.name+'</option>');
+        });
+
+        if(cita != undefined){
+            $('#modalEditDel #inspection_subtype_id').val(cita.inspection_subtype_id);
+        }
+    })
+    .fail(function(res){
+        alert('oiga mire vea, no hay internet.');
+    })
+    .always(function(res){
+        console.log('complete\n'+res);
+    });
+});
+
+function llenarCabeceraFormato()
+{
+    var select = $(this).val();
+    var company = $('#company_formato').val();
+    if(select != "")
+    {
+        $.ajax({
+            type: "GET",
+            url: obtenerUrl()+"/public/ajxllenarCabeceraFormato",
+            dataType:'json',
+            data: {select:select, company:company}
+            }).done(function(response)
+                {
+                    if(!jQuery.isEmptyObject(response))
+                    {
+                        var plantilla_formato = $('#plantilla_formato').clone();
+                        var html_plantilla_formato = plantilla_formato.html();
+                        html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
+                        html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
+                        html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
+                        html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
+                        html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
+                        html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
+                        html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
+                        html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
+                        html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
+                        html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
+                        $('#contenedor_formato').html(html_plantilla_formato);
+                        $('#contenedor_formato').show();
+                    }
+            });
+        }
+}
+
+function cargarSelectClients()
+{
+    var company = $('#company_formato').val();
+    if(company != '')
+    {
+        $.ajax({
+            type: "GET",
+            url: obtenerUrl()+"/public/ajxcargarSelectClients",
+            dataType:'json',
+            data: {company:company}
+            }).done(function(response)
+            {
+        var select = '<select name="client_id" id="cliente_formato" class="input-body">';
+                        select +='<option selected="selected">Seleccione una opción</option>';
+        $.map(response.clients, function(name, id)
+        {
+            select += '<option value="'+id+'">'+name+'</option>';
+        });
+        select+= '</select>';
+        $('#contenedor_client').empty();
+        $('#contenedor_client').html(select);
+        $('#plantilla_formato').css('display','none');
+        $('#contenedor_formato').css('display','none');
+        $('#cliente_formato').change(llenarCabeceraFormato);
+
+            });
+    }
+}

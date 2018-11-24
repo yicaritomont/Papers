@@ -54,11 +54,11 @@ class PreformatoController extends Controller
         $preformato->state = 1;
 
         if ($preformato->save()) {
-            flash(trans_choice('words.Preformato',1).' '.trans('words.HasAdded'));
+            $alert = ['success', trans_choice('words.Preformato',1).' '.trans('words.HasAdded')];
         } else {
-            flash()->error(trans('words.UnableCreate').' '.trans_choice('words.Preformato',1));
+            $alert = ['success', trans('words.UnableCreate').' '.trans_choice('words.Preformato',1)];
         }
-        return redirect()->route('preformatos.index');
+        return redirect()->route('preformatos.index')->with('alert', $alert);
     }
 
     /**
@@ -105,8 +105,8 @@ class PreformatoController extends Controller
         }
         $preformato->update($request->except(array('_method','_token')));
 
-        flash()->success(trans_choice('words.Preformato',1).' '.trans('words.HasUpdated'));
-        return redirect()->route('preformatos.index');
+        $alert = ['success', trans_choice('words.Preformato',1).' '.trans('words.HasUpdated')];
+        return redirect()->route('preformatos.index')->with('alert', $alert);
     }
 
     /**

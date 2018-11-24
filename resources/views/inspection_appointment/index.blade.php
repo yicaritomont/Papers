@@ -91,28 +91,40 @@
                     {!! Form::open(['method' => 'PUT', 'class' => 'formCalendar formSlide', 'id' => 'editAppointment', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
                         {{-- @include('inspection_appointment._form') --}}
 
-                        <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
-                            {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
-                            {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body', 'placeholder'=>trans('words.ChooseOption')]) !!}
-                            @if ($errors->has('inspector_id')) <p class="help-block">{{ $errors->first('inspector_id') }}</p> @endif
-                        </div>
-
-                        <div class="form-group @if ($errors->has('start_date')) has-error @endif">
+                        {{-- <div class="form-group @if ($errors->has('start_date')) has-error @endif">
                             {!! Form::label('start_date', trans('words.StartDate')) !!}
                             <div class="input-group date">
-                                {!! Form::text('start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                {!! Form::text('start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
                                 <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                            @if ($errors->has('start_date')) <p class="help-block">{{ $errors->first('start_date') }}</p> @endif
+                            <div class="errors"></div>
                         </div>
 
                         <div class="form-group @if ($errors->has('end_date')) has-error @endif">
                             {!! Form::label('end_date', trans('words.EndDate')) !!}
                             <div class="input-group date">
-                                {!! Form::text('end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                {!! Form::text('end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
                                 <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                            @if ($errors->has('end_date')) <p class="help-block">{{ $errors->first('end_date') }}</p> @endif
+                            <div class="errors"></div>
+                        </div> --}}
+
+                        <div class="form-group">
+                            {!! Form::label('start_date', trans('words.StartDate').' - ') !!}
+                            {!! Form::label('end_date', trans('words.EndDate')) !!}
+                            
+                            <div class="input-group date-range-inputs">
+                                <input type="text" class="form-control input-date" name="start_date" id="start_date" autocomplete="off">
+                                <span class="input-group-addon">@lang('words.To')</span>
+                                <input type="text" class="form-control input-date" name="end_date" id="end_date" autocomplete="off">
+                            </div>
+                            <div class="errors"></div>
+                        </div>
+
+                        <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
+                            {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
+                            {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body', 'placeholder'=>trans('words.ChooseOption')]) !!}
+                            <div class="errors"></div>
                         </div>
 
                         <!-- Submit Form Button -->                        
@@ -120,28 +132,84 @@
                     {!! Form::close() !!}
 
                     {!! Form::open(['method' => 'PUT', 'class' => 'formCalendar formSlide', 'id' => 'completeAppointment', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
-                        <div class="form-group @if ($errors->has('start_date')) has-error @endif">
+                        {{-- <div class="form-group @if ($errors->has('start_date')) has-error @endif">
                             {!! Form::label('start_date', trans('words.StartDate')) !!}
                             <div class="input-group date">
-                                {!! Form::text('start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                {!! Form::text('start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
                                 <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                            @if ($errors->has('start_date')) <p class="help-block">{{ $errors->first('start_date') }}</p> @endif
+                            <div class="errors"></div>
                         </div>
 
                         <div class="form-group @if ($errors->has('end_date')) has-error @endif">
                             {!! Form::label('end_date', trans('words.EndDate')) !!}
                             <div class="input-group date">
-                                {!! Form::text('end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+                                {!! Form::text('end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
                                 <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                            @if ($errors->has('end_date')) <p class="help-block">{{ $errors->first('end_date') }}</p> @endif
+                            <div class="errors"></div>
+                        </div> --}}
+                        <!-- Range Date of Appointment -->
+                        <div class="form-group">
+                            {!! Form::label('start_date', trans('words.StartDate').' - ') !!}
+                            {!! Form::label('end_date', trans('words.EndDate')) !!}
+                            
+                            <div class="input-group date-range-inputs">
+                                <input type="text" class="form-control input-date" name="start_date" id="start_date" autocomplete="off">
+                                <span class="input-group-addon">@lang('words.To')</span>
+                                <input type="text" class="form-control input-date" name="end_date" id="end_date" autocomplete="off">
+                            </div>
+                            <div class="errors"></div>
                         </div>
                         <!-- Submit Form Button -->                        
                         {!! Form::submit(trans('words.Complete'), ['class' => 'btn btn-primary btn-block']) !!}
                     {!! Form::close() !!}
 
-                    <div class="formSlide" id="showCita" style="display:none"></div>
+                    <div class="formSlide" id="showCita" style="display:none">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center active" colspan="2" style="font-size:2em">@lang('words.AppointmentInformation')</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <th>@lang('words.RequestDate'): </th>
+                                <td id="cell-request_date"></td>
+                            </tr>
+                            <tr style="display:none">
+                                <th>@lang('words.AssignmentDate'): </th>
+                                <td id="cell-assignment_date"></td>
+                            </tr>
+                            <tr style="display:none">
+                                <th>@lang('words.EstimatedStartDate'): </th>
+                                <td id="cell-estimated_start_date"></td>
+                            </tr>
+                            <tr style="display:none">
+                                <th>@lang('words.EstimatedEndDate'): </th>
+                                <td id="cell-estimated_end_date"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.Inspector', 1): </th>
+                                <td id="cell-inspector"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.InspectionType', 1): </th>
+                                <td id="cell-inspectionType"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.InspectionSubtype', 1): </th>
+                                <td id="cell-inspectionSubtype"></td>
+                            </tr>
+                            <tr>
+                                <th>@lang('words.Client'): </th>
+                                <td id="cell-client"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.Contract', 1): </th>
+                                <td id="cell-contract"></td>
+                            </tr>
+                        </table>
+                    </div>
                 
                 </div>
                 <div class="modal-footer">
@@ -161,170 +229,103 @@
 
     <script type="text/javascript">
 
-        $(document).ready(function(){
+        var date1 = '2018-11-22 15:05:03';
 
-            //Campo hora
-            $('.clockpicker').clockpicker();
+        console.log('Fecha 1: ' + date1);
 
-            //Campo fecha
-            $('.input-group.date').datepicker({
-                forceParse: false,
-                autoclose: true,
-                format: 'yyyy-mm-dd',
-                todayHighlight: true,
-                orientation: "bottom auto",
-                @if(app()->getLocale()=='es')
-                language: "es",
-                @endif
-            });
+        var date2 = date1.replace(' ', 'T')+'Z';
+        console.log('Fecha 2:' + date2);
+        var jun = moment.tz(date2, moment.tz.guess());
 
-            $('.inspection_type_id').on('change',function(event, cita){
-                /*console.log($(this).val());
-                console.log(this.dataset.route);
-                console.log($('#_token').val());*/
-                $.ajax({
-                    url:this.dataset.route,
-                    type:'POST',
-                    data:{
-                        id: $(this).val(),
-                        _token: $('#_token').val(),
-                    }
-                })
-                .done(function(res){
-                    
-                    console.log('done\n'+res);
-                    console.log(JSON.parse(res).status);
-                    $('.inspection_subtype_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-                    $.each(JSON.parse(res), function( key, value ) {
-                        //$('.msgError').append(alert('danger', value));
-                        console.log('Id: '+value.id+'\nName: '+value.name);
-                        $('.inspection_subtype_id').append('<option value="'+value.id+'">'+value.name+'</option>');
-                    });
+        console.log(jun.format());
+        console.log(jun.format('MMMM Do YYYY, h:mm:ss a'));
+        console.log(jun.fromNow());
 
-                    if(cita != undefined){
-                        $('#modalEditDel #inspection_subtype_id').val(cita.inspection_subtype_id);
-                    }
-                })
-                .fail(function(res){
-                    alert('oiga mire vea, no hay internet.');
-                })
-                .always(function(res){
-                    console.log('complete\n'+res);
-                });
-            });
-        });
+        console.log(moment.tz.guess());
+    
+        //Se define un objeto que contenga las caracteristicas particulares de cada calendario y luego se definen
+        var calendarObj = {};
+        calendarObj.customButtons = null;
+        calendarObj.events = $('#url').val()+'/events';
+        calendarObj.eventClick = function(event)
+        {
+            //Resetar y setear el action el formulario de completar
+            $('#completeAppointment')[0].reset();
+            $('#completeAppointment').attr('action', $('#url').val()+'/'+event.id+'/complete');
 
-        //Calendario
-        $("#calendar").fullCalendar({
-            selectable: true,//Permite seleccionar
-            nowIndicator: true,//Indicador del tiempo actual
-            eventLimit: true, //Para que aparezca "ver más" en caso de muchas citas
-            displayEventTime: false,//Para que no aparezca la fecha en el titulo
-            contentHeight: 'auto', //Height auto
-            @can('add_inspectionappointments')
-                //Boton de crear
-                customButtons: {
-                    createButton: {
-                        text: '{{trans('words.Create')}}',
-                        click: function() {
-                            $('.msgError').html('');
-                            $('#modalCreate #date').removeAttr("disabled");
-                            $('#formCreateAppointmet')[0].reset();
-                            $('#modalCreate').modal('show');
-                        }
-                    }
-                },
-            @endcan
-            header:{
-                "left":"prev,next today,createButton",
-                "center":"title",
-                "right":"month,agendaWeek,agendaDay,listMonth"
-            },
+            //Cambiar el action del formulario
+            $('#deleteAppointment').attr('action', $('#url').val()+'/'+event.id);
+            $('.showCalendar').attr('data-route', $('#url').val()+'/'+event.id);
             
-            events: $('#url').val()+'/events',
+            if(event.appointment_states_id == 1){
+                $('.btns').html('<button class="btn btn-info btn-form-slide" data-toggle="#completeAppointment">@lang("words.Complete")</button>');
+            }else if(event.appointment_states_id == 2){
+                $('.btns').html('<button data-toggle="#editAppointment" class="btn btn-primary editCalendar" data-route="'+$('#url').val()+'/'+event.id+'/edit'+'">@lang("words.Edit")</button>');
+            }else{
+                $('.btns').html('');
+            }
 
-            eventClick: function(calEvent, jsEvent, view) {
-                /*//Separar en fecha[0] y hora[1]
-                var start = calEvent.start.format().split('T');
-                var end =  calEvent.end.format().split('T');
-                console.log(calEvent.contract_id);
-                console.log(calEvent.client_id);*/
-                                
-                //Se rellena el formulario de editar con los valores correspondientes
-                /* $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
-                $('#modalEditDel #start_date').val(start[0]);
-                $('#modalEditDel #end_date').val(end[0]); */
+            //Se limpia las alertas
+            $('.msgError').html('');
 
-                /*$('#modalEditDel #inspection_type_id').val(calEvent.inspection_type_id);
-                $('#modalEditDel #inspection_type_id').trigger('change',calEvent);
-                $('#modalEditDel #appointment_location_id').val(calEvent.appointment_location_id);
-                $('#modalEditDel #appointment_states_id').val(calEvent.appointment_states_id);
-                $('#modalEditDel #estimated_start_date').val(start[0]);
-                $('#modalEditDel #estimated_end_date').val(end[0]);
-                $('#modalEditDel #contract_id').val(calEvent.contract_id);
-                $('#modalEditDel #client_id').val(calEvent.client_id);*/
+            //Limpiar las validaciones
+            $('.form-group').removeClass('has-error');
+            $('.errors').empty();
 
-                //Resetar y setear el action el formulario de completar
-                $('#completeAppointment')[0].reset();
-                $('#completeAppointment').attr('action', $('#url').val()+'/'+calEvent.id+'/complete');
+            //Ocultar los formularios desplegables
+            $(".formSlide").hide();
 
-                //Cambiar el action del formulario
-                $('#deleteAppointment').attr('action', $('#url').val()+'/'+calEvent.id);
-                $('.showCalendar').attr('data-route', $('#url').val()+'/'+calEvent.id);
-                /* $('#editAppointment').attr('action',  $('#url').val()+'/'+calEvent.id);
-                $('#completeAppointment').attr('action', $('#url').val()+'/'+calEvent.id+'/complete');
- */
-                
-                if(calEvent.appointment_states_id == 1){
-                    $('.btns').html('<button class="btn btn-info btn-form-slide" data-toggle="#completeAppointment">@lang("words.Complete")</button>');
-                }else if(calEvent.appointment_states_id == 2){
-                    $('.btns').html('<button data-toggle="#editAppointment" class="btn btn-primary editCalendar" data-route="'+$('#url').val()+'/'+calEvent.id+'/edit'+'">@lang("words.Edit")</button>');
-                }else{
-                    $('.btns').html('');
-                }
-                console.log('Estado: '+calEvent.appointment_states_id);
+            $('#modalEditDel').modal('show');
+        };
+        calendarObj.select = function(startDate, endDate, jsEvent, view)
+        {
+            //Separar en fecha[0] y hora[1]
+            var start = startDate.format().split('T');
 
-                //Se limpia las alertas
-                $('.msgError').html('');
-
-                //Ocultar los formularios desplegables
-                $(".formSlide").hide();
-
-                $('#modalEditDel').modal('show');
-            },
-            select: function(startDate, endDate, jsEvent, view) {
-                //Separar en fecha[0] y hora[1]
-                var start = startDate.format().split('T');
-
-                var ed = new Date(endDate.format());
-                ed = ed.getFullYear()+'-'+ ("0" + (ed.getMonth() + 1)).slice(-2) +'-'+("0" + ed.getDate()).slice(-2);
-         
-                //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
-                if(start != ed){
-                    /*$('#formCreateAppointmet')[0].reset();
-                    $('.msgError').html('');
-                    $('#estimated_start_date').val(start[0]);
-                    $('#estimated_end_date').val(ed);*/
-                    limpiarForm(start[0], ed, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
-                    $('#modalCreate').modal('show');
-                }
-            },
-            dayClick: function(date, jsEvent, view) {
-                limpiarForm(date.format(), null, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
+            //Como al seleccionar los días la fecha final al día le agrega uno de más, hay que hacer la conversión
+            var ed = new Date(endDate.format());
+            ed = ed.getFullYear()+'-'+ ("0" + (ed.getMonth() + 1)).slice(-2) +'-'+("0" + ed.getDate()).slice(-2);
+        
+            //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
+            if(start != ed){
+                limpiarForm(start[0], ed, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
                 $('#modalCreate').modal('show');
-            },
-            editable: true,
-            eventDrop: function(calEvent, delta, revertFunc){
-                var end = calEvent.end.format().split('T');
+            }
+        };
+        calendarObj.dayClick = function(date, jsEvent, view)
+        {
+            limpiarForm(date.format(), null, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
+            $('#modalCreate').modal('show');
+        };
+        calendarObj.eventDrop = function(calEvent, delta, revertFunc)
+        {
+            var end = calEvent.end.format().split('T');
 
-                $('#editAppointment').attr('action', $('#url').val()+'/'+calEvent.id);
-                $('#modalEditDel #start_date').val(calEvent.start.format());
-                $('#modalEditDel #end_date').val(end[0]);
-                $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
+            $('#editAppointment').attr('action', $('#url').val()+'/'+calEvent.id);
+            $('#modalEditDel #start_date').val(calEvent.start.format());
+            $('#modalEditDel #end_date').val(end[0]);
+            $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
 
-                confirmModal('#editAppointment', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
-            },
-        });
+            confirmModal('#editAppointment', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
+        };
+
+
+        @can('add_inspectionappointments')
+            calendarObj.customButtons = {
+                createButton: {
+                    text: '{{trans('words.Create')}}',
+                    click: function() {
+                        $('.msgError').html('');
+                        $('#modalCreate #date').removeAttr("disabled");
+                        $('#formCreateAppointmet')[0].reset();
+                        $('#modalCreate').modal('show');
+                    }
+                }
+            };
+        @endcan
+
+        //Se llama la función que inicializará el calendario de acuerdo al objeto enviado
+        calendar(calendarObj);
 
     </script>   
 @endsection

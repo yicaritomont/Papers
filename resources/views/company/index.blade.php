@@ -25,9 +25,10 @@
                 <th>@lang('words.Email')</th>
                 <th>@lang('words.Activity')</th>
                 <th>@lang('words.CreatedAt')</th>
-                @can('edit_companies', 'delete_companies')
+                <th>@lang('words.UpdatedAt')</th>
+                @if(Gate::check('edit_companies') || Gate::check('delete_companies') || Gate::check('view_users') || Gate::check('view_inspectors'))
                     <th class="text-center">@lang('words.Actions')</th>
-                @endcan
+                @endif
             </tr>
             </thead>
         </table>
@@ -48,35 +49,40 @@
                 {data: 'user.email'},
                 {data: 'activity'},
                 {data: 'created_at'},
+                {data: 'updated_at'},
             ];
 
-            @can('edit_companies', 'delete_companies')
+            @if(Gate::check('edit_companies') || Gate::check('delete_companies') || Gate::check('view_users') || Gate::check('view_inspectors'))
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}";
                 
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-2, -3])];
+            @else
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'relations' => 'user']) }}";
+                dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-1, -2])];
+            @endif
 
-                dataTableObject.columnDefs = [{
-                    //En la columna 7 (actions) se agregan nuevos botones
-                    targets: 7,
-                    createdCell: function(td, cellData, rowData, row, col){
+            @if(Gate::check('view_users') || Gate::check('view_inspectors'))
+                dataTableObject.columnDefs.push({
+                    //En la columna 8 (actions) se agregan nuevos botones
+                    targets: 8,
+                    render: function(data, type, row){
                         var btn = '';
                         @can('view_users')
-                            btn += '<a href="'+window.Laravel.url+'/users/company/'+rowData.slug+'" class="btn btn-xs btn-primary">';
+                            btn += '<a href="'+window.Laravel.url+'/users/company/'+row.slug+'" class="btn btn-xs btn-primary">';
                             btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") @lang("words.User")</a>';
                             
                         @endcan
                         @can('view_inspectors')
-                            btn += '<a href="'+window.Laravel.url+'/inspectors/company/'+rowData.slug+'" class="btn btn-xs btn-primary">';
+                            btn += '<a href="'+window.Laravel.url+'/inspectors/company/'+row.slug+'" class="btn btn-xs btn-primary">';
                             btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a>';
                         @endcan
-                        $(td).append(btn);
+                        return data + btn;
                     }
-                }];
-            @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'relations' => 'user']) }}";
-                dataTableObject.columns = columns;
-            @endcan      
+                });
+            @endif
 
             var table = $('.dataTable').DataTable(dataTableObject);                
             new $.fn.dataTable.FixedHeader( table );

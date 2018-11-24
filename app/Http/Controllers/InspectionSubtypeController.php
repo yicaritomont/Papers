@@ -45,12 +45,12 @@ class InspectionSubtypeController extends Controller
             'name' => 'bail|required|min:2'
         ]);
         if(InspectionSubtype::create($request->except('permision'))) {
-           flash(trans('words.InspectionSubtype').' '.trans('words.HasAdded'));
+           $alert = ['success', trans_choice('words.InspectionSubtype', 1).' '.trans('words.HasAdded')];
         } else {
-            flash()->error(trans('words.UnableCreate').' '.trans('words.InspectionSubtype'));
+            $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.InspectionSubtype', 1)];
         }
         // $inspector->companies()->attach($request->companies);
-        return redirect()->route('inspectionsubtypes.index');
+        return redirect()->route('inspectionsubtypes.index')->with('alert', $alert);
     }
 
     /**
@@ -96,8 +96,8 @@ class InspectionSubtypeController extends Controller
         }
         $inspection_subtype->fill($request->except('permission'));
         $inspection_subtype->save();
-        flash()->success(trans('words.InspectionSubtype').' '.trans('words.HasUpdated'));
-        return redirect()->route('inspectionsubtypes.index');
+        $alert = ['success', trans_choice('words.InspectionSubtype', 1).' '.trans('words.HasUpdated')];
+        return redirect()->route('inspectionsubtypes.index')->with('alert', $alert);
     }
 
     /**
@@ -110,11 +110,11 @@ class InspectionSubtypeController extends Controller
     {
         if (InspectionSubtype::findOrFail($id)->delete()) {
             echo json_encode([
-                'status' => trans('words.InspectionSubtype').' '.trans('words.HasEliminated'),
+                'status' => trans_choice('words.InspectionSubtype', 1).' '.trans('words.HasEliminated'),
             ]);
         } else {
             echo json_encode([
-                'status' => trans('words.InspectionSubtype').' '.trans('words.NotDeleted'),
+                'status' => trans_choice('words.InspectionSubtype', 1).' '.trans('words.NotDeleted'),
             ]);
         }
 

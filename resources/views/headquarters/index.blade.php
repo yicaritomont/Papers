@@ -24,6 +24,7 @@
                 <th>@lang('words.City')</th>
                 <th>@lang('words.Address')</th>
                 <th>@lang('words.CreatedAt')</th>
+                <th>@lang('words.UpdatedAt')</th>
                 @can('edit_headquarters', 'delete_headquarters')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
@@ -47,15 +48,18 @@
                 {data: 'cities.name'},
                 {data: 'address'},
                 {data: 'created_at'},
+                {data: 'updated_at'},
             ];
 
             @can('edit_headquarters', 'delete_headquarters')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}";
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'relations' => 'cities,client,client.user']) }}";
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
             
             var table = $('.dataTable').DataTable(dataTableObject);               

@@ -9,7 +9,7 @@
 <div class="form-group @if ($errors->has('date')) has-error @endif">
     {!! Form::label('date', trans('words.Date')) !!}
     <div class="input-group date">
-        {!! Form::text('date', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!}
+        {!! Form::text('date', null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
         <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
     </div>
     @if ($errors->has('date')) <p class="help-block">{{ $errors->first('date') }}</p> @endif

@@ -21,9 +21,9 @@
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>            
                 <th>@lang('words.CreatedAt')</th>
-                
+                <th>@lang('words.UpdatedAt ')</th>
                 @can('delete_permissions')
-                    <th class="text-center">Actions</th>
+                    <th class="text-center">@lang('words.Actions')</th>
                 @endcan
             </tr>
             </thead>   
@@ -43,6 +43,7 @@
                 {data: 'id'},
                 {data: 'name'},
                 {data: 'created_at'},
+                {data: 'updated_at'},
             ];
 
             @can('delete_permissions')
@@ -50,9 +51,11 @@
  
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Permission']) }}";
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
             var table = $('.dataTable').DataTable(dataTableObject);                   
