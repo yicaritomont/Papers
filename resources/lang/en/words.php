@@ -132,5 +132,6 @@ return[
     'ActiveMessage' => '¿Are you sure you want to activate it?',
     'InactiveMessage' => '¿Are you sure you want to inactivate it?',
     'To' => 'to',
+    'UpdatedAt' => 'Updated At',
 ];
 ?>

@@ -91,19 +91,13 @@
                     {!! Form::open(['method' => 'PUT', 'class' => 'formCalendar formSlide', 'id' => 'editAppointment', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
                         {{-- @include('inspection_appointment._form') --}}
 
-                        <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
-                            {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
-                            {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body', 'placeholder'=>trans('words.ChooseOption')]) !!}
-                            @if ($errors->has('inspector_id')) <p class="help-block">{{ $errors->first('inspector_id') }}</p> @endif
-                        </div>
-
-                        <div class="form-group @if ($errors->has('start_date')) has-error @endif">
+                        {{-- <div class="form-group @if ($errors->has('start_date')) has-error @endif">
                             {!! Form::label('start_date', trans('words.StartDate')) !!}
                             <div class="input-group date">
                                 {!! Form::text('start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
                                 <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                            @if ($errors->has('start_date')) <p class="help-block">{{ $errors->first('start_date') }}</p> @endif
+                            <div class="errors"></div>
                         </div>
 
                         <div class="form-group @if ($errors->has('end_date')) has-error @endif">
@@ -112,7 +106,25 @@
                                 {!! Form::text('end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
                                 <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                            @if ($errors->has('end_date')) <p class="help-block">{{ $errors->first('end_date') }}</p> @endif
+                            <div class="errors"></div>
+                        </div> --}}
+
+                        <div class="form-group">
+                            {!! Form::label('start_date', trans('words.StartDate').' - ') !!}
+                            {!! Form::label('end_date', trans('words.EndDate')) !!}
+                            
+                            <div class="input-group date-range-inputs">
+                                <input type="text" class="form-control input-date" name="start_date" id="start_date" autocomplete="off">
+                                <span class="input-group-addon">@lang('words.To')</span>
+                                <input type="text" class="form-control input-date" name="end_date" id="end_date" autocomplete="off">
+                            </div>
+                            <div class="errors"></div>
+                        </div>
+
+                        <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
+                            {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
+                            {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body', 'placeholder'=>trans('words.ChooseOption')]) !!}
+                            <div class="errors"></div>
                         </div>
 
                         <!-- Submit Form Button -->                        
@@ -120,13 +132,13 @@
                     {!! Form::close() !!}
 
                     {!! Form::open(['method' => 'PUT', 'class' => 'formCalendar formSlide', 'id' => 'completeAppointment', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
-                        <div class="form-group @if ($errors->has('start_date')) has-error @endif">
+                        {{-- <div class="form-group @if ($errors->has('start_date')) has-error @endif">
                             {!! Form::label('start_date', trans('words.StartDate')) !!}
                             <div class="input-group date">
                                 {!! Form::text('start_date', isset($agenda) ? $agenda['start_date'] : null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
                                 <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                            @if ($errors->has('start_date')) <p class="help-block">{{ $errors->first('start_date') }}</p> @endif
+                            <div class="errors"></div>
                         </div>
 
                         <div class="form-group @if ($errors->has('end_date')) has-error @endif">
@@ -135,13 +147,69 @@
                                 {!! Form::text('end_date', isset($agenda) ? $agenda['end_date'] : null, ['class' => 'form-control input-date', 'autocomplete' => 'off']) !!}
                                 <span class="input-group-addon" style="background-color: #eee !important;cursor:pointer"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
-                            @if ($errors->has('end_date')) <p class="help-block">{{ $errors->first('end_date') }}</p> @endif
+                            <div class="errors"></div>
+                        </div> --}}
+                        <!-- Range Date of Appointment -->
+                        <div class="form-group">
+                            {!! Form::label('start_date', trans('words.StartDate').' - ') !!}
+                            {!! Form::label('end_date', trans('words.EndDate')) !!}
+                            
+                            <div class="input-group date-range-inputs">
+                                <input type="text" class="form-control input-date" name="start_date" id="start_date" autocomplete="off">
+                                <span class="input-group-addon">@lang('words.To')</span>
+                                <input type="text" class="form-control input-date" name="end_date" id="end_date" autocomplete="off">
+                            </div>
+                            <div class="errors"></div>
                         </div>
                         <!-- Submit Form Button -->                        
                         {!! Form::submit(trans('words.Complete'), ['class' => 'btn btn-primary btn-block']) !!}
                     {!! Form::close() !!}
 
-                    <div class="formSlide" id="showCita" style="display:none"></div>
+                    <div class="formSlide" id="showCita" style="display:none">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center active" colspan="2" style="font-size:2em">@lang('words.AppointmentInformation')</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <th>@lang('words.RequestDate'): </th>
+                                <td id="cell-request_date"></td>
+                            </tr>
+                            <tr style="display:none">
+                                <th>@lang('words.AssignmentDate'): </th>
+                                <td id="cell-assignment_date"></td>
+                            </tr>
+                            <tr style="display:none">
+                                <th>@lang('words.EstimatedStartDate'): </th>
+                                <td id="cell-estimated_start_date"></td>
+                            </tr>
+                            <tr style="display:none">
+                                <th>@lang('words.EstimatedEndDate'): </th>
+                                <td id="cell-estimated_end_date"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.Inspector', 1): </th>
+                                <td id="cell-inspector"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.InspectionType', 1): </th>
+                                <td id="cell-inspectionType"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.InspectionSubtype', 1): </th>
+                                <td id="cell-inspectionSubtype"></td>
+                            </tr>
+                            <tr>
+                                <th>@lang('words.Client'): </th>
+                                <td id="cell-client"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.Contract', 1): </th>
+                                <td id="cell-contract"></td>
+                            </tr>
+                        </table>
+                    </div>
                 
                 </div>
                 <div class="modal-footer">
@@ -158,8 +226,6 @@
 @endsection
 
 @section('scripts')
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data-2012-2022.min.js"></script>
 
     <script type="text/javascript">
 
@@ -201,6 +267,10 @@
 
             //Se limpia las alertas
             $('.msgError').html('');
+
+            //Limpiar las validaciones
+            $('.form-group').removeClass('has-error');
+            $('.errors').empty();
 
             //Ocultar los formularios desplegables
             $(".formSlide").hide();

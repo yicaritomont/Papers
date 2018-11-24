@@ -34,6 +34,8 @@ function inicial (argument)
 
     $('.input-group.date').datepicker(datePickerObj);
 
+    $('.input-group.date-range-inputs input').datepicker(datePickerObj);
+
     /* console.log($(window).height());
     console.log('Alto: '+$('.container.body').height());
 
@@ -343,8 +345,6 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
         var datos = $('#'+idForm).serialize();
     }
 
-    console.log(datos);
-
     e.preventDefault();                
     
     $.ajax({
@@ -399,12 +399,27 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
         console.log('complete\n'+res);
     })
     .error(function(res){
-        $('.msgError').html('');
-        $.each( res.responseJSON.errors, function( key, value ) {
-            $('.msgError').append(alert('danger', value));
+
+        $('.form-group').removeClass('has-error');
+        $('.errors').empty();
+
+        $('#'+idForm).find(':input').each(function(){
+            var idInput = $(this).attr('id');
+            if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
+                // console.log(res.responseJSON.errors[idInput]);
+                $(this).parents('.form-group').addClass('has-error');
+                // $(this).parents('.form-group').append(spanError(res.responseJSON.errors[idInput]));
+                $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput]));
+                /* console.log($(this).parents('.form-group'));
+                console.log($(this).attr('id')); */
+            }
         });
     });
 });
+
+function spanError(error){
+    return '<p class="help-block">'+error+'</p>';
+}
 
 // Ajax para ver agendas y citas
 $('.showCalendar').on('click', function(e){
@@ -420,8 +435,22 @@ $('.showCalendar').on('click', function(e){
         })
         .done(function(res){
             var res = JSON.parse(res);
-            $(objElement.data('toggle')).html(res.html);
+            /* $(objElement.data('toggle')).html(res.html);
             
+            slideForms(objElement); */
+
+            if(res.cita){
+                showAppointment(res.cita);
+            }else if(res.agenda){
+                $.each(res.agenda, function(key, value){
+                    if(key.substr(-4) == 'date'){     
+                        value = moment(value, 'YYYY-MM-DD').format('dddd D MMMM YYYY');
+                    }
+    
+                    $('#cell-'+key).html(value);
+                });
+    
+            }
             slideForms(objElement);
         })
         .fail(function(res){
@@ -429,6 +458,25 @@ $('.showCalendar').on('click', function(e){
         });
     }
 });
+
+function showAppointment(Cita){
+    $('#cell-request_date').html(moment.tz(Cita.request_date.replace(' ', 'T')+'Z', moment.tz.guess()).format('MMMM DD YYYY, h:mm:ss a'));
+    $('#cell-inspector').html(Cita.inspector.user.name);
+    $('#cell-inspectionType').html(Cita.inspection_subtype.inspection_types.name);
+    $('#cell-inspectionSubtype').html(Cita.inspection_subtype.name);
+    $('#cell-client').html(Cita.client.user.name);
+    $('#cell-contract').html(Cita.contract.name);
+
+    if(Cita.appointment_states_id != 1){
+        $('#cell-assignment_date').html(moment.tz(Cita.assignment_date.replace(' ', 'T')+'Z', moment.tz.guess()).format('MMMM DD YYYY, h:mm:ss a')).parent().show();
+        $('#cell-estimated_start_date').html(moment(Cita.estimated_end_date, 'YYYY-MM-DD').format('dddd D MMMM YYYY')).parent().show();
+        $('#cell-estimated_end_date').html(moment(Cita.estimated_start_date, 'YYYY-MM-DD').format('dddd D MMMM YYYY')).parent().show();
+    }else{
+        $('#cell-assignment_date').empty().parent().hide();
+        $('#cell-estimated_start_date').empty().parent().hide();
+        $('#cell-estimated_end_date').empty().parent().hide();
+    }
+}
 
 // Ajax para editar agendas y citas
 $(document).on('click', '.editCalendar', function(e){
@@ -487,6 +535,10 @@ $(document).on('click', '.editCalendar', function(e){
     $('#formCreateAgenda .city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
 } */
 function limpiarForm(startDate, endDate, form, fielDate, select){
+
+    $('.form-group').removeClass('has-error');
+    $('.errors').empty();
+
     if (!endDate) endDate = startDate;
     $('.msgError').html('');
     $(form)[0].reset();

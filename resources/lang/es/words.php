@@ -129,5 +129,6 @@ return[
     'ActiveMessage' => '¿Seguro que quieres activarlo?',
     'InactiveMessage' => '¿Seguro que quieres inactivarlo?',
     'To' => 'hasta',
+    'UpdatedAt' => 'Actualizado en',
 ];
 ?>

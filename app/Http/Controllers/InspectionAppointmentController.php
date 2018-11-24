@@ -35,7 +35,6 @@ class InspectionAppointmentController extends Controller
             ['id', '!=', '5'],
             ['id', '!=', '6'],
         ])->get();
-        // $appointment_states = AppointmentState::pluck('name', 'id');
         $appointment_locations = AppointmentLocation::pluck('coordenada','id');
         $inspection_types = InspectionType::pluck('name', 'id');
         return view('inspection_appointment.index',compact('result', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients'));
@@ -154,78 +153,13 @@ class InspectionAppointmentController extends Controller
      */
     public function show($id)
     {
-        setlocale(LC_TIME,app()->getLocale());
-
-        /* $cita = InspectionAppointment::join('inspection_subtypes', 'inspection_subtypes.id', '=', 'inspection_appointments.inspection_subtype_id')
-            ->join('inspection_subtypes', 'cities.id', '=', 'inspection_appointments.city_id')
-            ->join('countries', 'countries.id', '=', 'cities.countries_id')
-            ->select('cities.name AS city',
-                    'countries.name AS country',
-                    'inspectors.name AS inspector',
-                    'start_date',
-                    'end_date')
-            ->where('inspection_appointments.slug', $slug)
-        ->get()[0]; */
-
-        $cita = InspectionAppointment::with('inspector', 'inspectionSubtype', 'client', 'contract')->where('inspection_appointments.id', $id)
-        ->get()[0];
-
-        $html = '<table class="table">
-            <thead>
-                <tr>
-                    <th class="text-center active" colspan="2" style="font-size:2em">'.trans('words.AppointmentInformation').'</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>'.trans('words.RequestDate').': </th>
-                    <td>'.$cita->request_date.'</td>
-                </tr>';
-
-        if($cita->appointment_states_id != 1){
-            $html .= '
-                <tr>
-                    <th>'.trans('words.AssignmentDate').': </th>
-                    <td>'.utf8_encode(strftime("%A %d %B %Y", strtotime($cita->assignment_date))).'</td>
-                </tr>
-                <tr>
-                    <th>'.trans('words.EstimatedStartDate').': </th>
-                    <td>'.utf8_encode(strftime("%A %d %B %Y", strtotime($cita->estimated_start_date))).'</td>
-                </tr>
-                <tr>
-                    <th>'.trans('words.EstimatedEndDate').': </th>
-                    <td>'.utf8_encode(strftime("%A %d %B %Y", strtotime($cita->estimated_end_date))).'</td>
-                </tr>
-            ';
-        }
-
-        // dd($cita->client->user->name);
-
-        $html .= '
-            <tr>
-                <th>'.trans_choice('words.Inspector', 1).': </th>
-                <td>'.$cita->inspector->user->name.'</td>
-            </tr>
-            <tr>
-                <th>'.trans_choice('words.InspectionType', 1).': </th>
-                <td>'.$cita->inspectionSubtype->inspection_types->name.'</td>
-            </tr>
-            <tr>
-                <th>'.trans_choice('words.InspectionSubtype', 1).': </th>
-                <td>'.$cita->inspectionSubtype->name.'</td>
-            </tr>
-            <tr>
-                <th>'.trans('words.Client').': </th>
-                <td>'.$cita->client->user->name.'</td>
-            </tr>
-            <tr>
-                <th>'.trans_choice('words.Contract', 1).': </th>
-                <td>'.$cita->contract->name.'</td>
-            </tr>
-        ';
+        $cita = InspectionAppointment::query()
+            ->with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract:id,name', 'inspector.user:id,name')
+            ->where('inspection_appointments.id', $id)
+        ->first();
 
         echo json_encode([
-            'html' => $html,
+            'cita' => $cita,
         ]);
     }
 

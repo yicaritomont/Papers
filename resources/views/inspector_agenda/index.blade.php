@@ -4,20 +4,8 @@
 
 @section('content')
 
-    {{-- {{ date('Y-m-d H:i:s') }}
-    {{ Auth::user()->timezone }}
-    @php
-        $timezone = \Auth::user();
-        echo $timezone;
-    @endphp --}}
-
-    <select name="timezone" id="timezone" class="form-control">
-    @foreach (timezone_identifiers_list() as $timezone)
-        <option value="{{ $timezone }}"{{ $timezone == old('timezone', request()->user()->timezone) ? ' selected' : '' }}>{{ $timezone }}</option>
-    @endforeach
-</select>
-
-    <div class="msgAlert"></div>    
+    <div class="msgAlert"></div>
+        
     <div class="row">
         <div class="col-12 col-lg-8 col-lg-offset-2">
             <div class="panel panel-default">
@@ -101,7 +89,35 @@
                         {!! Form::submit(trans('words.Edit'), ['class' => 'btn btn-primary btn-block']) !!}
                     {!! Form::close() !!}
 
-                    <div class="formSlide" id="showAgenda" style="display:none"></div>
+                    <div class="formSlide" id="showAgenda" style="display:none">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center active" colspan="2" style="font-size:2em">@lang('words.AgendaInformation')</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <th>@lang('words.StartDate'): </th>
+                                <td id="cell-start_date"></td>
+                            </tr>
+                            <tr>
+                                <th>@lang('words.EndDate'): </th>
+                                <td id="cell-end_date"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.Inspector', 1): </th>
+                                <td id="cell-inspector"></td>
+                            </tr>
+                            <tr>
+                                <th>@lang('words.Country'): </th>
+                                <td id="cell-country"></td>
+                            </tr>
+                            <tr>
+                                <th>@lang('words.City'): </th>
+                                <td id="cell-city"></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button style="display:inline" type="button" class="btn btn-default" data-dismiss="modal">@lang('words.Close')</button>
@@ -118,11 +134,7 @@
 
 @section('scripts')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data-2012-2022.min.js"></script>
-
     <script type="text/javascript" >
-
-        console.log(moment.tz.guess());
 
         //Se define un objeto que contenga las caracteristicas particulares de cada calendario y luego se definen
         var calendarObj = {};

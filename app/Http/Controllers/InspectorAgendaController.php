@@ -110,8 +110,6 @@ class InspectorAgendaController extends Controller
      */
     public function show($slug)
     {
-        setlocale(LC_TIME,app()->getLocale());
-
         $agenda = InspectorAgenda::join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
             ->join('users', 'users.id', '=', 'inspectors.user_id')
             ->join('cities', 'cities.id', '=', 'inspector_agendas.city_id')
@@ -122,38 +120,10 @@ class InspectorAgendaController extends Controller
                     'start_date',
                     'end_date')
             ->where('inspector_agendas.slug', $slug)
-        ->get()[0];
-
-        $html = '<table class="table">
-            <thead>
-                <tr>
-                    <th class="text-center active" colspan="2" style="font-size:2em">'.trans('words.AgendaInformation').'</th>
-                </tr>
-            </thead>
-            <tr>
-                <th>'.trans('words.StartDate').': </th>
-                <td>'.utf8_encode(strftime("%A %d %B %Y", strtotime($agenda->start_date))).'</td>
-            </tr>
-            <tr>
-                <th>'.trans('words.EndDate').': </th>
-                <td>'.utf8_encode(strftime("%A %d %B %Y", strtotime($agenda->end_date))).'</td>
-            </tr>
-            <tr>
-                <th>'.trans_choice('words.Inspector', 1).': </th>
-                <td>'.$agenda->inspector.'</td>
-            </tr>
-            <tr>
-                <th>'.trans('words.Country').': </th>
-                <td>'.$agenda->country.'</td>
-            </tr>
-            <tr>
-                <th>'.trans('words.City').': </th>
-                <td>'.$agenda->city.'</td>
-            </tr>
-        </table>';
+        ->get()->first();
 
         echo json_encode([
-            'html' => $html,
+            'agenda' => $agenda,
         ]);
     }
 
