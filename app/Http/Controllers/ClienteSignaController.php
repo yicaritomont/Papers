@@ -19,12 +19,15 @@ class ClienteSignaController extends Controller
     /*
     * Metodo Constructor
     */
-    public function __construct($servicio = '', $parametros = array())
+    public function __construct($servicio = '', $parametros = array() , $urlServidor = "")
     {
         /*
         * Incializa el los atributos del cliente
-        */      
-        $this->inicializarCliente();     
+        */     
+        if($urlServidor != '')
+        {
+            $this->inicializarCliente($urlServidor);     
+        } 
 
         /*
         * Valida si se llamó el constructor con parametros
@@ -112,23 +115,21 @@ class ClienteSignaController extends Controller
     /*
     * Funcion de apoyo que establece los datos iniciales para crear el cliente
     */
-    private function inicializarCliente()
+    private function inicializarCliente($urlServidor)
     {
         /*
         * Crea el cliente para SOAP
         */
-        
-        $urlServidor = "https://pre-wsfrma.thsigne.com/WSFirma.asmx?wsdl";   
-        
-
         $this->clienteSOAP = new nusoap_client($urlServidor, 'wsdl', '', '', '', ''); 
         $this->clienteSOAP->soap_defencoding = 'UTF-8';
-        $this->clienteSOAP->response_timeout = -1;        
+        $this->clienteSOAP->timeout = 0;
+        $this->clienteSOAP->response_timeout = -1;     
     }
 
     private function AutenticarUsuario()
     {
-
+        $d = extract($this->parametros);
+        print_r($d);
     }
     /*
     * Funcion de apoyo que realiza la llamada al servicio establecido para
@@ -170,7 +171,7 @@ class ClienteSignaController extends Controller
                 * del servicio solicitado
                 */
                 $servicio = $this->servicio;
-                //return $this->$servicio();
+                return $this->$servicio();
             }
         }
         return $this->result;

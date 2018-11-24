@@ -21,6 +21,9 @@ use QR_Code\Types\QR_meCard;
 use QR_Code\QR_Code;
 use QR_Code\Types\QR_CalendarEvent;
 use Url;
+use nusoap_client;
+use Artisaninweb\SoapWrapper\SoapWrapper;
+use SoapClient;
 
 class InspectorController extends Controller
 {
@@ -339,8 +342,19 @@ class InspectorController extends Controller
         /**
          * El bloque soguiente es para el consumo del WS de firma 
          */
-        $signaFirma = new WsdlFirmaController();
-        $signaFirma->autenticarUsuario();
+        /*$signaFirma = new WsdlFirmaController();
+        //$respuestaFirma = $signaFirma->autenticacionUsuario();      
+        $respuestaFirma = $signaFirma->autenticarUsuario();
+        echo "<pre>";
+        print_r($respuestaFirma);
+        echo "</pre>";
+
+        var_dump($respuestaFirma);
+        exit();
+      */
+
+        /*$signaSelladoTiempo = new WsdlSelladoTiempoController();
+        $signaSelladoTiempo->autenticarUsuario();*/
 
         /**
          * El bloque comentado acontinuacion muestra como deben de realizar las peticiones para blokchain.
