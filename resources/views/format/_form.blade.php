@@ -15,9 +15,6 @@
     {!! Form::select('preformat_id',$preformats, null, ['class' => 'input-body','id' => 'format_preformato',$disabled,'placeholder' => trans('words.ChooseOption')]) !!}
     @if ($errors->has('preformat')) <p class="help-block">{{ $errors->first('preformat')}}</p> @endif
 </div>
-    <div id="plantilla_formato" style="display:{!! $mostrar_formato !!};">{!! $formato->format!!}</div>
-    <div class="col-md-12">
-        <div class="panel panel-default" name="format"  id="contenedor_formato" style="display:none;">
-
-    </div>
+    <div id="plantilla_formato" class="col-xs-12" style="display:{!! $mostrar_formato !!};overflow-y: scroll;">{!! $formato->format!!}</div>
+        <div class="panel panel-default col-xs-12" name="format"   id="contenedor_formato" style="display:none;overflow-y: scroll;">
 </div>
