@@ -20,8 +20,8 @@ class CreateUsuarioRolTable extends Migration
             $table->integer('rol_id')->unsigned();
             
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('rol_id')->references('id')->on('roles');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('rol_id')->references('id')->on('roles')->onDelete('cascade');
             $table->timestamps();
         });
     }
