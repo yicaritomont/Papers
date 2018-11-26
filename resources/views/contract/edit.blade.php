@@ -22,4 +22,11 @@
             </div>                 
         </div>
     </div>
+
+@endsection
+
+@section('scripts')
+    <script>
+        $('#company_id').trigger('change', {{$contract->client_id}});
+    </script>
 @endsection

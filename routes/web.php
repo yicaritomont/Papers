@@ -66,11 +66,17 @@ Route::group( ['middleware' => ['auth']], function() {
     
     //Completar las citas
     Route::put('inspectionappointments/{inspectionappointment}/complete', 'InspectionAppointmentController@complete')->name('inspectionappointments.complete');
+
+    //Formato de citas
+    Route::post('inspectionappointments/{inspectionappointment}/format', 'InspectionAppointmentController@format')->name('inspectionappointments.format');
     
     //Actualización de campos desplegables
-    Route::post('inspectionappointments/subtypes', 'InspectionAppointmentController@subtypes')->name('inspectionappointments.subtypes');
-    Route::post('inspectoragendas/cities', 'InspectorAgendaController@cities')->name('inspectoragendas.cities');
-    
+    // Route::post('inspectionappointments/subtypes', 'InspectionAppointmentController@subtypes')->name('inspectionappointments.subtypes');
+    Route::get('inspectionappointments/{id}/subtypes', 'InspectionAppointmentController@subtypes')->name('inspectionappointments.subtypes');
+    // Route::post('inspectoragendas/cities', 'InspectorAgendaController@cities')->name('inspectoragendas.cities');
+    Route::get('inspectoragendas/{id}/cities', 'InspectorAgendaController@cities')->name('inspectoragendas.cities');
+    Route::get('companies/{company}/clients', 'CompanyController@clients')->name('company.clients');
+
     // ????
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');
     
@@ -85,7 +91,7 @@ Route::group( ['middleware' => ['auth']], function() {
     
     //Consultar los inspectores de una compañia para dataTable
     Route::get('inspectors/companyTable/{company}', 'InspectorController@companyTable')->name('inspectors.companyTable');
-    
+
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');

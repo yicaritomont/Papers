@@ -16,7 +16,7 @@
     </div>
 
     <div class="result-set">
-        <table class="table table-bordered table-hover dataTable" id="data-table">
+        <table class="table table-bordered table-hover dataTable nowrap" id="data-table">
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>

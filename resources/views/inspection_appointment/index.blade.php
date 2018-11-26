@@ -210,6 +210,28 @@
                             </tr>
                         </table>
                     </div>
+
+
+                    {!! Form::open(['method' => 'POST', 'class' => 'formCalendar formSlide', 'id' => 'fillFormat', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
+                        <div class="form-group @if ($errors->has('company')) has-error @endif" id="motrarcompanies">
+                            <label for="company_formato">@lang('words.Company')</label>
+                            {!! Form::select('company_id',$companies, isset($user) ? $user->companies->pluck('id')->toArray() : null, ['class' => 'input-body','id' => 'company_formato', 'placeholder' => trans('words.ChooseOption')]) !!}
+                            @if ($errors->has('company')) <p class="help-block">{{ $errors->first('company')}}</p> @endif
+                        </div>
+                        <div class="form-group @if ($errors->has('client')) has-error @endif">
+                            <label for="cliente_formato">@lang('words.Client')</label>
+                            <div  id="contenedor_client">
+                            {!! Form::select('client_id',$clients, null, ['class' => 'input-body','id' => 'cliente_formato', 'placeholder' => trans('words.ChooseOption')]) !!}
+                            @if ($errors->has('client')) <p class="help-block">{{ $errors->first('client')}}</p> @endif
+                            </div>
+                        </div>
+                        <div class="form-group @if ($errors->has('preformat')) has-error @endif" id="contenedor_preformat">
+                            <label for="format_preformato">@lang('words.Preformato')</label>
+                            {!! Form::select('preformat_id',$preformats, null, ['class' => 'input-body','id' => 'format_preformato', 'placeholder' => trans('words.ChooseOption')]) !!}
+                            @if ($errors->has('preformat')) <p class="help-block">{{ $errors->first('preformat')}}</p> @endif
+                        </div>                     
+                        {!! Form::submit(trans('words.Complete'), ['class' => 'btn btn-primary btn-block']) !!}
+                    {!! Form::close() !!}                 
                 
                 </div>
                 <div class="modal-footer">
@@ -253,6 +275,10 @@
             $('#completeAppointment')[0].reset();
             $('#completeAppointment').attr('action', $('#url').val()+'/'+event.id+'/complete');
 
+            //Resetar y setear el action el formulario de formato
+            $('#fillFormat')[0].reset();
+            $('#fillFormat').attr('action', $('#url').val()+'/'+event.id+'/format');
+
             //Cambiar el action del formulario
             $('#deleteAppointment').attr('action', $('#url').val()+'/'+event.id);
             $('.showCalendar').attr('data-route', $('#url').val()+'/'+event.id);
@@ -261,6 +287,11 @@
                 $('.btns').html('<button class="btn btn-info btn-form-slide" data-toggle="#completeAppointment">@lang("words.Complete")</button>');
             }else if(event.appointment_states_id == 2){
                 $('.btns').html('<button data-toggle="#editAppointment" class="btn btn-primary editCalendar" data-route="'+$('#url').val()+'/'+event.id+'/edit'+'">@lang("words.Edit")</button>');
+                if(event.format_id){
+                    $('.btns').append('<button class="btn btn-default btn-form-slide" data-toggle="#fillFormat">@lang("words.Edit") @choice("words.Format", 1)</button>');
+                }else{
+                    $('.btns').append('<button class="btn btn-default btn-form-slide" data-toggle="#fillFormat">@lang("words.Create") @choice("words.Format", 1)</button>');
+                }
             }else{
                 $('.btns').html('');
             }

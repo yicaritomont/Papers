@@ -543,19 +543,22 @@ class InspectorAgendaController extends Controller
         }
     }
 
-    public function cities(Request $request){
+    public function cities($id)
+    {
 
         $result = Citie::select('id', 'name')
-            ->where('countries_id', '=', $request->id)
+            ->where('countries_id', '=', $id)
         ->get();
 
-        $city = '';
+        /* $city = '';
 
         foreach($result as $row){
             $city .= '<option value="'.$row->id.'">'.$row->name.'</option>';
-        }
+        } */
 
-        echo json_encode($city);
+        echo json_encode([
+            'status' => $result
+        ]);
        
     }
     

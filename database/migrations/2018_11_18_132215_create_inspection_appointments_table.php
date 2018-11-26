@@ -21,6 +21,7 @@ class CreateInspectionAppointmentsTable extends Migration
             $table->unsignedInteger('inspection_subtype_id');
             $table->unsignedInteger('contract_id');
             $table->unsignedInteger('client_id');
+            $table->unsignedInteger('format_id')->nullable();
             
             $table->dateTimeTz('request_date');
             $table->date('estimated_start_date');
@@ -47,6 +48,9 @@ class CreateInspectionAppointmentsTable extends Migration
                 ->onDelete('cascade');
             $table->foreign('client_id')
                 ->references('id')->on('clients')
+                ->onDelete('cascade');
+            $table->foreign('format_id')
+                ->references('id')->on('formats')
                 ->onDelete('cascade');
         });
     }

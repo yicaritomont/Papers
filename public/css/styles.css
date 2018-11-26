@@ -167,19 +167,19 @@
     background-color: transparent !important;
 }
 
-.dataTable
+.dataTable:not(.fixedHeader-floating)
 {
     width: 100% !important;
     margin-bottom: 20px !important;
 }
 
-.dataTables_wrapper .row{
-    margin:0;
-    /* overflow-x: auto; */
+.dataTables_wrapper .row .col-sm-12{
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
-.dataTables_wrapper .row .col-sm-12{
-    padding: 0;
+table.dataTable.nowrap th, table.dataTable.nowrap td{
+    white-space: normal;
 }
 
 .dataTables_info{

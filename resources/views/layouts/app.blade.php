@@ -32,8 +32,6 @@
         <!-- bootstrap-daterangepicker -->
         <link href="{{asset('vendors/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 
-        <!-- Custom Theme Style -->
-        <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
 
         <!-- DatePicker -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/datePicker/bootstrap-datepicker.min.css')}}">
@@ -45,9 +43,17 @@
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/dataTables.bootstrap.min.css')}}">
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/fixedHeader.bootstrap.min.css')}}">
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/responsive.bootstrap.min.css')}}">
+        {{-- <link href="{{asset('vendors/datatables.net-bs/css/dataTables.bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{asset('vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{asset('vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{asset('vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{asset('vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css')}}" rel="stylesheet"> --}}
 
         <!-- SweetAlert -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
+        
+        <!-- Custom Theme Style -->
+        <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
         
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet"> 
 
@@ -433,7 +439,6 @@
     <!-- Cambiar el idioma del calendario -->
     @if(app()->getLocale()=='es')
         <script src="{{ asset('js/lib/fullCalendar/es.js') }}"></script>
-        {{-- <script src="{{resource_path('lang/es/dataTable.js')}}"></script> --}}
     @endif
 	
     <!-- Datatable -->
@@ -442,6 +447,18 @@
     <script src="{{ asset('js/lib/dataTable/dataTables.fixedHeader.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/responsive.bootstrap.min.js') }}"></script>
+    {{-- <script src="{{asset('vendors/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-buttons/js/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.flash.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.html5.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.print.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-keytable/js/dataTables.keyTable.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-scroller/js/dataTables.scroller.min.js')}}"></script> --}}
     
     <!-- SweetAlert -->
     <script src="{{ asset('js/lib/sweetAlert/sweetalert2.min.js') }}"></script>
@@ -459,8 +476,6 @@
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.js')}}"></script>
-
-    {{-- <script>console.log('XD');</script> --}}
 
     @if(session('alert'))
         <script>

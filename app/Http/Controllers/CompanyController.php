@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use App\User;
+use App\Client;
 use App\Http\Requests\CompanyRequest;
 use Illuminate\Http\Request;
 use DB;
@@ -205,5 +206,18 @@ class CompanyController extends Controller
                 Inspector::where('id', $inspector->id)->update(['status' => $status]);
             }
         }
+    }
+
+    public function clients($id){
+
+        $result = Client::join('users', 'users.id', '=', 'clients.user_id')
+            ->join('user_company', 'user_company.user_id', '=', 'users.id')
+            ->select('clients.id', 'users.name')
+            ->where('user_company.company_id', $id)
+        ->get();
+
+        echo json_encode([
+            'status' => $result
+        ]);
     }
 }

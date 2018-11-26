@@ -11,6 +11,9 @@ use App\AppointmentLocation;
 use App\InspectorAgenda;
 use App\Contract;
 use App\Client;
+use App\Company;
+use App\Preformato;
+use App\Format;
 use DB;
 use View;
 use App\Http\Requests\InspectionAppointmentRequest;
@@ -37,7 +40,9 @@ class InspectionAppointmentController extends Controller
         ])->get();
         $appointment_locations = AppointmentLocation::pluck('coordenada','id');
         $inspection_types = InspectionType::pluck('name', 'id');
-        return view('inspection_appointment.index',compact('result', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients'));
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
+        $preformats = Preformato::pluck('name', 'id');
+        return view('inspection_appointment.index',compact('result', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
     }
 
     /**
@@ -351,7 +356,8 @@ class InspectionAppointmentController extends Controller
                 'inspector_id',
                 'inspection_appointments.id',
                 'appointment_states.color AS className',
-                'appointment_states_id')
+                'appointment_states_id',
+                'format_id')
         ->where([
             ['appointment_states_id', 1],
         ]);
@@ -365,7 +371,8 @@ class InspectionAppointmentController extends Controller
                 'inspector_id',
                 'inspection_appointments.id',
                 'appointment_states.color',
-                'appointment_states_id')
+                'appointment_states_id',
+                'format_id')
         ->where('appointment_states_id', 2)
         ->orWhere('appointment_states_id', 3)
         ->orWhere('appointment_states_id', 4)
@@ -385,22 +392,17 @@ class InspectionAppointmentController extends Controller
      *
      * @return JSON
      */
-    public function subtypes(Request $request)
+    public function subtypes($id)
     {
-        
-        // $result = InspectorAgenda::select(DB::raw('CONCAT(date,"T",start_time) AS start, CONCAT(date,"T",end_time) AS end, slug'))->get();
-        
-        /* $result = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
-                ->join('inspection_types', 'inspection_types.id', '=', 'inspection_appointments.inspection_type_id')
-                ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')
-                ->select(DB::raw('CONCAT(date,"T",start_time) AS start, CONCAT(date,"T",end_time) AS end, inspection_appointments.id, inspection_types.name AS type, inspectors.name AS inspector, CONCAT("alert-",appointment_states.color) AS className, inspector_id, inspection_type_id, appointment_location_id, appointment_states_id'))->get();
-         */
+
         $result = DB::table('inspection_subtypes')
                     ->select('id', 'name')
-                    ->where('inspection_type_id', '=', $request->id)
+                    ->where('inspection_type_id', '=', $id)
                     ->get();
 
-        echo json_encode($result);
+        echo json_encode([
+            'status' => $result
+        ]);
        
     }
 
@@ -500,6 +502,54 @@ class InspectionAppointmentController extends Controller
                 
             }
         }else{
+            $menssage = \Lang::get('validation.MessageError');
+            echo json_encode([
+                'error' => $menssage,
+            ]);
+        }
+    }
+
+    public function format(Request $request, $id)
+    {
+
+        /* echo json_encode([
+            'status' => Preformato::find($request->preformat_id)->format,
+        ]); */
+        $cita = InspectionAppointment::findOrFail($id);
+
+        if($cita->appointment_states_id == 2)
+        {
+
+            $format = new Format();
+            $format->company_id = $request->company_id;
+            $format->client_id = $request->client_id;
+            $format->preformat_id = $request->preformat_id;
+            $format->format = Preformato::find($request->preformat_id)->format;
+            $format->state = 1;
+
+
+            if ($format->save())
+            {
+                $cita->format_id = $format->id;
+
+                if($cita->save())
+                {
+
+                    Log::info('Id de cita: '.$format->id);
+                    echo json_encode([
+                        'status' => trans_choice('words.Format',1).' '.trans('words.HasAdded'),
+                    ]);
+                }
+            }
+            else
+            {
+                echo json_encode([
+                    'error' => trans('words.UnableCreate').' '.trans_choice('words.Format',1),
+                ]);
+            }
+        }
+        else
+        {
             $menssage = \Lang::get('validation.MessageError');
             echo json_encode([
                 'error' => $menssage,

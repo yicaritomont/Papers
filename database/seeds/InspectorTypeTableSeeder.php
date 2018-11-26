@@ -14,12 +14,14 @@ class InspectorTypeTableSeeder extends Seeder
     {
         $inspectorTypeS = [
 			[
-				'id'        => 1,
-				'name'      => 'Master',
+				'id'        				=> 1,
+				'name'      				=> 'Científico',
+				'inspection_subtypes_id'	=> 3
 			],
 			[
-				'id'        => 2,
-				'name'      => 'Senior',
+				'id'        				=> 2,
+				'name'      				=> 'Electricista',
+				'inspection_subtypes_id'	=> 1
 			],
 		];
 
