@@ -8,13 +8,15 @@
         <div class="well contenedor-anclas">
             <fieldset>
 			
-            	<ul class="list-group">				
+            	<ul class="list-group">
             		@foreach($companias as $compania)    											  		
+					
+
 					  	<li class="list-group-item" >
 		                    <a href="{{URL::to('enviaCompania',array('compania'=>$compania->company_id))}}">
 								<button style="width:100%" class="text-center btn-login departamento ladda-button" role="alert" data-style="expand-left" data-spinner-color="#000000">
 									<span class="glyphicon glyphicon-circle-arrow-right"></span>
-									<span class="ladda-label "> <b>{{ App\Company::find($compania->company_id)->name }}</b></span>
+									<span class="ladda-label "> <b>{{ App\User::find(App\Company::find($compania->company_id)->user_id)->name }}</b></span>
 			                    </button>
 		                    </a>				  		
 						</li>

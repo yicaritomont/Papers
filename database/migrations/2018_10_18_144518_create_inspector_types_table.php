@@ -23,7 +23,8 @@ class CreateInspectorTypesTable extends Migration
 
             $table->foreign('inspection_subtypes_id')
                 ->references('id')
-                ->on('inspection_subtypes');
+                ->on('inspection_subtypes')
+                ->onDelete('cascade');
         });
     }
 
