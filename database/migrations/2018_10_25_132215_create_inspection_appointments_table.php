@@ -22,12 +22,12 @@ class CreateInspectionAppointmentsTable extends Migration
             $table->unsignedInteger('contract_id');
             $table->unsignedInteger('client_id');
             
-            $table->dateTime('request_date');
-            $table->dateTime('estimated_start_date');
-            $table->dateTime('estimated_end_date');
-            $table->dateTime('assignment_date')->nullable();
-            $table->dateTime('start_date')->nullable();
-            $table->dateTime('end_date')->nullable();
+            $table->dateTimeTz('request_date');
+            $table->date('estimated_start_date');
+            $table->date('estimated_end_date');
+            $table->dateTimeTz('assignment_date')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
 
             $table->foreign('inspector_id')

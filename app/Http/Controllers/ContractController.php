@@ -54,13 +54,13 @@ class ContractController extends Controller
         ]);
         if (Contract::create($request->except('_token'))) {
 
-            flash('Contract has been created.');
+            $alert = ['success', trans_choice('words.Contract', 1).' '.trans('words.HasAdded')];
 
         } else {
-            flash()->error('Unable to create Contract.');
+            $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Contract', 1)];
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('alert', $alert);
     }
 
     /**
@@ -87,7 +87,7 @@ class ContractController extends Controller
                         ->get()
                         ->pluck('name', 'id');
 
-        $companies = Company::all()->pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
 
         return view('contract.edit', compact(['contract', 'clients', 'companies']));
     }
@@ -113,9 +113,8 @@ class ContractController extends Controller
 
         $contract->update($request->all());
 
-        //flash()->success('Client has been updated.');
-        flash()->success(trans_choice('words.Contract', 1).' '.trans('words.HasUpdated'));
-        return redirect()->route('contracts.index');
+        $alert = ['success', trans_choice('words.Contract', 1).' '.trans('words.HasUpdated')];
+        return redirect()->route('contracts.index')->with('alert', $alert);
     }
 
     /**
@@ -130,21 +129,21 @@ class ContractController extends Controller
 
         if($contract)
         {
-		    switch ($contract->status) 
+		    switch ($contract->status)
 		    {
                 case 1 :
-                    $contract->status = 0;     
+                    $contract->status = 0;
 				    break;
-    			
+
                 case 0 :
                     $contract->status = 1;
 				    break;
-    
+
                 default :
                     $contract->status = 0;
 			        break;
-		    } 
-    
+		    }
+
 		    $contract->save();
             $menssage = \Lang::get('validation.MessageCreated');
             echo json_encode([
@@ -157,6 +156,6 @@ class ContractController extends Controller
             echo json_encode([
                 'status' => $menssage,
             ]);
-        }	
+        }
     }
 }

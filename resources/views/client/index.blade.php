@@ -16,7 +16,7 @@
     </div>
 
     <div class="result-set">
-        <table class="table table-bordered table-hover dataTable nowrap" id="data-table">
+        <table class="table table-bordered table-hover dataTable" id="data-table">
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
@@ -26,17 +26,19 @@
                 <th>@lang('words.Email')</th>
                 <th>@lang('words.CellPhone')</th>
                 <th>@lang('words.CreatedAt')</th>
+                <th>@lang('words.UpdatedAt')</th>
                 @can('edit_clients', 'delete_clients')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
             </tr>
             </thead>
-            
+
         </table>
     </div>
 @endsection
 
 @section('scripts')
+
     <script>  
         
         $(document).ready(function() {
@@ -50,17 +52,20 @@
                 {data: 'user.email'},
                 {data: 'cell_phone'},
                 {data: 'created_at'},
+                {data: 'updated_at'},
             ];
 
             @can('edit_clients', 'delete_clients')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}";
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'relations' => 'user']) }}";
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
-            
+               
             var table = $('.dataTable').DataTable(dataTableObject);              
             new $.fn.dataTable.FixedHeader( table );
         });

@@ -370,12 +370,12 @@
                 <!-- /top navigation -->
                 <div class="right_col" role="main">
 
-                    <div class="content-page">
-                        <div id="flash-msg">
+                    {{-- <div class="content-page"> --}}
+                        {{-- <div id="flash-msg">
                             @include('flash::message')
-                        </div>
+                        </div> --}}
                         @yield('content')
-                    </div>
+                    {{-- </div> --}}
                 </div>
             </div>  
         </div>
@@ -449,11 +449,28 @@
     <!-- text editor -->
     <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
 
+    <!-- Moment timezone -->
+    <script src="{{ asset('js/lib/momentTz/moment-timezone-with-data-2012-2022.min.js') }}"></script>
+
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
+
 	@yield('scripts')
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.js')}}"></script>
+
+    {{-- <script>console.log('XD');</script> --}}
+
+    @if(session('alert'))
+        <script>
+            toast({
+                type: '@php echo session('alert')[0] @endphp',
+                title: '@php echo session('alert')[1] @endphp',
+                //timer: 10000
+            });
+            changeTopToast();
+        </script>
+    @endif
   </body>
 </html>

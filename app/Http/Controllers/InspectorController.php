@@ -109,11 +109,11 @@ class InspectorController extends Controller
                 $userInspector = User::find($inspector->user_id);
                 $userInspector->companies()->attach($request->companies);
 
-                flash()->success(trans('words.RelationshipInspectorCompany'));
+                $alert = ['success', trans('words.RelationshipInspectorCompany')];
             }
             else
             {
-                flash()->error(trans('words.InspectorCompany'));
+                $alert = ['error', trans('words.InspectorCompany')];
             }
 
         }
@@ -145,21 +145,21 @@ class InspectorController extends Controller
               
                 if ($inspector->save()) 
                 {
-                    flash(trans_choice('words.Inspector', 1).' '.trans('words.HasAdded'));
+                    $alert = ['success', trans_choice('words.Inspector', 1).' '.trans('words.HasAdded')];
                     $inspector->companies()->attach($request->companies);
                 } 
                 else 
                 {
-                    flash()->error(trans('words.UnableCreate').' '.trans_choice('words.Inspector', 1));
+                    $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Inspector', 1)];
                 }
             }
             else
             {
-                flash()->error(trans('words.UnableCreate').' '.trans_choice('words.Inspector', 1));
+                $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Inspector', 1)];
             }
                     
         }
-        return redirect()->route('inspectors.index');
+        return redirect()->route('inspectors.index')->with('alert', $alert);
 
 
     }
@@ -230,9 +230,9 @@ class InspectorController extends Controller
             'user_id'           => $user->id,
         ]);
 
-        flash()->success(trans_choice('words.Inspector', 1).' '.trans('words.HasUpdated'));
+        $alert = ['success', trans_choice('words.Inspector', 1).' '.trans('words.HasUpdated')];
 
-        return redirect()->route('inspectors.index');
+        return redirect()->route('inspectors.index')->with('alert', $alert);
     }
 
 

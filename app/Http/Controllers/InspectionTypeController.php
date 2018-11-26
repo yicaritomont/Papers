@@ -43,13 +43,13 @@ class InspectionTypeController extends Controller
         ]);
         if (InspectionType::create($request->except('permissions'))) {
 
-            flash(' Inspection Type has been created.');
+            $alert = ['success', trans_choice('words.InspectionType',1).' '.trans('words.HasAdded')];
 
         } else {
-            flash()->error('Unable to create Inspection Type.');
+            $alert = ['error', trans('UnableCreate').' '.trans_choice('words.InspectionType',1)];
         }
 
-        return redirect()->route('inspectiontypes.index');
+        return redirect()->route('inspectiontypes.index')->with('alert', $alert);
 
     }
 
@@ -92,9 +92,9 @@ class InspectionTypeController extends Controller
 
         $inspectiontype->save();
 
-        flash()->success('Inspection Type has been updated');
+        $alert = ['success', trans_choice('words.InspectionType',1).' '.trans('words.HasUpdated')];
 
-        return redirect()->route('inspectiontypes.index');
+        return redirect()->route('inspectiontypes.index')->with('alert', $alert);
     }
 
     /**

@@ -73,13 +73,13 @@ class CompanyController extends Controller
             UserController::syncPermissions($request, $user);
             $user->companies()->attach($company);
 
-            flash(trans_choice('words.Company',1).' '.trans('words.HasAdded'));
+            $alert = ['success', trans_choice('words.Company',1).' '.trans('words.HasAdded')];
 
-            return redirect()->back();  
+            return redirect()->back()->with('alert', $alert);  
 
         }else{
-            flash()->error('Unable to create company.');
-            return redirect()->route('company.index');
+            $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Company',1)];
+            return redirect()->route('company.index')->with('alert', $alert);
         }
     }
 
@@ -144,8 +144,9 @@ class CompanyController extends Controller
 
         $company->update($request->except('name', 'email'));
 
-        flash()->success(trans_choice('words.Company',1).' '.trans('words.HasUpdated'));
-        return redirect()->route('companies.index');
+        $alert = ['success', trans_choice('words.Company',1).' '.trans('words.HasUpdated')];
+        
+        return redirect()->route('companies.index')->with('alert', $alert);
     }
 
     /**

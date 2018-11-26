@@ -19,7 +19,9 @@
             <thead>
             <tr>
                 <th>@lang('words.Id')</th>
-                <th>@lang('words.Name')</th>
+                <th>@choice('words.Preformato',2)</th>
+                <th>@choice('words.Company',2)</th>
+                <th>@lang('words.Client')</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_formats','delete_formats')
                     <th class="text-center">@lang('words.Actions')</th>
@@ -35,6 +37,14 @@
 
         $(document).ready(function() {
 
+          var columns = [
+            {data: 'id'},
+            {data: 'preformato.name'},
+            {data: 'company.user.name'},
+            {data: 'client.user.name'},
+            {data: 'created_at'},
+          ]
+
             var dataTableObject = {
                 responsive: true,
                 serverSide: true,
@@ -46,20 +56,13 @@
             }
 
             @can('edit_formats','delete_preformats')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Format', 'entity' => 'formats', 'identificador' => 'id']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'created_at'},
-                    {data: 'actions', className: 'text-center'},
-                ];
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Format', 'entity' => 'formats', 'identificador' => 'id',
+                 'relations' => 'preformato,company.user,client.user']) }}";
+                columns.push({data: 'actions', className: 'text-center'},)
+                dataTableObject.columns = columns;
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Format', 'entity' => 'formats']) }}";
-                dataTableObject.columns = [
-                    {data: 'id'},
-                    {data: 'name'},
-                    {data: 'created_at'},
-                ];
+                dataTableObject.columns = columns
             @endcan
 
             var table = $('.dataTable').DataTable(dataTableObject);

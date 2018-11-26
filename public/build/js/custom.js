@@ -56,7 +56,10 @@ function init_sidebar() {
 // TODO: This is some kind of easy fix, maybe we can improve this
 var setContentHeight = function () {
 	// reset height
-	$RIGHT_COL.css('min-height', $(window).height());
+	// $('.container.body').css('height', $(window).height());
+	// $RIGHT_COL.css('min-height', $(window).height());
+	$RIGHT_COL.css('min-height', window.innerHeight);
+	/* $RIGHT_COL.css('min-height', $('.container.body').height()); */
 };
 
   $SIDEBAR_MENU.find('a').on('click', function(ev) {

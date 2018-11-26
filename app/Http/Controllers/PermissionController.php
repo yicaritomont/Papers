@@ -50,16 +50,15 @@ class PermissionController extends Controller
                 $menssage .= \Lang::get('validation.PermissionAdmin');
             }
             
-            
-            flash()->success($menssage);
-            return redirect()->route('permissions.index');		         
+            $alert = ['success', $menssage];
+            return redirect()->route('permissions.index')->with('alert', $alert);		         
         }
         else
         {
            
             $error = \Lang::get('validation.PermissionTake');
-            flash()->error($error);
-            return redirect()->route('permissions.index');		                    
+            $alert = ['error', $error];
+            return redirect()->route('permissions.index')->with('alert', $alert);		                    
             
         }
             

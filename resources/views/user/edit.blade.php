@@ -4,8 +4,9 @@
 
 @section('content')
 
-    <div class="col-xs-12 col-sm-8 col-md-6 col-md-offset-3">
-    <a href="{{ route('users.index') }}" class="btn btn-default btn-sm"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
+    <div class="row">
+        <div class="col-xs-12 col-sm-8 col-md-6 col-md-offset-3">
+            <a href="{{ route('users.index') }}" class="btn btn-default btn-sm"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
             <div class="panel panel-default">
                 <div class="panel-header-form">
                     <h3 class="panel-titles">@lang('words.Edit') {{ $user-> name }}</h3>                    
@@ -17,8 +18,8 @@
                             <input class="btn-body" type="submit" value="@lang('words.SaveChanges')">
                     {!! Form::close() !!}
                 </div>
-            </div>                 
-        
+            </div>
+        </div>
     </div>
 
 

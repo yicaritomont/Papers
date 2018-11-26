@@ -32,10 +32,18 @@
                 <th>@lang('words.Phone')</th>
                 <th>@lang('words.Addres')</th>
                 <th>@lang('words.Email')</th>
+<<<<<<< HEAD
                 <th>{{trans_choice('words.Company',2)}}</th>
-                <th>{{trans_choice('words.Profession',2)}}</th>                
-                <th>{{trans_choice('words.InspectorType',2)}}</th>                
-                <th>@lang('words.CreatedAt')</th>               
+                <th>{{trans_choice('words.Profession',2)}}</th>
+                <th>{{trans_choice('words.InspectorType',2)}}</th>
+                <th>@lang('words.CreatedAt')</th>
+=======
+                <th>@choice('words.Company',2)</th>
+                <th>@choice('words.Profession',2)</th>                
+                <th>@choice('words.InspectorType',2)</th>                
+                <th>@lang('words.CreatedAt')</th> 
+                <th>@lang('words.UpdatedAt')</th>              
+>>>>>>> upstream/master
                 @can('edit_inspectors','delete_inspectors')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
@@ -46,8 +54,8 @@
 @endsection
 
 @section('scripts')
-    <script>  
-        
+    <script>
+
         $(document).ready(function() {
 
             //Se definen las columnas (Sin actions)
@@ -62,6 +70,7 @@
                 {data: 'profession.name'},
                 {data: 'inspector_type.name'},
                 {data: 'created_at'},
+                {data: 'updated_at'},
             ];
 
             //Columnas a ser modificadas
@@ -69,14 +78,15 @@
                 {
                     //En la columna 6 (companies) se recorre el areglo y luego se muestran los nombres de cada posición
                     targets: 6,
-                    createdCell: function(td, cellData, rowData, row, col){
-                        $(td).html('');
-                        cellData.forEach(function(element){
-                            $(td).append(element.user.name+' ');
+                    render: function(data, type, row){
+                        var res = '';
+                        data.forEach(function(element){
+                            res += element.user.name+' ';
                         });
+                        return res;
                     }
                 }
-            ]
+            ];
 
             @can('edit_inspectors','delete_inspectors')
                 @if(isset($companies))
@@ -91,21 +101,29 @@
                 columnDefs.push(
                     {
                         //En la columna 10 (actions) se agrega el boton de ver inspector
+<<<<<<< HEAD
                         targets: 10,
-                        createdCell: function(td, cellData, rowData, row, col){                        
+                        createdCell: function(td, cellData, rowData, row, col){
                             $(td).append('<a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+rowData.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a>');
-                        
+
+=======
+                        targets: 11,
+                        render: function(data, type, row){
+                            return data + '<a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+row.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a>';
+>>>>>>> upstream/master
                         }
                     },
+                    setDataTable([-2, -3]),
                 )
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
                 dataTableObject.columns = columns;
+                columnDefs.push(setDataTable([-1, -2]));
             @endcan
 
             dataTableObject.columnDefs = columnDefs;
-            
-            var table = $('.dataTable').DataTable(dataTableObject);            
+
+            var table = $('.dataTable').DataTable(dataTableObject);
             new $.fn.dataTable.FixedHeader( table );
         });
     </script>

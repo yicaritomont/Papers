@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', trans('words.Create').' '.trans_choice('words.Formato', 1).', ')
+@section('title', trans('words.Create').' '.trans_choice('words.Format', 1).', ')
 
 @section('content')
 
@@ -11,16 +11,15 @@
                     <h3 class="panel-titles">@lang('words.Create')</h3>
                 </div>
                 <div class="panel-body black-letter">
-                    <div id="contenedorHtml">
-                        @include('format._form')
-                    </div>
                         {!! Form::open(['route' => ['formats.store'], 'id' => 'form_expediction' ]) !!}
-                        <input type="hidden" name="format_expediction" id="format_expediction">
+                            <div id="contenedorHtml">
+                                @include('format._form')
+                            </div>
+                            <input type="hidden" name="format_expediction" id="format_expediction">
                         <!-- Submit Form Button -->
                   <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.Create') !!}</span>
                     {!! Form::close() !!}
                 </div>
-            </div>
-
+        </div>
     </div>
 @endsection

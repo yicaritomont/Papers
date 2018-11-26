@@ -90,16 +90,15 @@ class ClientController extends Controller
             $client->slug = md5($client->id);
             $client->save(); 
             
-            flash(trans('words.Client').' '.trans('words.HasAdded'));
+            $alert = ['success', trans('words.Client').' '.trans('words.HasAdded')];
 
-            return redirect()->back();
+            return redirect()->back()->with('alert', $alert);
 
         } 
         else 
         {
-            //echo "Unable to ";
-            flash()->error('Unable to create user.');
-            return redirect()->route('users.index');
+            $alert = ['error', trans('words.UnableCreate').' '.trans('words.Client')];
+            return redirect()->route('users.index')->with('alert', $alert);
         }
     }
 
@@ -182,8 +181,8 @@ class ClientController extends Controller
         //$client->user->update($request->except('password'));
         $client->update($request->only('identification', 'phone', 'cell_phone', 'companies'));
 
-        flash()->success(trans('words.Client').' '.trans('words.HasUpdated'));
-        return redirect()->route('clients.index');
+        $alert = ['success', trans('words.Client').' '.trans('words.HasUpdated')];
+        return redirect()->route('clients.index')->with('alert', $alert);
     }
 
     /**
