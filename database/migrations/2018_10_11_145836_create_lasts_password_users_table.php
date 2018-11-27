@@ -20,7 +20,7 @@ class CreateLastsPasswordUsersTable extends Migration
 			$table->string('password');		
             $table->timestamps();
             
-            $table->foreign('user')->references('id')->on('users');
+            $table->foreign('user')->references('id')->on('users')->onDelete('cascade');
 		});
     }
 

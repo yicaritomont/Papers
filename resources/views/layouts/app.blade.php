@@ -93,8 +93,8 @@
                                 <h2>{{ Auth::user()->name }}</h2>
                                 {{-- Compañia en session --}}
                                 @if(Auth::user()->roles->pluck('id')[0] != 1)
-                                    @if(session()->get('Session_Company') != "")
-                                        <b>{{ App\Company::find(session()->get('Session_Company'))->name }}</b>
+                                    @if(session()->get('Session_Company') != "")                                        
+                                        <b>{{ App\User::find(App\Company::find(session()->get('Session_Company'))->user_id)->name }}</b>
                                     @endif
                                 @endif
                             </div>
