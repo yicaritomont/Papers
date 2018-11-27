@@ -24,11 +24,13 @@ class CreateContractsTable extends Migration
             
             $table->foreign('company_id')
                 ->references('id')
-                ->on('companies');
+                ->on('companies')
+                ->onDelete('cascade');
 
             $table->foreign('client_id')
                 ->references('id')
-                ->on('clients');
+                ->on('clients')
+                ->onDelete('cascade');
         });
     }
 

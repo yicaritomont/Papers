@@ -22,8 +22,8 @@ class CreateMenusTable extends Migration
             $table->integer('modulo_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('menu_id')->references('id')->on('menus');
-            $table->foreign('modulo_id')->references('id')->on('modulos');
+            $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
+            $table->foreign('modulo_id')->references('id')->on('modulos')->onDelete('cascade');
         });
     }
 
