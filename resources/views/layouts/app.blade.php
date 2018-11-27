@@ -41,7 +41,7 @@
 
         <!-- Datatable -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/dataTables.bootstrap.min.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/fixedHeader.bootstrap.min.css')}}">
+        {{-- <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/fixedHeader.bootstrap.min.css')}}"> --}}
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/responsive.bootstrap.min.css')}}">
         {{-- <link href="{{asset('vendors/datatables.net-bs/css/dataTables.bootstrap.min.css')}}" rel="stylesheet">
         <link href="{{asset('vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css')}}" rel="stylesheet">
@@ -178,7 +178,7 @@
                                                     @can('view_clients')
                                                         <li class="{{ Request::is('clients*') ? 'active' : '' }}">
                                                             <a href="{{ route('clients.index') }}">
-                                                                <span class="text-warning glyphicon glyphicon-user"></span> {{str_plural(trans('words.Client'),2)}}
+                                                                <span class="text-warning glyphicon glyphicon-user"></span> {{trans_choice('words.Client',2)}}
                                                             </a>
                                                         </li>
                                                     @endcan
@@ -208,7 +208,7 @@
                                                     @can('view_headquarters')
                                                         <li class="{{ Request::is('headquarters*') ? 'active' : '' }}">
                                                             <a href="{{ route('headquarters.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-home"></span> {{str_plural(trans('words.Headquarters'),2)}}
+                                                                <span class="text-white glyphicon glyphicon-home"></span> {{trans_choice('words.Headquarters',2)}}
                                                             </a>
                                                         </li>
                                                     @endcan
@@ -259,20 +259,23 @@
                                                                 <li class="{{ Request::is($item->name.'*') ? 'active' : '' }}">
                                                                     @if(MadeMenu::item_has_child($item->id) >=0)
                                                                     <a>
-                                                                        <span class="text-success glyphicon glyphicon-text-background"></span> {{$item->name}}
+                                                                        <span class="text-success glyphicon glyphicon-text-background"></span> {{-- {{$item->url}} --}}@choice('words.'.$item->name, 2)
                                                                     </a>
                                                                     @else
                                                                     <a href="{{ route('posts.index') }}">
-                                                                        <span class="text-success glyphicon glyphicon-text-background"></span> {{$item->name}}
+                                                                        <span class="text-success glyphicon glyphicon-text-background"></span> @choice('words.'.$item->name, 2)
                                                                     </a>
                                                                     @endif
 
                                                                     @if( count(MadeMenu::get_child_items($item->id)) > 0)
                                                                         <ul class="nav child_menu">
                                                                             @foreach(MadeMenu::get_child_items($item->id) as $child)
-                                                                                <li>
-                                                                                    <a href="{{ route($child->url.'.index') }}"><span></span>{{$child->name}}</a>
-                                                                                </li>
+                                                                                @can('view_'.$child->url)
+                                                                                    <li>
+                                                                                            {{-- <a href="{{ route($child->url.'.index') }}"><span></span>{{$child->name}}</a> --}}
+                                                                                            <a href="{{ route($child->url.'.index') }}"><span></span>{{-- {{$child->url}} --}}@choice('words.'.$child->name, 2)</a>
+                                                                                    </li>
+                                                                                @endcan
                                                                             @endforeach
                                                                         </ul>
                                                                     @endif
@@ -444,7 +447,7 @@
     <!-- Datatable -->
     <script src="{{ asset('js/lib/dataTable/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/lib/dataTable/dataTables.fixedHeader.min.js') }}"></script>
+    {{-- <script src="{{ asset('js/lib/dataTable/dataTables.fixedHeader.min.js') }}"></script> --}}
     <script src="{{ asset('js/lib/dataTable/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/responsive.bootstrap.min.js') }}"></script>
     {{-- <script src="{{asset('vendors/datatables.net/js/jquery.dataTables.min.js')}}"></script>

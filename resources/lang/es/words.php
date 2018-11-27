@@ -65,12 +65,12 @@ return[
     'InspectorType' => 'Tipo Inspector|Tipo Inspectores',
     'InspectionType' => 'Tipo de Inspección|Tipos de Inspección',
     'Lastname' => 'Apellido',
-    'Client' => 'Cliente',
+    'Client' => 'Cliente|Clientes',
     'Phone' => 'Teléfono',
     'CellPhone' => 'Celular',
     'Slug' => 'Ficha',
     'Status' => 'Estado',
-    'Headquarters' => 'Sede',
+    'Headquarters' => 'Sede|Sedes',
     'City' => 'Ciudad',
     'Country' => 'País',
     'ChooseOption' => 'Seleccione una opción',
@@ -131,5 +131,6 @@ return[
     'InactiveMessage' => '¿Seguro que quieres inactivarlo?',
     'To' => 'hasta',
     'UpdatedAt' => 'Actualizado en',
+    'ErrorRangeDate' => 'La fecha de inicio no puede ser mayor a la fecha final',
 ];
 ?>

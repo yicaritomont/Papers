@@ -71,7 +71,7 @@
             );
             
             var table = $('.dataTable').DataTable(dataTableObject);              
-            new $.fn.dataTable.FixedHeader( table );
+            // new $.fn.dataTable.FixedHeader( table );
         });
     </script>
 @endsection

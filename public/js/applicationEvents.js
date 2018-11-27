@@ -35,31 +35,51 @@ function inicial (argument)
 
     $('.input-group.date').datepicker(datePickerObj);
 
+    //Para que no permita seleccionar un dia antertior al actual
+    datePickerObj.startDate = new Date();
+
     $('.input-group.date-range-inputs input').datepicker(datePickerObj);
+
+    /* var nowTemp = new Date();
+    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+
+    $('.input-group.date').datepicker({
+        onRender: function(date) {
+            console.log('DatePicker');
+            return date.valueOf() < now.valueOf() ? 'disabled' : '';
+        }
+    }) */
+
+    var dateToday = new Date();
+
+    console.log(dateToday);
+
+    $('.input-group.date').datepicker({
+        format: "yyyy-mm-dd",
+        startDate: new Date() 
+    })
 
     /* console.log($(window).height());
     console.log('Alto: '+$('.container.body').height());
 
     console.log(window.innerHeight);
     console.log($(window).outerHeight()); */
+
+    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
 }
 
-// $('#company_id').on('change', fillSelect(window.Laravel.url+'/'+$(this).val()+'/clients', 'select', 'edit'));
+//Todos los select que requieran una petición ajax para llenar otro select
 $('#company_id').on('change', function(event, edit){
     fillSelect(window.Laravel.url+'/companies/'+$(this).val()+'/clients', '#client_id', edit);
 });
 
 $('.inspection_type_id').on('change',function(event, edit){
-    fillSelect(window.Laravel.url+'/inspectionappointments/'+$(this).val()+'/subtypes', '.inspection_subtype_id', edit);
+    fillSelect(window.Laravel.url+'/inspectiontypes/'+$(this).val()+'/subtypes', '.inspection_subtype_id', edit);
 });
 
 $('.country').on('change',function(event, edit){
-    fillSelect(window.Laravel.url+'/inspectoragendas/'+$(this).val()+'/cities', '.city_id', edit);
+    fillSelect(window.Laravel.url+'/country/'+$(this).val()+'/cities', '.city_id', edit);
 });
-
-function prueba(event){
-    console.log('Changeeee'+event.data.name);
-}
 
 function setDataTable(targets){
     return {
@@ -253,13 +273,6 @@ function alert(color, msg){
     return '<div class="alert alert-'+color+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+msg+'</div>';
 }
 
-//Ocultar los formularios desplegables y solo mostrar el seleccionado
-/* $(document).on('click', 'button[data-toggle]', function(e) {
-    console.log('Clickeo');
-    var selector = $(this).data('toggle');
-    $('.formSlide:not('+selector+')').slideUp('slow');
-    $(selector).slideToggle('slow');
-}); */
 function slideForms(obj, cualquierWea) {
     var selector = obj.data('toggle');
     $('.formSlide:not('+selector+')').slideUp('slow');
@@ -297,6 +310,7 @@ function confirmModal(form, msg, type, revertFunc){
 
 $(window).resize(function(){
     changeTopToast();
+    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
 });
 
 function changeTopToast(){
@@ -425,13 +439,10 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
 
         $('#'+idForm).find(':input').each(function(){
             var idInput = $(this).attr('id');
+            
             if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
-                // console.log(res.responseJSON.errors[idInput]);
                 $(this).parents('.form-group').addClass('has-error');
-                // $(this).parents('.form-group').append(spanError(res.responseJSON.errors[idInput]));
                 $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput]));
-                /* console.log($(this).parents('.form-group'));
-                console.log($(this).attr('id')); */
             }
         });
     });
@@ -455,9 +466,6 @@ $('.showCalendar').on('click', function(e){
         })
         .done(function(res){
             var res = JSON.parse(res);
-            /* $(objElement.data('toggle')).html(res.html);
-
-            slideForms(objElement); */
 
             if(res.cita){
                 showAppointment(res.cita);
@@ -498,7 +506,7 @@ function showAppointment(Cita){
     }
 }
 
-// Ajax para editar agendas y citas
+// Ajax para formulario de editar agendas y citas
 $(document).on('click', '.editCalendar', function(e){
     var objElement = $(this);
 
@@ -551,15 +559,6 @@ $(document).on('click', '.editCalendar', function(e){
     }
 });
 
-//Limpiar el formulario de crear agenda
-/* function limpiarForm(startDate, endDate){
-    if (!endDate) endDate = startDate;
-    $('.msgError').html('');
-    $('#formCreateAgenda')[0].reset();
-    $('#formCreateAgenda #start_date').val(startDate);
-    $('#formCreateAgenda #end_date').val(endDate);
-    $('#formCreateAgenda .city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-} */
 function limpiarForm(startDate, endDate, form, fielDate, select){
 
     $('.form-group').removeClass('has-error');
@@ -574,6 +573,7 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
 }
 
 $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
+
 /*function mostrarCiudades()
 {
     var country = $('.id_country').val();
@@ -705,60 +705,6 @@ function calendar(obj){
     });
 }
 
-/* $('.country').on('change',function(event, city_id){
-    $.ajax({
-        url:this.dataset.route,
-        type:'POST',
-        data:{
-            id: $(this).val(),
-            _token: $('#_token').val(),
-        }
-    })
-    .done(function(res){
-        // console.log('done\n'+res);
-        res = JSON.parse(res);
-        $('.city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-        $('.city_id').append(res);
-
-        if(city_id != undefined){
-            $('#modalEditDel #city_id').val(city_id);
-        }
-    })
-    .fail(function(res){
-        alert('Error\n'+res);
-    });
-}); */
-
-/* $('.inspection_type_id').on('change',function(event, cita){
-    $.ajax({
-        url:this.dataset.route,
-        type:'POST',
-        data:{
-            id: $(this).val(),
-            _token: $('#_token').val(),
-        }
-    })
-    .done(function(res){
-
-        console.log('done\n'+res);
-        console.log(JSON.parse(res).status);
-        $('.inspection_subtype_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-        $.each(JSON.parse(res), function( key, value ) {
-            console.log('Id: '+value.id+'\nName: '+value.name);
-            $('.inspection_subtype_id').append('<option value="'+value.id+'">'+value.name+'</option>');
-        });
-        if(cita != undefined){
-            $('#modalEditDel #inspection_subtype_id').val(cita.inspection_subtype_id);
-        }
-    })
-    .fail(function(res){
-        alert('oiga mire vea, no hay internet.');
-    })
-    .always(function(res){
-        console.log('complete\n'+res);
-    });
-}); */
-
 function fillSelect(url, select, edit){
     console.log(edit);
 
@@ -772,13 +718,12 @@ function fillSelect(url, select, edit){
     .done(function(res){
         res = JSON.parse(res);
 
-        $(select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+        $(select).empty();
 
         $.each(res.status, function( key, value ) {
             $(select).append('<option value="'+value.id+'">'+value.name+'</option>');
         });
 
-        console.log('Yes');
         if(edit){
             $(select).val(edit);
         }
@@ -787,40 +732,6 @@ function fillSelect(url, select, edit){
         alert('Error.');
     });
 }
-
-/* $('#company_id').on('change',function(url, select, edit){
-    console.log(url);
-    console.log(select);
-    console.log(edit);
-    console.log(window.Laravel.url+'/'+$(this).val()+'/clients');
-    $.ajax({
-        url:window.Laravel.url+'/companies/'+$(this).val()+'/clients',
-        type:'GET',
-        data:{
-            _token: $('#_token').val(),
-        }
-    })
-    .done(function(res){
-        res = JSON.parse(res);
-        console.log('done\n'+res);
-        console.log(res.status);
-        $('#client_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-        $.each(res.status, function( key, value ) {
-            //$('.msgError').append(alert('danger', value));
-            console.log('Id: '+value.id+'\nName: '+value.name);
-            $('#client_id').append('<option value="'+value.id+'">'+value.name+'</option>');
-        });
-        if(edit){
-            $('#client_id').val(edit);
-        }
-    })
-    .fail(function(res){
-        alert('oiga mire vea, no hay internet.');
-    })
-    .always(function(res){
-        console.log('complete\n'+res);
-    });
-}); */
 
 function llenarCabeceraFormato()
 {

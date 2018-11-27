@@ -13,17 +13,17 @@ class MenuSeeder extends Seeder
     {
         //
         $Menus = [
-            ['id' => '1' , 'name' => 'Profesiones' , 'url' => 'professions' ,'status' => 1 , 'menu_id' => 1 , 'modulo_id' => 1],
-            ['id' => '2' , 'name' => 'Tipo Inspectores' , 'url' => 'inspectortypes','status' => 1,'menu_id' => 1 , 'modulo_id' => 1],
-            ['id' => '3' , 'name' => 'Tipos de Inspección' , 'url' => 'inspectiontypes','status' => 1,'menu_id' => 1 , 'modulo_id' => 1],
-            ['id' => '4' , 'name' => 'Subtipos de Inspección' , 'url' => 'inspectionsubtypes','status' => 1,'menu_id' => 1 , 'modulo_id' => 1],
-            ['id' => '5' , 'name' => 'Clientes' , 'url' => 'clients','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
-            ['id' => '6' , 'name' => 'Sedes' , 'url' => 'headquarters','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
-            ['id' => '7' , 'name' => 'Compañias' , 'url' => 'companies','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
-            ['id' => '8' , 'name' => 'Inspectores' , 'url' => 'inspectors','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
-            ['id' => '9' , 'name' => 'Agenda del inspector' , 'url' => 'inspectoragendas','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
-            ['id' => '10' , 'name' => 'Citas de Inspección' , 'url' => 'inspectionappointments','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
-            ['id' => '11' , 'name' => 'Contratos' , 'url' => 'contracts','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
+            ['id' => '1' , 'name' => 'Profession' , 'url' => 'professions' ,'status' => 1 , 'menu_id' => 1 , 'modulo_id' => 1],
+            ['id' => '2' , 'name' => 'InspectorType' , 'url' => 'inspectortypes','status' => 1,'menu_id' => 1 , 'modulo_id' => 1],
+            ['id' => '3' , 'name' => 'InspectionType' , 'url' => 'inspectiontypes','status' => 1,'menu_id' => 1 , 'modulo_id' => 1],
+            ['id' => '4' , 'name' => 'InspectionSubtype' , 'url' => 'inspectionsubtypes','status' => 1,'menu_id' => 1 , 'modulo_id' => 1],
+            ['id' => '5' , 'name' => 'Client' , 'url' => 'clients','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
+            ['id' => '6' , 'name' => 'Headquarters' , 'url' => 'headquarters','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
+            ['id' => '7' , 'name' => 'Company' , 'url' => 'companies','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
+            ['id' => '8' , 'name' => 'Inspector' , 'url' => 'inspectors','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
+            ['id' => '9' , 'name' => 'InspectorAgenda' , 'url' => 'inspectoragendas','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
+            ['id' => '10' , 'name' => 'Inspectionappointment' , 'url' => 'inspectionappointments','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
+            ['id' => '11' , 'name' => 'Contract' , 'url' => 'contracts','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
             ['id' => '12' , 'name' => 'Formato expedición e inspección' , 'url' => 'formats', 'status' => 1 , 'menu_id' => 8, 'modulo_id' => 1],
 
         ];

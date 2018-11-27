@@ -24,7 +24,7 @@
 
 <!-- Client of Contract Form Select -->
 <div class="form-group @if ($errors->has('client_id')) has-error @endif">
-    {!! Form::label('client_id', trans('words.Client')) !!}
+    {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
     {{-- {!!Form::select('client_id', $clients, isset($contract) ? $contract->client_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!} --}}
     <select id="client_id" name="client_id" class="input-body">
         <option value="">@lang('words.ChooseOption')</option>

@@ -44,7 +44,7 @@
 </div>
 
 <div class="form-group @if ($errors->has('client_id')) has-error @endif">
-    {!! Form::label('client_id', trans_choice('words.Client', 2)) !!}
+    {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
     {!! Form::select('client_id',$clients, null, ['class' => 'input-body','require', 'placeholder'=>trans('words.ChooseOption')]) !!}
     <div class="errors"></div>
 </div>

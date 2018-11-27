@@ -214,7 +214,9 @@ class CompanyController extends Controller
             ->join('user_company', 'user_company.user_id', '=', 'users.id')
             ->select('clients.id', 'users.name')
             ->where('user_company.company_id', $id)
-        ->get();
+        ->get()->toArray();
+
+        array_unshift($result, ['id' => '', 'name' => trans('words.ChooseOption')]);
 
         echo json_encode([
             'status' => $result

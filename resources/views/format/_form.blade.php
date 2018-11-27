@@ -4,7 +4,7 @@
     @if ($errors->has('company')) <p class="help-block">{{ $errors->first('company')}}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('client')) has-error @endif">
-    <label for="name">@lang('words.Client')</label>
+    <label for="name">@choice('words.Client', 1)</label>
     <div  id="contenedor_client">
       {!! Form::select('client_id',$clients, null, ['class' => 'input-body','id' => 'cliente_formato',$disabled,'placeholder' => trans('words.ChooseOption')]) !!}
       @if ($errors->has('client')) <p class="help-block">{{ $errors->first('client')}}</p> @endif

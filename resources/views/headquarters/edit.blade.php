@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', trans('words.Edit').' '.trans('words.Headquarters').' '.$headquarters->name)
+@section('title', trans('words.Edit').' '.trans_choice('words.Headquarters', 1).' '.$headquarters->name)
 
 @section('content')
 
@@ -35,4 +35,10 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $('#country').trigger('change', {{ $headquarters->cities_id }});
+    </script>
 @endsection

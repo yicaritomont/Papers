@@ -21,7 +21,7 @@
                 <th>@lang('words.Id')</th>
                 <th>@choice('words.Preformato',2)</th>
                 <th>@choice('words.Company',2)</th>
-                <th>@lang('words.Client')</th>
+                <th>@choice('words.Client', 2)</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_formats','delete_formats')
                     <th class="text-center">@lang('words.Actions')</th>
@@ -66,7 +66,7 @@
             @endcan
 
             var table = $('.dataTable').DataTable(dataTableObject);
-            new $.fn.dataTable.FixedHeader( table );
+            // new $.fn.dataTable.FixedHeader( table );
         });
     </script>
 @endsection
