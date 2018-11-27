@@ -343,15 +343,13 @@ class InspectorController extends Controller
          * El bloque soguiente es para el consumo del WS de firma 
          */
         /*$signaFirma = new WsdlFirmaController();
-        //$respuestaFirma = $signaFirma->autenticacionUsuario();      
-        $respuestaFirma = $signaFirma->autenticarUsuario();
+        $respuestaFirma = $signaFirma->autenticacionUsuario();      
         echo "<pre>";
         print_r($respuestaFirma);
-        echo "</pre>";
-
-        var_dump($respuestaFirma);
-        exit();
-      */
+        echo "</pre>",
+        //$respuestaFirma = $signaFirma->autenticarUsuario();
+        exit();*/
+      
 
         /*$signaSelladoTiempo = new WsdlSelladoTiempoController();
         $signaSelladoTiempo->autenticarUsuario();*/

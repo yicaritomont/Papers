@@ -4,91 +4,77 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7;
-use GuzzleHttp\Exception\RequestException;
-use Meng\AsyncSoap\Guzzle\Factory;
-use Illuminate\Foundation\Http\FormRequest;
-use SimpleXMLElement;
 
 class WsdlFirmaController extends Controller
 {
     private $baseUrl    = "https://pre-wsfirma.thsigne.com/WSFirma.asmx?wsdl";
     private $usuario    = 'ACME_pruebas';
     private $password   = 'A0000usr78X';
-    private $aplicacion = "WSfirma";
     
-    public function autenticarUsuario()
-    {
-        $parametros = [
-            'Usuario'       =>  $this->usuario,
-            'Password'      =>  $this->password,
-            'Aplicacion'    =>  $this->aplicacion
-        ];
+    /*********************************************************************************************
+     *                           Start to private functios a Curl request
+     *********************************************************************************************/
 
-        $urlServidor = "https://pre-wsfirma.thsigne.com/WSFirma.asmx?wsdl";
-        
-        $cliente = new ClienteSignaController('AutenticarUsuario',$parametros,$urlServidor);
-        $cliente->soap_defencoding = 'UTF-8';
-        $client->debug_flag = false;
-        /*echo '<pre>';
-		echo 'respuesta del servicio:';
-		print_r($cliente);
-		echo '</pre>';*/
-    }
-
-
-    // Headers to request 
+    /** Set a Headers to request */
     private function headers()
     {
         return [
-            "Content-Type: text/xml",
-            "cache-control: no-cache"
+        "Content-type: text/xml",
+        "Accept: text/xml",
+        "Cache-Control: no-cache",
+        "Pragma: no-cache",
         ];
     }
 
-    // init curl
+    /** Initial Curl */
     private function initializer()
     {
         $curl = curl_init();
         return $curl;
     }
 
-    function array_to_xml(array $arr, SimpleXMLElement $xml)
+    
+    /** Create a Body Request */
+    private function setBodyRequest($service,$params="",$tag = "",$aplication)
     {
-        foreach ($arr as $k => $v) {
-            is_array($v)
-                ? array_to_xml($v, $xml->addChild($k))
-                : $xml->addChild($k, $v);
+        // if  the request have a tag place after the param
+        if($tag != "")
+        {
+            $tag = $tag.":";
         }
-        return $xml;
+
+        $soap_request  = "<?xml version=\"1.0\"?>\n";
+        $soap_request .= "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" soap:encodingStyle=\"http://www.w3.org/2001/XMLSchema\">\n";
+        $soap_request .= "  <soap:Body>\n";
+        $soap_request .= "    <".$tag.$service." xmlns=\"http://webservice.thsigne.ae\">\n";
+        
+        /** Create  */
+        foreach($params as $key => $value)
+        {
+            $soap_request .= "<".$tag.$key.">".$value."</".$tag.$key.">\n";
+        }
+
+        $soap_request .= "      <".$tag."Aplicacion>$aplication</".$tag."Aplicacion>\n";
+
+        $soap_request .= "    </".$tag.$service.">\n";
+        $soap_request .= "  </soap:Body>\n";
+        $soap_request .= "</soap:Envelope>";
+        $bodyXml = $soap_request;
+
+        return $bodyXml;
+        
     }
 
-    //create a body request 
-    private function setBodyRequest($service,$params="",$tag = "")
-    {
-       
-        $bodyXml = "<$service xmlns='http://webservice.thsigne.ae' > ";
-        
-            foreach($params as $key => $value)
-            {
-                $bodyXml .= "<$key>$value</$key>";
-            }
-        $bodyXml .= " </$service>";
-        echo (string)$bodyXml;      
-
-        //return $body;
-        
-    }
 
     private function setSetoptCurl()
     {
         $parametros = [
             'Usuario'       =>  $this->usuario,
             'Password'      =>  $this->password,
-            'Aplicacion'    =>  $this->aplicacion
         ];
-        $PostField = $this->setBodyRequest('AutenticarUsuario',$parametros);
+
+        $PostField = $this->setBodyRequest('AutenticarUsuario',$parametros,'','WSFirma');
+
         $setopt = array(
             CURLOPT_URL => $this->baseUrl,
             CURLOPT_RETURNTRANSFER => true,
@@ -97,16 +83,22 @@ class WsdlFirmaController extends Controller
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => (string)$PostField,
+            CURLOPT_POSTFIELDS => $PostField,
             CURLOPT_HTTPHEADER => $this->headers(),
         );
+
         return $setopt;
     }
 
+
+    /********************************************************************************************
+     *                         Functions initiating curl request
+     ********************************************************************************************/
+
     public function autenticacionUsuario()
     {
-        
-       /* $curl = $this->initializer();
+       
+        $curl = $this->initializer();
         curl_setopt_array($curl, $this->setSetoptCurl());
 
         $response = curl_exec($curl);
@@ -114,13 +106,14 @@ class WsdlFirmaController extends Controller
 
         curl_close($curl);
 
-        if ($err) {
+        if ($err) 
+        {
             echo "cURL Error #:" . $err;
         } 
         else 
         {
             return $response;
-        }*/
+        }
     }
 
 
@@ -164,10 +157,28 @@ class WsdlFirmaController extends Controller
 
         curl_close($curl);
 
-        if ($err) {
-        echo "cURL Error #:" . $err;
-        } else {
-        echo $response;
+        if ($err) 
+        {
+            echo "cURL Error #:" . $err;
+        } 
+        else 
+        {
+            echo $response;
         }
-        }
+    }
+
+    /*public function autenticarUsuario()
+    {
+        $parametros = [
+            'Usuario'       =>  $this->usuario,
+            'Password'      =>  $this->password,
+            'Aplicacion'    =>  $this->aplicacion
+        ];
+
+        $urlServidor = "https://pre-wsfirma.thsigne.com/WSFirma.asmx?wsdl";
+        
+        $cliente = new ClienteSignaController('AutenticarUsuario',$parametros,$urlServidor);
+        $cliente->soap_defencoding = 'UTF-8';
+        $client->debug_flag = false;
+    }*/
 }
