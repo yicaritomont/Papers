@@ -7,12 +7,14 @@
 @can('delete_'.$entity)
 
     @if(isset($status))
-        {!! Form::open( ['method' => 'delete', 'url' => route($entity.'.destroy', ['user' => ${$action}]), 'style' => 'display: inline', 'id' => 'd'.${$action}, 'class' => 'formDelete']) !!}                            
+        {!! Form::open( ['method' => 'delete', 'url' => route($entity.'.destroy', ['user' => ${$action}]), 'style' => 'display: inline', 'id' => 'd'.${$action}, 'class' => 'formDelete']) !!}
             @if($status == 1)
                 <button type="button" onclick="confirmModal('@php echo '#d'.${$action} @endphp', '{{trans('words.InactiveMessage')}}', 'warning')" class="btn  btn-xs btn-success btnDelete"><span class='glyphicon glyphicon-ok-sign'></span></button>
+            @elseif($status == 2)
+                 
             @else
                 <button type="button" onclick="confirmModal('@php echo '#d'.${$action} @endphp', '{{trans('words.ActiveMessage')}}', 'warning')" class="btn  btn-xs btn-danger btnDelete"><span class='glyphicon glyphicon-remove-sign'></button>
-            @endif 
+            @endif
         {!! Form::close() !!}
     @else
         {!! Form::open( ['method' => 'delete', 'url' => route($entity.'.destroy', ['user' => ${$action}]), 'style' => 'display: inline', 'id' => 'd'.${$action}, 'class' => 'formDelete']) !!}

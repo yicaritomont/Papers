@@ -3,10 +3,12 @@ $(window).ready(inicial);
 function inicial (argument)
 {
      //Eventos de los botones para solicitud de turno cliente interno
-     $('#password_update').keyup(verifyPassword);
-     $('#password-confirm').blur(verifyPassword);
-     $('#identificacion_inspector').blur(verifyInspector);
+    $('#password_update').keyup(verifyPassword);
+    $('#password-confirm').blur(verifyPassword);
+    $('#identificacion_inspector').blur(verifyInspector);
     $('#boton_guardar_html').click(guardarHtml);
+    $('#boton_firmar_formato').click(deshabilitarCampos);
+    $('#boton_firmar_formato').click(guardarHtml);
     $('#company_formato').change(cargarSelectClients);
     $('#format_preformato').change(llenarCabeceraFormato);
 
@@ -576,7 +578,6 @@ $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
 function verifyInspector()
 {
     var idInspector = $(this).val();
-    alert(idInspector);
     if(idInspector != "")
     {
         $.ajax({
@@ -615,12 +616,11 @@ function verifyInspector()
 function guardarHtml(e) {
   e.preventDefault();
   camposLlenos();
-
     var contenedorHtml = $('#contenedor_formato').html();
-
     if($('#contenedor_formato').css('display') == 'none'){
       var contenedorHtml = $('#plantilla_formato').html();
     }
+
   $('#format_expediction').val(contenedorHtml);
   $('#plantilla_formato').css('display','none');
   $('#form_expediction').submit();
@@ -657,6 +657,11 @@ function camposLlenos() {
     }
   });
 }
+ function deshabilitarCampos(){
+    $('#state').val('2');
+     $('#plantilla_formato').find('input, textarea, button, select').prop('disabled',true);
+
+ }
 
 function calendar(obj){
     $("#calendar").fullCalendar({
@@ -778,7 +783,7 @@ function llenarCabeceraFormato()
             });
         }
   }
-  
+
       function limpiarFormulario()
       {
         $('#format_preformato').val('');
@@ -807,9 +812,11 @@ function cargarSelectClients()
         select+= '</select>';
         $('#contenedor_client').empty();
         $('#contenedor_client').html(select);
+        $('#format_preformato').val('');
+        $('#cliente_formato').change(limpiarFormulario);
+        $('#format_preformato').change(llenarCabeceraFormato);
         $('#plantilla_formato').css('display','none');
         $('#contenedor_formato').css('display','none');
-        $('#cliente_formato').change(llenarCabeceraFormato);
 
             });
     }
