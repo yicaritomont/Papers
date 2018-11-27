@@ -23,13 +23,14 @@
                 <th>@choice('words.Company',2)</th>
                 <th>@lang('words.Client')</th>
                 <th>@lang('words.CreatedAt')</th>
+                <th>@lang('words.UpdatedAt')</th>
                 @can('edit_formats','delete_formats')
                     <th class="text-center">@lang('words.Actions')</th>
                 @endcan
             </tr>
             </thead>
         </table>
-
+    </div>
 @endsection
 
 @section('scripts')
@@ -43,6 +44,7 @@
             {data: 'company.user.name'},
             {data: 'client.user.name'},
             {data: 'created_at'},
+            {data: 'updated_at'},
           ]
 
             var dataTableObject = {
@@ -50,19 +52,15 @@
                 serverSide: true,
             };
 
-            //Se valida el idioma
-            if(window.Laravel.language == 'es'){
-                dataTableObject.language = {url:'{{ asset("dataTable/lang/Spanish.json") }}'};
-            }
-
             @can('edit_formats','delete_preformats')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Format', 'entity' => 'formats', 'identificador' => 'id',
-                 'relations' => 'preformato,company.user,client.user']) }}";
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Format', 'entity' => 'formats', 'identificador' => 'id','relations' => 'preformato,company.user,client.user']) }}";
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Format', 'entity' => 'formats']) }}";
-                dataTableObject.columns = columns
+                dataTableObject.columns = columns;
+                dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
             var table = $('.dataTable').DataTable(dataTableObject);

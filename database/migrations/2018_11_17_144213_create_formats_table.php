@@ -19,7 +19,7 @@ class CreateFormatsTable extends Migration
             $table->integer('client_id')->unsigned();
             $table->integer('preformat_id')->unsigned();
             $table->longText('format');
-            $table->integer('state');
+            $table->integer('status');
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');

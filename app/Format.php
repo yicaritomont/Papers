@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Format extends Model
 {
     protected $filable = [
-      'company_id','client_id','preformat_id', ' format', 'state',
+      'company_id','client_id','preformat_id', ' format', 'status',
     ];
 
     public function preformato()
