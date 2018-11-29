@@ -21,7 +21,7 @@
     @if ($errors->has('inspector_type_id')) <p class="help-block">{{ $errors->first('inspector_type_id') }}</p> @endif
 </div>
 
-<div class="form-group @if ($errors->has('country_id')) has-error @endif">
+{{-- <div class="form-group @if ($errors->has('country_id')) has-error @endif">
     {!! Form::label('country_id', trans('words.Country')) !!}
     {!! Form::select('country_id',$countries,null, array('class' => 'input-body id_country', 'required')) !!}
     @if ($errors->has('country_id')) <p class="help-block">{{ $errors->first('country') }}</p> @endif
@@ -30,7 +30,7 @@
     {!! Form::label('city_id', trans('words.City')) !!}
     {!! Form::select('city_id',$cities,null, array('class' => 'input-body','required')) !!}
     @if ($errors->has('city_id')) <p class="help-block">{{ $errors->first('city') }}</p> @endif
-</div>
+</div> --}}
 
 <div class="form-group @if ($errors->has('phone')) has-error @endif">
     <label for="telefono_inspector">@lang('words.Phone')</label>

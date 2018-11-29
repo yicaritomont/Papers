@@ -14,6 +14,7 @@ function inicial (argument)
     dataTableObject = {
         responsive: true,
         serverSide: true,
+        processing: true,
     };
 
     //Se valida el idioma
@@ -40,20 +41,6 @@ function inicial (argument)
 
     $('.input-group.date-range-inputs input').datepicker(datePickerObj);
 
-    /* var nowTemp = new Date();
-    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-
-    $('.input-group.date').datepicker({
-        onRender: function(date) {
-            console.log('DatePicker');
-            return date.valueOf() < now.valueOf() ? 'disabled' : '';
-        }
-    }) */
-
-    var dateToday = new Date();
-
-    console.log(dateToday);
-
     $('.input-group.date').datepicker({
         format: "yyyy-mm-dd",
         startDate: new Date() 
@@ -66,6 +53,22 @@ function inicial (argument)
     console.log($(window).outerHeight()); */
 
     $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
+}
+
+// Si existe el campo icon cargue el archivo con todos los iconos de font awesome
+if($('#icon')[0])
+{
+    $.getScript(window.Laravel.url+'/js/icons.js', function( data, textStatus, jqxhr )
+    {
+        var iconos="<ul>";
+        $.each(fA, function(key, value){
+            iconos += '<li title="'+value+'"><i data-icon="'+value+'" class="fa '+value+'"></i></li>';
+        });
+    
+        iconos+="</ul>";
+    
+        $('#icon').parent().after("<div class='oculto'>"+iconos+"</div>");
+    });
 }
 
 //Todos los select que requieran una petición ajax para llenar otro select
@@ -813,3 +816,31 @@ function cargarSelectClients()
             });
     }
 }
+
+// Campo selector de iconos
+
+$('#icon').on('focus', function(e){
+    $(".oculto").fadeIn("fast");
+});
+
+$('#icon').on('blur', function(e){
+    $(".oculto").fadeOut("fast");
+});
+
+$(document).on("click",".oculto ul li",function()
+{
+    $(".inputpicker").val($(this).find("i").data("icon"));
+    $('.picker .input-group-addon').html('<i class="fa '+$(this).find("i").data("icon")+'"></i>');
+    $('#icon-hidden').val($(this).find("i").data("icon"));
+});
+
+$(document).on("keyup", '#icon', function()
+{
+    var value=$(this).val();
+    
+    $(".oculto ul li i").each(function() 
+    {
+        if ($(this).data('icon').search(value) > -1) $(this).closest("li").show();
+        else $(this).closest("li").hide();
+    });
+});  

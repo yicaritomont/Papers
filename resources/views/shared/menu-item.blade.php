@@ -3,19 +3,31 @@
         <a href="{{ url($item['name']) }}">{{ $item['name'] }} </a>
     </li> --}}
     {{-- {{ dd($item) }} --}}
-    <li>
-        <a href="{{ route($item['url'].'.index') }}"><span></span>}@choice('words.'.$item['name'], 2)</a>
-    </li>
+    @if($item['url'])
+        <li>
+            <a href="{{ route($item['url'].'.index') }}"><span></span>
+                @if($submenu['icon'])<i class="icon-menu fa {{ $item['icon'] }}"></i>@endif
+                @choice('words.'.$item['name'], 2)
+            </a>
+        </li>
+    @endif
+    
 @else
 
     {{-- {{ dd($item) }} --}}
 
-    <li><a><i class="fa fa-suitcase"></i>{{$item['name']}}<span class="fa fa-chevron-down"></span></a>
+    <li>
+        <a>
+            @if($item['icon'])<i class="icon-menu fa {{ $item['icon'] }}"></i>@endif{{$item['name']}} <span class="fa fa-chevron-down"></span>
+        </a>
         <ul class="nav child_menu">
             @foreach ($item['submenu'] as $submenu)
                 @if ($submenu['submenu'] == [])
                     <li>
-                        <a href="{{ route($submenu['url'].'.index') }}"><span></span>@choice('words.'.$submenu['name'], 2)</a>
+                        <a href="{{ route($submenu['url'].'.index') }}">
+                            @if($submenu['icon'])<i class="icon-menu fa {{ $submenu['icon'] }}"></i>@endif
+                            @choice('words.'.$submenu['name'], 2)
+                        </a>
                     </li>
                 @else
                     @include('shared.menu-item', [ 'item' => $submenu ])

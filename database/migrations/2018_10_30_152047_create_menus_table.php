@@ -17,10 +17,13 @@ class CreateMenusTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('url')->nullable();
+            $table->string('icon')->nullable();
             $table->integer('status');
-            $table->unsignedInteger('parent')->default(0);
-            $table->smallInteger('order')->default(0);
+            $table->unsignedInteger('menu_id');
+            $table->smallInteger('order')->default(1);
             $table->timestamps();
+
+            $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
         });
     }
 

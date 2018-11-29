@@ -287,11 +287,12 @@
                                         @endif --}}
 
                                         {{-- @php dd(MadeMenu::menus()) @endphp --}}
-
+{{-- {{ dd(MadeMenu::menus()) }} --}}
                                             @foreach (MadeMenu::menus() as $key => $item)
-                                                @if ($item['parent'] != 0)
+                                                {{-- @if ($item['parent'] != 0) --}}
+                                                {{-- @if ($item['id'] != $item['menu_id'])
                                                     @break
-                                                @endif
+                                                @endif --}}
                                                 @include('shared.menu-item', ['item' => $item])
                                             @endforeach
                                             {{-- @foreach(MadeMenu::get_modules() as $modulo)
@@ -419,7 +420,7 @@
                     </div>
                 </div>
                 <!-- /top navigation -->
-                <div class="right_col" role="main">
+                <div class="right_col" role="main" style="min-height: 100vh;">
 
                     {{-- <div class="content-page"> --}}
                         {{-- <div id="flash-msg">

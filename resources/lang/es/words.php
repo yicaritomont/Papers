@@ -132,5 +132,7 @@ return[
     'To' => 'hasta',
     'UpdatedAt' => 'Actualizado en',
     'ErrorRangeDate' => 'La fecha de inicio no puede ser mayor a la fecha final',
+    'MainMenu' => 'Menú principal',
+    'DropdownMenu' => 'Menú desplegable',
 ];
 ?>
