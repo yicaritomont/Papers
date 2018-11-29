@@ -31,7 +31,7 @@
 <!-- Country of Headquarters Form Select -->
 <div class="form-group">
     {!! Form::label('country', trans('words.Country')) !!}
-    {!!Form::select('country', $countries, isset($inspectorAgenda) ? $inspectorAgenda->country : null, ['class' => ['input-body', 'country'], 'data-route'=>route('inspectoragendas.cities'), 'placeholder' => trans('words.ChooseOption')])!!}
+    {!!Form::select('country', $countries, isset($inspectorAgenda) ? $inspectorAgenda->country : null, ['class' => ['input-body', 'country'], 'placeholder' => trans('words.ChooseOption')])!!}
     <div class="errors"></div>
 </div>
 

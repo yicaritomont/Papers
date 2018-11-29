@@ -26,10 +26,10 @@ class ContractController extends Controller
      */
     public function create()
     {
-        $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+       /*  $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
                         ->select('clients.id AS id', 'users.name AS name')
                         ->get()
-                        ->pluck('name', 'id');
+                        ->pluck('name', 'id'); */
 
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         /* dd($company); */

@@ -135,5 +135,8 @@ return[
     'InactiveMessage' => '¿Are you sure you want to inactivate it?',
     'To' => 'to',
     'UpdatedAt' => 'Updated At',
+    'ErrorRangeDate' => 'The start date can not be longer than the final date',
+    'MainMenu' => 'Main menu',
+    'DropdownMenu' => 'Dropdown menu',
 ];
 ?>

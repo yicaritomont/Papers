@@ -13,18 +13,22 @@ class MenuSeeder extends Seeder
     {
         //
         $Menus = [
-            ['id' => '1' , 'name' => 'Profesiones' , 'url' => 'professions' ,'status' => 1 , 'menu_id' => 1 , 'modulo_id' => 1],
-            ['id' => '2' , 'name' => 'Tipo Inspectores' , 'url' => 'inspectortypes','status' => 1,'menu_id' => 1 , 'modulo_id' => 1],
-            ['id' => '3' , 'name' => 'Tipos de Inspección' , 'url' => 'inspectiontypes','status' => 1,'menu_id' => 1 , 'modulo_id' => 1],
-            ['id' => '4' , 'name' => 'Subtipos de Inspección' , 'url' => 'inspectionsubtypes','status' => 1,'menu_id' => 1 , 'modulo_id' => 1],
-            ['id' => '5' , 'name' => 'Clientes' , 'url' => 'clients','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
-            ['id' => '6' , 'name' => 'Sedes' , 'url' => 'headquarters','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
-            ['id' => '7' , 'name' => 'Compañias' , 'url' => 'companies','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
-            ['id' => '8' , 'name' => 'Inspectores' , 'url' => 'inspectors','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
-            ['id' => '9' , 'name' => 'Agenda del inspector' , 'url' => 'inspectoragendas','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
-            ['id' => '10' , 'name' => 'Citas de Inspección' , 'url' => 'inspectionappointments','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
-            ['id' => '11' , 'name' => 'Contratos' , 'url' => 'contracts','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
-            ['id' => '12' , 'name' => 'Formato expedición e inspección' , 'url' => 'formats', 'status' => 1 , 'menu_id' => 8, 'modulo_id' => 1],
+            ['id' => '1' , 'name' => 'Aplicación'                       ,'status' => 1 , 'menu_id' => 1],
+            ['id' => '2' , 'name' => 'Master'                           ,'status' => 1 , 'menu_id' => 1],
+            ['id' => '3' , 'name' => 'Cliente Menu'                     ,'status' => 1 , 'menu_id' => 1],
+            ['id' => '4' , 'name' => 'Inspección'                       ,'status' => 1 , 'menu_id' => 1],
+            ['id' => '5' , 'name' => 'Profession'                       ,'status' => 1 , 'menu_id' => 2 , 'url' => 'professions'],
+            ['id' => '6' , 'name' => 'InspectorType'                    ,'status' => 1 , 'menu_id' => 2 , 'url' => 'inspectortypes'],
+            ['id' => '7' , 'name' => 'InspectionType'                   ,'status' => 1 , 'menu_id' => 2 , 'url' => 'inspectiontypes'],
+            ['id' => '8' , 'name' => 'InspectionSubtype'                ,'status' => 1 , 'menu_id' => 2 , 'url' => 'inspectionsubtypes'],
+            ['id' => '9' , 'name' => 'Client'                           ,'status' => 1 , 'menu_id' => 3 , 'url' => 'clients'],
+            ['id' => '10' , 'name' => 'Headquarters'                    ,'status' => 1 , 'menu_id' => 3 , 'url' => 'headquarters'],
+            ['id' => '11' , 'name' => 'Company'                         ,'status' => 1 , 'menu_id' => 3 , 'url' => 'companies'],
+            ['id' => '12' , 'name' => 'Contract'                        ,'status' => 1 , 'menu_id' => 3 , 'url' => 'contracts'],
+            ['id' => '13' , 'name' => 'Inspector'                       ,'status' => 1 , 'menu_id' => 4 , 'url' => 'inspectors'],
+            ['id' => '14' , 'name' => 'InspectorAgenda'                 ,'status' => 1 , 'menu_id' => 4 , 'url' => 'inspectoragendas'],
+            ['id' => '15' , 'name' => 'Inspectionappointment'           ,'status' => 1 , 'menu_id' => 4 , 'url' => 'inspectionappointments'],
+            ['id' => '16' , 'name' => 'Formato expedición e inspección' ,'status' => 1 , 'menu_id' => 4 , 'url' => 'formats'],
 
         ];
 

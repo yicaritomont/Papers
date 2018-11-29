@@ -19,7 +19,7 @@
 
 <div class="form-group @if ($errors->has('inspection_type_id')) has-error @endif">
     {!! Form::label('inspection_type_id', trans_choice('words.InspectionType', 1)) !!}
-    {!! Form::select('inspection_type_id',$inspection_types,null, ['class' => ['input-body', 'inspection_type_id'] ,'require', 'data-route'=>route('inspectionappointments.subtypes'), 'placeholder'=>trans('words.ChooseOption')]) !!}
+    {!! Form::select('inspection_type_id',$inspection_types,null, ['class' => ['input-body', 'inspection_type_id'] ,'require', 'placeholder'=>trans('words.ChooseOption')]) !!}
     <div class="errors"></div>
 </div>
 
@@ -44,7 +44,7 @@
 </div>
 
 <div class="form-group @if ($errors->has('client_id')) has-error @endif">
-    {!! Form::label('client_id', trans_choice('words.Client', 2)) !!}
+    {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
     {!! Form::select('client_id',$clients, null, ['class' => 'input-body','require', 'placeholder'=>trans('words.ChooseOption')]) !!}
     <div class="errors"></div>
 </div>
