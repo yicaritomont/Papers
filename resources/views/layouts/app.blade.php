@@ -447,10 +447,28 @@
     <!-- Moment timezone -->
     <script src="{{ asset('js/lib/momentTz/moment-timezone-with-data-2012-2022.min.js') }}"></script>
 
+    <!-- Vue JS -->
+    <script src="{{ asset('js/vue.js') }}"></script>
+    <script src="{{ asset('js/axios.min.js') }}"></script>
+    <!-- File Input -->
+    <script src="{{ asset('file-input/js/plugins/piexif.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('file-input/js/plugins/sortable.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('file-input/js/plugins/purify.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('file-input/js/fileinput.min.js') }}"></script>
+
+    @if( file_exists( "file-input/js/locales/".Session::get('lang').".js" ) )
+        <input type="lang" name="lang" id="lang" value="{{ Session::get('lang') }}">
+        <script src="{{ asset('file-input/js/locales/'.Session::get('lang').'.js') }}"></script>
+    @else
+        <input type="lang" name="lang" id="lang" value="es">
+        <script src="{{ asset('file-input/js/locales/es.js') }}"></script>
+    @endif
+
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
+    <script src="{{asset('js/upload.js')}}"></script>
 
-	@yield('scripts')
+	   @yield('scripts')
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.js')}}"></script>
