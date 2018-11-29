@@ -10,12 +10,14 @@
         <link rel="icon" href="images/favicon.ico" type="image/ico" />
 
         <title>@yield('title') {{ config('app.name') }}</title>
-        
+
         <!--  -->
         {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
-        
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="{{ asset('css/all.css') }}" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
         <!-- FullCalendar -->
-        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/fullCalendar/fullcalendar.min.css')}}">  
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/fullCalendar/fullcalendar.min.css')}}">
         <!-- Bootstrap -->
         <link href="{{asset('vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
         <!-- Font Awesome -->
@@ -35,7 +37,7 @@
 
         <!-- DatePicker -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/datePicker/bootstrap-datepicker.min.css')}}">
-    
+
         <!-- ClockPicker -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/clockPicker/bootstrap-clockpicker.css')}}">
 
@@ -51,11 +53,11 @@
 
         <!-- SweetAlert -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
-        
+
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
-        
-        <link href="{{ asset('css/styles.css') }}" rel="stylesheet"> 
+
+        <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 
         @yield('styles')
 
@@ -93,7 +95,7 @@
                                 <h2>{{ Auth::user()->name }}</h2>
                                 {{-- Compañia en session --}}
                                 @if(Auth::user()->roles->pluck('id')[0] != 1)
-                                    @if(session()->get('Session_Company') != "")                                        
+                                    @if(session()->get('Session_Company') != "")
                                         <b>{{ App\User::find(App\Company::find(session()->get('Session_Company'))->user_id)->name }}</b>
                                     @endif
                                 @endif
@@ -258,7 +260,7 @@
                                             @endif --}}
                                             @include('shared.menu-item', ['item' => $item])
                                         @endforeach
-                                  
+
 
                                     </ul>
                             </div>
@@ -359,7 +361,7 @@
                         @yield('content')
                     {{-- </div> --}}
                 </div>
-            </div>  
+            </div>
         </div>
 
 
@@ -416,7 +418,7 @@
     @if(app()->getLocale()=='es')
         <script src="{{ asset('js/lib/fullCalendar/es.js') }}"></script>
     @endif
-	
+
     <!-- Datatable -->
     <script src="{{ asset('js/lib/dataTable/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/dataTables.bootstrap.min.js') }}"></script>
@@ -435,10 +437,10 @@
     <script src="{{asset('vendors/datatables.net-responsive/js/dataTables.responsive.min.js')}}"></script>
     <script src="{{asset('vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js')}}"></script>
     <script src="{{asset('vendors/datatables.net-scroller/js/dataTables.scroller.min.js')}}"></script> --}}
-    
+
     <!-- SweetAlert -->
     <script src="{{ asset('js/lib/sweetAlert/sweetalert2.min.js') }}"></script>
-    
+
     <!-- text editor -->
     <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
 

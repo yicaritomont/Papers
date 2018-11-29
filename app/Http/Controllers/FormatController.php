@@ -240,4 +240,17 @@ class FormatController extends Controller
         }
         return $response;
     }
+
+    public function supports($id)
+    {
+      $formato = Format::find($id);
+      return view('format.supports', compact('formato'));
+    }
+
+    public function upload( Request $request )
+    {
+        $files = $request->all();
+        dd($files);
+    }
+
 }
