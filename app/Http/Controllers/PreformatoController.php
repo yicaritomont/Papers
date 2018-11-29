@@ -117,6 +117,14 @@ class PreformatoController extends Controller
      */
     public function destroy(Support $support)
     {
-        //
+      if (Preformato::findOrFail($id)->delete()) {
+          echo json_encode([
+              'status' => 'Format Type has been deleted',
+          ]);
+      } else {
+          echo json_encode([
+              'status' => 'Format Type not deleted',
+          ]);
+      }
     }
 }

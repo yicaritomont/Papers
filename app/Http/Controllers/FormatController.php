@@ -69,6 +69,11 @@ class FormatController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'company_id'         => 'required',
+            'client_id'          => 'required',
+            'preformat_id'       => 'required',
+        ]);
         if($request->company_id == null)
         {
           $request->company_id = session()->get('Session_Company');
@@ -78,14 +83,14 @@ class FormatController extends Controller
         $format->client_id = $request->client_id;
         $format->preformat_id = $request->preformat_id;
         $format->format = $request->format_expediction;
-        $format->state = 1;
+        $format->status = 1;
 
       if ($format->save()) {
-          flash(trans_choice('words.Format',1).' '.trans('words.HasAdded'));
+          $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasAdded')];
       } else {
-          flash()->error(trans('words.UnableCreate').' '.trans_choice('words.Format',1));
+          $alert = ['error',trans('words.UnableCreate').' '.trans_choice('words.Format',1)];
       }
-      return redirect()->route('formats.index');
+      return redirect()->route('formats.index')->with('alert', $alert);
   }
 
     /**
@@ -109,16 +114,21 @@ class FormatController extends Controller
     {
         $mostrar_formato = 'block';
         $companyselect ='block';
+        $state_format = '';
         if (session()->get('Session_Company') != '')
         {
           $companyselect ='none';
         }
         $formato = Format::find($id);
+        if ($formato->status == 2){
+          $state_format = 'none';
+        }
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $clients = Client::with('user')->get()->pluck('user.name', 'id');
         $preformats = Preformato::pluck('name', 'id');
         $disabled = 'disabled';
-        return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companies','clients','preformats','user'));
+
+        return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companies','clients','preformats','user','state_format'));
     }
 
     /**
@@ -132,11 +142,11 @@ class FormatController extends Controller
     {
         $formato = Format::findOrFail($id);
         $formato->format = $request->format_expediction;
-        $formato->state = 1;
+        $formato->status = $request->state;
         $formato->save();
 
-        flash()->success(trans_choice('words.Format',1).' '.trans('words.HasUpdated'));
-        return redirect()->route('formats.index');
+        $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasUpdated')];
+        return redirect()->route('formats.index')->with('alert',$alert);
     }
 
     /**
@@ -147,7 +157,38 @@ class FormatController extends Controller
      */
     public function destroy($id)
     {
-        //
+      $format = Format::find($id);
+
+          //Valida que exista el servicio
+          if($format)
+          {
+          switch ($format->status)
+          {
+            case 1 : $format->status = 0;
+                   $accion = 'Desactivó';
+              break;
+
+            case 0 : $format->status = 1;
+                   $accion = 'Activó';
+              break;
+
+            default : $format->status = 0;
+
+                break;
+          }
+
+          $format->save();
+              $menssage = \Lang::get('validation.MessageCreated');
+              echo json_encode([
+                  'status' => $menssage,
+              ]);
+          }else
+              {
+                $menssage = \Lang::get('validation.MessageError');
+                  echo json_encode([
+                      'status' => $menssage,
+                  ]);
+              }
     }
 
     public function llenarCabeceraFormato()
@@ -167,20 +208,19 @@ class FormatController extends Controller
           $company = Company::where('id',session()->get('Session_Company'))->first();
           $usuario = User::find($company->user_id);
         }
-        $usuario->image ='<img width="40%" src="../images/empresa.jpg">';
-        $usuario->iso ='<img width="40%" src="../images/iso.jpg">';
+        $usuario->image ='<img width="40%" src="'.asset($usuario->picture).'">';
+        $usuario->iso ='<img width="40%" src="'.asset('images/iso.jpg').'">';
         $contract = Contract::where('company_id',$company->id)
           ->where('client_id','=',$client->id)
           ->first();
+          $preformato = Preformato::where('id',$_GET['preformato'])->first();
 
-        $preformato = Preformato::where('id',$_GET['preformato'])->first();
-
-        json_encode($response = [
-            'company' => $usuario,
-            'client' => $client,
-            'contract' => $contract,
-            'preformato' => $preformato,
-          ]);
+          json_encode($response = [
+              'company' => $usuario,
+              'client' => $client,
+              'contract' => $contract,
+              'preformato' => $preformato,
+            ]);
       }
       return $response;
     }

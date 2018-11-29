@@ -26,6 +26,7 @@ return[
     'Inspector' => 'Inspector|Inspectores',
     'Especialization' => 'Especialización',
     'SaveChanges' => 'Guardar Cambios',
+    'SignFormat' =>'Firmar Formato',
     'User' => 'Usuario',
     'Permissions' => 'Permisos',
     'Permission' => 'Permiso',
