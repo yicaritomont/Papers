@@ -91,7 +91,6 @@ class MadeMenuProvider extends ServiceProvider
         $menu = Menu::where('status', 1)
             // ->where('parent', 0)
             ->orderby('menu_id')
-            ->orderby('order')
             ->orderby('name')
             ->get()
             ->toArray();

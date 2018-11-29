@@ -90,7 +90,6 @@ class MenuController extends Controller
         $this->validate($request, [
             'name' => 'required|min:4', 
             'menu_id' => 'required',
-            'order' => 'required|numeric|min:1',
         ]);       
         
 
@@ -117,33 +116,6 @@ class MenuController extends Controller
         else
         {
             $menu->menu_id  = $request->menu_id;
-        }
-
-        //Reordenar los demas menús
-        $menuOrder = Menu::where('menu_id', $request->menu_id)
-            ->where('id', '!=', $request->menu_id)
-            ->where('order', '>=', $request->order)
-        ->get()->toArray();
-        
-        if(empty($menuOrder))
-        {
-            //dd(Menu::whereRaw('menu_id = id')->orderBy('order', 'desc')->first());
-            if($request->menu_id == 0)
-            {
-                $menu->order = Menu::whereRaw('menu_id = id')->orderBy('order', 'desc')->first()->order + 1;
-            }
-            else
-            {
-                $menu->order = Menu::where('menu_id', $request->menu_id)->where('id', '!=', $request->menu_id)->orderBy('order', 'desc')->first()->order + 1;
-            }
-        }
-        else{
-            foreach($menuOrder as $row)
-            {
-                Menu::find($row['id'])->update(['order' => $row['order']+1]);
-            }
-
-            $menu->order = $request->order;
         }
         
         $menu->status = 1;
@@ -222,7 +194,10 @@ class MenuController extends Controller
         {
             $url[$ruta] = $ruta;
         }
-        $menus = Menu::find($id);       
+        $menus = Menu::find($id);
+
+        //Si es del menu principal el menu_id va a ser 0
+        if($menus['id'] == $menus['menu_id']) $menus['menu_id'] = 0;
 
         return view('menu.edit', compact('modulos','menu','url','menus'));
     }
@@ -236,13 +211,23 @@ class MenuController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        $this->validate($request, [
-            'name' => 'required|min:4',
-            'menu_id' => 'required',
-            'order' => 'required|numeric|min:1',
-        ]);
+        $menu = Menu::findOrFail($id);
 
+        if($menu['url'])
+        {
+            $this->validate($request, [
+                'name' => 'required|min:4',
+                'menu_id' => 'required',
+                'url' => 'required',
+            ]);
+        }else{
+            $this->validate($request, [
+                'name' => 'required|min:4',
+                'menu_id' => 'required',
+            ]);
+        }
+
+        // Si se ingresa como menú padre uno que no es desplegable mostrará error
         if($request->menu_id != 0)
         {
             $parent = Menu::find($request->menu_id);
@@ -253,7 +238,11 @@ class MenuController extends Controller
             }
         }
 
-        $menu = Menu::findOrFail($id);
+        // Si se esta enviando la url siendo un item desplegable mostrará error
+        if(isset($request['url']) && !$menu['url']){
+            $alert = ['error', \Lang::get('validation.MessageError')];
+            return redirect()->route('menus.index')->with('alert', $alert);
+        }
 
         $menu->name   = $request->name;
         $menu->url   = $request->url;
@@ -267,35 +256,6 @@ class MenuController extends Controller
         else
         {
             $menu->menu_id  = $request->menu_id;
-        }
-
-        //Reordenar los demas menús
-        $menuOrder = Menu::where('menu_id', $request->menu_id)
-            ->where('id', '!=', $request->menu_id)
-            ->where('order', '>=', $request->order)
-            ->where('id', '!=', $id)
-        ->get()->toArray();
-
-        // dd($id);
-        
-        if(empty($menuOrder))
-        {
-            $lastSubMenu = Menu::where('menu_id', $request->menu_id)->where('id', '!=', $request->menu_id)->orderBy('order', 'desc')->first();
-            if($lastSubMenu->id != $id)
-            {
-                $menu->order = $lastSubMenu->order + 1;
-                // dd('Cambio');
-            }
-            // dd('Tomo el mismo valor');
-        }
-        else{
-            // dd('Reordenar');
-            foreach($menuOrder as $row)
-            {
-                Menu::find($row['id'])->update(['order' => $row['order']+1]);
-            }
-
-            $menu->order = $request->order;
         }
         
         $menu->save();

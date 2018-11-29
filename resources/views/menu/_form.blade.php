@@ -5,19 +5,17 @@
     @if ($errors->has('name')) <p class="help-block">{{ $errors->first('name') }}</p> @endif
 </div>
 
-<!-- URL Input -->
-<div class="form-group @if ($errors->has('url')) has-error @endif">
-    {!! Form::label('url', trans('words.Url')) !!}
-    {!! Form::select('url', $url, isset($user) ? $user->url->pluck('id')->toArray() : null,  ['class' => 'input-body', 'placeholder' => trans('words.DropdownMenu')]) !!}
-    @if ($errors->has('url')) <p class="help-block">{{ $errors->first('url') }}</p> @endif
-</div>
+<!-- Si es un item desplegable no se mostrará el campo url -->
+@unless(isset($menus) && !$menus['url'])
+    <!-- URL Input -->
+    <div class="form-group @if ($errors->has('url')) has-error @endif">
+        {!! Form::label('url', trans('words.Url')) !!}
+        {!! Form::select('url', $url, isset($user) ? $user->url->pluck('id')->toArray() : null,  ['class' => 'input-body', 'placeholder' => (isset($menus) && $menus['url']) ? trans('words.ChooseOption') : trans('words.DropdownMenu')]) !!}
+        {{-- {!! Form::select('url', $url, isset($user) ? $user->url->pluck('id')->toArray() : null,  ['class' => 'input-body', 'placeholder' => trans('words.DropdownMenu')]) !!} --}}
+        @if ($errors->has('url')) <p class="help-block">{{ $errors->first('url') }}</p> @endif
+    </div> 
+@endunless
 
-{{-- <!-- Modules Input -->
-<div class="form-group @if ($errors->has('modulo_id')) has-error @endif">
-    {!! Form::label('modulo[]', trans('words.Modules')) !!}
-    {!! Form::select('modulo_id', $modulos, isset($user) ? $user->modulos->pluck('id')->toArray() : null,  ['class' => 'input-body']) !!}
-    @if ($errors->has('modulo_id')) <p class="help-block">{{ $errors->first('modulo_id') }}</p> @endif
-</div> --}}
 
 <!-- Menu Input -->
 <div class="form-group @if ($errors->has('menu_id')) has-error @endif">
@@ -37,15 +35,6 @@
         {{-- <input type="text" id="icon" class="input-body inputpicker" autocomplete="off"> --}}
     </div>
     @if ($errors->has('icon')) <p class="help-block">{{ $errors->first('icon') }}</p> @endif
-</div>
-
-{{-- {{ $menus }} --}}
-
-<!-- Order Input -->
-<div class="form-group @if ($errors->has('order')) has-error @endif">
-    {!! Form::label('order', trans('words.order')) !!}
-    {!! Form::number('order', null, ['class' => 'input-body', 'autocomplete' => 'off', 'min' => 1]) !!}
-    @if ($errors->has('order')) <p class="help-block">{{ $errors->first('order') }}</p> @endif
 </div>
 
 <input type="hidden" name="icon" id="icon-hidden" value="{{ isset($menus) ? $menus->icon : null }}">

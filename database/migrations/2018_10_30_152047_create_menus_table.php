@@ -20,7 +20,6 @@ class CreateMenusTable extends Migration
             $table->string('icon')->nullable();
             $table->integer('status');
             $table->unsignedInteger('menu_id');
-            $table->smallInteger('order')->default(1);
             $table->timestamps();
 
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
