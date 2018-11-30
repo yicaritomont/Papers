@@ -24,7 +24,7 @@ class MenuSeeder extends Seeder
             ['id' => '9' , 'name' => 'Agenda del inspector' , 'url' => 'inspectoragendas','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
             ['id' => '10' , 'name' => 'Citas de Inspección' , 'url' => 'inspectionappointments','status' => 1,'menu_id' => 8 , 'modulo_id' => 1],
             ['id' => '11' , 'name' => 'Contratos' , 'url' => 'contracts','status' => 1,'menu_id' => 5 , 'modulo_id' => 1],
-            ['id' => '12' , 'name' => 'Formato expedición e inspección' , 'url' => 'formats', 'status' => 1 , 'menu_id' => 8, 'modulo_id' => 1],
+            ['id' => '12' , 'name' => 'Formatos' , 'url' => 'formats', 'status' => 1 , 'menu_id' => 8, 'modulo_id' => 1],
 
         ];
 

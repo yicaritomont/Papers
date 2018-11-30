@@ -551,29 +551,7 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
 }
 
 $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
-/*function mostrarCiudades()
-{
-    var country = $('.id_country').val();
-    $.ajax({
-        type: "GET",
-        url: obtenerUrl() + '/public/ajxCountry',
-        datType: 'json',
-        data: { country: country }
-    }).done(function (response)
-    {
-        alert(response);
-        var select = '<select name="" id="citie_id" class="form-control">'
-            $.map(response.citiesCountry,function(name, id)
-            {
-                select += '<option values="'+id+'">'+name+'</option>'
-            });
-            select += '</select>';
-            $('#container_cities').empty();
-            $('#container_cities').html(select);
-            $('#ciie_id').chosen({ no_results_text: "No se encuentra" });
 
-    });
-}*/
 
 function verifyInspector()
 {
