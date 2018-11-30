@@ -45,7 +45,7 @@ function inicial (argument)
 
     $('.input-group.date').datepicker({
         format: "yyyy-mm-dd",
-        startDate: new Date() 
+        startDate: new Date()
     })
 
     /* console.log($(window).height());
@@ -66,9 +66,9 @@ if($('#icon')[0])
         $.each(fA, function(key, value){
             iconos += '<li title="'+value+'"><i data-icon="'+value+'" class="fa '+value+'"></i></li>';
         });
-    
+
         iconos+="</ul>";
-    
+
         $('#icon').parent().after("<div class='oculto'>"+iconos+"</div>");
     });
 }
@@ -444,7 +444,7 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
 
         $('#'+idForm).find(':input').each(function(){
             var idInput = $(this).attr('id');
-            
+
             if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
                 $(this).parents('.form-group').addClass('has-error');
                 $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput]));
@@ -534,7 +534,7 @@ $(document).on('click', '.editCalendar', function(e){
                 $.map(aFields, function(nomField){
                     $('#modalEditDel #'+nomField).val(res.agenda[nomField]);
                 });
-                
+
 
                 $('#modalEditDel #country').val(res.agenda.city.countries_id);
                 $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+res.agenda.slug);
@@ -556,7 +556,7 @@ $(document).on('click', '.editCalendar', function(e){
                 $('#editAppointment').attr('action', $('#url').val()+'/'+res.cita.id);
 
                 slideForms(objElement);
-            }     
+            }
         })
         .fail(function(res){
             console.log('error\n'+res);
@@ -579,29 +579,6 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
 
 $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
 
-/*function mostrarCiudades()
-{
-    var country = $('.id_country').val();
-    $.ajax({
-        type: "GET",
-        url: obtenerUrl() + '/public/ajxCountry',
-        datType: 'json',
-        data: { country: country }
-    }).done(function (response)
-    {
-        alert(response);
-        var select = '<select name="" id="citie_id" class="form-control">'
-            $.map(response.citiesCountry,function(name, id)
-            {
-                select += '<option values="'+id+'">'+name+'</option>'
-            });
-            select += '</select>';
-            $('#container_cities').empty();
-            $('#container_cities').html(select);
-            $('#ciie_id').chosen({ no_results_text: "No se encuentra" });
-
-    });
-}*/
 
 function verifyInspector()
 {
@@ -844,10 +821,10 @@ $(document).on("click",".oculto ul li",function()
 $(document).on("keyup", '#icon', function()
 {
     var value=$(this).val();
-    
-    $(".oculto ul li i").each(function() 
+
+    $(".oculto ul li i").each(function()
     {
         if ($(this).data('icon').search(value) > -1) $(this).closest("li").show();
         else $(this).closest("li").hide();
     });
-});  
+});
