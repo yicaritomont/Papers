@@ -92,7 +92,7 @@ class ClientController extends Controller
             
             $alert = ['success', trans_choice('words.Client', 1).' '.trans('words.HasAdded')];
 
-            return redirect()->back()->with('alert', $alert);
+            return redirect()->route('users.index')->with('alert', $alert);
 
         } 
         else 

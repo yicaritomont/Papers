@@ -76,7 +76,7 @@ class CompanyController extends Controller
 
             $alert = ['success', trans_choice('words.Company',1).' '.trans('words.HasAdded')];
 
-            return redirect()->back()->with('alert', $alert);  
+            return redirect()->route('companies.index')->with('alert', $alert);  
 
         }else{
             $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Company',1)];
@@ -208,7 +208,8 @@ class CompanyController extends Controller
         }
     }
 
-    public function clients($id){
+    public function clients($id = null)
+    {
 
         $result = Client::join('users', 'users.id', '=', 'clients.user_id')
             ->join('user_company', 'user_company.user_id', '=', 'users.id')

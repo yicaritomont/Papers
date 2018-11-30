@@ -1,3 +1,8 @@
+body
+{
+    background: #F7F7F7;
+}
+
 .background-login
 {
     
@@ -276,7 +281,7 @@ tr.child ul.dtr-details{
 tr.child ul.dtr-details li{
     border-color: #dddddd !important;
 }
-@media (max-width: 590px), (min-width:      px) and (max-width: 1125px)
+@media (max-width: 590px)
 {
     .fc-center
     {
@@ -303,10 +308,28 @@ tr.child ul.dtr-details li{
 
 @media (max-width: 360px)
 {
-    .fc-more-cell{
-
+    .fc-more-cell
+    {
         font-size: .8em;
     }
+}
+
+@media (max-width: 406px)
+{
+    .content-btn
+    {
+        flex-direction: column;
+    }
+
+    .content-btn button
+    {
+        width: 100%;
+    }
+}
+
+.top_nav .navbar-right
+{
+    width: auto;
 }
 
 /* Icon Picker */
@@ -319,36 +342,50 @@ tr.child ul.dtr-details li{
     padding:10px;
     overflow:auto;
     max-height:200px;
-    display:none
+    display:none;
+}
+
+.oculto:before
+{
+    content: '';
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #7d7d7d;
+    border-bottom-color: rgb(242, 242, 242);
+    position: absolute;
+    transform: translate(5px, -16px);
 }
 
 .oculto ul
 {
     display:inline;
-    float:left;
     width:100%;
     margin:0;
-    padding:0
+    padding:0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .oculto ul li {
     margin:0;
-    padding:0;display:block;
-    width:30px;height:30px;
+    padding:0;
+    display:block;
+    width:30px;
+    height:30px;
     text-align:center;
     font-size:15px;
     font-family:"fontawesome";
-    float:left;
     cursor:pointer;
     color:#666;
     line-height:30px;
-    transition:0.2s all
+    transition:0.2s all;
 }
 
 .oculto ul li:hover 
 {
     background:#FFF;
-    color:#000
+    color:#000;
 }
 
 .input-group .input-body
@@ -367,4 +404,9 @@ tr.child ul.dtr-details li{
 .icon-menu
 {
     vertical-align: top;
+}
+
+.main_container
+{
+    position: relative;
 }

@@ -33,14 +33,18 @@ class GeneralController extends Controller
             ->toJson();
     }
 
-    public function cities($id)
+    public function cities($id = null)
     {
-
         $result = Citie::select('id', 'name')
             ->where('countries_id', '=', $id)
         ->get()->toArray();
 
         array_unshift($result, ['id' => '', 'name' => trans('words.ChooseOption')]);
+
+        foreach($result as $key => $value)
+        {
+            $result[$key]['name'] = ucwords(mb_strtolower($result[$key]['name'], 'UTF-8'), '(' );
+        }
 
         echo json_encode([
             'status' => $result

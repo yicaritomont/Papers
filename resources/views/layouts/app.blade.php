@@ -51,6 +51,10 @@
 
         <!-- SweetAlert -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
+
+        <!-- Chosen -->
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosenStyle.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosen.min.css')}}">
         
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
@@ -420,21 +424,8 @@
     <!-- Datatable -->
     <script src="{{ asset('js/lib/dataTable/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/dataTables.bootstrap.min.js') }}"></script>
-    {{-- <script src="{{ asset('js/lib/dataTable/dataTables.fixedHeader.min.js') }}"></script> --}}
     <script src="{{ asset('js/lib/dataTable/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/responsive.bootstrap.min.js') }}"></script>
-    {{-- <script src="{{asset('vendors/datatables.net/js/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-buttons/js/dataTables.buttons.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.flash.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.html5.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.print.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-keytable/js/dataTables.keyTable.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-responsive/js/dataTables.responsive.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-scroller/js/dataTables.scroller.min.js')}}"></script> --}}
     
     <!-- SweetAlert -->
     <script src="{{ asset('js/lib/sweetAlert/sweetalert2.min.js') }}"></script>
@@ -444,6 +435,10 @@
 
     <!-- Moment timezone -->
     <script src="{{ asset('js/lib/momentTz/moment-timezone-with-data-2012-2022.min.js') }}"></script>
+
+    <!-- Chosen -->
+    <script src="{{asset('js/lib/chosen/chosen.jquery.min.js')}}"></script>
+    <script src="{{asset('js/lib/chosen/chosen.proto.min.js')}}"></script>
 
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>

@@ -205,8 +205,8 @@ class InspectionAppointmentController extends Controller
     {
         $request->validate([
             'inspector_id'  => 'required',
-            'start_date'    => 'required|date',
-            'end_date'      => 'required|date',
+            'start_date'    => 'required|date|date_format:Y-m-d',
+            'end_date'      => 'required|date|date_format:Y-m-d',
         ]);
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
@@ -409,8 +409,8 @@ class InspectionAppointmentController extends Controller
     {
 
         $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
+            'start_date' => 'required|date|date_format:Y-m-d',
+            'end_date' => 'required|date|date_format:Y-m-d',
         ]);
 
         // Validar si la fecha de inicio ingresada supera a la fecha final

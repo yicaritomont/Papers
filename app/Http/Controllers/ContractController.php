@@ -48,7 +48,7 @@ class ContractController extends Controller
 
         $this->validate($request, [
             'name' => 'required|min:2',
-            'date' => 'date',
+            'date' => 'required|date|date_format:Y-m-d',
             'client_id' => 'required',
             'company_id' => 'required',
         ]);
@@ -60,7 +60,7 @@ class ContractController extends Controller
             $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Contract', 1)];
         }
 
-        return redirect()->back()->with('alert', $alert);
+        return redirect()->route('contracts.index')->with('alert', $alert);
     }
 
     /**
@@ -104,7 +104,7 @@ class ContractController extends Controller
 
         $this->validate($request, [
             'name' => 'required|min:2',
-            'date' => 'date',
+            'date' => 'date|date_format:Y-m-d',
             'client_id' => 'required',
             'company_id' => 'required',
         ]);

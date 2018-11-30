@@ -44,7 +44,6 @@ return[
     'MenuPadre' => 'Menú Padre',
     'Active' => 'Activo',
     'Inactive' => 'Inactivo',
-    'Inspectionsubtype' => 'Subtipo Inspección',
 
     //To App Latout Menu
     'ManagementTools' => 'Herramientas',
@@ -135,5 +134,11 @@ return[
     'ErrorRangeDate' => 'La fecha de inicio no puede ser mayor a la fecha final',
     'MainMenu' => 'Menú principal',
     'DropdownMenu' => 'Menú desplegable',
+    'Icon' => 'Icono',
+    'Application' => 'Aplicación',
+    'Master' => 'Maestra',
+    'ClientMenu' => 'Menú del cliente',
+    'Inspection' => 'Inspección',
+    'FormatEI' => 'Formato expedición e inspección',
 ];
 ?>

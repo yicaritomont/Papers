@@ -31,14 +31,14 @@
 <!-- Country of Headquarters Form Select -->
 <div class="form-group">
     {!! Form::label('country', trans('words.Country')) !!}
-    {!!Form::select('country', $countries, isset($inspectorAgenda) ? $inspectorAgenda->country : null, ['class' => ['input-body', 'country'], 'placeholder' => trans('words.ChooseOption')])!!}
+    {!!Form::select('country', $countries, isset($inspectorAgenda) ? $inspectorAgenda->country : null, ['class' => ['input-body', 'country', 'chosen-select', 'form-control'], 'placeholder' => trans('words.ChooseOption')])!!}
     <div class="errors"></div>
 </div>
 
 <div class="form-group">
     {!! Form::label('city_id', trans('words.City')) !!}
     {{-- {!! Form::select('city_id', null, null, ['class' => 'input-body','require', 'placeholder'=>trans('words.ChooseOption')]) !!} --}}
-    <select id="city_id" name="city_id" class="input-body city_id">
+    <select id="city_id" name="city_id" class="input-body city_id chosen-select form-control">
         <option selected value>@lang('words.ChooseOption')</option>
     </select>
     <div class="errors"></div>

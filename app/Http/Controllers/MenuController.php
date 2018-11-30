@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Menu;
 use App\Modulo;
 Use App\Permission;
+//use Illuminate\Support\Collection;
 
 use Illuminate\Http\Request;
 
@@ -20,6 +21,56 @@ class MenuController extends Controller
         return view('menu.index');
     }
 
+    public function getParents($menus, $menu)
+    {
+        /* foreach($menus as $menu1)
+        {
+
+        } */
+        if($menus->firstWhere('id', $menu['menu_id'])->status == 1)
+        {
+            echo 'Activo<br>';
+            echo $menu->name.'<br>';
+            echo $menus->firstWhere('id', $menu['menu_id'])->name.'<br><br>';
+            $this->getParents($menus, $menus->firstWhere('id', $menu['menu_id']));
+        }
+        /* dd($menus->firstWhere('id', 2)->status);
+        dd($value); */
+    }
+
+    public function getChildrenActive($data, $line)
+    {
+        $children = [];
+        foreach ($data as $line1)
+        {
+            if ($line1['menu_id'] == $line['id'] && $line1['id'] != $line1['menu_id'] && $line1['status'] == 1 && !$line1['url'])
+            {
+                $children[] = $line1->toArray();
+                $children = array_merge($children, $this->getChildrenActive($data, $line1));                
+            }
+        }
+        
+        return $children;
+    }
+
+    public function getDropdownMenu()
+    {
+        $menus = Menu::where('url', null)->orderby('menu_id')->orderBy('name')->get();
+
+        $menuAll = [];
+        foreach($menus as $menu)
+        {
+            if($menu['id'] == $menu['menu_id'] && $menu['status'] == 1)
+            {
+                $item = $this->getChildrenActive($menus, $menu);
+                $menuAll[] = $menu->toArray();
+                $menuAll = array_merge($menuAll, $item);
+            }
+        }
+
+        return $menuAll;
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -28,11 +79,9 @@ class MenuController extends Controller
     public function create()
     {
         $modulos            = Modulo::where('status',1)->pluck('name', 'id');
-        $menu              = Menu::where('url', null)->pluck('name', 'id')->toArray();
-        $menu[0] = trans('words.MainMenu');
-        
-        //Ordenar el menu
-        ksort($menu);        
+
+        //Se agruga el por nombre y se añade un nuevo elemento al inicio
+        $menu = collect($this->getDropdownMenu())->pluck('name', 'id')->prepend(trans('words.MainMenu'), 0);
         
         $permisos           = Permission::pluck('name', 'id');
         $actividades        = $this->defaultAbilities();
@@ -90,9 +139,19 @@ class MenuController extends Controller
         $this->validate($request, [
             'name' => 'required|min:4', 
             'menu_id' => 'required',
-        ]);       
-        
+        ]);
 
+        //Se agruga el por nombre y se añade un nuevo elemento al inicio
+        $menu = collect($this->getDropdownMenu())->pluck('name', 'id')->prepend(trans('words.MainMenu'), 0);
+        
+        //Se valida si el menú padre que selecciono no este inactivo
+        if($menu->keys()->contains($request->menu_id) == false)
+        {
+            $alert = ['error', \Lang::get('validation.MessageError')];
+            return redirect()->route('menus.index')->with('alert', $alert);
+        }
+
+        //Se valida si el menú padre que selecciono es un menú desplegable
         if($request->menu_id != 0)
         {
             $parent = Menu::find($request->menu_id);
@@ -148,11 +207,9 @@ class MenuController extends Controller
     {
         //
         $modulos           = Modulo::where('status',1)->pluck('name', 'id');
-        $menu              = Menu::where('url', null)->pluck('name', 'id')->toArray();
-        $menu[0] = trans('words.MainMenu');
         
-        //Ordenar el menu
-        ksort($menu);        
+        //Se agruga el por nombre y se añade un nuevo elemento al inicio
+        $menu = collect($this->getDropdownMenu())->pluck('name', 'id')->prepend(trans('words.MainMenu'), 0);       
         
         $permisos           = Permission::pluck('name', 'id');
         $actividades        = $this->defaultAbilities();
@@ -225,6 +282,16 @@ class MenuController extends Controller
                 'name' => 'required|min:4',
                 'menu_id' => 'required',
             ]);
+        }
+
+        //Se agruga el por nombre y se añade un nuevo elemento al inicio
+        $menuAll = collect($this->getDropdownMenu())->pluck('name', 'id')->prepend(trans('words.MainMenu'), 0);
+        
+        //Se valida si el menú padre que selecciono no este inactivo
+        if($menuAll->keys()->contains($request->menu_id) == false)
+        {
+            $alert = ['error', \Lang::get('validation.MessageError')];
+            return redirect()->route('menus.index')->with('alert', $alert);
         }
 
         // Si se ingresa como menú padre uno que no es desplegable mostrará error

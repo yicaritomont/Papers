@@ -71,11 +71,9 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::post('inspectionappointments/{inspectionappointment}/format', 'InspectionAppointmentController@format')->name('inspectionappointments.format');
     
     //Actualización de campos desplegables
-    // Route::post('inspectionappointments/subtypes', 'InspectionAppointmentController@subtypes')->name('inspectionappointments.subtypes');
-    Route::get('inspectiontypes/{id}/subtypes', 'InspectionTypeController@subtypes')->name('inspectionappointments.subtypes');
-    // Route::post('inspectoragendas/cities', 'InspectorAgendaController@cities')->name('inspectoragendas.cities');
-    Route::get('country/{id}/cities', 'GeneralController@cities')->name('general.cities');
-    Route::get('companies/{company}/clients', 'CompanyController@clients')->name('company.clients');
+    Route::get('inspectiontypes/subtypes/{id?}', 'InspectionTypeController@subtypes')->name('inspectionappointments.subtypes');
+    Route::get('country/cities/{id?}', 'GeneralController@cities')->name('general.cities');
+    Route::get('companies/clients/{company?}', 'CompanyController@clients')->name('company.clients');
 
     // ????
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');

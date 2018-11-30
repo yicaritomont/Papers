@@ -138,7 +138,7 @@
         </div>
     </div>
 
-    @can('add_inspectoragendas')
+    {{-- @can('add_inspectoragendas')
         Puede añadir
     @else
         No puede añadir
@@ -152,7 +152,7 @@
     <br>
         <h2>{{ auth()->user()->roles }}</h2>
     <br>
-    <br>
+    <br> --}}
     <input type="hidden" id="url" value="{{ route('inspectoragendas.index') }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <input type="hidden" id="selectOption" value="{{trans('words.ChooseOption')}}">

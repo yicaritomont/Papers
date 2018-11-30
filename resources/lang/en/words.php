@@ -44,7 +44,6 @@ return[
     'MenuPadre' => 'Parent Menu',
     'Active' => 'Active',
     'Inactive' => 'Inactive',
-    'Inspectionsubtype' => 'Inspection Subtype',
 
     //To App Latout Menu
     'ManagementTools' => 'Tools',
@@ -138,5 +137,11 @@ return[
     'ErrorRangeDate' => 'The start date can not be longer than the final date',
     'MainMenu' => 'Main menu',
     'DropdownMenu' => 'Dropdown menu',
+    'Icon' => 'Icon',
+    'Application' => 'Application',
+    'Master' => 'Master',
+    'ClientMenu' => 'Client Menu',
+    'Inspection' => 'Inspection',
+    'FormatEI' => 'Expediting and inspection format',
 ];
 ?>

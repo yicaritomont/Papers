@@ -19,13 +19,9 @@ function inicial (argument)
         processing: true,
     };
 
-    //Se valida el idioma
-    if(window.Laravel.language == 'es'){
-        dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};
-    }
-
+    
     //Campo fecha
-
+    
     var datePickerObj = {
         autoclose: true,
         format: 'yyyy-mm-dd',
@@ -33,8 +29,21 @@ function inicial (argument)
         orientation: "bottom auto",
         forceParse: false,
     };
+    
+    //Se valida el idioma
+    if(window.Laravel.language == 'es'){
+        dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};
+        datePickerObj.language = 'es';
+        var chosenText = 'No hay coincidencias para ';
+    }else{
+        var chosenText = 'No matches for';
+    }
 
-    if(window.Laravel.language == 'es') datePickerObj.language = 'es';
+    $(".chosen-select").chosen({
+        no_results_text: chosenText,
+    });
+
+    // if(window.Laravel.language == 'es') datePickerObj.language = 'es';
 
     $('.input-group.date').datepicker(datePickerObj);
 
@@ -75,15 +84,15 @@ if($('#icon')[0])
 
 //Todos los select que requieran una petición ajax para llenar otro select
 $('#company_id').on('change', function(event, edit){
-    fillSelect(window.Laravel.url+'/companies/'+$(this).val()+'/clients', '#client_id', edit);
+    fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#client_id', edit);
 });
 
 $('.inspection_type_id').on('change',function(event, edit){
-    fillSelect(window.Laravel.url+'/inspectiontypes/'+$(this).val()+'/subtypes', '.inspection_subtype_id', edit);
+    fillSelect(window.Laravel.url+'/inspectiontypes/subtypes/'+$(this).val(), '.inspection_subtype_id', edit);
 });
 
 $('.country').on('change',function(event, edit){
-    fillSelect(window.Laravel.url+'/country/'+$(this).val()+'/cities', '.city_id', edit);
+    fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit);
 });
 
 function setDataTable(targets){
@@ -447,7 +456,7 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
             
             if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
                 $(this).parents('.form-group').addClass('has-error');
-                $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput]));
+                $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput][0]));
             }
         });
     });
@@ -728,9 +737,12 @@ function fillSelect(url, select, edit){
 
         $(select).empty();
 
-        $.each(res.status, function( key, value ) {
+        $.each(res.status, function( key, value )
+        {
             $(select).append('<option value="'+value.id+'">'+value.name+'</option>');
         });
+
+        $(select).trigger("chosen:updated");
 
         if(edit){
             $(select).val(edit);
@@ -839,15 +851,26 @@ $(document).on("click",".oculto ul li",function()
     $(".inputpicker").val($(this).find("i").data("icon"));
     $('.picker .input-group-addon').html('<i class="fa '+$(this).find("i").data("icon")+'"></i>');
     $('#icon-hidden').val($(this).find("i").data("icon"));
+    $(".oculto").fadeOut("fast");
 });
 
 $(document).on("keyup", '#icon', function()
 {
     var value=$(this).val();
     
+    if(value == '')
+    {
+        $('.picker .input-group-addon').html('<i class="fa fa-hashtag"></i>');
+        $('#icon-hidden').val('');
+    }
     $(".oculto ul li i").each(function() 
     {
         if ($(this).data('icon').search(value) > -1) $(this).closest("li").show();
         else $(this).closest("li").hide();
     });
-});  
+});
+
+$('.form-group.picker .input-group-addon').on('click', function(){
+    console.log('Clickeoo');
+    $(".oculto").fadeToggle("fast");
+});

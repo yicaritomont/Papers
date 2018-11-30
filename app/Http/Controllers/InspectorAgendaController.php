@@ -381,14 +381,14 @@ class InspectorAgendaController extends Controller
     {
         if($request['drop'] != null){
             $request->validate([
-                'start_date' => 'required',
-                'end_date' => 'required',
+                'start_date' => 'required|date|date_format:Y-m-d',
+                'end_date' => 'required|date|date_format:Y-m-d',
                 'inspector_id' => 'required',
             ]);
         }else{
             $request->validate([
-                'start_date' => 'required',
-                'end_date' => 'required',
+                'start_date' => 'required|date|date_format:Y-m-d',
+                'end_date' => 'required|date|date_format:Y-m-d',
                 'inspector_id' => 'required',
                 'country' => 'required',
                 'city_id' => 'required',

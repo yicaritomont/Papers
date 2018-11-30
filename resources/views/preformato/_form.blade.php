@@ -1,5 +1,5 @@
 <div class="form-group @if ($errors->has('companies')) has-error @endif">
-    {!! Form::label('inspection_subtypes[]', trans_choice('words.Inspectionsubtype', 2)) !!}
+    {!! Form::label('inspection_subtypes[]', trans_choice('words.InspectionSubtype', 1)) !!}
     {!! Form::select('inspection_subtype_id', $inspection_subtypes, null,  ['class' => 'input-body', 'require']) !!}
     @if ($errors->has('inspection_subtypes')) <p class="help-block">{{ $errors->first('inspection_subtypes') }}</p> @endif
 </div>
