@@ -15,19 +15,24 @@
     @if ($errors->has('date')) <p class="help-block">{{ $errors->first('date') }}</p> @endif
 </div>
 
-<!-- Client of Contract Form Select -->
-<div class="form-group @if ($errors->has('client_id')) has-error @endif">
-    {!! Form::label('client_id', trans('words.Client')) !!}
-    {!!Form::select('client_id', $clients, isset($contract) ? $contract->client_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
-    @if ($errors->has('client_id')) <p class="help-block">{{ $errors->first('client_id') }}</p> @endif
-</div>
-
 <!-- Company of Contract Form Select -->
 <div class="form-group @if ($errors->has('company_id')) has-error @endif">
     {!! Form::label('company_id', trans_choice('words.Company', 1)) !!}
     {!!Form::select('company_id', $companies, isset($contract) ? $contract->company_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
     @if ($errors->has('company_id')) <p class="help-block">{{ $errors->first('company_id') }}</p> @endif
 </div>
+
+<!-- Client of Contract Form Select -->
+<div class="form-group @if ($errors->has('client_id')) has-error @endif">
+    {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
+    {{-- {!!Form::select('client_id', $clients, isset($contract) ? $contract->client_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!} --}}
+    <select id="client_id" name="client_id" class="input-body">
+        <option value="">@lang('words.ChooseOption')</option>
+    </select>
+    @if ($errors->has('client_id')) <p class="help-block">{{ $errors->first('client_id') }}</p> @endif
+</div>
+
+<input type="hidden" id="selectOption" value="{{trans('words.ChooseOption')}}">
 
 @push('scripts')
 <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>

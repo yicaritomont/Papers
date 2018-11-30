@@ -67,9 +67,15 @@ Route::group( ['middleware' => ['auth']], function() {
     //Completar las citas
     Route::put('inspectionappointments/{inspectionappointment}/complete', 'InspectionAppointmentController@complete')->name('inspectionappointments.complete');
 
+    //Formato de citas
+    Route::post('inspectionappointments/{inspectionappointment}/format', 'InspectionAppointmentController@format')->name('inspectionappointments.format');
+
     //Actualización de campos desplegables
-    Route::post('inspectionappointments/subtypes', 'InspectionAppointmentController@subtypes')->name('inspectionappointments.subtypes');
-    Route::post('inspectoragendas/cities', 'InspectorAgendaController@cities')->name('inspectoragendas.cities');
+    // Route::post('inspectionappointments/subtypes', 'InspectionAppointmentController@subtypes')->name('inspectionappointments.subtypes');
+    Route::get('inspectiontypes/{id}/subtypes', 'InspectionTypeController@subtypes')->name('inspectionappointments.subtypes');
+    // Route::post('inspectoragendas/cities', 'InspectorAgendaController@cities')->name('inspectoragendas.cities');
+    Route::get('country/{id}/cities', 'GeneralController@cities')->name('general.cities');
+    Route::get('companies/{company}/clients', 'CompanyController@clients')->name('company.clients');
 
     // ????
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');

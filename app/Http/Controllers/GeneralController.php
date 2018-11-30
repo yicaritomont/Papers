@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Citie;
 use DB;
 
 class GeneralController extends Controller
@@ -30,5 +31,20 @@ class GeneralController extends Controller
             ->addColumn('actions', 'shared/_actions')
             ->rawColumns(['actions'])
             ->toJson();
+    }
+
+    public function cities($id)
+    {
+
+        $result = Citie::select('id', 'name')
+            ->where('countries_id', '=', $id)
+        ->get()->toArray();
+
+        array_unshift($result, ['id' => '', 'name' => trans('words.ChooseOption')]);
+
+        echo json_encode([
+            'status' => $result
+        ]);
+       
     }
 }

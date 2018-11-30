@@ -7,7 +7,7 @@
     <div class="msgAlert"></div>
         
     <div class="row">
-        <div class="col-12 col-lg-8 col-lg-offset-2">
+        <div class="col-xs-12 col-lg-8 col-lg-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">              
                     <div class="row">
@@ -33,30 +33,32 @@
         </div>
     </div>
 
-    <!-- Modal Crear -->
-    <div class="modal fade" id="modalCreate" role="dialog">
-        <div class="modal-dialog">
-    
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h3 class="modal-title text-center">@lang('words.Create')</h3>
-                </div>
-                <div class="modal-body">
-                    <div class="msgError"></div>
-                    {!! Form::open(['route' => ['inspectoragendas.store.ajax'], 'class' => 'formCalendar', 'id' => 'formCreateAgenda', 'data-modal'=>'#modalCreate']) !!}
-                        @include('inspector_agenda._form')
-                        <!-- Submit Form Button -->                        
-                        {!! Form::submit(trans('words.Create'), ['class' => 'btn-body']) !!}
-                    {!! Form::close() !!}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('words.Close')</button>
+    @can('add_inspectoragendas')
+        <!-- Modal Crear -->
+        <div class="modal fade" id="modalCreate" role="dialog">
+            <div class="modal-dialog">
+        
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h3 class="modal-title text-center">@lang('words.Create')</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="msgError"></div>
+                        {!! Form::open(['route' => ['inspectoragendas.store.ajax'], 'class' => 'formCalendar', 'id' => 'formCreateAgenda', 'data-modal'=>'#modalCreate']) !!}
+                            @include('inspector_agenda._form')
+                            <!-- Submit Form Button -->                        
+                            {!! Form::submit(trans('words.Create'), ['class' => 'btn-body']) !!}
+                        {!! Form::close() !!}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">@lang('words.Close')</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endcan
 
     <!-- Modal Editar y Eliminar -->
     <div class="modal fade" id="modalEditDel" role="dialog">
@@ -74,20 +76,29 @@
                     <div class="content-btn">
                         <button data-toggle="#showAgenda" class="btn btn-primary showCalendar">@lang("words.Watch")</button>
                         {{-- <button class="btn btn-primary detailsCalendar" data-toggle="#showAgenda">@lang("words.Watch")</button> --}}
-                        <form method="POST" id="deleteAgenda" class="formCalendar" data-modal="#modalEditDel" style="display: inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" onclick="confirmModal('#deleteAgenda', '{{trans('words.DeleteMessage')}}', 'warning')" class="btn btn-danger" id="">@lang('words.Delete')</button>
-                        </form>
-                        <button data-toggle="#editAgenda" class="btn btn-primary editCalendar">@lang("words.Edit")</button>
-                        {{-- <button class="btn btn-primary" data-toggle="#editAgenda">@lang("words.Edit")</button> --}}
+
+                        @can('delete_inspectoragendas')
+                            <form method="POST" id="deleteAgenda" class="formCalendar" data-modal="#modalEditDel" style="display: inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" onclick="confirmModal('#deleteAgenda', '{{trans('words.DeleteMessage')}}', 'warning')" class="btn btn-danger" id="">@lang('words.Delete')</button>
+                            </form>
+                        @endcan
+
+                        @can('edit_inspectoragendas')
+                            <button data-toggle="#editAgenda" class="btn btn-primary editCalendar">@lang("words.Edit")</button>
+                            {{-- <button class="btn btn-primary" data-toggle="#editAgenda">@lang("words.Edit")</button> --}}
+                        @endcan
+
                     </div>
 
-                    {!! Form::open(['method' => 'PUT', 'class' => 'formCalendar formSlide', 'id' => 'editAgenda', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
-                        @include('inspector_agenda._form')
-                        <!-- Submit Form Button -->                        
-                        {!! Form::submit(trans('words.Edit'), ['class' => 'btn btn-primary btn-block']) !!}
-                    {!! Form::close() !!}
+                    @can('edit_inspectoragendas')
+                        {!! Form::open(['method' => 'PUT', 'class' => 'formCalendar formSlide', 'id' => 'editAgenda', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
+                            @include('inspector_agenda._form')
+                            <!-- Submit Form Button -->                        
+                            {!! Form::submit(trans('words.Edit'), ['class' => 'btn btn-primary btn-block']) !!}
+                        {!! Form::close() !!}
+                    @endcan
 
                     <div class="formSlide" id="showAgenda" style="display:none">
                         <table class="table">
@@ -127,6 +138,21 @@
         </div>
     </div>
 
+    @can('add_inspectoragendas')
+        Puede añadir
+    @else
+        No puede añadir
+    @endcan
+    
+    @can('view_inspectoragendas')
+        Puede ver
+    @else
+        No puede ver
+    @endcan
+    <br>
+        <h2>{{ auth()->user()->roles }}</h2>
+    <br>
+    <br>
     <input type="hidden" id="url" value="{{ route('inspectoragendas.index') }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <input type="hidden" id="selectOption" value="{{trans('words.ChooseOption')}}">
@@ -155,41 +181,31 @@
 
             $('#modalEditDel').modal('show');
         };
-        calendarObj.select = function(startDate, endDate, jsEvent, view)
-        {
-            //Separar en fecha[0] y hora[1]
-            var start = startDate.format().split('T');
-
-            //Como al seleccionar los días la fecha final al día le agrega uno de más, hay que hacer la conversión
-            var ed = new Date(endDate.format());  
-            ed = ed.getFullYear()+'-'+ ("0" + (ed.getMonth() + 1)).slice(-2) +'-'+("0" + ed.getDate()).slice(-2);
-            
-            //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
-            if(start != ed)
-            {
-                limpiarForm(start[0], ed, '#formCreateAgenda', '', '.city_id');
-                $('#modalCreate').modal('show');
-            }
-        };
-        calendarObj.dayClick = function(date, jsEvent, view)
-        {
-            limpiarForm(date.format(), null, '#formCreateAgenda', '', '.city_id');
-            $('#modalCreate').modal('show');
-        };
-        calendarObj.eventDrop = function(calEvent, delta, revertFunc)
-        {
-            var end = calEvent.end.format().split('T');
-
-            $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+calEvent.slug);
-            $('#modalEditDel #start_date').val(calEvent.start.format());
-            $('#modalEditDel #end_date').val(end[0]);
-            $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
-
-            confirmModal('#editAgenda', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
-        };
-
 
         @can('add_inspectoragendas')
+            calendarObj.select = function(startDate, endDate, jsEvent, view)
+            {
+                //Separar en fecha[0] y hora[1]
+                var start = startDate.format().split('T');
+
+                //Como al seleccionar los días la fecha final al día le agrega uno de más, hay que hacer la conversión
+                var ed = new Date(endDate.format());  
+                ed = ed.getFullYear()+'-'+ ("0" + (ed.getMonth() + 1)).slice(-2) +'-'+("0" + ed.getDate()).slice(-2);
+                
+                //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
+                if(start != ed)
+                {
+                    limpiarForm(start[0], ed, '#formCreateAgenda', '', '.city_id');
+                    $('#modalCreate').modal('show');
+                }
+            };
+        
+            calendarObj.dayClick = function(date, jsEvent, view)
+            {
+                limpiarForm(date.format(), null, '#formCreateAgenda', '', '.city_id');
+                $('#modalCreate').modal('show');
+            };
+
             calendarObj.customButtons = {
                 createButton: {
                     text: '{{trans('words.Create')}}',
@@ -202,6 +218,28 @@
                 }
             };
         @endcan
+
+        
+        
+        calendarObj.eventDrop = function(calEvent, delta, revertFunc)
+        {
+            @can('edit_inspectoragendas')
+                var end = calEvent.end.format().split('T');
+
+                $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+calEvent.slug);
+                $('#modalEditDel #start_date').val(calEvent.start.format());
+                $('#modalEditDel #end_date').val(end[0]);
+                $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
+
+                confirmModal('#editAgenda', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
+
+            @else
+
+                swal('Error','No puede realizar esta acción, no tienes permisos','error');
+                revertFunc();
+
+            @endcan
+        };
 
         //Se llama la función que inicializará el calendario de acuerdo al objeto enviado
         calendar(calendarObj);

@@ -7,6 +7,7 @@ use App\Http\Requests\HeadquartersRequest;
 use Illuminate\Http\Request;
 use App\Client;
 use App\Citie;
+use App\Country;
 use DB;
 
 class HeadquartersController extends Controller
@@ -34,9 +35,9 @@ class HeadquartersController extends Controller
                         ->get()
                         ->pluck('name', 'id');
 
-        $cities = Citie::all()->pluck('name', 'id');
+        $countries = Country::all()->pluck('name', 'id');
         
-        return view('headquarters.new', compact('clients', 'cities'));
+        return view('headquarters.new', compact('clients', 'countries'));
     }
 
     /**
@@ -52,7 +53,7 @@ class HeadquartersController extends Controller
             $headquarters->slug = md5($headquarters->id);
             $headquarters->save();
 
-            $alert = ['success', trans('words.Headquarters').' '.trans('words.HasAdded')];
+            $alert = ['success', trans_choice('words.Headquarters', 1).' '.trans('words.HasAdded')];
         }else{
             $alert = ['error', trans('words.errorClientInactive')];
         }
@@ -81,14 +82,15 @@ class HeadquartersController extends Controller
     public function edit(Headquarters $headquarters)
     {
         $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
-                        ->select('clients.id AS id', 'users.name AS name')
-                        ->where('clients.status', 1)
-                        ->get()
-                        ->pluck('name', 'id');
+            ->select('clients.id AS id', 'users.name AS name')
+            ->where('clients.status', 1)
+        ->get()->pluck('name', 'id');
+
+        $countries = Country::all()->pluck('name', 'id');
 
         $cities = Citie::all()->pluck('name', 'id');
         
-        return view('headquarters.edit', compact(['headquarters', 'clients', 'cities']));
+        return view('headquarters.edit', compact('headquarters', 'clients', 'cities', 'countries'));
     }
 
     /**
@@ -103,7 +105,7 @@ class HeadquartersController extends Controller
         if(Client::findOrFail($request['client_id'])->status == 1){
             $headquarters->update($request->all());
 
-            $alert = ['success', trans('words.Headquarters').' '.trans('words.HasUpdated')];
+            $alert = ['success', trans_choice('words.Headquarters', 1).' '.trans('words.HasUpdated')];
         }else{
             $alert = ['error', trans('words.errorClientInactive')];
         }
@@ -151,7 +153,7 @@ class HeadquartersController extends Controller
         }	
 
         /* $headquarters->delete();
-        flash()->success(trans('words.Headquarters').' '.trans('words.HasEliminated'));
+        flash()->success(trans_choice('words.Headquarters', 1).' '.trans('words.HasEliminated'));
         return back(); */
     }
 }

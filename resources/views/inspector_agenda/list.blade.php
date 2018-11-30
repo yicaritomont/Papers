@@ -32,7 +32,7 @@
                 <th>@lang('words.StartTime')</th>
                 <th>@lang('words.EndTime')</th>
                 <th>@lang('words.Inspector')</th>
-                <th>@lang('words.Headquarters')</th>
+                <th>@choice('words.Headquarters', 1)</th>
                 <th>@lang('words.CreatedAt')</th>
                 @can('edit_headquarters', 'delete_headquarters')
                     <th class="text-center">@lang('words.Actions')</th>

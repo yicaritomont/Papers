@@ -29,7 +29,7 @@ class HeadquartersRequest extends FormRequest
                 'cities_id' => 'required',
                 'name' => 'required',
                 'address' => 'required',
-                // 'slug' => 'required|unique:headquarters,slug,'.$this->route('headquarters')->id
+                'country' => 'required',
             ];
         }
 
@@ -38,7 +38,7 @@ class HeadquartersRequest extends FormRequest
             'cities_id' => 'required',
             'name' => 'required',
             'address' => 'required',
-            // 'slug' => 'required|unique:headquarters,slug'
+            'country' => 'required',
         ];
     }
 }
