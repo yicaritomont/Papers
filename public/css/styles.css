@@ -1,6 +1,6 @@
 .background-login
 {
-    
+
     background: #066dab; /* Old browsers */
     background: -moz-linear-gradient(top, #045181 0%, #8abbd7 69%, #c5deea 100%); /* FF3.6-15 */
     background: -webkit-linear-gradient(top, #045181 0%,#8abbd7 69%,#c5deea 100%); /* Chrome10-25,Safari5.1-6 */
@@ -100,10 +100,10 @@
 .content-login
 {
     padding-top: 15%;
-    
+
 }
 
-.left-align 
+.left-align
 {
     float: left;
 }
@@ -127,13 +127,13 @@
 
 .panel-header-form
 {
-    color: #fff;    
+    color: #fff;
     background-color: #777777;
     border-color: #1b1a1a;padding: 10px 15px;
     border-bottom: 1px solid transparent;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    
+
 }
 
 .panel-titles
@@ -147,7 +147,7 @@
 
 .picture_perfil
 {
-    width: 35%;    
+    width: 35%;
     margin: auto;
 }
 
@@ -258,7 +258,7 @@ table.dataTable.nowrap th, table.dataTable.nowrap td{
 
 .date-range-inputs input{
     text-align: center;
-} 
+}
 
 .date-range-inputs input:first-child{
     border-top-left-radius: 10px;
@@ -345,7 +345,7 @@ tr.child ul.dtr-details li{
     transition:0.2s all
 }
 
-.oculto ul li:hover 
+.oculto ul li:hover
 {
     background:#FFF;
     color:#000
@@ -367,4 +367,27 @@ tr.child ul.dtr-details li{
 .icon-menu
 {
     vertical-align: top;
+}
+
+
+/* Supports */
+.modal-lg{
+    max-height: 90vh !important;
+    width: 80vw !important
+}
+
+.content-over{
+    overflow: auto;
+    max-height: 76vh !important
+}
+
+.middle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.kv-file-content{
+    height: 160px !important;
+    width: 213px !important
 }

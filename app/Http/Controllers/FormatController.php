@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Http\Helpers\Equivalencia;
 use App\Format;
 use App\Preformato;
 use App\Company;
@@ -249,8 +252,57 @@ class FormatController extends Controller
 
     public function upload( Request $request )
     {
-        $files = $request->all();
-        dd($files);
+        $response = (object) array('state' => 0 , 'messages' => array() );
+        //Obtenemos el id del formato
+        $format_id = $request->input('formato_id');
+        $file_id = $request->input('file_id');
+        $files = $request->file('input-supports');
+        //Directorio destino
+        $destinationPath = "uploads/".$format_id."/";
+        //Validación datos
+        foreach( $files AS $key => $item )
+        {
+            if( $item->isValid() ){
+
+                $name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
+
+                $upload_success = $item->move($destinationPath, $name_url['name'] );
+
+                if( $upload_success ){
+                    $new_file = array
+                    (
+                        'mime_type'     =>  $item->getMimeType(),
+                        'format_id'     =>  $format_id,
+                        'nombre_url'    =>  $name_url['url'],
+                        'user_id'       =>  Auth::id(),
+                        'estado'        =>  Equivalencia::activo()
+                    );
+                }else{
+                    
+                }
+
+            }else{
+
+            }
+        }
+        return response()->json($response);
+    }
+
+    public function getNameFile($path,$name)
+    {
+        $file = array();
+        while( file_exists( public_path()."/".$path.$name ) )
+        {
+            $rd = rand(0,999);
+            $pos = strripos($name,'.');
+            $label = substr($name,0,$pos);
+            $ext = substr($name,($pos+1));
+            $name = $label."_".$rd.".".$ext;
+            echo $name;
+        }
+        $file['name'] = $name;
+        $file['url'] = $path.$name;
+        return $file;
     }
 
 }

@@ -135,5 +135,12 @@ return[
     'ErrorRangeDate' => 'La fecha de inicio no puede ser mayor a la fecha final',
     'MainMenu' => 'Menú principal',
     'DropdownMenu' => 'Menú desplegable',
+    //Formatos
+    'upload_sopports'    =>  'Cargar Soportes',
+    'supports'           =>  'Soportes',
+    'browse'             =>  'Examinar' ,
+    'upload'             =>  'Subir',
+    'browseMsg'          =>  'Seleccione archivos...',
+    'manage'             =>  'Gestionar'
 ];
 ?>

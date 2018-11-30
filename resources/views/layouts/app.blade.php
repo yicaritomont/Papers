@@ -51,6 +51,9 @@
         <link href="{{asset('vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css')}}" rel="stylesheet">
         <link href="{{asset('vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css')}}" rel="stylesheet"> --}}
 
+        <!-- File Input -->
+        <link href="{{ asset('file-input/css/fileinput.min.css') }}" media="all" rel="stylesheet" type="text/css" />
+
         <!-- SweetAlert -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
 
@@ -58,6 +61,8 @@
         <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
 
         <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+
+
 
         @yield('styles')
 

@@ -20,7 +20,7 @@ var props = {
 
 var upload = {
     showPreview: true,
-    uploadAsync: true,
+    uploadAsync: false,
     theme: 'fa',
     language: props.lang,
     allowedPreviewTypes: ['image', 'html', 'text', 'video', 'audio','pdf','office'],
@@ -33,11 +33,9 @@ var upload = {
     deleteUrl: "",
     language: null,
     initialPreviewAsData: false,
-    overwriteInitial: true,
+    overwriteInitial: false,
     preferIconicPreview: true,
-    fileActionSettings:{
-        //showUpload: false
-    },
+    purifyHtml: true,
     previewFileIconSettings: {
         'docx'  : '<i class="fa fa-file-word-o text-primary"></i>',
         'doc'   : '<i class="fa fa-file-word-o text-primary"></i>',
