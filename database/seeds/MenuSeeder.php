@@ -11,7 +11,6 @@ class MenuSeeder extends Seeder
      */
     public static function run()
     {
-        //
         $Menus = [
             ['id' => '1' , 'name' => 'Application'                      ,'status' => 1 , 'menu_id' => 1],
             ['id' => '2' , 'name' => 'Master'                           ,'status' => 1 , 'menu_id' => 1],

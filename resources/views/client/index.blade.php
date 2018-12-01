@@ -39,8 +39,8 @@
 
 @section('scripts')
 
-    <script>  
-        
+    <script>
+
         $(document).ready(function() {
 
             //Se definen las columnas (Sin actions)
@@ -65,8 +65,8 @@
                 dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
-               
-            var table = $('.dataTable').DataTable(dataTableObject);              
+
+            var table = $('.dataTable').DataTable(dataTableObject);
             // new $.fn.dataTable.FixedHeader( table );
         });
     </script>
