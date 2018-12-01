@@ -73,7 +73,7 @@ class InspectorController extends Controller
             $this->validate($request, [
                 'name'              => 'bail|required|min:2',
                 'identification'    => 'required|numeric',
-                'phone'             => 'required|string',
+                'phone'             => 'required|numeric',
                 'addres'            => 'required|string',
                 'email'             => 'required|email|unique:users,email',
                 'profession_id'     => 'required',
@@ -86,7 +86,7 @@ class InspectorController extends Controller
             $this->validate($request, [
                 'name'              => 'bail|required|min:2',
                 'identification'    => 'required|unique:inspectors|numeric',
-                'phone'             => 'required|string',
+                'phone'             => 'required|numeric',
                 'addres'            => 'required|string',
                 'email'             => 'required|email|unique:users,email',
                 'profession_id'     => 'required',
@@ -199,7 +199,7 @@ class InspectorController extends Controller
         $this->validate($request, [
             'name'              => 'bail|required|min:2',
             'identification'    => 'required|numeric|unique:inspectors,identification,'.$id,
-            'phone'             => 'required|string',
+            'phone'             => 'required|numeric',
             'addres'            => 'required|string',
             'email'             => 'required|email|unique:users,email,'.$inspector->user_id,
             'profession_id'     => 'required',

@@ -43,7 +43,7 @@ class CompanyController extends Controller
         $request->validate([
             'name' => 'required',
             'address' => 'required',
-            'phone' => 'required',
+            'phone' => 'required|numeric',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'activity' => 'required',
@@ -122,7 +122,7 @@ class CompanyController extends Controller
         $request->validate([
             'name' => 'required',
             'address' => 'required',
-            'phone' => 'required',
+            'phone' => 'required|numeric',
             'email' => 'required|email|unique:users,email,'.$company->user->id,
             'activity' => 'required',
         ]);

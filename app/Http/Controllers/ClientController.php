@@ -49,8 +49,8 @@ class ClientController extends Controller
                 'identification'    => 'required',
                 'email'             => 'required|email|unique:users,email',
                 'password'          => 'required|min:6',
-                'phone'             => 'required',
-                'cell_phone'        => 'required',
+                'phone'             => 'required|numeric',
+                'cell_phone'        => 'required|numeric',
                 'companies'         => 'required',
             ]);
         }else{
@@ -59,8 +59,8 @@ class ClientController extends Controller
                 'identification'    => 'required',
                 'email'             => 'required|email|unique:users,email',
                 'password'          => 'required|min:6',
-                'phone'             => 'required',
-                'cell_phone'        => 'required',
+                'phone'             => 'required|numeric',
+                'cell_phone'        => 'required|numeric',
             ]);
 
             $request['companies'] = auth()->user()->companies->pluck('id');
@@ -142,8 +142,8 @@ class ClientController extends Controller
                 'name'              => 'required',
                 'identification'    => 'required',
                 'email'             => 'required|email|unique:users,email,'.$client->user_id,
-                'phone'             => 'required',
-                'cell_phone'        => 'required',
+                'phone'             => 'required|numeric',
+                'cell_phone'        => 'required|numeric',
                 'companies'         => 'required',
             ]);
         }else{
@@ -151,8 +151,8 @@ class ClientController extends Controller
                 'name'              => 'required',
                 'identification'    => 'required',
                 'email'             => 'required|email|unique:users,email,'.$client->user_id,
-                'phone'             => 'required',
-                'cell_phone'        => 'required',
+                'phone'             => 'required|numeric',
+                'cell_phone'        => 'required|numeric',
             ]);
 
             $request['companies'] = auth()->user()->companies->pluck('id');

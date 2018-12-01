@@ -34,9 +34,9 @@ function inicial (argument)
     if(window.Laravel.language == 'es'){
         dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};
         datePickerObj.language = 'es';
-        var chosenText = 'No hay coincidencias para ';
+        chosenText = 'No hay coincidencias para ';
     }else{
-        var chosenText = 'No matches for';
+        chosenText = 'No matches for';
     }
 
     $(".chosen-select").chosen({
@@ -71,7 +71,7 @@ if($('#icon')[0])
 {
     $.getScript(window.Laravel.url+'/js/icons.js', function( data, textStatus, jqxhr )
     {
-        var iconos="<ul>";
+        var iconos='<div id="text"></div><ul>';
         $.each(fA, function(key, value){
             iconos += '<li title="'+value+'"><i data-icon="'+value+'" class="fa '+value+'"></i></li>';
         });
@@ -840,14 +840,24 @@ $(document).on("keyup", '#icon', function()
         $('.picker .input-group-addon').html('<i class="fa fa-hashtag"></i>');
         $('#icon-hidden').val('');
     }
-    $(".oculto ul li i").each(function() 
+    $('.oculto ul li i').each(function() 
     {
         if ($(this).data('icon').search(value) > -1) $(this).closest("li").show();
         else $(this).closest("li").hide();
     });
+    if($('.oculto ul li i').is(":visible"))
+    {
+        $('.oculto #text').empty();
+    }else{
+        $('.oculto #text').html(chosenText+' '+value);
+    }
 });
 
 $('.form-group.picker .input-group-addon').on('click', function(){
     console.log('Clickeoo');
     $(".oculto").fadeToggle("fast");
+});
+
+$('.form-group.picker .input-group-addon').on('focus', function(){
+    console.log('Salio');
 });
