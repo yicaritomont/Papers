@@ -12,6 +12,8 @@ use App\Company;
 use App\Client;
 use App\Contract;
 use App\User;
+use App\File;
+use DB;
 
 class FormatController extends Controller
 {
@@ -252,7 +254,7 @@ class FormatController extends Controller
 
     public function upload( Request $request )
     {
-        $response = (object) array('state' => 0 , 'messages' => array() );
+        $response = array();
         //Obtenemos el id del formato
         $format_id = $request->input('formato_id');
         $file_id = $request->input('file_id');
@@ -260,29 +262,36 @@ class FormatController extends Controller
         //Directorio destino
         $destinationPath = "uploads/".$format_id."/";
         //Validación datos
-        foreach( $files AS $key => $item )
-        {
-            if( $item->isValid() ){
-
-                $name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
-
-                $upload_success = $item->move($destinationPath, $name_url['name'] );
-
-                if( $upload_success ){
-                    $new_file = array
-                    (
-                        'mime_type'     =>  $item->getMimeType(),
-                        'format_id'     =>  $format_id,
-                        'nombre_url'    =>  $name_url['url'],
-                        'user_id'       =>  Auth::id(),
-                        'estado'        =>  Equivalencia::activo()
-                    );
+        if( !is_null($files) ){
+            foreach( $files AS $key => $item )
+            {
+                if( $item->isValid() ){
+    
+                    $name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
+                    $upload_success = $item->move($destinationPath, $name_url['name'] );
+    
+                    if( $upload_success )
+                    {
+                        $new_file = array
+                        (
+                            'mime_type'     =>  $upload_success->getMimeType(),
+                            'format_id'     =>  $format_id,
+                            'nombre_url'    =>  $name_url['url'],
+                            'user_id'       =>  Auth::id(),
+                            'extension'     =>  $upload_success->getExtension()
+                        );
+    
+                        $insert = File::insertGetId($new_file);
+                        $new_file['id'] = $insert;
+                        array_push($response,$new_file);
+    
+                    }else{
+                           
+                    }
+    
                 }else{
-                    
+    
                 }
-
-            }else{
-
             }
         }
         return response()->json($response);
@@ -298,11 +307,38 @@ class FormatController extends Controller
             $label = substr($name,0,$pos);
             $ext = substr($name,($pos+1));
             $name = $label."_".$rd.".".$ext;
-            echo $name;
         }
         $file['name'] = $name;
         $file['url'] = $path.$name;
         return $file;
+    }
+
+    public function getInitialData( Request $request )
+    {
+        $response = array('files' => array() , 'path' =>  $request->root() );
+        $format_id = $request->input('formato');
+        $response['files'] = DB::table('files')->where('format_id',$format_id)->get();
+        $texts = array('txt','csv');
+        foreach( $response['files'] AS $key => $item )
+        {
+            if( in_array($item->extension,$texts) ){
+                $response['files'][$key]->content = file_get_contents($item->nombre_url);
+            }
+            
+        }
+        return response()->json($response);
+    }
+
+    public function delete( Request $request  )
+    {
+        $id = $request->input('key');
+        $support = File::find($id);
+        //Eliminamos el archivo
+        if( file_exists(public_path().'/'.$support->nombre_url) ){
+            unlink(public_path().'/'.$support->nombre_url);
+            $support->forceDelete();
+        }
+        return response()->json(array($id => 'delete'));
     }
 
 }

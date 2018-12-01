@@ -391,3 +391,8 @@ tr.child ul.dtr-details li{
     height: 160px !important;
     width: 213px !important
 }
+
+.file-zoom-content > audio{
+    margin-top: 20px !important;
+    height: 80px !important
+}

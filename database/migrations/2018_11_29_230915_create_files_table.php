@@ -23,7 +23,7 @@ class CreateFilesTable extends Migration
             $table->unsignedInteger('user_id');
             $table->string('nombre_url');
             $table->string('mime_type',80);
-            $table->unsignedInteger('estado');
+            $table->string('extension',20);
             $table->timestamps();
 
             $table->foreign('format_id')->references('id')->on('formats')->onDelete('cascade');

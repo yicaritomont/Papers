@@ -131,6 +131,8 @@ Route::group( ['middleware' => ['auth']], function() {
     //Supports
     Route::post('supports/upload','FormatController@upload')->name('support.upload');
     Route::get('formats/supports/{id}','FormatController@supports')->name('formats.supports');
+    Route::post('supports/get','FormatController@getInitialData')->name('get.initData');
+    Route::post('supports/delete','FormatController@delete')->name('supports.delete');
 
 
 });
