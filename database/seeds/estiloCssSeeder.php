@@ -14,7 +14,7 @@ class estiloCssSeeder extends Seeder
     {
       $estilos = array(
         array('id' => 1,
-          'estilos' => '<style>
+          'estilos' => /*'<style>
             @page {
               margin: 180px 50px;
             }
@@ -29,6 +29,10 @@ class estiloCssSeeder extends Seeder
             #header .page:after {
               content: counter(page, decimal);
             }
+            img {
+              height : 100px;
+              width : 100px;
+            }
             #footer {
               position: fixed;
               left: 0px;
@@ -37,6 +41,42 @@ class estiloCssSeeder extends Seeder
               height: 80px;}
             #footer .page:after {
               content: counter(page, upper-roman); }
+          </style>'*/
+          '<style>
+            @page {
+              margin: 200px 50px 80px 50px;
+              font-size: 12px;
+            }
+            #header {
+              position: fixed;
+              left: 0px;
+              top: -180px;
+              right: 0px;
+              height: 150px;
+              font-size: 11px;
+              text-align: center;
+            }
+            #header .page:after {
+              content: counter(page, decimal);
+            }
+            #header img {
+              width:100px;
+              height:100px;
+            }
+            #footer {
+              position: fixed;
+              left: 0px;
+              bottom: -20px;
+              right: 0px;
+              height: 10px;
+             }
+            #footer .page:after {
+              content: counter(page, upper-roman);
+             }
+             table>tbody>tr>td>textarea {
+               width: 50px !important;
+              }
+              table{page-break-inside: avoid;}
           </style>',
         ),
       );
