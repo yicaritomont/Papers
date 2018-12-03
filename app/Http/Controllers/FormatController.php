@@ -127,8 +127,10 @@ class FormatController extends Controller
           $companyselect ='none';
         }
         $formato = Format::find($id);
-        if ($formato->status == 2){
-          $state_format = 'none';
+        if ($formato != '') {
+          if ($formato->status == 2){
+            $state_format = 'none';
+          }
         }
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $clients = Client::with('user')->get()->pluck('user.name', 'id');
@@ -268,10 +270,10 @@ class FormatController extends Controller
             foreach( $files AS $key => $item )
             {
                 if( $item->isValid() ){
-    
+
                     $name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
                     $upload_success = $item->move($destinationPath, $name_url['name'] );
-    
+
                     if( $upload_success )
                     {
                         $new_file = array
@@ -282,17 +284,17 @@ class FormatController extends Controller
                             'user_id'       =>  Auth::id(),
                             'extension'     =>  $upload_success->getExtension()
                         );
-    
+
                         $insert = File::insertGetId($new_file);
                         $new_file['id'] = $insert;
                         array_push($response,$new_file);
-    
+
                     }else{
-                           
+
                     }
-    
+
                 }else{
-    
+
                 }
             }
         }
@@ -326,7 +328,7 @@ class FormatController extends Controller
             if( in_array($item->extension,$texts) ){
                 $response['files'][$key]->content = file_get_contents($item->nombre_url);
             }
-            
+
         }
         return response()->json($response);
     }
