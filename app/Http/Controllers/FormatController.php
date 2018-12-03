@@ -247,10 +247,12 @@ class FormatController extends Controller
     {
       $format = Format::find($id);
       $estilos = Estilo::find(1);
-      $config_format = $estilos->estilos.$format->format;
+      $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
+        '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
+      $format_replace = str_replace($eliminar,'',$format->format);
+      $config_format = $estilos->estilos.$format_replace;
       $pdf = \App::make('dompdf.wrapper');
       $pdf->loadHTML($config_format);
-      echo "<pre>";print_r($config_format);echo "</pre>";exit();
       return $pdf->stream();
     }
 }
