@@ -28,15 +28,11 @@ class MenuController extends Controller
     public function create()
     {
         $modulos            = Modulo::where('status',1)->pluck('name', 'id');
-        $menu               = Menu::where('status',1)->whereRaw('id = menu_id')->pluck('name', 'id');
-        $cuantos_menu = count($menu);
-        if($cuantos_menu<=0)
-        {
-           $menu[1] = 'Menu Inicial';
-        }
-
-        $menu[0] = "Menu Principal";
+        $menu              = Menu::where('url', null)->pluck('name', 'id')->toArray();
+        $menu[0] = trans('words.MainMenu');
         
+        //Ordenar el menu
+        ksort($menu);        
         
         $permisos           = Permission::pluck('name', 'id');
         $actividades        = $this->defaultAbilities();
@@ -90,22 +86,29 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        //       
         
         $this->validate($request, [
-            'name' => 'required|min:4',
-            'url' => 'required',            
-            'modulo_id' => 'required',
-            'menu_id' => 'required'
-        ]);
+            'name' => 'required|min:4', 
+            'menu_id' => 'required',
+        ]);       
+        
 
-        $lastMenuHead = Menu::orderBy('id', 'desc')->first();
+        if($request->menu_id != 0)
+        {
+            $parent = Menu::find($request->menu_id);
+            if($parent->url)
+            {
+                $alert = ['error', \Lang::get('validation.MessageError')];
+                return redirect()->route('menus.index')->with('alert', $alert);
+            }
+        }
+
         $menu = new Menu();
-
         $menu->name   = $request->name;
         $menu->url   = $request->url;
-        $menu->modulo_id   = $request->modulo_id;
+        $menu->icon = $request->icon;
         
+        $lastMenuHead = Menu::orderBy('id', 'desc')->first();
         if($request->menu_id == 0)
         {
             $menu->menu_id = (int)$lastMenuHead->id+1;
@@ -145,13 +148,11 @@ class MenuController extends Controller
     {
         //
         $modulos           = Modulo::where('status',1)->pluck('name', 'id');
-        $menu               = Menu::where('status',1)->whereRaw('id = menu_id')->pluck('name', 'id');
-        $cuantos_menu = count($menu);
-        if($cuantos_menu<=0)
-        {
-            $menu[1] = 'Menu Inicial';
-        }
+        $menu              = Menu::where('url', null)->pluck('name', 'id')->toArray();
+        $menu[0] = trans('words.MainMenu');
         
+        //Ordenar el menu
+        ksort($menu);        
         
         $permisos           = Permission::pluck('name', 'id');
         $actividades        = $this->defaultAbilities();
@@ -193,7 +194,10 @@ class MenuController extends Controller
         {
             $url[$ruta] = $ruta;
         }
-        $menus = Menu::find($id);       
+        $menus = Menu::find($id);
+
+        //Si es del menu principal el menu_id va a ser 0
+        if($menus['id'] == $menus['menu_id']) $menus['menu_id'] = 0;
 
         return view('menu.edit', compact('modulos','menu','url','menus'));
     }
@@ -207,24 +211,57 @@ class MenuController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        $this->validate($request, [
-            'name' => 'required|min:4',
-            'url' => 'required',            
-            'modulo_id' => 'required',
-            'menu_id' => 'required'
-        ]);
-
         $menu = Menu::findOrFail($id);
+
+        if($menu['url'])
+        {
+            $this->validate($request, [
+                'name' => 'required|min:4',
+                'menu_id' => 'required',
+                'url' => 'required',
+            ]);
+        }else{
+            $this->validate($request, [
+                'name' => 'required|min:4',
+                'menu_id' => 'required',
+            ]);
+        }
+
+        // Si se ingresa como menú padre uno que no es desplegable mostrará error
+        if($request->menu_id != 0)
+        {
+            $parent = Menu::find($request->menu_id);
+            if($parent->url)
+            {
+                $alert = ['error', \Lang::get('validation.MessageError')];
+                return redirect()->route('menus.index')->with('alert', $alert);
+            }
+        }
+
+        // Si se esta enviando la url siendo un item desplegable mostrará error
+        if(isset($request['url']) && !$menu['url']){
+            $alert = ['error', \Lang::get('validation.MessageError')];
+            return redirect()->route('menus.index')->with('alert', $alert);
+        }
 
         $menu->name   = $request->name;
         $menu->url   = $request->url;
-        $menu->modulo_id   = $request->modulo_id;
-        $menu->menu_id  = $request->menu_id;
+        $menu->icon = $request->icon;
+
+        $lastMenuHead = Menu::orderBy('id', 'desc')->first();
+        if($request->menu_id == 0)
+        {
+            $menu->menu_id = (int)$lastMenuHead->id+1;
+        }
+        else
+        {
+            $menu->menu_id  = $request->menu_id;
+        }
         
         $menu->save();
-        $menssage = \Lang::get('validation.MessageCreated');
-        $alert = ['success', $menssage];
+
+        // $menssage = \Lang::get('validation.MessageCreated');
+        $alert = ['success', \Lang::get('validation.MessageCreated')];
         return redirect()->route('menus.index')->with('alert', $alert);
     }
 

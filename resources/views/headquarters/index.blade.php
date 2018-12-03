@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', trans('words.Headquarters'))
+@section('title', trans_choice('words.Headquarters', 1))
 
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title"> {{ str_plural(trans('words.Headquarters'), 2) }} </h3>
+            <h3 class="modal-title"> @choice('words.Headquarters', 2) </h3>
         </div>
         <div class="col-md-7 page-action text-right">
             @can('add_posts')
@@ -20,7 +20,7 @@
             <tr>
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>
-                <th>@lang('words.Client')</th>
+                <th>@choice('words.Client', 1)</th>
                 <th>@lang('words.City')</th>
                 <th>@lang('words.Address')</th>
                 <th>@lang('words.CreatedAt')</th>
@@ -63,7 +63,7 @@
             @endcan
             
             var table = $('.dataTable').DataTable(dataTableObject);               
-            new $.fn.dataTable.FixedHeader( table );
+            // new $.fn.dataTable.FixedHeader( table );
         });
     </script>
 @endsection

@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
-    //
+    
+    protected $fillable = [
+        'order'
+    ];
+
     public function menu()
     {
         return $this->belongsTo(Menu::class);

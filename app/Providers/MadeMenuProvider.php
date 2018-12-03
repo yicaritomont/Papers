@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Auth\Access\Gate;
 use App\Modulo;
 use App\Menu;
 
@@ -52,5 +53,81 @@ class MadeMenuProvider extends ServiceProvider
     {
         $child = Menu::where('menu_id',$item)->where('status',1)->get();
         return $child;
+    }
+
+    public static function getChildren($data, $line)
+    {
+        $children = [];
+        foreach ($data as $line1)
+        {
+            
+            
+            /* if ($line['id'] == $line1['menu_id']) */
+            if ($line['id'] == $line1['menu_id'] && $line1['id'] != $line1['menu_id'])
+            {
+                // return $line1;
+                $childrenTemp = self::getChildren($data, $line1);
+                // return $childrenTemp;
+                
+                if($line1['url'])
+                {
+                    if(app(Gate::class)->check('view_'.$line1['url']))
+                    {
+                        $children = array_merge($children, [ array_merge($line1, ['submenu' => $childrenTemp ]) ]);
+                    }
+                }
+                elseif(count($childrenTemp) > 0)
+                {
+                    $children = array_merge($children, [ array_merge($line1, ['submenu' => $childrenTemp ]) ]);
+                }
+                
+            }
+        }
+        return $children;
+    }
+
+    public static function optionsMenu()
+    {
+        $menu = Menu::where('status', 1)
+            // ->where('parent', 0)
+            ->orderby('menu_id')
+            ->orderby('name')
+            ->get()
+            ->toArray();
+
+        // dd($menu);
+        return $menu;
+    }
+
+    public static function prueba()
+    {
+        return 'XD';
+    }
+
+    public static function menus()
+    {
+        // dd(self::prueba());
+        // $menus = self;
+        $data = self::optionsMenu();
+        $menuAll = [];
+        foreach ($data as $line)
+        {
+            if($line['id'] == $line['menu_id'])
+            {
+                // var_dump($line['id'] . '<br>');
+                //dd(self::getChildren($data, $line));
+                $item = [ array_merge($line, ['submenu' => self::getChildren($data, $line) ]) ];
+                $menuAll = array_merge($menuAll, $item);
+                /* var_dump(self::getChildren($data, $line));
+                echo '<br><br>'; */
+            }
+            // dd(self::getChildren($data, $line));
+            //dd(count(self::getChildren($data, $line)));
+            // var_dump(self::getChildren($data, $line));
+        }
+        /* dd($menuAll);
+        dd('Fin'); */
+        // dd($menuAll);
+        return $menuAll;
     }
 }

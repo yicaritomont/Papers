@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', trans('words.Edit').' '.trans('words.Client').' '.$client->name)
+@section('title', trans('words.Edit').' '.trans_choice('words.Client', 1).' '.$client->name)
 
 @section('content')
     <div class="row">

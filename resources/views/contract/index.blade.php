@@ -21,8 +21,8 @@
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>
                 <th>@lang('words.Date')</th>
-                <th>{{trans_choice('words.Company',1)}}</th>
-                <th>@lang('words.Client')</th>
+                <th>@choice('words.Company',1)</th>
+                <th>@choice('words.Client', 1)</th>
                 <th>@lang('words.CreatedAt')</th>
                 <th>@lang('words.UpdatedAt')</th> 
                 @can('edit_contracts', 'delete_contracts')
@@ -63,7 +63,7 @@
             @endcan
 
             var table = $('.dataTable').DataTable(dataTableObject);                
-            new $.fn.dataTable.FixedHeader( table );
+            // new $.fn.dataTable.FixedHeader( table );
         });
     </script>
 @endsection

@@ -10,12 +10,14 @@
         <link rel="icon" href="images/favicon.ico" type="image/ico" />
 
         <title>@yield('title') {{ config('app.name') }}</title>
-        
+
         <!--  -->
         {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
-        
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="{{ asset('css/all.css') }}" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
         <!-- FullCalendar -->
-        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/fullCalendar/fullcalendar.min.css')}}">  
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/fullCalendar/fullcalendar.min.css')}}">
         <!-- Bootstrap -->
         <link href="{{asset('vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
         <!-- Font Awesome -->
@@ -32,24 +34,35 @@
         <!-- bootstrap-daterangepicker -->
         <link href="{{asset('vendors/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 
-        <!-- Custom Theme Style -->
-        <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
 
         <!-- DatePicker -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/datePicker/bootstrap-datepicker.min.css')}}">
-    
+
         <!-- ClockPicker -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/clockPicker/bootstrap-clockpicker.css')}}">
 
         <!-- Datatable -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/dataTables.bootstrap.min.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/fixedHeader.bootstrap.min.css')}}">
+        {{-- <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/fixedHeader.bootstrap.min.css')}}"> --}}
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/responsive.bootstrap.min.css')}}">
+        {{-- <link href="{{asset('vendors/datatables.net-bs/css/dataTables.bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{asset('vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{asset('vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{asset('vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{asset('vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css')}}" rel="stylesheet"> --}}
+
+        <!-- File Input -->
+        <link href="{{ asset('file-input/css/fileinput.min.css') }}" media="all" rel="stylesheet" type="text/css" />
 
         <!-- SweetAlert -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
-        
-        <link href="{{ asset('css/styles.css') }}" rel="stylesheet"> 
+
+        <!-- Custom Theme Style -->
+        <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
+
+        <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+
+
 
         @yield('styles')
 
@@ -87,7 +100,7 @@
                                 <h2>{{ Auth::user()->name }}</h2>
                                 {{-- Compañia en session --}}
                                 @if(Auth::user()->roles->pluck('id')[0] != 1)
-                                    @if(session()->get('Session_Company') != "")                                        
+                                    @if(session()->get('Session_Company') != "")
                                         <b>{{ App\User::find(App\Company::find(session()->get('Session_Company'))->user_id)->name }}</b>
                                     @endif
                                 @endif
@@ -172,7 +185,7 @@
                                                     @can('view_clients')
                                                         <li class="{{ Request::is('clients*') ? 'active' : '' }}">
                                                             <a href="{{ route('clients.index') }}">
-                                                                <span class="text-warning glyphicon glyphicon-user"></span> {{str_plural(trans('words.Client'),2)}}
+                                                                <span class="text-warning glyphicon glyphicon-user"></span> {{trans_choice('words.Client',2)}}
                                                             </a>
                                                         </li>
                                                     @endcan
@@ -202,7 +215,7 @@
                                                     @can('view_headquarters')
                                                         <li class="{{ Request::is('headquarters*') ? 'active' : '' }}">
                                                             <a href="{{ route('headquarters.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-home"></span> {{str_plural(trans('words.Headquarters'),2)}}
+                                                                <span class="text-white glyphicon glyphicon-home"></span> {{trans_choice('words.Headquarters',2)}}
                                                             </a>
                                                         </li>
                                                     @endcan
@@ -244,39 +257,15 @@
                                         </li>-->
 
                                         <!-- Made Menu, with modules -->
-                                        @if(count(MadeMenu::get_modules()) >0)
-                                            @foreach(MadeMenu::get_modules() as $modulo)
-                                                <li><a><i class="fa fa-suitcase"></i>{{$modulo->name}}<span class="fa fa-chevron-down"></span></a>
-                                                    <ul class="nav child_menu">
-                                                        @foreach(MadeMenu::get_item_modules($modulo->id) as $item)
-                                                            @can('view_'.$item->url)
-                                                                <li class="{{ Request::is($item->name.'*') ? 'active' : '' }}">
-                                                                    @if(MadeMenu::item_has_child($item->id) >=0)
-                                                                    <a>
-                                                                        <span class="text-success glyphicon glyphicon-text-background"></span> {{$item->name}}
-                                                                    </a>
-                                                                    @else
-                                                                    <a href="{{ route('posts.index') }}">
-                                                                        <span class="text-success glyphicon glyphicon-text-background"></span> {{$item->name}}
-                                                                    </a>
-                                                                    @endif
+                                        {{-- {{ dd(MadeMenu::menus()) }} --}}
+                                        @foreach (MadeMenu::menus() as $key => $item)
+                                            {{-- @if ($item['parent'] != 0) --}}
+                                            {{-- @if ($item['id'] != $item['menu_id'])
+                                                @break
+                                            @endif --}}
+                                            @include('shared.menu-item', ['item' => $item])
+                                        @endforeach
 
-                                                                    @if( count(MadeMenu::get_child_items($item->id)) > 0)
-                                                                        <ul class="nav child_menu">
-                                                                            @foreach(MadeMenu::get_child_items($item->id) as $child)
-                                                                                <li>
-                                                                                    <a href="{{ route($child->url.'.index') }}"><span></span>{{$child->name}}</a>
-                                                                                </li>
-                                                                            @endforeach
-                                                                        </ul>
-                                                                    @endif
-                                                                </li>
-                                                            @endcan
-                                                        @endforeach
-                                                    </ul>
-                                                </li>
-                                            @endforeach
-                                        @endif
 
                                     </ul>
                             </div>
@@ -368,7 +357,7 @@
                     </div>
                 </div>
                 <!-- /top navigation -->
-                <div class="right_col" role="main">
+                <div class="right_col" role="main" style="min-height: 100vh;">
 
                     {{-- <div class="content-page"> --}}
                         {{-- <div id="flash-msg">
@@ -377,7 +366,7 @@
                         @yield('content')
                     {{-- </div> --}}
                 </div>
-            </div>  
+            </div>
         </div>
 
 
@@ -433,34 +422,60 @@
     <!-- Cambiar el idioma del calendario -->
     @if(app()->getLocale()=='es')
         <script src="{{ asset('js/lib/fullCalendar/es.js') }}"></script>
-        {{-- <script src="{{resource_path('lang/es/dataTable.js')}}"></script> --}}
     @endif
-	
+
     <!-- Datatable -->
     <script src="{{ asset('js/lib/dataTable/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/dataTables.bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/lib/dataTable/dataTables.fixedHeader.min.js') }}"></script>
+    {{-- <script src="{{ asset('js/lib/dataTable/dataTables.fixedHeader.min.js') }}"></script> --}}
     <script src="{{ asset('js/lib/dataTable/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/responsive.bootstrap.min.js') }}"></script>
-    
+    {{-- <script src="{{asset('vendors/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-buttons/js/dataTables.buttons.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.flash.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.html5.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.print.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-keytable/js/dataTables.keyTable.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-responsive/js/dataTables.responsive.min.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js')}}"></script>
+    <script src="{{asset('vendors/datatables.net-scroller/js/dataTables.scroller.min.js')}}"></script> --}}
+
     <!-- SweetAlert -->
     <script src="{{ asset('js/lib/sweetAlert/sweetalert2.min.js') }}"></script>
-    
+
     <!-- text editor -->
     <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
 
     <!-- Moment timezone -->
     <script src="{{ asset('js/lib/momentTz/moment-timezone-with-data-2012-2022.min.js') }}"></script>
 
+    <!-- Vue JS -->
+    <script src="{{ asset('js/vue.js') }}"></script>
+    <script src="{{ asset('js/axios.min.js') }}"></script>
+    <!-- File Input -->
+    <script src="{{ asset('file-input/js/plugins/piexif.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('file-input/js/plugins/sortable.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('file-input/js/plugins/purify.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('file-input/js/fileinput.min.js') }}"></script>
+
+    @if( file_exists( "file-input/js/locales/".Session::get('lang').".js" ) )
+        <input type="hidden" name="lang" id="lang" value="{{ Session::get('lang') }}">
+        <script src="{{ asset('file-input/js/locales/'.Session::get('lang').'.js') }}"></script>
+    @else
+        <input type="hidden" name="lang" id="lang" value="es">
+        <script src="{{ asset('file-input/js/locales/es.js') }}"></script>
+    @endif
+
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
 
-	@yield('scripts')
+	   @yield('scripts')
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.js')}}"></script>
-
-    {{-- <script>console.log('XD');</script> --}}
 
     @if(session('alert'))
         <script>

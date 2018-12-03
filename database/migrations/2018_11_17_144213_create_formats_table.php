@@ -21,7 +21,6 @@ class CreateFormatsTable extends Migration
             $table->longText('format');
             $table->integer('status');
             $table->timestamps();
-
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('preformat_id')->references('id')->on('preformatos')->onDelete('cascade');

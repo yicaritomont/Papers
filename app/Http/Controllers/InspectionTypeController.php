@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\InspectionType;
 use App\Permission;
+use App\InspectionSubtype;
 
 class InspectionTypeController extends Controller
 {
@@ -114,5 +115,25 @@ class InspectionTypeController extends Controller
                 'status' => 'Inspection type not deleted',
             ]);	
         }
+    }
+
+    /**
+     * Muestra los subtipos de un tipo dado
+     *
+     * @return JSON
+     */
+    public function subtypes($id)
+    {
+
+        $result = InspectionSubtype::where('inspection_type_id', '=', $id)
+            ->select('id', 'name')
+        ->get()->toArray();
+
+        array_unshift($result, ['id' => '', 'name' => trans('words.ChooseOption')]);
+
+        echo json_encode([
+            'status' => $result
+        ]);
+       
     }
 }

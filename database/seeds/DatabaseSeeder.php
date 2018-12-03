@@ -38,21 +38,21 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Default Permissions added.');
 
         // Set default Roles
-    
+
         $roles_array = ['Admin','Inspector','Compania','Cliente','Agendador'];
         $input_roles = implode(",",$roles_array);
 
         // add roles
-        foreach($roles_array as $role) 
+        foreach($roles_array as $role)
         {
             $role = Role::firstOrCreate(['name' => trim($role)]);
 
-            if( $role->name == 'Admin' ) 
+            if( $role->name == 'Admin' )
             {
                 // assign all permissions
                 $role->syncPermissions(Permission::all());
                 $this->command->info('Admin granted all the permissions');
-            }  
+            }
             elseif( $role->name == 'Inspector')
             {
                 // Assing inspector permissions
@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
             }
             elseif( $role->name == 'Agendador')
             {
-                // Assing Agendador permissions                
+                // Assing Agendador permissions
                 $role->syncPermissions(Permission::where('name', 'LIKE' ,'%_inspectionappointments')->orWhere('name','LIKE' ,'%_inspectoragendas')->get());
             }
 
@@ -118,11 +118,12 @@ class DatabaseSeeder extends Seeder
         ProfessionTableSeeder::run();
         InspectionTypeTableSeeder::run();
         InspectionSubTypeTableSeeder::run();
-        // InspectorTypeTableSeeder::run();
+        InspectorTypeTableSeeder::run();
         ChangePasswordDaysSeeder::run();
         ModuloSeeder::run();
         MenuSeeder::run();
         PreformatoSeeder::run();
+        estiloCssSeeder::run();
 
     }
 }

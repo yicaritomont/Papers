@@ -179,9 +179,10 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\MadeMenuProvider::class,       
-        LaravelQRCode\Providers\QRCodeServiceProvider::class,     
+        App\Providers\MadeMenuProvider::class,
+        LaravelQRCode\Providers\QRCodeServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
     ],
 
     /*
@@ -234,8 +235,9 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'MadeMenu' => App\Providers\MadeMenuProvider::class,
-        'QRCode' => LaravelQRCode\Facades\QRCode::class,  
+        'QRCode' => LaravelQRCode\Facades\QRCode::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 
 ];

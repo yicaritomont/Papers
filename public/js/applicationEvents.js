@@ -16,6 +16,7 @@ function inicial (argument)
     dataTableObject = {
         responsive: true,
         serverSide: true,
+        processing: true,
     };
 
     //Se valida el idioma
@@ -37,14 +38,53 @@ function inicial (argument)
 
     $('.input-group.date').datepicker(datePickerObj);
 
+    //Para que no permita seleccionar un dia antertior al actual
+    datePickerObj.startDate = new Date();
+
     $('.input-group.date-range-inputs input').datepicker(datePickerObj);
+
+    $('.input-group.date').datepicker({
+        format: "yyyy-mm-dd",
+        startDate: new Date()
+    })
 
     /* console.log($(window).height());
     console.log('Alto: '+$('.container.body').height());
 
     console.log(window.innerHeight);
     console.log($(window).outerHeight()); */
+
+    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
 }
+
+// Si existe el campo icon cargue el archivo con todos los iconos de font awesome
+if($('#icon')[0])
+{
+    $.getScript(window.Laravel.url+'/js/icons.js', function( data, textStatus, jqxhr )
+    {
+        var iconos="<ul>";
+        $.each(fA, function(key, value){
+            iconos += '<li title="'+value+'"><i data-icon="'+value+'" class="fa '+value+'"></i></li>';
+        });
+
+        iconos+="</ul>";
+
+        $('#icon').parent().after("<div class='oculto'>"+iconos+"</div>");
+    });
+}
+
+//Todos los select que requieran una petición ajax para llenar otro select
+$('#company_id').on('change', function(event, edit){
+    fillSelect(window.Laravel.url+'/companies/'+$(this).val()+'/clients', '#client_id', edit);
+});
+
+$('.inspection_type_id').on('change',function(event, edit){
+    fillSelect(window.Laravel.url+'/inspectiontypes/'+$(this).val()+'/subtypes', '.inspection_subtype_id', edit);
+});
+
+$('.country').on('change',function(event, edit){
+    fillSelect(window.Laravel.url+'/country/'+$(this).val()+'/cities', '.city_id', edit);
+});
 
 function setDataTable(targets){
     return {
@@ -238,17 +278,10 @@ function alert(color, msg){
     return '<div class="alert alert-'+color+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+msg+'</div>';
 }
 
-//Ocultar los formularios desplegables y solo mostrar el seleccionado
-/* $(document).on('click', 'button[data-toggle]', function(e) {
-    console.log('Clickeo');
-    var selector = $(this).data('toggle');
-    $('.formSlide:not('+selector+')').slideUp('slow');
-    $(selector).slideToggle('slow');
-}); */
-function slideForms(obj) {
+function slideForms(obj, cualquierWea) {
     var selector = obj.data('toggle');
     $('.formSlide:not('+selector+')').slideUp('slow');
-    $(selector).slideToggle('slow');
+    $(selector).slideToggle('slow', cualquierWea);
 };
 
 //Funcion para el mensaje de confirmación de eliminación por Ajax
@@ -282,6 +315,7 @@ function confirmModal(form, msg, type, revertFunc){
 
 $(window).resize(function(){
     changeTopToast();
+    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
 });
 
 function changeTopToast(){
@@ -359,6 +393,8 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
     .done(function(res){
         var res = JSON.parse(res);
 
+        console.log(res);
+
         //Si no exite algun error
         if(!res.error){
 
@@ -408,13 +444,10 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
 
         $('#'+idForm).find(':input').each(function(){
             var idInput = $(this).attr('id');
+
             if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
-                // console.log(res.responseJSON.errors[idInput]);
                 $(this).parents('.form-group').addClass('has-error');
-                // $(this).parents('.form-group').append(spanError(res.responseJSON.errors[idInput]));
                 $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput]));
-                /* console.log($(this).parents('.form-group'));
-                console.log($(this).attr('id')); */
             }
         });
     });
@@ -438,9 +471,6 @@ $('.showCalendar').on('click', function(e){
         })
         .done(function(res){
             var res = JSON.parse(res);
-            /* $(objElement.data('toggle')).html(res.html);
-
-            slideForms(objElement); */
 
             if(res.cita){
                 showAppointment(res.cita);
@@ -481,7 +511,7 @@ function showAppointment(Cita){
     }
 }
 
-// Ajax para editar agendas y citas
+// Ajax para formulario de editar agendas y citas
 $(document).on('click', '.editCalendar', function(e){
     var objElement = $(this);
 
@@ -505,11 +535,16 @@ $(document).on('click', '.editCalendar', function(e){
                     $('#modalEditDel #'+nomField).val(res.agenda[nomField]);
                 });
 
+
                 $('#modalEditDel #country').val(res.agenda.city.countries_id);
-                $('#modalEditDel #country').trigger('change',res.agenda.city_id);
                 $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+res.agenda.slug);
 
-            }else if(objElement.data('toggle') == '#editAppointment')
+                slideForms(objElement, () => {
+                    $('#modalEditDel #country').trigger('change',res.agenda.city_id);
+                });
+
+            }
+            else if(objElement.data('toggle') == '#editAppointment')
             {
                 var aFields = ['inspector_id', 'start_date', 'end_date'];
 
@@ -519,8 +554,9 @@ $(document).on('click', '.editCalendar', function(e){
                 });
 
                 $('#editAppointment').attr('action', $('#url').val()+'/'+res.cita.id);
+
+                slideForms(objElement);
             }
-            slideForms(objElement);
         })
         .fail(function(res){
             console.log('error\n'+res);
@@ -528,15 +564,6 @@ $(document).on('click', '.editCalendar', function(e){
     }
 });
 
-//Limpiar el formulario de crear agenda
-/* function limpiarForm(startDate, endDate){
-    if (!endDate) endDate = startDate;
-    $('.msgError').html('');
-    $('#formCreateAgenda')[0].reset();
-    $('#formCreateAgenda #start_date').val(startDate);
-    $('#formCreateAgenda #end_date').val(endDate);
-    $('#formCreateAgenda .city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-} */
 function limpiarForm(startDate, endDate, form, fielDate, select){
 
     $('.form-group').removeClass('has-error');
@@ -551,29 +578,7 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
 }
 
 $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
-/*function mostrarCiudades()
-{
-    var country = $('.id_country').val();
-    $.ajax({
-        type: "GET",
-        url: obtenerUrl() + '/public/ajxCountry',
-        datType: 'json',
-        data: { country: country }
-    }).done(function (response)
-    {
-        alert(response);
-        var select = '<select name="" id="citie_id" class="form-control">'
-            $.map(response.citiesCountry,function(name, id)
-            {
-                select += '<option values="'+id+'">'+name+'</option>'
-            });
-            select += '</select>';
-            $('#container_cities').empty();
-            $('#container_cities').html(select);
-            $('#ciie_id').chosen({ no_results_text: "No se encuentra" });
 
-    });
-}*/
 
 function verifyInspector()
 {
@@ -685,60 +690,34 @@ function calendar(obj){
     });
 }
 
-$('.country').on('change',function(event, city_id){
+function fillSelect(url, select, edit){
+    console.log(edit);
+
     $.ajax({
-        url:this.dataset.route,
-        type:'POST',
+        url:url,
+        type:'GET',
         data:{
-            id: $(this).val(),
             _token: $('#_token').val(),
         }
     })
     .done(function(res){
-        // console.log('done\n'+res);
         res = JSON.parse(res);
-        $('.city_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-        $('.city_id').append(res);
 
-        if(city_id != undefined){
-            $('#modalEditDel #city_id').val(city_id);
-        }
-    })
-    .fail(function(res){
-        alert('Error\n'+res);
-    });
-});
+        $(select).empty();
 
-$('.inspection_type_id').on('change',function(event, cita){
-    $.ajax({
-        url:this.dataset.route,
-        type:'POST',
-        data:{
-            id: $(this).val(),
-            _token: $('#_token').val(),
-        }
-    })
-    .done(function(res){
-
-        console.log('done\n'+res);
-        console.log(JSON.parse(res).status);
-        $('.inspection_subtype_id').html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-        $.each(JSON.parse(res), function( key, value ) {
-            //$('.msgError').append(alert('danger', value));
-            console.log('Id: '+value.id+'\nName: '+value.name);
-            $('.inspection_subtype_id').append('<option value="'+value.id+'">'+value.name+'</option>');
+        $.each(res.status, function( key, value ) {
+            $(select).append('<option value="'+value.id+'">'+value.name+'</option>');
         });
-        if(cita != undefined){
-            $('#modalEditDel #inspection_subtype_id').val(cita.inspection_subtype_id);
+
+        if(edit){
+            $(select).val(edit);
         }
     })
     .fail(function(res){
-        alert('oiga mire vea, no hay internet.');
-    })
-    .always(function(res){
-        console.log('complete\n'+res);
+        alert('Error.');
     });
-});
+}
+
 function llenarCabeceraFormato()
 {
     var preformato = $(this).val();
@@ -821,3 +800,31 @@ function cargarSelectClients()
             });
     }
 }
+
+// Campo selector de iconos
+
+$('#icon').on('focus', function(e){
+    $(".oculto").fadeIn("fast");
+});
+
+$('#icon').on('blur', function(e){
+    $(".oculto").fadeOut("fast");
+});
+
+$(document).on("click",".oculto ul li",function()
+{
+    $(".inputpicker").val($(this).find("i").data("icon"));
+    $('.picker .input-group-addon').html('<i class="fa '+$(this).find("i").data("icon")+'"></i>');
+    $('#icon-hidden').val($(this).find("i").data("icon"));
+});
+
+$(document).on("keyup", '#icon', function()
+{
+    var value=$(this).val();
+
+    $(".oculto ul li i").each(function()
+    {
+        if ($(this).data('icon').search(value) > -1) $(this).closest("li").show();
+        else $(this).closest("li").hide();
+    });
+});
