@@ -324,9 +324,9 @@ class FormatController extends Controller
         foreach( $response['files'] AS $key => $item )
         {
             if( in_array($item->extension,$texts) ){
-                $response['files'][$key]->content = file_get_contents($item->nombre_url);
+                $content =  file_get_contents($item->nombre_url);
+                //$response['files'][$key]->content = $content;
             }
-            
         }
         return response()->json($response);
     }
