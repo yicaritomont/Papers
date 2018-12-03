@@ -72,8 +72,7 @@
                         var btn = '';
                         @can('view_users')
                             btn += '<a href="'+window.Laravel.url+'/users/company/'+row.slug+'" class="btn btn-xs btn-primary">';
-                            btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") @lang("words.User")</a>';
-                            
+                            btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") @lang("words.User")</a>';              
                         @endcan
                         @can('view_inspectors')
                             btn += '<a href="'+window.Laravel.url+'/inspectors/company/'+row.slug+'" class="btn btn-xs btn-primary">';

@@ -12,6 +12,7 @@ use DB;
 use App\Http\Requests\InspectorAgendaRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class InspectorAgendaController extends Controller
 {
@@ -22,13 +23,12 @@ class InspectorAgendaController extends Controller
      */
     public function index()
     {
-
-        $result = InspectorAgenda::with(['inspector'])->paginate();
+        // $result = InspectorAgenda::with(['inspector'])->paginate();
+        $quantity = InspectorAgenda::all()->count();
         $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
         $countries = Country::all()->pluck('name', 'id');
 
-        return view('inspector_agenda.index', compact('result', 'inspectors', 'countries'));
-
+        return view('inspector_agenda.index', compact('quantity', 'inspectors', 'countries'));
     }
 
     /**
@@ -39,67 +39,6 @@ class InspectorAgendaController extends Controller
     public function create()
     {
         
-        //dd("XD");
-        /* $headquarters = Headquarters::select(DB::raw('CONCAT(name ," ", address) AS nombre_completo'), 'headquarters.id AS id')->get();
-        dd($headquarters->pluck('nombre_completo', 'id')); */
-        $headquarters = Headquarters::all();
-        $inspectors = Inspector::all();
-        //dd($c[0]->name);
-        if(isset($_GET['view'])){
-            $view = $_GET['view'];
-            return view('inspector_agenda.new', compact(['headquarters', 'inspectors', 'view']));
-        }
-        return view('inspector_agenda.new', compact(['headquarters', 'inspectors']));
-
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(InspectorAgendaRequest $request)
-    {
-        /* echo json_encode([
-            'request' => $request->all(),
-        ]); */
-        
-        //Contadores de error para las validaciones
-        $contFecha=0;
-        $contHorasError=0;
-
-        //Se consulta todas las Agendas filtradas por un inspector
-        $inspectorAgenda = InspectorAgenda::where('inspector_id', '=', $request->input('inspector_id'))->get();
-
-        foreach($inspectorAgenda as $item){
-            if($request->input('date') == $item->date){
-                $contFecha++;
-                if(($request->input('end_time') < $item->end_time && $request->input('start_time') < $item->start_time && $request->input('end_time') < $item->start_time) || ($request->input('end_time') > $item->end_time && $request->input('start_time') > $item->start_time && $request->input('start_time') > $item->end_time)){
-                    //Se comprueba si las horas ingresadas no se crucen con otra agenda el mismo día
-                }else{
-                    $contHorasError++;   
-                }
-            }
-        }
-
-        //Comprueba si hay agendas en el día seleccionado 
-        if($contFecha != 0){
-            //Si la agenda ya esta ocupada
-            if($contHorasError > 0){
-                flash()->error(trans('words.AgendaBusy'));
-                return redirect()->back()->withErrors('AgendaBusy')->withInput(); 
-            }      
-        }
-
-        //Si paso las validaciones cree una Agenda
-        $agenda = InspectorAgenda::create($request->all());
-        $agenda->slug = md5($agenda->id);
-        $agenda->save();
-
-        flash(trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasAdded'));
-
-        return redirect()->back(); 
     }
 
     /**
@@ -152,143 +91,25 @@ class InspectorAgendaController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\InspectorAgenda  $inspectorAgenda
-     * @return \Illuminate\Http\Response
-     */
-    public function update(InspectorAgendaRequest $request, $slug)
-    {
-
-        //Contadores de error para las validaciones
-        $contHorasError=0;
-        $contCitasError=0;
-
-        /* ------------------Validacion agenda ocupada------------------- */
-
-        //Se consulta todas las Agendas filtradas por un inspector
-        $inspectorAgendas = InspectorAgenda::where([
-                                        ['inspector_id', '=', $request->input('inspector_id')],
-                                        ['slug', '!=', $slug]
-                                    ])->get();
-
-        foreach($inspectorAgendas as $inspectorAgenda){
-            if($request->input('date') == $inspectorAgenda->date){
-                if(($request->input('end_time') < $inspectorAgenda->end_time && $request->input('start_time') < $inspectorAgenda->start_time && $request->input('end_time') < $inspectorAgenda->start_time) || ($request->input('end_time') > $inspectorAgenda->end_time && $request->input('start_time') > $inspectorAgenda->start_time && $request->input('start_time') > $inspectorAgenda->end_time)){
-                    //Se comprueba si las horas ingresadas no se crucen con otra agenda el mismo día
-                }else{
-                    $contHorasError++;   
-                }
-            }
-        }
-
-
-        //Si la agenda ya esta ocupada
-        if($contHorasError > 0){
-            flash()->error(trans('words.AgendaBusy'));
-            return redirect()->back()->withErrors('AgendaBusy')->withInput(); 
-        }      
-
-        /* ------------------Validacion editar-citas------------------- */
-
-        //Se consulta la agenda por el identificador
-        $agenda = InspectorAgenda::where('slug', '=', $slug)->get()[0];
-        
-        //Se consultas las citas filtrado por el inspector de la agenda a eliminar
-        $citas = InspectionAppointment::where('inspector_id', '=', $agenda->inspector_id)->get();
-
-        foreach($citas as $cita){
-            if($agenda->date == $cita->date){
-                if($agenda->start_time <= $cita->start_time && $agenda->end_time >= $cita->end_time){
-                    if($request->start_time > $cita->start_time || $request->end_time < $cita->end_time){
-                        $contCitasError++;
-                    }
-                }
-            }
-        }
-
-        if($contCitasError>0){
-            flash()->error(trans('words.AgendaEditError'));
-            return redirect()->back()->withErrors('AgendaEditError')->withInput(); 
-        }else{
-            $agenda->update($request->all());
-
-            flash()->success(trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasUpdated'));
-            return redirect()->route('inspectoragendas.index');
-        }        
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  String  $slug
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($slug)
-    {
-        //Contador de errores
-        $cont=0;
-
-        //Se consulta la agenda por el identificador
-        $agenda = InspectorAgenda::where('slug','=',$slug)->get()[0];
-        
-        //Se consultas las citas filtrado por el inspector de la agenda a eliminar
-        $citas = InspectionAppointment::where('inspector_id', '=', $agenda->inspector_id)->get();
-
-        foreach($citas as $cita){
-            if($agenda->date == $cita->date){
-                if($agenda->start_time <= $cita->start_time && $agenda->end_time >= $cita->end_time){
-                    $cont++;   
-                }
-            }
-        }
-
-        if($cont>0){
-            flash()->error(trans('words.AgendaDeleteError'));
-            return redirect()->back()->withErrors('AgendaDeleteError')->withInput(); 
-        }else{
-            //Se llama la agenda de inspector por el slug
-            $inspectorAgenda = InspectorAgenda::where('slug','=',$slug)->get()[0];
-            $inspectorAgenda->delete();
-            flash()->success(trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasEliminated'));
-            return back();
-        }
-
-        
-    }
-
-    /**
      * Muestra las agendas de un inspector
      *
      * @param  Int $id
      * @param  String $view
      * @return view
      */
-    public function inspector($id, $view)
+    public function inspector($id)
     {
-        if($view == 'list'){
-            $result = InspectorAgenda::where('inspector_id','=',$id)->orderBy('date', 'desc')->with('inspector', 'headquarters')->paginate();
-            return view('inspector_agenda.'.$view, compact('result', 'id'));
-        }elseif($view == 'index'){
-            $result = InspectorAgenda::where('inspector_id','=',$id)->orderBy('date', 'desc')->with('inspector', 'headquarters')->paginate();
-            $headquarters = Headquarters::all();
-            $inspectors = Inspector::all();
-            return view('inspector_agenda.index', compact('result', 'headquarters', 'inspectors', 'id'));
+        $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
+        $countries = Country::all()->pluck('name', 'id');
+
+        $inspector = Inspector::findOrFail($id);
+
+        if(count($inspector->inspector_agendas) == 0)
+        {
+            Session::flash('alert', ['info', trans('words.AgendaEmpty')]);
         }
-    }
-
-    /**
-     * Cambia a la vista tabla
-     *
-     * @return view
-     */
-    public function list(){
-        $result = InspectorAgenda::latest()->with(['inspector', 'headquarters'])->paginate();
-        $headquarters = Headquarters::all();
-        $inspectors = Inspector::all();
-
-        return view('inspector_agenda.list', compact('result', 'headquarters', 'inspectors'));
+        
+        return view('inspector_agenda.index', compact('inspectors', 'countries', 'inspector'));
     }
 
     /**
@@ -297,7 +118,7 @@ class InspectorAgendaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeAjax(InspectorAgendaRequest $request)
+    public function store(InspectorAgendaRequest $request)
     {
         // Validar si la fecha de inicio ingresada supera a la fecha final
         if($request->start_date >$request->end_date){
@@ -356,12 +177,18 @@ class InspectorAgendaController extends Controller
      *
      * @return JSON
      */
-    public function events()
+    public function events($id=null)
     {
         $result = InspectorAgenda::join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
                 ->join('users', 'users.id', '=', 'inspectors.user_id')
-                ->select('users.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'inspector_id')->get();
-                
+                ->select('users.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'inspector_id');
+
+        if($id){
+            $result = $result->where('inspectors.id', $id)->get();
+        }else{
+            $result = $result->get();
+        }
+
         //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario
         foreach($result as $item){
             $item->end = $item->end.'T23:59:59';
@@ -377,7 +204,7 @@ class InspectorAgendaController extends Controller
      * @param  \App\InspectorAgenda  $inspectorAgenda
      * @return JSON
      */
-    public function updateAjax(Request $request, $slug)
+    public function update(Request $request, $slug)
     {
         if($request['drop'] != null){
             $request->validate([
@@ -523,7 +350,7 @@ class InspectorAgendaController extends Controller
      * @param  String  $slug
      * @return \Illuminate\Http\Response
      */
-    public function destroyAjax($slug)
+    public function destroy($slug)
     {
         //Contador de errores
         $cont=0;

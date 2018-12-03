@@ -546,7 +546,7 @@ $(document).on('click', '.editCalendar', function(e){
 
 
                 $('#modalEditDel #country').val(res.agenda.city.countries_id);
-                $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+res.agenda.slug);
+                $('#editAgenda').attr('action', $('#url').val()+'/'+res.agenda.slug);
 
                 slideForms(objElement, () => {
                     $('#modalEditDel #country').trigger('change',res.agenda.city_id);
@@ -815,6 +815,8 @@ function cargarSelectClients()
 
 // Campo selector de iconos
 
+$('#icon').removeAttr('disabled');
+
 $('#icon').on('focus', function(e){
     $(".oculto").fadeIn("fast");
 });
@@ -831,6 +833,7 @@ $(document).on("click",".oculto ul li",function()
     $(".oculto").fadeOut("fast");
 });
 
+// Al realizar la busqueda muestre los iconos resultantes, si no hay coincidencias muestre un mensaje y si vacia la busqueda deseleccione el icono
 $(document).on("keyup", '#icon', function()
 {
     var value=$(this).val();
@@ -853,11 +856,14 @@ $(document).on("keyup", '#icon', function()
     }
 });
 
+// Cuando clickee en el boton del icono oculte o muestre los iconos
 $('.form-group.picker .input-group-addon').on('click', function(){
-    console.log('Clickeoo');
-    $(".oculto").fadeToggle("fast");
-});
-
-$('.form-group.picker .input-group-addon').on('focus', function(){
-    console.log('Salio');
+    if($('.oculto').is(":visible"))
+    {
+        $(".oculto").fadeOut("fast");
+    }
+    else
+    {
+        $(".oculto").fadeIn("fast");
+    }
 });

@@ -143,5 +143,6 @@ return[
     'ClientMenu' => 'Client Menu',
     'Inspection' => 'Inspection',
     'FormatEI' => 'Expediting and inspection format',
+    'AgendaEmpty' => 'There are no agendas',
 ];
 ?>

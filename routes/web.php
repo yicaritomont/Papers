@@ -37,32 +37,21 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('elegirCompania', array('as' => 'elegirCompania', 'uses'=>'UserController@ShowMultiple'));
     Route::get('enviaCompania/{id}',array('as'=>'enviaCompania','uses'=>'UserController@PostMultiple'));
 
-    // Consultar los usuarios de una compañia
-    Route::get('user/{company?}', 'UserController@index')->name('users.company');
-
-    //Consultar los usuarios de una compañia D?
+    //Consultar los usuarios de una compañia
     Route::get('users/company/{company?}', 'UserController@index')->name('users.company');
 
-    //Consultar los inspectores de una compañia D?
+    //Consultar los inspectores de una compañia
     Route::get('inspectors/company/{company?}', 'InspectorController@index')->name('inspectors.company');
-
-    //Vista tabla de agendas D?
-    Route::get('inspectoragendas/list', 'InspectorAgendaController@list')->name('inspectoragendas.view');
 
     //Consultar agendas de un inspector y en una vista dada D?
     // Route::get('inspectoragendas/inspector/{id}/{view}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
 
-    //Acciones ajax de agendas
-    Route::post('inspectoragendas/ajax', 'InspectorAgendaController@storeAjax')->name('inspectoragendas.store.ajax');
-    Route::put('inspectoragendas/ajax/{inspectoragenda}', 'InspectorAgendaController@updateAjax')->name('inspectoragendas.update.ajax');
-    Route::delete('inspectoragendas/ajax/{inspectoragenda}', 'InspectorAgendaController@destroyAjax')->name('inspectoragendas.destroy.ajax');
-
     //Eventos Calendario
-    Route::get('inspectionappointments/events', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
-    Route::get('inspectoragendas/events', 'InspectorAgendaController@events')->name('inspectoragendas.events');
+    Route::get('inspectionappointments/events/{id?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
+    Route::get('inspectoragendas/events/{id?}', 'InspectorAgendaController@events')->name('inspectoragendas.events');
 
     //Consultar las agendas de un inspector
-    // Route::get('inspectoragendas/{id}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
+    Route::get('inspectoragendas/inspector/{id}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
 
     //Completar las citas
     Route::put('inspectionappointments/{inspectionappointment}/complete', 'InspectionAppointmentController@complete')->name('inspectionappointments.complete');

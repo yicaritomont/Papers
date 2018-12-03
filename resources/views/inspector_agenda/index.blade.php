@@ -12,15 +12,15 @@
                 <div class="panel-heading">              
                     <div class="row">
                         <div class="col-md-8">
-                            @if(isset($id))
-                                <h3 class="modal-title">{{ trans_choice('words.InspectorAgenda', $result->count()) }} {{ $result[0]->inspector['name'] }}  </h3>
+                            @if(isset($inspector))
+                                <h3 class="modal-title">{{ count($inspector->inspector_agendas) }} {{ trans_choice('words.InspectorAgenda', count($inspector->inspector_agendas)) }} {{ $inspector->user->name }}  </h3>
                             @else
-                                <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.InspectorAgenda', $result->count()) }} </h3>
+                                <h3 class="modal-title">{{ $quantity }} {{ trans_choice('words.InspectorAgenda', $quantity) }} </h3>
                             @endif
                         </div>
                         <div class="col-md-4 text-right">
                             {{-- <a class="btn btn-info" href="{{ route('inspectoragendas.view') }}">@lang('words.tableView')</a> --}}
-                            @if(isset($id))
+                            @if(isset($inspector))
                                 <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
                             @endif
                         </div>
@@ -46,7 +46,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="msgError"></div>
-                        {!! Form::open(['route' => ['inspectoragendas.store.ajax'], 'class' => 'formCalendar', 'id' => 'formCreateAgenda', 'data-modal'=>'#modalCreate']) !!}
+                        {!! Form::open(['route' => ['inspectoragendas.store'], 'class' => 'formCalendar', 'id' => 'formCreateAgenda', 'data-modal'=>'#modalCreate']) !!}
                             @include('inspector_agenda._form')
                             <!-- Submit Form Button -->                        
                             {!! Form::submit(trans('words.Create'), ['class' => 'btn-body']) !!}
@@ -156,6 +156,8 @@
     <input type="hidden" id="url" value="{{ route('inspectoragendas.index') }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <input type="hidden" id="selectOption" value="{{trans('words.ChooseOption')}}">
+    
+    {{-- {{ dd(session('alert')) }} --}}
 @endsection
 
 @section('scripts')
@@ -165,11 +167,15 @@
         //Se define un objeto que contenga las caracteristicas particulares de cada calendario y luego se definen
         var calendarObj = {};
         calendarObj.customButtons = null;
-        calendarObj.events = $('#url').val()+'/events';
+        @if(isset($inspector))
+            calendarObj.events = $('#url').val()+'/events/{{ $inspector->id }}';
+        @else
+            calendarObj.events = $('#url').val()+'/events';
+        @endif
         calendarObj.eventClick = function(event)
         {
             //Cambiar el action del formulario
-            $('#deleteAgenda').attr('action', $('#url').val()+'/ajax/'+event.slug);
+            $('#deleteAgenda').attr('action', $('#url').val()+'/'+event.slug);
             $('.showCalendar').attr('data-route', $('#url').val()+'/'+event.slug);
             $('.editCalendar').attr('data-route', $('#url').val()+'/'+event.slug+'/edit');
 
@@ -226,7 +232,7 @@
             @can('edit_inspectoragendas')
                 var end = calEvent.end.format().split('T');
 
-                $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+calEvent.slug);
+                $('#editAgenda').attr('action', $('#url').val()+'/'+calEvent.slug);
                 $('#modalEditDel #start_date').val(calEvent.start.format());
                 $('#modalEditDel #end_date').val(end[0]);
                 $('#modalEditDel #inspector_id').val(calEvent.inspector_id);

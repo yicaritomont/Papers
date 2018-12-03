@@ -12,14 +12,14 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-md-5">
-                            @if(isset($id))
-                                <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Inspectionappointment', $result->count()) }}  @lang('words.Of') {{ $result[0]->inspector['name'] }}  </h3>
+                            @if(isset($inspector))
+                                <h3 class="modal-title">{{ count($inspector->inspection_appointments) }} {{ trans_choice('words.Inspectionappointment', count($inspector->inspection_appointments)) }}  @lang('words.Of') {{ $inspector->user->name }}  </h3>
                             @else
-                                <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Inspectionappointment', $result->count()) }} </h3>
+                                <h3 class="modal-title">{{ $quantity }} {{ trans_choice('words.Inspectionappointment', $quantity) }} </h3>
                             @endif
                         </div>
                         <div class="col-md-7 text-right">
-                            @if(isset($id))
+                            @if(isset($inspector))
                                 <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
                             @endif
                         </div>
@@ -229,7 +229,13 @@
         //Se define un objeto que contenga las caracteristicas particulares de cada calendario y luego se definen
         var calendarObj = {};
         calendarObj.customButtons = null;
-        calendarObj.events = $('#url').val()+'/events';
+
+        @if(isset($inspector))
+            calendarObj.events = $('#url').val()+'/events/{{ $inspector->id }}';
+        @else
+            calendarObj.events = $('#url').val()+'/events';
+        @endif
+
         calendarObj.eventClick = function(event)
         {
             //Resetar y setear el action el formulario de completar si existe el elemento

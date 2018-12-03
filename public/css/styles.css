@@ -367,6 +367,11 @@ tr.child ul.dtr-details li{
     justify-content: center;
 }
 
+.oculto #text
+{
+    color:#666;
+}
+
 .oculto ul li {
     margin:0;
     padding:0;
