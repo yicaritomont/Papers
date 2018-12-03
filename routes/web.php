@@ -112,9 +112,10 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('inspectionsubtypes','InspectionSubtypeController');
     Route::resource('preformatos','PreformatoController');
     Route::resource('formats','FormatController');
-    Route::get('formats/informationFormat','FormatController@informationFormat')->name('formats.informationFormat');
+    //Route::get('formats/informationFormat','FormatController@informationFormat')->name('formats.informationFormat');
     Route::get('ajxllenarCabeceraFormato','FormatController@llenarCabeceraFormato');
     Route::get('ajxcargarSelectClients','FormatController@cargarSelectClients');
+    Route::get('/formats/downloadPDF/{id}','FormatController@downloadPDF');
     Route::resource('clients', 'ClientController');
     Route::resource('headquarters', 'HeadquartersController');
     Route::resource('companies', 'CompanyController');

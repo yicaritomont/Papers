@@ -11,7 +11,6 @@ class MenuSeeder extends Seeder
      */
     public static function run()
     {
-        //
         $Menus = [
             ['id' => '1' , 'name' => 'Aplicación'                       ,'status' => 1 , 'menu_id' => 1],
             ['id' => '2' , 'name' => 'Master'                           ,'status' => 1 , 'menu_id' => 1],
@@ -28,7 +27,7 @@ class MenuSeeder extends Seeder
             ['id' => '13' , 'name' => 'Inspector'                       ,'status' => 1 , 'menu_id' => 4 , 'url' => 'inspectors'],
             ['id' => '14' , 'name' => 'InspectorAgenda'                 ,'status' => 1 , 'menu_id' => 4 , 'url' => 'inspectoragendas'],
             ['id' => '15' , 'name' => 'Inspectionappointment'           ,'status' => 1 , 'menu_id' => 4 , 'url' => 'inspectionappointments'],
-            ['id' => '16' , 'name' => 'Formato expedición e inspección' ,'status' => 1 , 'menu_id' => 4 , 'url' => 'formats'],
+            ['id' => '16' , 'name' => 'Formatos'                         ,'status' => 1 , 'menu_id' => 4 , 'url' => 'formats'],
 
         ];
 

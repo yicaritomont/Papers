@@ -12,7 +12,9 @@ use App\Company;
 use App\Client;
 use App\Contract;
 use App\User;
+use App\Estilo;
 use App\File;
+use PDF;
 use DB;
 
 class FormatController extends Controller
@@ -341,4 +343,14 @@ class FormatController extends Controller
         return response()->json(array($id => 'delete'));
     }
 
+    public function downloadPDF($id)
+    {
+      $format = Format::find($id);
+      $estilos = Estilo::find(1);
+      $config_format = $estilos->estilos.$format->format;
+      $pdf = \App::make('dompdf.wrapper');
+      $pdf->loadHTML($config_format);
+      echo "<pre>";print_r($config_format);echo "</pre>";exit();
+      return $pdf->stream();
+    }
 }
