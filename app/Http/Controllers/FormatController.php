@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Http\Helpers\Equivalencia;
 use App\Format;
 use App\Preformato;
 use App\Company;
@@ -10,7 +13,9 @@ use App\Client;
 use App\Contract;
 use App\User;
 use App\Estilo;
+use App\File;
 use PDF;
+use DB;
 
 class FormatController extends Controller
 {
@@ -241,6 +246,101 @@ class FormatController extends Controller
                     json_encode($response = [ 'clients' => $clients]);
         }
         return $response;
+    }
+
+    public function supports($id)
+    {
+      $formato = Format::find($id);
+      return view('format.supports', compact('formato'));
+    }
+
+    public function upload( Request $request )
+    {
+        $response = array();
+        //Obtenemos el id del formato
+        $format_id = $request->input('formato_id');
+        $file_id = $request->input('file_id');
+        $files = $request->file('input-supports');
+        //Directorio destino
+        $destinationPath = "uploads/".$format_id."/";
+        //Validación datos
+        if( !is_null($files) ){
+            foreach( $files AS $key => $item )
+            {
+                if( $item->isValid() ){
+    
+                    $name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
+                    $upload_success = $item->move($destinationPath, $name_url['name'] );
+    
+                    if( $upload_success )
+                    {
+                        $new_file = array
+                        (
+                            'mime_type'     =>  $upload_success->getMimeType(),
+                            'format_id'     =>  $format_id,
+                            'nombre_url'    =>  $name_url['url'],
+                            'user_id'       =>  Auth::id(),
+                            'extension'     =>  $upload_success->getExtension()
+                        );
+    
+                        $insert = File::insertGetId($new_file);
+                        $new_file['id'] = $insert;
+                        array_push($response,$new_file);
+    
+                    }else{
+                           
+                    }
+    
+                }else{
+    
+                }
+            }
+        }
+        return response()->json($response);
+    }
+
+    public function getNameFile($path,$name)
+    {
+        $file = array();
+        while( file_exists( public_path()."/".$path.$name ) )
+        {
+            $rd = rand(0,999);
+            $pos = strripos($name,'.');
+            $label = substr($name,0,$pos);
+            $ext = substr($name,($pos+1));
+            $name = $label."_".$rd.".".$ext;
+        }
+        $file['name'] = $name;
+        $file['url'] = $path.$name;
+        return $file;
+    }
+
+    public function getInitialData( Request $request )
+    {
+        $response = array('files' => array() , 'path' =>  $request->root() );
+        $format_id = $request->input('formato');
+        $response['files'] = DB::table('files')->where('format_id',$format_id)->get();
+        $texts = array('txt','csv');
+        foreach( $response['files'] AS $key => $item )
+        {
+            if( in_array($item->extension,$texts) ){
+                $response['files'][$key]->content = file_get_contents($item->nombre_url);
+            }
+            
+        }
+        return response()->json($response);
+    }
+
+    public function delete( Request $request  )
+    {
+        $id = $request->input('key');
+        $support = File::find($id);
+        //Eliminamos el archivo
+        if( file_exists(public_path().'/'.$support->nombre_url) ){
+            unlink(public_path().'/'.$support->nombre_url);
+            $support->forceDelete();
+        }
+        return response()->json(array($id => 'delete'));
     }
 
     public function downloadPDF($id)
