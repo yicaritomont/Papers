@@ -327,12 +327,8 @@ class FormatController extends Controller
         {
             if( in_array($item->extension,$texts) ){
                 $content =  file_get_contents($item->nombre_url);
-                //$response['files'][$key]->content = $content;
+                //$response['files'][$key]->content = addslashes($content);
             }
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
         }
         return response()->json($response);
     }
