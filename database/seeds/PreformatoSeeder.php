@@ -903,11 +903,15 @@ class PreformatoSeeder extends Seeder
 
             <p>&nbsp;</p>
             <p><strong>9.&nbsp;&nbsp;<u>Running Test</u></strong>&nbsp;</p>
-            <p>During the last visit, Cemengal and the client were in the running test. Basically all the dates were notificated by CMD and it was not possible to open the gear cases because the running test was working during the visit.</p>
-            <p>CMD informed to Cemengal that to obtain an intermediate date it will be necessary to ask CMD and they will provide it.</p>
-            <p>The running tet was working since april, the 30, 2015 and will be finished until may, the 08, 2015 approximately.</p>
-
+            <table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+            	<tbody>
+            		<tr>
+            			<td><textarea cols="80" rows="10"></textarea></td>
+            		</tr>
+            	</tbody>
+            </table>
             <div style="background:#072360; border:1px solid #cccccc"><span style="color:#ffffff">4 - NON SATISFACTORY RESULTS:</span></div>
+            <p>&nbsp;</p>
 
             <table border="1" cellpadding="1" cellspacing="1" style="width:100%">
             	<tbody>

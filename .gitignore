@@ -11,6 +11,8 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 .env
+composer.lock
+*.lock
 
 #Archivos
 *.jpg
@@ -43,3 +45,4 @@ npm-debug.log
 *.zip
 *.rar
 *.7z
+
