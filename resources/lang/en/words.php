@@ -138,5 +138,12 @@ return[
     'ErrorRangeDate' => 'The start date can not be longer than the final date',
     'MainMenu' => 'Main menu',
     'DropdownMenu' => 'Dropdown menu',
+    //Supports
+    'upload_sopports'    =>  'Load Supports',
+    'supports'           =>  'Supports',
+    'browse'             =>  'Browse',
+    'upload'             =>  'Upload',
+    'browseMsg'          =>  'Select files...',
+    'manage'             =>  'Manage'
 ];
 ?>

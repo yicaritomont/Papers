@@ -1,0 +1,29 @@
+INSERT INTO `empresa` (`id`, `nombre`, `nit`, `estado`) VALUES (NULL, 'TERPEL S.A', '8050089999', '1');
+
+INSERT INTO `tipo` (`id`, `nombre`, `estado`) VALUES (NULL, 'ACEITE LUBRICANTE MOTOCICLISTA', '1'), (NULL, 'ACEITE LUBRICANTE CONDUCTORES', '1');
+
+INSERT INTO `tipo` (`id`, `nombre`, `estado`) VALUES (NULL, 'ACEITA LUBRICANTE TRANSPORTADORES', '1');
+
+ALTER TABLE `persona` ADD `email` VARCHAR(240) NULL AFTER `identificacion`;
+
+ALTER TABLE `persona` CHANGE `identificacion` `identificacion` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+ALTER TABLE `producto` CHANGE `capacidad` `capacidad` INT(11) NULL DEFAULT NULL;
+
+ALTER TABLE `producto` CHANGE `grados` `grados` DOUBLE NULL DEFAULT NULL;
+
+ALTER TABLE `producto` ADD `lote` VARCHAR(180) NULL DEFAULT NULL AFTER `grados`;
+
+INSERT INTO `producto` (`id`, `codigo`, `nombre`, `tipo_id`, `empresa_id`, `capacidad`, `grados`, `lote`) VALUES (NULL, '050000001', 'MOBIL SUPER MOTO 4T', '16', '5', NULL, NULL, 'AJ23881'), (NULL, '050000002', 'Terpel Celerity 2t JASO FB', '16', '5', NULL, NULL, 'AJ23882');
+
+INSERT INTO `producto` (`id`, `codigo`, `nombre`, `tipo_id`, `empresa_id`, `capacidad`, `grados`, `lote`) VALUES (NULL, '050000003', 'Terpel Oiltec 20w50 Titanio', '17', '5', NULL, NULL, 'AJ23898'), (NULL, '050000004', 'Tergas 20w50', '17', '5', NULL, NULL, 'AJ23998');
+
+DELETE FROM producto_codigo WHERE id > 0;
+DELETE FROM persona WHERE id > 0;
+DELETE FROM lectura WHERE id > 0;
+
+
+
+
+
+

@@ -2,6 +2,16 @@
     <a href="{{ route($entity.'.edit', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-info">
         <i class="fa fa-edit"></i>
     </a>
+
+    @php
+        $parameters = Route::current()->parameters();
+    @endphp
+
+    @if( $parameters['entity'] == 'formats' )
+        <a href="{{ route($entity.'.supports', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-warning">
+            <i class="glyphicon glyphicon-folder-open"></i></a>
+    @endif
+
 @endcan
 
 @can('delete_'.$entity)
