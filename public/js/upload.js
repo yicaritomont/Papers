@@ -54,14 +54,6 @@ var upload = {
         'gif'   : '<i class="far fa-images text-warning"></i>',
         'wav'   : '<i class="fas fa-volume-up text-info"></i>',
         'ogg'   : '<i class="fas fa-volume-up text-info"></i>'
-    },
-    previewTemplates:{
-        text: '<div class="file-preview-frame{frameClass}" id="{previewId}" data-fileindex="{fileindex}" data-template="{template}">\n' +
-        '   <div class="kv-file-content">' +
-        '       <textarea class="kv-preview-data file-preview-text" title="{caption}" readonly style="width: 100%; height: 100%; min-height: 480px;">{data}</textarea>' +
-        '   </div>\n' +
-        '   {footer}\n' +
-        '</div>'
     }
 };
 
@@ -117,7 +109,7 @@ var vm = new Vue({
             var urls = [], config = [];
             for( var i in files ){
                 if( files[i].content ){
-                    urls.push(root+"/"+files[i].content);
+                    urls.push(atob(files[i].content));
                 }else{
                     urls.push(root+"/"+files[i].nombre_url); 
                 }
@@ -125,9 +117,6 @@ var vm = new Vue({
                 var caption = this.getCaption(files[i].nombre_url);
                 switch( this.getType(this.getExt(caption)) )
                 {
-                    case 'text': 
-                        var conf =  {type: "text", size: 1430, caption: caption, url: root+"/supports/delete" , key:  files[i].id , downloadUrl: false };
-                        break;
                     case 'video':
                         var conf =  {type: "video", size: 375000, filetype: files[i].mime_type , caption: caption , url: root+"/supports/delete" , key: files[i].id, downloadUrl:  root+"/"+files[i].nombre_url ,filename: caption };
                         break; 
@@ -145,10 +134,6 @@ var vm = new Vue({
                         var conf =  {type: this.getType(this.getExt(caption)) , size: 102400, caption: caption,url: root+"/supports/delete" , key: files[i].id , downloadUrl : root+"/"+files[i].nombre_url };
                         break;
                 }
-                /*
-                var conf = { caption : , key : , url :  , downloadUrl : root+"/"+files[i].nombre_url , filetype : files[i].mime_type };
-                conf.type = this.getType(this.getExt(conf.caption));
-                conf.filename = this.getCaption(files[i].nombre_url);*/
                 config.push(conf);
 
             }
@@ -182,6 +167,11 @@ var vm = new Vue({
                     return i;
                 }
             }
+        },
+        blobToFile( theBlob, fileName){
+            theBlob.lastModifiedDate = new Date();
+            theBlob.name = fileName;
+            return theBlob;
         }
     }
 });
