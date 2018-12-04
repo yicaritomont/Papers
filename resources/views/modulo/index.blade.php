@@ -48,7 +48,7 @@
             @can('edit_modulos', 'delete_modulos')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Modulo', 'entity' => 'modulos', 'identificador' => 'id', 'relations' => 'none']) }}";
 
-                columns.push({data: 'actions', className: 'text-center'},)
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else

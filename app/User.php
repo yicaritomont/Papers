@@ -44,4 +44,11 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Company::class, 'user_company');
     }
+
+    public function inspectors()
+    {
+        return $this->hasOne('App\Inspector');
+        /* return $this->belongsTo(Inspector::class);
+        return $this->belongsTo('App\Inspector','inspector_type_id','id'); */
+    }
 }

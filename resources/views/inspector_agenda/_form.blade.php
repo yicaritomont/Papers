@@ -11,22 +11,14 @@
     <div class="errors"></div>
 </div>
 
-<!-- Inspector of Headquarters Form Select -->
-<div class="form-group">
-    {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
-    {{-- <select name="inspector_id" id="inspector_id" class="input-body">
-        <option value="">@lang('words.ChooseOption')</option>
-        @foreach($inspectors as $item)
-            <option value="{{$item->id}}" 
-            @if(isset($inspectorAgenda))
-            {{ $inspectorAgenda->inspector_id === $item->id ? 'selected' : '' }}
-            @endif
-            >{{$item->name}}</option>
-        @endforeach
-    </select> --}}
-    {!!Form::select('inspector_id', $inspectors, isset($inspectorAgenda) ? $inspectorAgenda->inspector_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
-    <div class="errors"></div>
-</div>
+@if( !auth()->user()->hasRole('Inspector') )
+    <!-- Inspector of Headquarters Form Select -->
+    <div class="form-group">
+        {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
+        {!!Form::select('inspector_id', $inspectors, isset($inspectorAgenda) ? $inspectorAgenda->inspector_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
+        <div class="errors"></div>
+    </div>
+@endif
 
 <!-- Country of Headquarters Form Select -->
 <div class="form-group">

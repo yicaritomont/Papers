@@ -48,7 +48,7 @@
             @can('edit_professions','delete_professions')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Profession', 'entity' => 'professions', 'identificador' => 'id', 'relations' => 'none']) }}";
                 
-                columns.push({data: 'actions', className: 'text-center'},)
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];     
             @else

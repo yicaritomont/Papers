@@ -49,7 +49,7 @@
 
             @can('edit_inspectionsubtypes','delete_inspectionsubtypes')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionSubtype', 'entity' => 'inspectionsubtypes', 'identificador' => 'id', 'relations' => 'inspection_types']) }}";
-                columns.push({data: 'actions', className: 'text-center'},)
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else

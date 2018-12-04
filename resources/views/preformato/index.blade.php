@@ -44,7 +44,7 @@
 
                 @can('edit_preformatos','delete_preformatos')
                     dataTableObject.ajax = "{{ route('datatable', ['model' => 'Preformato', 'entity' => 'preformatos', 'identificador' => 'id', 'relations' => 'none']) }}";
-                    columns.push({data: 'actions', className: 'text-center'},)
+                    columns.push({data: 'actions', className: 'text-center w1em'},)
                     dataTableObject.columns = columns;
                     dataTableObject.columnDefs = [setDataTable([-2, -3])];
                 @else

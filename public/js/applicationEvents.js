@@ -92,6 +92,11 @@ $('.inspection_type_id').on('change',function(event, edit){
 });
 
 $('.country').on('change',function(event, edit){
+    // Se valida si la variable edit es numerica, si no lo es asignele undefined
+    if( !$.isNumeric(edit) )
+    {
+        edit = undefined;
+    }
     fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit);
 });
 
@@ -287,10 +292,10 @@ function alert(color, msg){
     return '<div class="alert alert-'+color+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+msg+'</div>';
 }
 
-function slideForms(obj, cualquierWea) {
+function slideForms(obj, funcRes) {
     var selector = obj.data('toggle');
     $('.formSlide:not('+selector+')').slideUp('slow');
-    $(selector).slideToggle('slow', cualquierWea);
+    $(selector).slideToggle('slow', funcRes);
 };
 
 //Funcion para el mensaje de confirmación de eliminación por Ajax
@@ -325,6 +330,7 @@ function confirmModal(form, msg, type, revertFunc){
 $(window).resize(function(){
     changeTopToast();
     $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
+    // $('.dataTable').DataTable().columns.adjust().draw();
 });
 
 function changeTopToast(){
@@ -440,25 +446,28 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
         }
     })
     .fail(function(res){
-        console.log('error\n'+res);
+        console.log('fail\n'+res);
         console.log(res);
     })
-    .always(function(res){
-        console.log('complete\n'+res);
-    })
     .error(function(res){
+        console.log(res.status);
+        if(res.status == 403){
+            $('.msgError').html('');
+            $('.msgError').append(alert('danger', res.responseJSON.message));
+        }else if(res.status == 422){
 
-        $('.form-group').removeClass('has-error');
-        $('.errors').empty();
-
-        $('#'+idForm).find(':input').each(function(){
-            var idInput = $(this).attr('id');
-
-            if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
-                $(this).parents('.form-group').addClass('has-error');
-                $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput][0]));
-            }
-        });
+            $('.form-group').removeClass('has-error');
+            $('.errors').empty();
+            
+            $('#'+idForm).find(':input').each(function(){
+                var idInput = $(this).attr('id');
+                
+                if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
+                    $(this).parents('.form-group').addClass('has-error');
+                    $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput][0]));
+                }
+            });
+        }
     });
 });
 
@@ -497,6 +506,12 @@ $('.showCalendar').on('click', function(e){
         })
         .fail(function(res){
             console.log('error\n'+res);
+        })
+        .error(function(res){
+            if(res.status == 403){
+                $('.msgError').html('');
+                $('.msgError').append(alert('danger', res.responseJSON.message));
+            }
         });
     }
 });
@@ -544,8 +559,8 @@ $(document).on('click', '.editCalendar', function(e){
                     $('#modalEditDel #'+nomField).val(res.agenda[nomField]);
                 });
 
-
                 $('#modalEditDel #country').val(res.agenda.city.countries_id);
+                $('#modalEditDel #country').trigger("chosen:updated");
                 $('#editAgenda').attr('action', $('#url').val()+'/'+res.agenda.slug);
 
                 slideForms(objElement, () => {
@@ -569,6 +584,12 @@ $(document).on('click', '.editCalendar', function(e){
         })
         .fail(function(res){
             console.log('error\n'+res);
+        })
+        .error(function(res){
+            if(res.status == 403){
+                $('.msgError').html('');
+                $('.msgError').append(alert('danger', res.responseJSON.message));
+            }
         });
     }
 });
@@ -583,6 +604,9 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
     $(form)[0].reset();
     $(form+' #'+fielDate+'start_date').val(startDate);
     $(form+' #'+fielDate+'end_date').val(endDate);
+    $('#country').trigger("chosen:updated");
+    $('#city_id').trigger("chosen:updated");
+    
     $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
 }
 
@@ -701,6 +725,8 @@ function calendar(obj){
 
 function fillSelect(url, select, edit){
     console.log(edit);
+    console.log(url);
+    console.log(select);
 
     $.ajax({
         url:url,
@@ -719,11 +745,11 @@ function fillSelect(url, select, edit){
             $(select).append('<option value="'+value.id+'">'+value.name+'</option>');
         });
 
-        $(select).trigger("chosen:updated");
-
         if(edit){
             $(select).val(edit);
         }
+        $(select).trigger("chosen:updated");
+        
     })
     .fail(function(res){
         alert('Error.');

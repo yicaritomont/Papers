@@ -65,7 +65,7 @@
                     dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}";
                 @endif
 
-                columns.push({data: 'actions', className: 'text-center'},)
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else

@@ -53,7 +53,7 @@
 
             @can('edit_headquarters', 'delete_headquarters')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}";
-                columns.push({data: 'actions', className: 'text-center'},)
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else

@@ -411,6 +411,11 @@ tr.child ul.dtr-details li{
     vertical-align: top;
 }
 
+.w1em
+{
+    width: 1em;
+}
+
 .main_container
 {
     position: relative;

@@ -48,7 +48,7 @@
                         <div class="msgError"></div>
                         {!! Form::open(['route' => ['inspectoragendas.store'], 'class' => 'formCalendar', 'id' => 'formCreateAgenda', 'data-modal'=>'#modalCreate']) !!}
                             @include('inspector_agenda._form')
-                            <!-- Submit Form Button -->                        
+                            <!-- Submit Form Button -->
                             {!! Form::submit(trans('words.Create'), ['class' => 'btn-body']) !!}
                         {!! Form::close() !!}
                     </div>
@@ -148,11 +148,11 @@
         Puede ver
     @else
         No puede ver
-    @endcan
+    @endcan --}}
     <br>
         <h2>{{ auth()->user()->roles }}</h2>
     <br>
-    <br> --}}
+    <br>
     <input type="hidden" id="url" value="{{ route('inspectoragendas.index') }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <input type="hidden" id="selectOption" value="{{trans('words.ChooseOption')}}">

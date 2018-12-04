@@ -42,29 +42,22 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         
-        //Se valida si no es un usuario con rol compañia valide el campo companies
-        if( !auth()->user()->hasRole('Compañia') ){
-            $this->validate($request, [
-                'name'              => 'required',
-                'identification'    => 'required',
-                'email'             => 'required|email|unique:users,email',
-                'password'          => 'required|min:6',
-                'phone'             => 'required|numeric',
-                'cell_phone'        => 'required|numeric',
-                'companies'         => 'required',
-            ]);
-        }else{
-            $this->validate($request, [
-                'name'              => 'required',
-                'identification'    => 'required',
-                'email'             => 'required|email|unique:users,email',
-                'password'          => 'required|min:6',
-                'phone'             => 'required|numeric',
-                'cell_phone'        => 'required|numeric',
-            ]);
-
+        //Se valida si es un usuario con rol compañia agregue al request la compañuia en sesión
+        if( auth()->user()->hasRole('Compania') ){
             $request['companies'] = auth()->user()->companies->pluck('id');
         }
+        dd($request['companies'] = auth()->user()->companies);
+        dd($request['companies'] = auth()->user()->companies->pluck('id'));
+
+        $this->validate($request, [
+            'name'              => 'required',
+            'identification'    => 'required',
+            'email'             => 'required|email|unique:users,email',
+            'password'          => 'required|min:6',
+            'phone'             => 'required|numeric',
+            'cell_phone'        => 'required|numeric',
+            'companies'         => 'required',
+        ]);
 
         $request['roles'] = 4;
 
@@ -92,13 +85,13 @@ class ClientController extends Controller
             
             $alert = ['success', trans_choice('words.Client', 1).' '.trans('words.HasAdded')];
 
-            return redirect()->route('users.index')->with('alert', $alert);
+            return redirect()->route('clients.index')->with('alert', $alert);
 
         } 
         else 
         {
             $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Client', 1)];
-            return redirect()->route('users.index')->with('alert', $alert);
+            return redirect()->route('clients.index')->with('alert', $alert);
         }
     }
 
@@ -137,7 +130,7 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
-        if( !auth()->user()->hasRole('Compañia') ){
+        if( !auth()->user()->hasRole('Compania') ){
             $this->validate($request, [
                 'name'              => 'required',
                 'identification'    => 'required',

@@ -53,7 +53,7 @@
 
             @can('edit_contracts', 'delete_contracts')
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Contract', 'entity' => 'contracts', 'identificador' => 'id', 'relations' => 'company,client,client.user,company.user']) }}";
-                columns.push({data: 'actions', className: 'text-center'},)
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else

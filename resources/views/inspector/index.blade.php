@@ -89,7 +89,7 @@
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
             @endif
 
-            columns.push({data: 'actions', className: 'text-center'});
+            columns.push({data: 'actions', className: 'text-center w1em'});
             dataTableObject.columns = columns;
 
             dataTableObject.columnDefs.push(
@@ -97,10 +97,7 @@
                     //En la columna 11 (actions) se agrega el boton de ver inspector
                     targets: 11,
                     render: function(data, type, row){
-                        var btn = '<a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+row.id+'" class="btn btn-xs btn-primary">\
-                                        <i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}\
-                                    </a>';
-                        var xd =    '<div class="dropdown" style="display:inline-block">\
+                        var btn =   '<div class="dropdown" style="display:inline-block">\
                                         <button class="btn btn-xs btn-primary dropdown-toggle" type="button" id="watchMenu" data-toggle="dropdown">\
                                             <i class="fa fa-eye"></i>\
                                             \
@@ -108,13 +105,8 @@
                                         <ul class="dropdown-menu pull-right" aria-labelledby="watchMenu" style="text-align:right">\
                                             <li><a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+row.id+'">@lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a></li>';
                         
-                        console.log(xd);
-
                         @can('view_inspectoragendas')
-                            btn += '<a target="_blank" href="'+window.Laravel.url+'/inspectoragendas/inspector/'+row.id+'" class="btn btn-xs btn-primary">\
-                                        <i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.InspectorAgenda", 2)}}\
-                                    </a>';
-                            xd += '<li>\
+                            btn +=  '<li>\
                                         <a target="_blank" href="'+window.Laravel.url+'/inspectoragendas/inspector/'+row.id+'">\
                                             @lang("words.Whatch") {{trans_choice("words.InspectorAgenda", 2)}}\
                                         </a>\
@@ -122,20 +114,16 @@
                         @endcan
 
                         @can('view_inspectionappointments')
-                            btn += '<a target="_blank" href="'+window.Laravel.url+'/inspectionappointments/inspector/'+row.id+'" class="btn btn-xs btn-primary">\
-                                        <i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspectionappointment", 2)}}\
-                                    </a>';
-                            xd += '<li>\
+                            btn +=  '<li>\
                                         <a target="_blank" href="'+window.Laravel.url+'/inspectionappointments/inspector/'+row.id+'">\
                                             @lang("words.Whatch") {{trans_choice("words.Inspectionappointment", 2)}}\
                                         </a>\
                                     </li>';
                         @endcan
 
-                        xd +=       '</ul>\
-                                </div>';
+                        btn += '</ul></div>';
 
-                        return data + xd;
+                        return data + btn;
                         //return data + btn;
                         //return data + '<a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+row.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a><a target="_blank" href="'+window.Laravel.url+'/inspectoragendas/inspector/'+row.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.InspectorAgenda", 2)}}</a><a target="_blank" href="'+window.Laravel.url+'/inspectionappointments/inspector/'+row.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspectionappointment", 2)}}</a>';
                     }
