@@ -326,8 +326,8 @@ class FormatController extends Controller
         foreach( $response['files'] AS $key => $item )
         {
             if( in_array($item->extension,$texts) ){
-                $content =  file_get_contents($item->nombre_url);
-                //$response['files'][$key]->content = addslashes($content);
+                $content = file_get_contents($item->nombre_url);
+                $response['files'][$key]->content = base64_encode($content);
             }
         }
         return response()->json($response);
@@ -356,5 +356,11 @@ class FormatController extends Controller
       $pdf = \App::make('dompdf.wrapper');
       $pdf->loadHTML($config_format);
       return $pdf->stream();
+    }
+
+    public function clearString( $string )
+    {
+        $clear = preg_replace("[^A-Za-z0-9]", "", $string);
+        return $clear;
     }
 }
