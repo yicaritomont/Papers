@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\User;
 use App\Inspector;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Log;
 
 class InspectorPolicy
 {
@@ -28,21 +29,7 @@ class InspectorPolicy
 
     public function validateId(User $user, Inspector $inspector)
     {
+        Log::info('Entroooooo');
         return $user->id === $inspector->user_id;
     }
-
-    /* public function destroy(User $user, Inspector $inspector)
-    {
-        return $user->id === $inspector->user_id;
-    }
-
-    public function edit(User $user, Inspector $inspector)
-    {
-        return $user->id === $inspector->user_id;
-    }
-
-    public function show(User $user, Inspector $inspector)
-    {
-        return $user->id === $inspector->user_id;
-    } */
 }

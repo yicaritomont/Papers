@@ -11,17 +11,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading">              
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                             @if(isset($inspector))
                                 <h3 class="modal-title">{{ count($inspector->inspector_agendas) }} {{ trans_choice('words.InspectorAgenda', count($inspector->inspector_agendas)) }} {{ $inspector->user->name }}  </h3>
                             @else
                                 <h3 class="modal-title">{{ $quantity }} {{ trans_choice('words.InspectorAgenda', $quantity) }} </h3>
-                            @endif
-                        </div>
-                        <div class="col-md-4 text-right">
-                            {{-- <a class="btn btn-info" href="{{ route('inspectoragendas.view') }}">@lang('words.tableView')</a> --}}
-                            @if(isset($inspector))
-                                <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
                             @endif
                         </div>
                     </div>
@@ -149,10 +143,10 @@
     @else
         No puede ver
     @endcan --}}
-    <br>
+    {{-- <br>
         <h2>{{ auth()->user()->roles }}</h2>
     <br>
-    <br>
+    <br> --}}
     <input type="hidden" id="url" value="{{ route('inspectoragendas.index') }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <input type="hidden" id="selectOption" value="{{trans('words.ChooseOption')}}">

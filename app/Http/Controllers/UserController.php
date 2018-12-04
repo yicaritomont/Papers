@@ -22,10 +22,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($company_slug=null)
+    public function index(Request $request)
     {
-        if(isset($company_slug)){
-            $companies = Company::with('user')->where('slug','=',$company_slug)->get()->first();
+        if($request->get('id')){
+            $companies = Company::with('user:id,name')->where('slug','=',$request->get('id'))->get()->first();
             return view('user.index', compact('companies'));
         }
 

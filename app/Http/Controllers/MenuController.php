@@ -21,23 +21,6 @@ class MenuController extends Controller
         return view('menu.index');
     }
 
-    public function getParents($menus, $menu)
-    {
-        /* foreach($menus as $menu1)
-        {
-
-        } */
-        if($menus->firstWhere('id', $menu['menu_id'])->status == 1)
-        {
-            echo 'Activo<br>';
-            echo $menu->name.'<br>';
-            echo $menus->firstWhere('id', $menu['menu_id'])->name.'<br><br>';
-            $this->getParents($menus, $menus->firstWhere('id', $menu['menu_id']));
-        }
-        /* dd($menus->firstWhere('id', 2)->status);
-        dd($value); */
-    }
-
     public function getChildrenActive($data, $line)
     {
         $children = [];

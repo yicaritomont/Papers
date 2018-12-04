@@ -65,20 +65,20 @@
 
 <!-- Modal Notificacion-->
 <div class="modal fade" id="modal_notificacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-custom">
-                <div class="modal-content">
-                    <div class="modal-body modal-body-custom">
-                        <div class="panel panel-success pan">
-                            <div class="panel-body">
-                                <div class="text-center">
-                                    <div id="cont-notificacion-modal" class="title-modal"></div>
-                                </div>
-                                <div class="col-xs-12 text-center">
-                                    <label for="usuario" style="color:black"> Derechos Reservados 2018.</label>
-                                </div>
-                            </div>
+    <div class="modal-dialog modal-custom">
+        <div class="modal-content">
+            <div class="modal-body modal-body-custom">
+                <div class="panel panel-success pan">
+                    <div class="panel-body">
+                        <div class="text-center">
+                            <div id="cont-notificacion-modal" class="title-modal"></div>
+                        </div>
+                        <div class="col-xs-12 text-center">
+                            <label for="usuario" style="color:black"> Derechos Reservados 2018.</label>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>

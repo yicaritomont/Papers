@@ -13,9 +13,6 @@
             @endif
         </div>
         <div class="col-md-7 page-action text-right">
-            @if(isset($companies))
-                <a href="{{ route('companies.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
-            @endif
             @can('add_inspectors')
                 <a href="{{ route('inspectors.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i>@lang('words.Create')</a>
             @endcan
@@ -107,16 +104,16 @@
                         
                         @can('view_inspectoragendas')
                             btn +=  '<li>\
-                                        <a target="_blank" href="'+window.Laravel.url+'/inspectoragendas/inspector/'+row.id+'">\
-                                            @lang("words.Whatch") {{trans_choice("words.InspectorAgenda", 2)}}\
+                                        <a target="_blank" href="'+window.Laravel.url+'/inspectoragendas?id='+row.id+'">\
+                                            @lang("words.Whatch") @choice("words.InspectorAgenda", 2)\
                                         </a>\
                                     </li>';
                         @endcan
 
                         @can('view_inspectionappointments')
                             btn +=  '<li>\
-                                        <a target="_blank" href="'+window.Laravel.url+'/inspectionappointments/inspector/'+row.id+'">\
-                                            @lang("words.Whatch") {{trans_choice("words.Inspectionappointment", 2)}}\
+                                        <a target="_blank" href="'+window.Laravel.url+'/inspectionappointments?id='+row.id+'">\
+                                            @lang("words.Whatch") @choice("words.Inspectionappointment", 2)\
                                         </a>\
                                     </li>';
                         @endcan

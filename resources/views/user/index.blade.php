@@ -13,9 +13,6 @@
             @endif
         </div>
         <div class="col-md-7 page-action text-right">
-            @if(isset($companies))
-                <a href="{{ route('companies.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
-            @endif
             @can('add_users')
                 <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
             @endcan

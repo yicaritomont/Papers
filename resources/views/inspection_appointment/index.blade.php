@@ -10,20 +10,11 @@
         <div class="col-xs-12 col-lg-8 col-lg-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-md-5">
-                            @if(isset($inspector))
-                                <h3 class="modal-title">{{ count($inspector->inspection_appointments) }} {{ trans_choice('words.Inspectionappointment', count($inspector->inspection_appointments)) }}  @lang('words.Of') {{ $inspector->user->name }}  </h3>
-                            @else
-                                <h3 class="modal-title">{{ $quantity }} {{ trans_choice('words.Inspectionappointment', $quantity) }} </h3>
-                            @endif
-                        </div>
-                        <div class="col-md-7 text-right">
-                            @if(isset($inspector))
-                                <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
-                            @endif
-                        </div>
-                    </div>                        
+                    @if(isset($inspector))
+                        <h3 class="modal-title">{{ count($inspector->inspection_appointments) }} {{ trans_choice('words.Inspectionappointment', count($inspector->inspection_appointments)) }}  @lang('words.Of') {{ $inspector->user->name }}  </h3>
+                    @else
+                        <h3 class="modal-title">{{ $quantity }} {{ trans_choice('words.Inspectionappointment', $quantity) }} </h3>
+                    @endif
                 </div>
                 <div class="panel-body">
                     <div id="calendar"></div>

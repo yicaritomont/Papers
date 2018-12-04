@@ -22,18 +22,38 @@ class InspectorAgendaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if(auth()->user()->hasRole('Inspector'))
+            $request['id'] = auth()->user()->inspectors->id;
+
+        if($request->get('id')){
+            $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
+            $countries = Country::all()->pluck('name', 'id');
+
+            $inspector = Inspector::findOrFail($request->get('id'));
+
+            if(count($inspector->inspector_agendas) == 0)
+            {
+                Session::flash('alert', ['info', trans('words.AgendaEmpty')]);
+            }
+
+            $this->authorize('validateId', $inspector);
+            
+            return view('inspector_agenda.index', compact('inspectors', 'countries', 'inspector'));
+        }else{
+            $quantity = InspectorAgenda::all()->count();
+            $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
+            $countries = Country::all()->pluck('name', 'id');
+
+            return view('inspector_agenda.index', compact('quantity', 'inspectors', 'countries'));
+        }
+        /* if(auth()->user()->hasRole('Inspector'))
         {
             return redirect()->route('inspectoragendas.inspector', auth()->user()->inspectors->id);
-        }
+        } */
         // $result = InspectorAgenda::with(['inspector'])->paginate();
-        $quantity = InspectorAgenda::all()->count();
-        $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
-        $countries = Country::all()->pluck('name', 'id');
-
-        return view('inspector_agenda.index', compact('quantity', 'inspectors', 'countries'));
+        
     }
 
     /**
@@ -65,8 +85,7 @@ class InspectorAgendaController extends Controller
                     'end_date',
                     'inspector_id')
             ->where('inspector_agendas.slug', $slug)
-        ->get()->first();
-
+        ->firstOrFail();
         $this->authorize('validateId', Inspector::findOrFail($agenda->inspector_id));
 
         echo json_encode([
@@ -88,7 +107,7 @@ class InspectorAgendaController extends Controller
         ->get()[0]; */
         
         $inspectorAgenda = InspectorAgenda::with('city')
-        ->where('slug','=',$slug)
+            ->where('slug','=',$slug)
         ->get()->first();
         
         $this->authorize('validateId', Inspector::findOrFail($inspectorAgenda->inspector_id));
@@ -98,34 +117,6 @@ class InspectorAgendaController extends Controller
         echo json_encode([
             'agenda' => $inspectorAgenda,
         ]);
-    }
-
-    /**
-     * Muestra las agendas de un inspector
-     *
-     * @param  Int $id
-     * @param  String $view
-     * @return view
-     */
-    public function inspector($id)
-    {
-        // dd($request['companies'] = auth()->user()->inspectors->id);
-        $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
-        $countries = Country::all()->pluck('name', 'id');
-
-        $inspector = Inspector::findOrFail($id);
-
-        if(count($inspector->inspector_agendas) == 0)
-        {
-            Session::flash('alert', ['info', trans('words.AgendaEmpty')]);
-        }
-
-        /* dd(auth()->user());
-        dd($inspector->user); */
-
-        $this->authorize('validateId', $inspector);
-        
-        return view('inspector_agenda.index', compact('inspectors', 'countries', 'inspector'));
     }
 
     /**

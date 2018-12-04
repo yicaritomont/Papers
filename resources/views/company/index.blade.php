@@ -55,7 +55,7 @@
             @if(Gate::check('edit_companies') || Gate::check('delete_companies') || Gate::check('view_users') || Gate::check('view_inspectors'))
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}";
                 
-                columns.push({data: 'actions', className: 'text-center w1em'},)
+                columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
@@ -72,7 +72,6 @@
                         var btn =   '<div class="dropdown" style="display:inline-block">\
                                         <button class="btn btn-xs btn-primary dropdown-toggle" type="button" id="watchMenu" data-toggle="dropdown">\
                                             <i class="fa fa-eye"></i>\
-                                            \
                                         </button>\
                                         <ul class="dropdown-menu pull-right" aria-labelledby="watchMenu" style="text-align:right">';
 
@@ -80,7 +79,7 @@
                             /*btn += '<a target="_blank" href="'+window.Laravel.url+'/users/company/'+row.slug+'">';
                             btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") @lang("words.User")</a>';*/
                             btn +=  '<li>\
-                                        <a target="_blank" href="'+window.Laravel.url+'/users/company/'+row.slug+'">\
+                                        <a target="_blank" href="'+window.Laravel.url+'/users?id='+row.slug+'">\
                                             @lang("words.Whatch") @lang("words.User")\
                                         </a>\
                                     </li>';
@@ -89,7 +88,7 @@
                             /*btn += '<a href="'+window.Laravel.url+'/inspectors/company/'+row.slug+'" class="btn btn-xs btn-primary">';
                             btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a>';*/
                             btn +=  '<li>\
-                                        <a target="_blank" href="'+window.Laravel.url+'/inspectors/company/'+row.slug+'">\
+                                        <a target="_blank" href="'+window.Laravel.url+'/inspectors?id='+row.slug+'">\
                                             @lang("words.Whatch") @choice("words.Inspector", 2)\
                                         </a>\
                                     </li>';

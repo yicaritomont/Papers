@@ -382,9 +382,16 @@ $(document).on('submit','.formDelete',function(e){
         console.log('error\n'+res);
         console.log(res);
     })
-    .always(function(res){
-        console.log('complete\n'+res);
-    })
+    .error(function(res){
+        console.log(res.status);
+        if(res.status == 403){
+            toast({
+                type: 'error',
+                title: res.responseJSON.message
+            });
+            changeTopToast();
+        }
+    });
 });
 
 // Ajax para los formularios editar y eliminar de los calendarios

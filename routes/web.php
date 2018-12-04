@@ -37,21 +37,9 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('elegirCompania', array('as' => 'elegirCompania', 'uses'=>'UserController@ShowMultiple'));
     Route::get('enviaCompania/{id}',array('as'=>'enviaCompania','uses'=>'UserController@PostMultiple'));
 
-    //Consultar los usuarios de una compañia
-    Route::get('users/company/{company?}', 'UserController@index')->name('users.company');
-
-    //Consultar los inspectores de una compañia
-    Route::get('inspectors/company/{company?}', 'InspectorController@index')->name('inspectors.company');
-
-    //Consultar agendas de un inspector y en una vista dada D?
-    // Route::get('inspectoragendas/inspector/{id}/{view}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
-
     //Eventos Calendario
     Route::get('inspectionappointments/events/{id?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
     Route::get('inspectoragendas/events/{id?}', 'InspectorAgendaController@events')->name('inspectoragendas.events');
-
-    //Consultar las agendas de un inspector
-    Route::get('inspectoragendas/inspector/{id}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
 
     //Completar las citas
     Route::put('inspectionappointments/{inspectionappointment}/complete', 'InspectionAppointmentController@complete')->name('inspectionappointments.complete');
@@ -66,9 +54,6 @@ Route::group( ['middleware' => ['auth']], function() {
 
     // ????
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');
-
-    //Consultar las citas de un inspector
-    Route::get('inspectionappointments/inspector/{id?}', 'InspectionAppointmentController@inspector')->name('inspectionappointments.inspector');
 
     //Consultar datos para dataTable
     Route::get('datatable/{model}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatable')->name('datatable');

@@ -27,10 +27,11 @@ class InspectionAppointmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // dd(date('Y-m-d H:i:s'));
-        // $clients = Client::pluck('identification', 'id');
+        if(auth()->user()->hasRole('Inspector'))
+            $request['id'] = auth()->user()->inspectors->id;
+
         $clients = Client::with('user')->get()->pluck('user.name', 'id');
         $quantity = InspectionAppointment::all()->count();
         $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
@@ -43,6 +44,22 @@ class InspectionAppointmentController extends Controller
         $inspection_types = InspectionType::pluck('name', 'id');
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $preformats = Preformato::pluck('name', 'id');
+
+        if($request->get('id')){
+
+            $inspector = Inspector::findOrFail($request->get('id'));
+
+            if(count($inspector->inspection_appointments) == 0)
+            {
+                Session::flash('alert', ['info', trans('words.AppointmentEmpty')]);
+            }
+
+            $this->authorize('validateId', $inspector);
+
+            return view('inspection_appointment.index',compact('inspector', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
+
+        }
+
         return view('inspection_appointment.index',compact('quantity', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
     }
 
@@ -166,11 +183,13 @@ class InspectionAppointmentController extends Controller
      */
     public function show($id)
     {
-        $cita = InspectionAppointment::query()
-            ->with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract:id,name', 'inspector.user:id,name')
+        $cita = InspectionAppointment::with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract:id,name', 'inspector.user:id,name')
             ->where('inspection_appointments.id', $id)
         ->first();
 
+        
+        $this->authorize('validateId', Inspector::findOrFail($cita->inspector_id));
+        
         echo json_encode([
             'cita' => $cita,
         ]);
@@ -341,42 +360,6 @@ class InspectionAppointmentController extends Controller
         echo json_encode([
             'status' => trans_choice('words.Inspectionappointment', 1).' '.trans('words.HasEliminated'),
         ]);
-    }
-
-    /**
-     * Busca el inspector seleccionado.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function inspector($id)
-    {
-        /* $result = InspectionAppointment::where('inspector_id', '=', $id)->latest()->with(['inspector', 'appointmentState', 'inspectionType'])->paginate();
-        $inspectors = Inspector::pluck('name', 'id');
-        $appointment_states = AppointmentState::pluck('name', 'id');
-        $appointment_locations = AppointmentLocation::pluck('coordenada','id');
-        $inspection_types = InspectionType::pluck('name', 'id');
-        return view('inspection_appointment.index',compact('result', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'id')); */
-        $clients = Client::with('user')->get()->pluck('user.name', 'id');
-        $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
-        $contracts = Contract::pluck('name', 'id');
-        $appointment_states = AppointmentState::where([
-            ['id', '!=', '5'],
-            ['id', '!=', '6'],
-        ])->get();
-        $appointment_locations = AppointmentLocation::pluck('coordenada','id');
-        $inspection_types = InspectionType::pluck('name', 'id');
-        $companies = Company::with('user')->get()->pluck('user.name', 'id');
-        $preformats = Preformato::pluck('name', 'id');
-
-        $inspector = Inspector::findOrFail($id);
-
-        if(count($inspector->inspection_appointments) == 0)
-        {
-            Session::flash('alert', ['info', trans('words.AppointmentEmpty')]);
-        }
-
-        return view('inspection_appointment.index',compact('inspector', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
     }
 
     /**

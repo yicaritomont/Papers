@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Inspector;
-use App\Policies\InspectorPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -15,7 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Inspector::class => InspectorPolicy::class,
+        'App\Inspector' => 'App\Policies\InspectorPolicy',
     ];
 
     /**
