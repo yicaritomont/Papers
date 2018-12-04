@@ -10,12 +10,14 @@
         <link rel="icon" href="images/favicon.ico" type="image/ico" />
 
         <title>@yield('title') {{ config('app.name') }}</title>
-        
+
         <!--  -->
         {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
-        
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="{{ asset('css/all.css') }}">
+
         <!-- FullCalendar -->
-        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/fullCalendar/fullcalendar.min.css')}}">  
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/fullCalendar/fullcalendar.min.css')}}">
         <!-- Bootstrap -->
         <link href="{{asset('vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
         <!-- Font Awesome -->
@@ -35,7 +37,7 @@
 
         <!-- DatePicker -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/datePicker/bootstrap-datepicker.min.css')}}">
-    
+
         <!-- ClockPicker -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/clockPicker/bootstrap-clockpicker.css')}}">
 
@@ -49,6 +51,9 @@
         <link href="{{asset('vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css')}}" rel="stylesheet">
         <link href="{{asset('vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css')}}" rel="stylesheet"> --}}
 
+        <!-- File Input -->
+        <link href="{{ asset('file-input/css/fileinput.min.css') }}" media="all" rel="stylesheet" type="text/css" />
+
         <!-- SweetAlert -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
 
@@ -58,8 +63,10 @@
         
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
-        
-        <link href="{{ asset('css/styles.css') }}" rel="stylesheet"> 
+
+        <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+
+
 
         @yield('styles')
 
@@ -97,7 +104,7 @@
                                 <h2>{{ Auth::user()->name }}</h2>
                                 {{-- Compañia en session --}}
                                 @if(Auth::user()->roles->pluck('id')[0] != 1)
-                                    @if(session()->get('Session_Company') != "")                                        
+                                    @if(session()->get('Session_Company') != "")
                                         <b>{{ App\User::find(App\Company::find(session()->get('Session_Company'))->user_id)->name }}</b>
                                     @endif
                                 @endif
@@ -262,7 +269,7 @@
                                             @endif --}}
                                             @include('shared.menu-item', ['item' => $item])
                                         @endforeach
-                                  
+
 
                                     </ul>
                             </div>
@@ -363,7 +370,7 @@
                         @yield('content')
                     {{-- </div> --}}
                 </div>
-            </div>  
+            </div>
         </div>
 
 
@@ -420,7 +427,7 @@
     @if(app()->getLocale()=='es')
         <script src="{{ asset('js/lib/fullCalendar/es.js') }}"></script>
     @endif
-	
+
     <!-- Datatable -->
     <script src="{{ asset('js/lib/dataTable/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/dataTables.bootstrap.min.js') }}"></script>
@@ -429,7 +436,7 @@
     
     <!-- SweetAlert -->
     <script src="{{ asset('js/lib/sweetAlert/sweetalert2.min.js') }}"></script>
-    
+
     <!-- text editor -->
     <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
 
@@ -439,11 +446,28 @@
     <!-- Chosen -->
     <script src="{{asset('js/lib/chosen/chosen.jquery.min.js')}}"></script>
     <script src="{{asset('js/lib/chosen/chosen.proto.min.js')}}"></script>
+    
+    <!-- Vue JS -->
+    <script src="{{ asset('js/vue.js') }}"></script>
+    <script src="{{ asset('js/axios.min.js') }}"></script>
+    <!-- File Input -->
+    <script src="{{ asset('file-input/js/plugins/piexif.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('file-input/js/plugins/sortable.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('file-input/js/plugins/purify.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('file-input/js/fileinput.min.js') }}"></script>
+
+    @if( file_exists( "file-input/js/locales/".Session::get('lang').".js" ) )
+        <input type="hidden" name="lang" id="lang" value="{{ Session::get('lang') }}">
+        <script src="{{ asset('file-input/js/locales/'.Session::get('lang').'.js') }}"></script>
+    @else
+        <input type="hidden" name="lang" id="lang" value="es">
+        <script src="{{ asset('file-input/js/locales/es.js') }}"></script>
+    @endif
 
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
 
-	@yield('scripts')
+	   @yield('scripts')
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.js')}}"></script>

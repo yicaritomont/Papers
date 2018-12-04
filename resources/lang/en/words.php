@@ -144,5 +144,13 @@ return[
     'Inspection' => 'Inspection',
     'FormatEI' => 'Expediting and inspection format',
     'AgendaEmpty' => 'There are no agendas',
+    
+    //Supports
+    'upload_sopports'    =>  'Load Supports',
+    'supports'           =>  'Supports',
+    'browse'             =>  'Browse',
+    'upload'             =>  'Upload',
+    'browseMsg'          =>  'Select files...',
+    'manage'             =>  'Manage'
 ];
 ?>

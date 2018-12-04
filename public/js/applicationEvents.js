@@ -683,6 +683,7 @@ function camposLlenos() {
     let objInput = $(this);
     if(objInput.val() != '') {
       var valor = objInput.val();
+      objInput.html('');
       objInput.val('');
       objInput.append(valor);
     }

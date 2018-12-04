@@ -365,20 +365,49 @@ class InspectorController extends Controller
         $code = "";
 
         /**
-         * El bloque soguiente es para el consumo del WS de firma 
+         * El bloque comentado a continuacion muestera como debe ser el consumo del WS de sellado del tiempo
          */
+        /*$signaSelladoFirma = new WsdlSelladoTiempoController();
+        $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
+
+        echo "<br> TOKEN ".$tokenSelladoFirma['Token']."<br>";
+        if($tokenSelladoFirma['ResultadoOperacion'] == 0)
+        {
+            echo "<hr>";
+            $base64File = HashUtilidades::TakeByte('');
+            echo " base 64 del documento ".$base64File;
+            echo "<hr>";
+            echo " array de bytes ejemplo ".'FqG3Jo2Zv+UX8NbDv5brW0PW5R520XqjOI/uHA0VuNw=';
+            echo "<hr>";
+
+            $SelladoFirma = $signaSelladoFirma->selladoDocumento($tokenSelladoFirma['Token'],$base64File);
+
+            echo "<hr> SELLADO DE FIRMA";
+            echo "<pre>";
+            print_r($SelladoFirma);
+            echo "</pre>";
+            var_dump($SelladoFirma);
+            
+        }*/
+        /**
+         * El bloque  comentado a continuacion muestra como debe ser consumo del WS de firma 
+         */
+
         /*$signaFirma = new WsdlFirmaController();
-        $respuestaFirma = $signaFirma->autenticacionUsuario();      
-        echo "<pre>";
-        print_r($respuestaFirma);
-        echo "</pre>",
-        //$respuestaFirma = $signaFirma->autenticarUsuario();
-        exit();*/
-      
+        $tokenFirma = $signaFirma->autenticacionUsuario();      
 
-        /*$signaSelladoTiempo = new WsdlSelladoTiempoController();
-        $signaSelladoTiempo->autenticarUsuario();*/
+        if($tokenFirma['ResultadoAutenticacion'] == 0)
+        {
+            // Por ahora se deja quemado una url de documento para hacer los test.
+            
+            // Solicita el paso del documento a base64
+            $base64File = HashUtilidades::generarBase64Documento('');
+          
+            // Consume la forma del documento ,
+            $respuestaFirma = $signaFirma->firmarDocumento($tokenFirma['Token'],$base64File,1,'300','800','200','100');
+        }*/
 
+        
         /**
          * El bloque comentado acontinuacion muestra como deben de realizar las peticiones para blokchain.
          */

@@ -141,5 +141,13 @@ return[
     'Inspection' => 'Inspección',
     'FormatEI' => 'Formato expedición e inspección',
     'AgendaEmpty' => 'No existen agendas',
+    
+    //Formatos
+    'upload_sopports'    =>  'Cargar Soportes',
+    'supports'           =>  'Soportes',
+    'browse'             =>  'Examinar' ,
+    'upload'             =>  'Subir',
+    'browseMsg'          =>  'Seleccione archivos...',
+    'manage'             =>  'Gestionar'
 ];
 ?>

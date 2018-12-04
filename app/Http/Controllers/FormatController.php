@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Http\Helpers\Equivalencia;
 use App\Format;
 use App\Preformato;
 use App\Company;
@@ -10,7 +13,9 @@ use App\Client;
 use App\Contract;
 use App\User;
 use App\Estilo;
+use App\File;
 use PDF;
+use DB;
 
 class FormatController extends Controller
 {
@@ -122,8 +127,10 @@ class FormatController extends Controller
           $companyselect ='none';
         }
         $formato = Format::find($id);
-        if ($formato->status == 2){
-          $state_format = 'none';
+        if ($formato != '') {
+          if ($formato->status == 2){
+            $state_format = 'none';
+          }
         }
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $clients = Client::with('user')->get()->pluck('user.name', 'id');
@@ -243,14 +250,117 @@ class FormatController extends Controller
         return $response;
     }
 
+    public function supports($id)
+    {
+      $formato = Format::find($id);
+      return view('format.supports', compact('formato'));
+    }
+
+    public function upload( Request $request )
+    {
+        $response = array();
+        //Obtenemos el id del formato
+        $format_id = $request->input('formato_id');
+        $file_id = $request->input('file_id');
+        $files = $request->file('input-supports');
+        //Directorio destino
+        $destinationPath = "uploads/".$format_id."/";
+        //Validación datos
+        if( !is_null($files) ){
+            foreach( $files AS $key => $item )
+            {
+                if( $item->isValid() ){
+
+                    $name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
+                    $upload_success = $item->move($destinationPath, $name_url['name'] );
+
+                    if( $upload_success )
+                    {
+                        $new_file = array
+                        (
+                            'mime_type'     =>  $upload_success->getMimeType(),
+                            'format_id'     =>  $format_id,
+                            'nombre_url'    =>  $name_url['url'],
+                            'user_id'       =>  Auth::id(),
+                            'extension'     =>  $upload_success->getExtension()
+                        );
+
+                        $insert = File::insertGetId($new_file);
+                        $new_file['id'] = $insert;
+                        array_push($response,$new_file);
+
+                    }else{
+
+                    }
+
+                }else{
+
+                }
+            }
+        }
+        return response()->json($response);
+    }
+
+    public function getNameFile($path,$name)
+    {
+        $file = array();
+        while( file_exists( public_path()."/".$path.$name ) )
+        {
+            $rd = rand(0,999);
+            $pos = strripos($name,'.');
+            $label = substr($name,0,$pos);
+            $ext = substr($name,($pos+1));
+            $name = $label."_".$rd.".".$ext;
+        }
+        $file['name'] = $name;
+        $file['url'] = $path.$name;
+        return $file;
+    }
+
+    public function getInitialData( Request $request )
+    {
+        $response = array('files' => array() , 'path' =>  $request->root() );
+        $format_id = $request->input('formato');
+        $response['files'] = DB::table('files')->where('format_id',$format_id)->get();
+        $texts = array('txt','csv');
+        foreach( $response['files'] AS $key => $item )
+        {
+            if( in_array($item->extension,$texts) ){
+                $content = file_get_contents($item->nombre_url);
+                $response['files'][$key]->content = base64_encode($content);
+            }
+        }
+        return response()->json($response);
+    }
+
+    public function delete( Request $request  )
+    {
+        $id = $request->input('key');
+        $support = File::find($id);
+        //Eliminamos el archivo
+        if( file_exists(public_path().'/'.$support->nombre_url) ){
+            unlink(public_path().'/'.$support->nombre_url);
+            $support->forceDelete();
+        }
+        return response()->json(array($id => 'delete'));
+    }
+
     public function downloadPDF($id)
     {
       $format = Format::find($id);
       $estilos = Estilo::find(1);
-      $config_format = $estilos->estilos.$format->format;
+      $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
+        '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
+      $format_replace = str_replace($eliminar,'',$format->format);
+      $config_format = $estilos->estilos.$format_replace;
       $pdf = \App::make('dompdf.wrapper');
       $pdf->loadHTML($config_format);
-      echo "<pre>";print_r($config_format);echo "</pre>";exit();
       return $pdf->stream();
+    }
+
+    public function clearString( $string )
+    {
+        $clear = preg_replace("[^A-Za-z0-9]", "", $string);
+        return $clear;
     }
 }
