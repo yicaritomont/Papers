@@ -51,15 +51,15 @@
 
             @can('edit_menus', 'delete_menus')
                 
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Menu', 'entity' => 'menus', 'identificador' => 'id', 'relations' => 'menu']) }}";
-                columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columns = columns;
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Menu', 'company' => 'none', 'entity' => 'menus', 'identificador' => 'id', 'relations' => 'menu']) }}";
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Menu', 'relations' => 'menu']) }}";
-                dataTableObject.columns = columns;
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Menu', 'company' => 'none', 'relations' => 'menu']) }}";
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
+
+            dataTableObject.columns = columns;
 
             dataTableObject.columnDefs.push(
                 {
@@ -86,8 +86,7 @@
                 }     
             );
             
-            var table = $('.dataTable').DataTable(dataTableObject);                  
-            // new $.fn.dataTable.FixedHeader( table );
+            var table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
 @endsection

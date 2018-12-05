@@ -30,8 +30,8 @@
     {!! Form::label('icon', trans('words.Icon') ) !!}
     
     <div class="input-group">
-        <span class="input-group-addon"><i class="fa {{ isset($menus->icon) ? $menus->icon : 'fa-fonticons' }}"></i></span>
-        {!! Form::text('icon', null, ['class' => 'input-body inputpicker', 'autocomplete' => 'off']) !!}
+        <span class="input-group-addon"><i class="fa {{ isset($menus->icon) ? $menus->icon : 'fa-hashtag' }}"></i></span>
+        {!! Form::text('icon', null, ['class' => 'input-body inputpicker', 'autocomplete' => 'off', 'disabled' => 'disabled']) !!}
         {{-- <input type="text" id="icon" class="input-body inputpicker" autocomplete="off"> --}}
     </div>
     @if ($errors->has('icon')) <p class="help-block">{{ $errors->first('icon') }}</p> @endif

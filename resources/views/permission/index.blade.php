@@ -47,19 +47,18 @@
             ];
 
             @can('delete_permissions')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Permission', 'entity' => 'permissions', 'identificador' => 'name', 'relations' => 'none']) }}";
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Permission', 'company' => 'none', 'entity' => 'permissions', 'identificador' => 'name', 'relations' => 'none']) }}";
  
-                columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columns = columns;
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Permission']) }}";
-                dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
-            var table = $('.dataTable').DataTable(dataTableObject);                   
-            // new $.fn.dataTable.FixedHeader( table );
+            dataTableObject.columns = columns;
+
+            var table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
 @endsection

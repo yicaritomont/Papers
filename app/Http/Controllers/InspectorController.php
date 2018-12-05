@@ -24,6 +24,7 @@ use Url;
 use nusoap_client;
 use Artisaninweb\SoapWrapper\SoapWrapper;
 use SoapClient;
+use Illuminate\Support\Facades\Log;
 
 class InspectorController extends Controller
 {
@@ -34,10 +35,15 @@ class InspectorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($company_slug=null)
+    public function index(Request $request)
     {
-        if(isset($company_slug)){
-            $companies = Company::with('user')->where('slug','=',$company_slug)->get()->first();
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['id'] = Company::findOrFail(session()->get('Session_Company'))->slug;
+        }
+        
+        if($request->get('id')){
+            $companies = Company::with('user:id,name')->where('slug','=',$request->get('id'))->first();
+            
             return view('inspector.index', compact('companies'));
         }
         return view('inspector.index');
@@ -68,12 +74,17 @@ class InspectorController extends Controller
      */
     public function store(Request $request)
     {
+        //Si no es administrador agregue la compañia en sesión
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['companies'] = session()->get('Session_Company');
+        }
+
         if($request->id_inspector != "")
         {
             $this->validate($request, [
                 'name'              => 'bail|required|min:2',
                 'identification'    => 'required|numeric',
-                'phone'             => 'required|string',
+                'phone'             => 'required|numeric',
                 'addres'            => 'required|string',
                 'email'             => 'required|email|unique:users,email',
                 'profession_id'     => 'required',
@@ -86,7 +97,7 @@ class InspectorController extends Controller
             $this->validate($request, [
                 'name'              => 'bail|required|min:2',
                 'identification'    => 'required|unique:inspectors|numeric',
-                'phone'             => 'required|string',
+                'phone'             => 'required|numeric',
                 'addres'            => 'required|string',
                 'email'             => 'required|email|unique:users,email',
                 'profession_id'     => 'required',
@@ -181,7 +192,11 @@ class InspectorController extends Controller
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $user = $inspector->user;
 
-        return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities', 'companies','user'));
+        if(CompanyController::compareCompanySession($inspector->companies)){
+            return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities', 'companies','user'));
+        }else{
+            abort(403, 'This action is unauthorized.');
+        }
     }
 
      /**
@@ -196,10 +211,19 @@ class InspectorController extends Controller
         //Get the inspector
         $inspector = Inspector::findOrFail($id);
 
+        if( !CompanyController::compareCompanySession($inspector->companies) ){
+            abort(403, 'This action is unauthorized.');        
+        }
+
+        //Si no es administrador agregue la compañia en sesión
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['companies'] = session()->get('Session_Company');
+        }
+
         $this->validate($request, [
             'name'              => 'bail|required|min:2',
             'identification'    => 'required|numeric|unique:inspectors,identification,'.$id,
-            'phone'             => 'required|string',
+            'phone'             => 'required|numeric',
             'addres'            => 'required|string',
             'email'             => 'required|email|unique:users,email,'.$inspector->user_id,
             'profession_id'     => 'required',
@@ -208,8 +232,6 @@ class InspectorController extends Controller
         ]);
 
         $request['roles'] = 2;
-            
-        // $inspector->fill($request->except('permissions'));
         
         $user = $inspector->user;
         // Update user
@@ -224,7 +246,7 @@ class InspectorController extends Controller
         $inspector->update([
             'identification'    => $request['identification'],
             'phone'             => $request['phone'],
-            'address'           => $request['addres'],
+            'addres'           => $request['addres'],
             'profession_id'     => $request['profession_id'],
             'inspector_type_id' => $request['inspector_type_id'],
             'user_id'           => $user->id,
@@ -245,6 +267,12 @@ class InspectorController extends Controller
     public function destroy($id)
     {
         $inspector = Inspector::findOrFail($id);
+
+        if( !CompanyController::compareCompanySession($inspector->companies) ){
+            abort(403, 'This action is unauthorized.');        
+        }
+
+        // $this->authorize('validateCompany', $inspector->companies->first());
 
         if($inspector)
         {
@@ -286,26 +314,6 @@ class InspectorController extends Controller
         return redirect()->back(); */
     }
 
-    public function companyTable($company)
-    {
-        $result = Inspector::query()
-                ->join('company_inspector', 'company_inspector.inspector_id', '=', 'inspectors.id')
-                ->join('companies', 'companies.id', '=', 'company_inspector.company_id')
-                ->select('inspectors.*')
-                ->where('companies.slug', '=', $company)
-                ->with('companies', 'profession', 'inspectorType', 'user', 'companies.user')
-                ->get();
-
-        return datatables()
-            ->of($result)
-            ->addColumn('entity', 'inspectors')
-            ->addColumn('action', 'id')
-            ->addColumn('actions', 'shared/_actions')
-            ->rawColumns(['actions'])
-            ->toJson();
-    }
-
-
     /**
      *
     */
@@ -334,7 +342,12 @@ class InspectorController extends Controller
      */
     public function IdCardInspector($id)
     {
-        $infoInspector = Inspector::find($id);        
+        $infoInspector = Inspector::findOrFail($id);
+        
+        if( !CompanyController::compareCompanySession($infoInspector->companies) ){
+            abort(403, 'This action is unauthorized.');        
+        }
+
         // Se trae la información del usuario
         $usuario = User::find($infoInspector->user_id);
         $code = "";

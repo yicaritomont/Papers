@@ -13,9 +13,6 @@
             @endif
         </div>
         <div class="col-md-7 page-action text-right">
-            @if(isset($companies))
-                <a href="{{ route('companies.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
-            @endif
             @can('add_users')
                 <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
             @endcan
@@ -60,19 +57,24 @@
 
             @can('edit_users', 'delete_users')
                 @if(isset($companies))
-                    dataTableObject.ajax = "{{ route('users.companyTable', $companies->slug) }}";
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'company' => 'companies,'.$companies->slug, 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}";
                 @else
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}";
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'company' => 'none', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}";
                 @endif
 
-                columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columns = columns;
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'relations' => 'roles,companies,companies.user']) }}";
-                dataTableObject.columns = columns;
+                @if(isset($companies))
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'company' => 'companies,'.$companies->slug, 'relations' => 'roles,companies,companies.user']) }}";
+                @else
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'company' => 'none', 'relations' => 'roles,companies,companies.user']) }}";
+                @endif
+
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
+            
+            dataTableObject.columns = columns;
 
             dataTableObject.columnDefs.push(
                 {
@@ -98,8 +100,7 @@
                 }
             );       
 
-            var table = $('.dataTable').DataTable(dataTableObject);                       
-            // new $.fn.dataTable.FixedHeader( table );
+            var table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
 @endsection

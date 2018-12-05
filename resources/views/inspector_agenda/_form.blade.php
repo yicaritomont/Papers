@@ -11,34 +11,26 @@
     <div class="errors"></div>
 </div>
 
-<!-- Inspector of Headquarters Form Select -->
-<div class="form-group">
-    {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
-    {{-- <select name="inspector_id" id="inspector_id" class="input-body">
-        <option value="">@lang('words.ChooseOption')</option>
-        @foreach($inspectors as $item)
-            <option value="{{$item->id}}" 
-            @if(isset($inspectorAgenda))
-            {{ $inspectorAgenda->inspector_id === $item->id ? 'selected' : '' }}
-            @endif
-            >{{$item->name}}</option>
-        @endforeach
-    </select> --}}
-    {!!Form::select('inspector_id', $inspectors, isset($inspectorAgenda) ? $inspectorAgenda->inspector_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
-    <div class="errors"></div>
-</div>
+@if( !auth()->user()->hasRole('Inspector') )
+    <!-- Inspector of Headquarters Form Select -->
+    <div class="form-group">
+        {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
+        {!!Form::select('inspector_id', $inspectors, isset($inspectorAgenda) ? $inspectorAgenda->inspector_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
+        <div class="errors"></div>
+    </div>
+@endif
 
 <!-- Country of Headquarters Form Select -->
 <div class="form-group">
     {!! Form::label('country', trans('words.Country')) !!}
-    {!!Form::select('country', $countries, isset($inspectorAgenda) ? $inspectorAgenda->country : null, ['class' => ['input-body', 'country'], 'placeholder' => trans('words.ChooseOption')])!!}
+    {!!Form::select('country', $countries, isset($inspectorAgenda) ? $inspectorAgenda->country : null, ['class' => ['input-body', 'country', 'chosen-select', 'form-control'], 'placeholder' => trans('words.ChooseOption')])!!}
     <div class="errors"></div>
 </div>
 
 <div class="form-group">
     {!! Form::label('city_id', trans('words.City')) !!}
     {{-- {!! Form::select('city_id', null, null, ['class' => 'input-body','require', 'placeholder'=>trans('words.ChooseOption')]) !!} --}}
-    <select id="city_id" name="city_id" class="input-body city_id">
+    <select id="city_id" name="city_id" class="input-body city_id chosen-select form-control">
         <option selected value>@lang('words.ChooseOption')</option>
     </select>
     <div class="errors"></div>
