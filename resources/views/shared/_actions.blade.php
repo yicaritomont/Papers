@@ -21,7 +21,7 @@
             @if($status == 1)
                 <button type="button" onclick="confirmModal('@php echo '#d'.${$action} @endphp', '{{trans('words.InactiveMessage')}}', 'warning')" class="btn  btn-xs btn-success btnDelete"><span class='glyphicon glyphicon-ok-sign'></span></button>
             @elseif($status == 2)
-                <a href="{{action('FormatController@downloadPDF',${$action})}}" class="btn btn-primary btn-sm"><i class='glyphicon glyphicon-download-alt'></i></a>
+                <a href="{{action('FormatController@downloadPDF',${$action})}}" class="btn  btn-xs btn-primary"><i class='glyphicon glyphicon-download-alt'></i></a>
             @else
                 <button type="button" onclick="confirmModal('@php echo '#d'.${$action} @endphp', '{{trans('words.ActiveMessage')}}', 'warning')" class="btn  btn-xs btn-danger btnDelete"><span class='glyphicon glyphicon-remove-sign'></button>
             @endif
