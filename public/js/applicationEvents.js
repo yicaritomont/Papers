@@ -783,23 +783,34 @@ function llenarCabeceraFormato()
                       var html_plantilla_formato = response.preformato.format;
                       if( preformato != '')
                       {
-                        if(preformato == 1)
+
+                        if (response.contract != null)
                         {
-                          //var plantilla_formato = $('#plantilla_formato').clone();
-                          html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
-                          html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
-                          html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
-                          html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
-                          html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
-                          html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
-                          html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
-                          html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
-                          html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
-                          html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
+                          if(preformato == 1)
+                          {
+                            //var plantilla_formato = $('#plantilla_formato').clone();
+                            html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
+                            html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
+                            html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
+                            html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
+                            html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
+                            html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
+                            html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
+                            html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
+                            html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
+                            html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
+                          }
+
+                          $('#contenedor_formato').html(html_plantilla_formato);
+                          $('#contenedor_formato').show();
+                        } else{
+                          swal({
+                            title: response.error,
+                            type: 'warning',
+                            animation: false,
+                            customClass: 'animateErrorIcon '
+                        });
                         }
-                        console.log(response);
-                        $('#contenedor_formato').html(html_plantilla_formato);
-                        $('#contenedor_formato').show();
                       } else {
                         $('#plantilla_formato').css('display','none');
                         $('#contenedor_formato').css('display','none');
@@ -829,7 +840,7 @@ function cargarSelectClients()
             }).done(function(response)
             {
         var select = '<select name="client_id" id="cliente_formato" class="input-body">';
-                        select +='<option selected="selected">Seleccione una opción</option>';
+                        select +='<option selected="selected">'+response.ChooseOption+'</option>';
         $.map(response.clients, function(name, id)
         {
             select += '<option value="'+id+'">'+name+'</option>';
