@@ -150,6 +150,7 @@ return [
         'contract_id' => 'Contrato',
         'estimated_start_date' => 'Fecha de inicio',
         'estimated_end_date' => 'Fecha final',
+        'menu_id' => 'Menú padre',
     ],
 
     /*  Verificacion para uso de contraseñas */

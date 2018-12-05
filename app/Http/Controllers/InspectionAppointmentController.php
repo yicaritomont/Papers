@@ -18,6 +18,7 @@ use DB;
 use View;
 use App\Http\Requests\InspectionAppointmentRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class InspectionAppointmentController extends Controller
 {
@@ -26,12 +27,13 @@ class InspectionAppointmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // dd(date('Y-m-d H:i:s'));
-        // $clients = Client::pluck('identification', 'id');
+        if(auth()->user()->hasRole('Inspector'))
+            $request['id'] = auth()->user()->inspectors->id;
+
         $clients = Client::with('user')->get()->pluck('user.name', 'id');
-        $result = InspectionAppointment::latest()->with(['inspector', 'appointmentState', 'inspectionSubtype'])->paginate();
+        $quantity = InspectionAppointment::all()->count();
         $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
         $contracts = Contract::pluck('name', 'id');
         $appointment_states = AppointmentState::where([
@@ -42,7 +44,23 @@ class InspectionAppointmentController extends Controller
         $inspection_types = InspectionType::pluck('name', 'id');
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $preformats = Preformato::pluck('name', 'id');
-        return view('inspection_appointment.index',compact('result', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
+
+        if($request->get('id')){
+
+            $inspector = Inspector::findOrFail($request->get('id'));
+
+            if(count($inspector->inspection_appointments) == 0)
+            {
+                Session::flash('alert', ['info', trans('words.AppointmentEmpty')]);
+            }
+
+            $this->authorize('validateId', $inspector);
+
+            return view('inspection_appointment.index',compact('inspector', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
+
+        }
+
+        return view('inspection_appointment.index',compact('quantity', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
     }
 
     /**
@@ -54,7 +72,7 @@ class InspectionAppointmentController extends Controller
     {
         
         // dd($request->except('date'));
-        $inspectors = Inspector::pluck('name', 'id');
+        $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
         $appointment_states = AppointmentState::pluck('name', 'id');
         $appointment_locations = AppointmentLocation::pluck('coordenada','id');
         $inspection_types = InspectionType::pluck('name', 'id');
@@ -165,11 +183,13 @@ class InspectionAppointmentController extends Controller
      */
     public function show($id)
     {
-        $cita = InspectionAppointment::query()
-            ->with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract:id,name', 'inspector.user:id,name')
+        $cita = InspectionAppointment::with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract:id,name', 'inspector.user:id,name')
             ->where('inspection_appointments.id', $id)
         ->first();
 
+        
+        $this->authorize('validateId', Inspector::findOrFail($cita->inspector_id));
+        
         echo json_encode([
             'cita' => $cita,
         ]);
@@ -205,8 +225,8 @@ class InspectionAppointmentController extends Controller
     {
         $request->validate([
             'inspector_id'  => 'required',
-            'start_date'    => 'required|date',
-            'end_date'      => 'required|date',
+            'start_date'    => 'required|date|date_format:Y-m-d',
+            'end_date'      => 'required|date|date_format:Y-m-d',
         ]);
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
@@ -343,29 +363,13 @@ class InspectionAppointmentController extends Controller
     }
 
     /**
-     * Busca el inspector seleccionado.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function inspector($id)
-    {
-        $result = InspectionAppointment::where('inspector_id', '=', $id)->latest()->with(['inspector', 'appointmentState', 'inspectionType'])->paginate();
-        $inspectors = Inspector::pluck('name', 'id');
-        $appointment_states = AppointmentState::pluck('name', 'id');
-        $appointment_locations = AppointmentLocation::pluck('coordenada','id');
-        $inspection_types = InspectionType::pluck('name', 'id');
-        return view('inspection_appointment.index',compact('result', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'id'));
-    }
-
-    /**
      * Muestra los resultados de la tabla citas para mostrarlos en el calendario
      *
      * @return JSON
      */
-    public function events()
+    public function events($id=null)
     {
-        $solicitadas = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
+        /* $solicitadas = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
             ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
             ->join('users', 'users.id', '=', 'inspectors.user_id')
             ->select('estimated_start_date AS start',
@@ -376,9 +380,7 @@ class InspectionAppointmentController extends Controller
                 'appointment_states.color AS className',
                 'appointment_states_id',
                 'format_id')
-        ->where([
-            ['appointment_states_id', 1],
-        ]);
+        ->where('appointment_states_id', 1);
 
         $result = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
             ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
@@ -395,7 +397,49 @@ class InspectionAppointmentController extends Controller
         ->orWhere('appointment_states_id', 3)
         ->orWhere('appointment_states_id', 4)
         ->union($solicitadas)
-        ->get();
+        ->get(); */
+
+        $solicitadas = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
+            ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
+            ->join('users', 'users.id', '=', 'inspectors.user_id')
+            ->select('estimated_start_date AS start',
+                'estimated_end_date AS end',
+                'users.name AS title',
+                'inspector_id',
+                'inspection_appointments.id',
+                'appointment_states.color AS className',
+                'appointment_states_id',
+                'format_id')
+        ->where('appointment_states_id', 1);
+
+        if($id){
+            $solicitadas = $solicitadas->where('inspector_id', $id);
+        }
+
+        // $result = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
+        $result = InspectionAppointment::
+            join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
+            ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
+            ->join('users', 'users.id', '=', 'inspectors.user_id')
+            ->select('start_date AS start',
+                'end_date AS end',
+                'users.name AS title',
+                'inspector_id',
+                'inspection_appointments.id',
+                'appointment_states.color',
+                'appointment_states_id',
+                'format_id')
+        ->union($solicitadas);
+
+        if($id){
+            $result = $result->where('inspectors.id', $id);
+        }
+
+        $result = $result->where('appointment_states_id', 2)  
+            ->orWhere('appointment_states_id', 3)
+            ->orWhere('appointment_states_id', 4)->get();
+
+        // dd($result);
 
         //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario y un alert al className para los colores de los eventos
         foreach($result as $item){
@@ -409,8 +453,8 @@ class InspectionAppointmentController extends Controller
     {
 
         $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
+            'start_date' => 'required|date|date_format:Y-m-d',
+            'end_date' => 'required|date|date_format:Y-m-d',
         ]);
 
         // Validar si la fecha de inicio ingresada supera a la fecha final

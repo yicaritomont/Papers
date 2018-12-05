@@ -48,18 +48,17 @@
             ];
 
             @can('edit_inspectionsubtypes','delete_inspectionsubtypes')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionSubtype', 'entity' => 'inspectionsubtypes', 'identificador' => 'id', 'relations' => 'inspection_types']) }}";
-                columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columns = columns;
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionSubtype', 'company' => 'none', 'entity' => 'inspectionsubtypes', 'identificador' => 'id', 'relations' => 'inspection_types']) }}";
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionSubtype', 'relations' => 'inspection_types']) }}";
-                dataTableObject.columns = columns;
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionSubtype', 'company' => 'none', 'relations' => 'inspection_types']) }}";
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
   
-            var table = $('.dataTable').DataTable(dataTableObject);                  
-            // new $.fn.dataTable.FixedHeader( table );
+            dataTableObject.columns = columns;
+
+            var table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
 @endsection

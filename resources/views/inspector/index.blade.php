@@ -13,9 +13,6 @@
             @endif
         </div>
         <div class="col-md-7 page-action text-right">
-            @if(isset($companies))
-                <a href="{{ route('companies.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
-            @endif
             @can('add_inspectors')
                 <a href="{{ route('inspectors.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i>@lang('words.Create')</a>
             @endcan
@@ -36,10 +33,12 @@
                 <th>@choice('words.Profession',2)</th>                
                 <th>@choice('words.InspectorType',2)</th>                
                 <th>@lang('words.CreatedAt')</th> 
-                <th>@lang('words.UpdatedAt')</th>              
-                @can('edit_inspectors','delete_inspectors')
+                <th>@lang('words.UpdatedAt')</th> 
+                {{-- @if(Gate::check('edit_inspectors') || Gate::check('delete_inspectors') || Gate::check('view_inspectoragendas') || Gate::check('view_inspectionappointments'))              --}}
+                {{-- @can('edit_inspectors','delete_inspectors') --}}
                     <th class="text-center">@lang('words.Actions')</th>
-                @endcan
+                {{-- @endcan --}}
+                {{-- @endif --}}
             </tr>
             </thead>
         </table>
@@ -67,7 +66,7 @@
             ];
 
             //Columnas a ser modificadas
-            var columnDefs = [
+            dataTableObject.columnDefs = [
                 {
                     //En la columna 6 (companies) se recorre el areglo y luego se muestran los nombres de cada posición
                     targets: 6,
@@ -81,33 +80,53 @@
                 }
             ];
 
-            @can('edit_inspectors','delete_inspectors')
-                @if(isset($companies))
-                    dataTableObject.ajax = "{{ route('inspectors.companyTable', $companies->slug) }}";
-                @else
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
-                @endif
-
-                columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columns = columns;
-
-                columnDefs.push(
-                    {
-                        //En la columna 10 (actions) se agrega el boton de ver inspector
-                        targets: 11,
-                        render: function(data, type, row){
-                            return data + '<a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+row.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a>';
-                        }
-                    },
-                    setDataTable([-2, -3]),
-                )
+            @if(isset($companies))
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
-                dataTableObject.columns = columns;
-                columnDefs.push(setDataTable([-1, -2]));
-            @endcan
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'company' => 'none', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
+            @endif
 
-            dataTableObject.columnDefs = columnDefs;
+            columns.push({data: 'actions', className: 'text-center w1em'});
+            dataTableObject.columns = columns;
+
+            dataTableObject.columnDefs.push(
+                {
+                    //En la columna 11 (actions) se agrega el boton de ver inspector
+                    targets: 11,
+                    render: function(data, type, row){
+                        var btn =   '<div class="dropdown" style="display:inline-block">\
+                                        <button class="btn btn-xs btn-primary dropdown-toggle" type="button" id="watchMenu" data-toggle="dropdown">\
+                                            <i class="fa fa-eye"></i>\
+                                            \
+                                        </button>\
+                                        <ul class="dropdown-menu pull-right" aria-labelledby="watchMenu" style="text-align:right">\
+                                            <li><a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+row.id+'">@lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a></li>';
+                        
+                        @can('view_inspectoragendas')
+                            btn +=  '<li>\
+                                        <a target="_blank" href="'+window.Laravel.url+'/inspectoragendas?id='+row.id+'">\
+                                            @lang("words.Whatch") @choice("words.InspectorAgenda", 2)\
+                                        </a>\
+                                    </li>';
+                        @endcan
+
+                        @can('view_inspectionappointments')
+                            btn +=  '<li>\
+                                        <a target="_blank" href="'+window.Laravel.url+'/inspectionappointments?id='+row.id+'">\
+                                            @lang("words.Whatch") @choice("words.Inspectionappointment", 2)\
+                                        </a>\
+                                    </li>';
+                        @endcan
+
+                        btn += '</ul></div>';
+
+                        return data + btn;
+                    }
+                },
+                setDataTable([-2, -3])
+            );
+
+            //dataTableObject.columnDefs = columnDefs;
 
             var table = $('.dataTable').DataTable(dataTableObject);
             // new $.fn.dataTable.FixedHeader( table );
