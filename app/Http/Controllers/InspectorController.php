@@ -314,42 +314,6 @@ class InspectorController extends Controller
         return redirect()->back(); */
     }
 
-    public function companyTable($company)
-    {
-        /* $result = Inspector::query()
-                ->join('company_inspector', 'company_inspector.inspector_id', '=', 'inspectors.id')
-                ->join('companies', 'companies.id', '=', 'company_inspector.company_id')
-                ->select('inspectors.*')
-                ->where('companies.slug', '=', $company)
-                ->with('companies', 'profession', 'inspectorType', 'user', 'companies.user')
-                ->get(); */
-
-        /* $r2 = Inspector::query()
-            ->with(['companies', 'profession', 'inspectorType', 'user', 'companies.user', 'companies' => function($query){
-                $query->where('slug', '=', 'c4ca4238a0b923820dcc509a6f75849b');
-            }])
-        ->get(); */
-
-        $result = Inspector::query()
-            ->with(['profession:id,name', 'inspectorType', 'user'])
-            ->whereHas('companies', function($q) use($company){
-                $q->where('slug', '=', $company);
-            })
-        ->get();
-
-        /* dd($r2);
-        dd($result); */
-
-        return datatables()
-            ->of($result)
-            ->addColumn('entity', 'inspectors')
-            ->addColumn('action', 'id')
-            ->addColumn('actions', 'shared/_actions')
-            ->rawColumns(['actions'])
-            ->toJson();
-    }
-
-
     /**
      *
     */

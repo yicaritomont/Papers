@@ -36,13 +36,8 @@ class ContractController extends Controller
      */
     public function create()
     {
-       /*  $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
-                        ->select('clients.id AS id', 'users.name AS name')
-                        ->get()
-                        ->pluck('name', 'id'); */
-
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
-        /* dd($company); */
+
         return view('contract.new', compact(['clients', 'companies']));
     }
 
@@ -99,7 +94,11 @@ class ContractController extends Controller
 
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
 
-        return view('contract.edit', compact(['contract', 'clients', 'companies']));
+        if(CompanyController::compareCompanySession([$contract->company])){
+            return view('contract.edit', compact(['contract', 'clients', 'companies']));
+        }else{
+            abort(403, 'This action is unauthorized.');
+        }
     }
 
     /**
@@ -111,6 +110,9 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract)
     {
+        if( !CompanyController::compareCompanySession([$contract->company]) ){
+            abort(403, 'This action is unauthorized.');        
+        }
 
         $this->validate($request, [
             'name' => 'required|min:2',
@@ -135,7 +137,9 @@ class ContractController extends Controller
      */
     public function destroy(Contract $contract)
     {
-        // dd($contract);
+        if( !CompanyController::compareCompanySession([$contract->company]) ){
+            abort(403, 'This action is unauthorized.');        
+        }
 
         if($contract)
         {

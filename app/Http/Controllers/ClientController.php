@@ -244,27 +244,4 @@ class ClientController extends Controller
             ]);
         }
     }
-
-    public function companyTable($company)
-    {
-        // dd($company);
-        $result = Client::query()
-                ->join('users', 'users.id', '=', 'clients.user_id')
-                ->join('user_company', 'user_company.user_id', '=', 'users.id')
-                ->join('companies', 'companies.id', '=', 'user_company.company_id')
-                ->select('clients.*')
-                ->where('companies.slug', '=', $company)
-                ->with('user')
-                ->get();
-
-        // dd($result);
-
-        return datatables()
-            ->of($result)
-            ->addColumn('entity', 'inspectors')
-            ->addColumn('action', 'id')
-            ->addColumn('actions', 'shared/_actions')
-            ->rawColumns(['actions'])
-            ->toJson();
-    }
 }
