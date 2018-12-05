@@ -167,7 +167,7 @@ class FormatController extends Controller
      */
     public function destroy($id)
     {
-      $format = Format::find($id);
+        $format = Format::find($id);
 
           //Valida que exista el servicio
           if($format)
@@ -277,30 +277,41 @@ class FormatController extends Controller
             {
                 if( $item->isValid() ){
 
-                    $name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
-                    $upload_success = $item->move($destinationPath, $name_url['name'] );
+					//Verificamos que el peso no supere el limite
+					if( $this->getValidSize($item) ){
 
-                    if( $upload_success )
-                    {
-                        $new_file = array
-                        (
-                            'mime_type'     =>  $upload_success->getMimeType(),
-                            'format_id'     =>  $format_id,
-                            'nombre_url'    =>  $name_url['url'],
-                            'user_id'       =>  Auth::id(),
-                            'extension'     =>  $upload_success->getExtension()
-                        );
+						//Verificamos que la extensión este permitida
+						if( $this->getValidExt($item) ){
 
-                        $insert = File::insertGetId($new_file);
-                        $new_file['id'] = $insert;
-                        array_push($response,$new_file);
-
-                    }else{
-
-                    }
-
+							$name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
+							$upload_success = $item->move($destinationPath, $name_url['name'] );
+		
+							if( $upload_success )
+							{
+								$new_file = array
+								(
+									'mime_type'     =>  $upload_success->getMimeType(),
+									'format_id'     =>  $format_id,
+									'nombre_url'    =>  $name_url['url'],
+									'user_id'       =>  Auth::id(),
+									'extension'     =>  $upload_success->getExtension()
+								);
+		
+								$insert = File::insertGetId($new_file);
+								$new_file['id'] = $insert;
+								array_push($response,$new_file);
+		
+							}else{
+								$response = $this->addError($response,'not_upload',$item);
+							}
+						}else{
+							$response = $this->addError($response,'not_ext_valid',$item);
+						}
+					}else{
+						$response = $this->addError($response,'exceeded_weight',$item);
+					}
                 }else{
-
+					$response = $this->addError($response,'file_not_valid',$item);
                 }
             }
         }
@@ -332,9 +343,9 @@ class FormatController extends Controller
         foreach( $response['files'] AS $key => $item )
         {
             if( in_array($item->extension,$texts) ){
-                $response['files'][$key]->content = file_get_contents($item->nombre_url);
+                $content = file_get_contents($item->nombre_url);
+                $response['files'][$key]->content = base64_encode($content);
             }
-
         }
         return response()->json($response);
     }
@@ -365,4 +376,48 @@ class FormatController extends Controller
 
       return $pdf->stream();
     }
+
+    public function clearString( $string )
+    {
+        $clear = preg_replace("[^A-Za-z0-9]", "", $string);
+        return $clear;
+	}
+	
+	public function getValidSize( $file )
+	{
+		$size = $file->getClientSize();
+		//Pasamos de Bytes a KiloBytes
+		$sizeKb = ($size / 1000 );
+		//verificamos si es menor igual al permitido
+		if( $sizeKb <= Equivalencia::size() ){
+			return true;
+		}
+		return false;
+	}
+
+	public function getValidExt( $file )
+	{
+		$types = Equivalencia::types();
+		$ext = strtolower($file->getClientOriginalExtension());
+
+		if( in_array($ext,$types) ){
+			return true;
+		}
+		return false;		
+	}
+
+	public function addError( $response , $message , $file )
+	{
+		$text = \Lang::get('words.'.$message);
+		$name = $file->getClientOriginalName();
+
+		$text = str_replace("{file}",$name,$text);
+
+		if( isset($response['error']) ){
+			$response['error'] .= " <li>".$text."</li>";
+		}else{
+			$response['error'] = "<li>".$text."</li>";
+		}
+		return $response;
+	}
 }

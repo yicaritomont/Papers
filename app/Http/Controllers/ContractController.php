@@ -14,8 +14,18 @@ class ContractController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['id'] = Company::findOrFail(session()->get('Session_Company'))->slug;
+        }
+        
+        if($request->get('id')){
+            $companies = Company::with('user:id,name')->where('slug', '=', $request->get('id'))->first();
+            
+            return view('contract.index', compact('companies'));
+        }
+
         return view('contract.index');
     }
 
@@ -26,13 +36,8 @@ class ContractController extends Controller
      */
     public function create()
     {
-       /*  $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
-                        ->select('clients.id AS id', 'users.name AS name')
-                        ->get()
-                        ->pluck('name', 'id'); */
-
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
-        /* dd($company); */
+
         return view('contract.new', compact(['clients', 'companies']));
     }
 
@@ -48,7 +53,7 @@ class ContractController extends Controller
 
         $this->validate($request, [
             'name' => 'required|min:2',
-            'date' => 'date',
+            'date' => 'required|date|date_format:Y-m-d',
             'client_id' => 'required',
             'company_id' => 'required',
         ]);
@@ -60,7 +65,7 @@ class ContractController extends Controller
             $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Contract', 1)];
         }
 
-        return redirect()->back()->with('alert', $alert);
+        return redirect()->route('contracts.index')->with('alert', $alert);
     }
 
     /**
@@ -89,7 +94,11 @@ class ContractController extends Controller
 
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
 
-        return view('contract.edit', compact(['contract', 'clients', 'companies']));
+        if(CompanyController::compareCompanySession([$contract->company])){
+            return view('contract.edit', compact(['contract', 'clients', 'companies']));
+        }else{
+            abort(403, 'This action is unauthorized.');
+        }
     }
 
     /**
@@ -101,10 +110,13 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract)
     {
+        if( !CompanyController::compareCompanySession([$contract->company]) ){
+            abort(403, 'This action is unauthorized.');        
+        }
 
         $this->validate($request, [
             'name' => 'required|min:2',
-            'date' => 'date',
+            'date' => 'date|date_format:Y-m-d',
             'client_id' => 'required',
             'company_id' => 'required',
         ]);
@@ -125,7 +137,9 @@ class ContractController extends Controller
      */
     public function destroy(Contract $contract)
     {
-        // dd($contract);
+        if( !CompanyController::compareCompanySession([$contract->company]) ){
+            abort(403, 'This action is unauthorized.');        
+        }
 
         if($contract)
         {

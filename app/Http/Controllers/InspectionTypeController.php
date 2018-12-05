@@ -122,7 +122,7 @@ class InspectionTypeController extends Controller
      *
      * @return JSON
      */
-    public function subtypes($id)
+    public function subtypes($id = null)
     {
 
         $result = InspectionSubtype::where('inspection_type_id', '=', $id)

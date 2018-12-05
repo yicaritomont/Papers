@@ -19,13 +19,9 @@ function inicial (argument)
         processing: true,
     };
 
-    //Se valida el idioma
-    if(window.Laravel.language == 'es'){
-        dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};
-    }
-
+    
     //Campo fecha
-
+    
     var datePickerObj = {
         autoclose: true,
         format: 'yyyy-mm-dd',
@@ -33,8 +29,21 @@ function inicial (argument)
         orientation: "bottom auto",
         forceParse: false,
     };
+    
+    //Se valida el idioma
+    if(window.Laravel.language == 'es'){
+        dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};
+        datePickerObj.language = 'es';
+        chosenText = 'No hay coincidencias para ';
+    }else{
+        chosenText = 'No matches for';
+    }
 
-    if(window.Laravel.language == 'es') datePickerObj.language = 'es';
+    $(".chosen-select").chosen({
+        no_results_text: chosenText,
+    });
+
+    // if(window.Laravel.language == 'es') datePickerObj.language = 'es';
 
     $('.input-group.date').datepicker(datePickerObj);
 
@@ -62,7 +71,7 @@ if($('#icon')[0])
 {
     $.getScript(window.Laravel.url+'/js/icons.js', function( data, textStatus, jqxhr )
     {
-        var iconos="<ul>";
+        var iconos='<div id="text"></div><ul>';
         $.each(fA, function(key, value){
             iconos += '<li title="'+value+'"><i data-icon="'+value+'" class="fa '+value+'"></i></li>';
         });
@@ -75,15 +84,20 @@ if($('#icon')[0])
 
 //Todos los select que requieran una petición ajax para llenar otro select
 $('#company_id').on('change', function(event, edit){
-    fillSelect(window.Laravel.url+'/companies/'+$(this).val()+'/clients', '#client_id', edit);
+    fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#client_id', edit);
 });
 
 $('.inspection_type_id').on('change',function(event, edit){
-    fillSelect(window.Laravel.url+'/inspectiontypes/'+$(this).val()+'/subtypes', '.inspection_subtype_id', edit);
+    fillSelect(window.Laravel.url+'/inspectiontypes/subtypes/'+$(this).val(), '.inspection_subtype_id', edit);
 });
 
 $('.country').on('change',function(event, edit){
-    fillSelect(window.Laravel.url+'/country/'+$(this).val()+'/cities', '.city_id', edit);
+    // Se valida si la variable edit es numerica, si no lo es asignele undefined
+    if( !$.isNumeric(edit) )
+    {
+        edit = undefined;
+    }
+    fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit);
 });
 
 function setDataTable(targets){
@@ -278,10 +292,10 @@ function alert(color, msg){
     return '<div class="alert alert-'+color+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+msg+'</div>';
 }
 
-function slideForms(obj, cualquierWea) {
+function slideForms(obj, funcRes) {
     var selector = obj.data('toggle');
     $('.formSlide:not('+selector+')').slideUp('slow');
-    $(selector).slideToggle('slow', cualquierWea);
+    $(selector).slideToggle('slow', funcRes);
 };
 
 //Funcion para el mensaje de confirmación de eliminación por Ajax
@@ -316,6 +330,7 @@ function confirmModal(form, msg, type, revertFunc){
 $(window).resize(function(){
     changeTopToast();
     $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
+    // $('.dataTable').DataTable().columns.adjust().draw();
 });
 
 function changeTopToast(){
@@ -367,9 +382,16 @@ $(document).on('submit','.formDelete',function(e){
         console.log('error\n'+res);
         console.log(res);
     })
-    .always(function(res){
-        console.log('complete\n'+res);
-    })
+    .error(function(res){
+        console.log(res.status);
+        if(res.status == 403){
+            toast({
+                type: 'error',
+                title: res.responseJSON.message
+            });
+            changeTopToast();
+        }
+    });
 });
 
 // Ajax para los formularios editar y eliminar de los calendarios
@@ -431,25 +453,28 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
         }
     })
     .fail(function(res){
-        console.log('error\n'+res);
+        console.log('fail\n'+res);
         console.log(res);
     })
-    .always(function(res){
-        console.log('complete\n'+res);
-    })
     .error(function(res){
+        console.log(res.status);
+        if(res.status == 403){
+            $('.msgError').html('');
+            $('.msgError').append(alert('danger', res.responseJSON.message));
+        }else if(res.status == 422){
 
-        $('.form-group').removeClass('has-error');
-        $('.errors').empty();
-
-        $('#'+idForm).find(':input').each(function(){
-            var idInput = $(this).attr('id');
-
-            if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
-                $(this).parents('.form-group').addClass('has-error');
-                $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput]));
-            }
-        });
+            $('.form-group').removeClass('has-error');
+            $('.errors').empty();
+            
+            $('#'+idForm).find(':input').each(function(){
+                var idInput = $(this).attr('id');
+                
+                if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
+                    $(this).parents('.form-group').addClass('has-error');
+                    $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput][0]));
+                }
+            });
+        }
     });
 });
 
@@ -488,6 +513,12 @@ $('.showCalendar').on('click', function(e){
         })
         .fail(function(res){
             console.log('error\n'+res);
+        })
+        .error(function(res){
+            if(res.status == 403){
+                $('.msgError').html('');
+                $('.msgError').append(alert('danger', res.responseJSON.message));
+            }
         });
     }
 });
@@ -535,9 +566,9 @@ $(document).on('click', '.editCalendar', function(e){
                     $('#modalEditDel #'+nomField).val(res.agenda[nomField]);
                 });
 
-
                 $('#modalEditDel #country').val(res.agenda.city.countries_id);
-                $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+res.agenda.slug);
+                $('#modalEditDel #country').trigger("chosen:updated");
+                $('#editAgenda').attr('action', $('#url').val()+'/'+res.agenda.slug);
 
                 slideForms(objElement, () => {
                     $('#modalEditDel #country').trigger('change',res.agenda.city_id);
@@ -560,6 +591,12 @@ $(document).on('click', '.editCalendar', function(e){
         })
         .fail(function(res){
             console.log('error\n'+res);
+        })
+        .error(function(res){
+            if(res.status == 403){
+                $('.msgError').html('');
+                $('.msgError').append(alert('danger', res.responseJSON.message));
+            }
         });
     }
 });
@@ -574,6 +611,9 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
     $(form)[0].reset();
     $(form+' #'+fielDate+'start_date').val(startDate);
     $(form+' #'+fielDate+'end_date').val(endDate);
+    $('#country').trigger("chosen:updated");
+    $('#city_id').trigger("chosen:updated");
+    
     $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
 }
 
@@ -693,6 +733,8 @@ function calendar(obj){
 
 function fillSelect(url, select, edit){
     console.log(edit);
+    console.log(url);
+    console.log(select);
 
     $.ajax({
         url:url,
@@ -706,13 +748,16 @@ function fillSelect(url, select, edit){
 
         $(select).empty();
 
-        $.each(res.status, function( key, value ) {
+        $.each(res.status, function( key, value )
+        {
             $(select).append('<option value="'+value.id+'">'+value.name+'</option>');
         });
 
         if(edit){
             $(select).val(edit);
         }
+        $(select).trigger("chosen:updated");
+        
     })
     .fail(function(res){
         alert('Error.');
@@ -815,6 +860,8 @@ function cargarSelectClients()
 
 // Campo selector de iconos
 
+$('#icon').removeAttr('disabled');
+
 $('#icon').on('focus', function(e){
     $(".oculto").fadeIn("fast");
 });
@@ -828,15 +875,40 @@ $(document).on("click",".oculto ul li",function()
     $(".inputpicker").val($(this).find("i").data("icon"));
     $('.picker .input-group-addon').html('<i class="fa '+$(this).find("i").data("icon")+'"></i>');
     $('#icon-hidden').val($(this).find("i").data("icon"));
+    $(".oculto").fadeOut("fast");
 });
 
+// Al realizar la busqueda muestre los iconos resultantes, si no hay coincidencias muestre un mensaje y si vacia la busqueda deseleccione el icono
 $(document).on("keyup", '#icon', function()
 {
     var value=$(this).val();
-
-    $(".oculto ul li i").each(function()
+    
+    if(value == '')
+    {
+        $('.picker .input-group-addon').html('<i class="fa fa-hashtag"></i>');
+        $('#icon-hidden').val('');
+    }
+    $('.oculto ul li i').each(function() 
     {
         if ($(this).data('icon').search(value) > -1) $(this).closest("li").show();
         else $(this).closest("li").hide();
     });
+    if($('.oculto ul li i').is(":visible"))
+    {
+        $('.oculto #text').empty();
+    }else{
+        $('.oculto #text').html(chosenText+' '+value);
+    }
+});
+
+// Cuando clickee en el boton del icono oculte o muestre los iconos
+$('.form-group.picker .input-group-addon').on('click', function(){
+    if($('.oculto').is(":visible"))
+    {
+        $(".oculto").fadeOut("fast");
+    }
+    else
+    {
+        $(".oculto").fadeIn("fast");
+    }
 });

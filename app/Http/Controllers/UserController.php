@@ -22,10 +22,14 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($company_slug=null)
+    public function index(Request $request)
     {
-        if(isset($company_slug)){
-            $companies = Company::with('user')->where('slug','=',$company_slug)->get()->first();
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['id'] = Company::findOrFail(session()->get('Session_Company'))->slug;
+        }
+        
+        if($request->get('id')){
+            $companies = Company::with('user:id,name')->where('slug','=',$request->get('id'))->get()->first();
             return view('user.index', compact('companies'));
         }
 
@@ -289,24 +293,5 @@ class UserController extends Controller
 
             return Redirect::to('alertasVeterinario')->with('success_message', 'Ha iniciado Sesión Exitosamente en la Agremiaci&oacute;n '.$asociacion_session->nombre);
         }*/
-    }
-
-    public function companyTable($company){
-
-        $result = User::query()
-                ->join('user_company', 'user_company.user_id', '=', 'users.id')
-                ->join('companies', 'companies.id', '=', 'user_company.company_id')
-                ->select('users.*')
-                ->where('companies.slug', '=', $company)
-                ->with('roles' ,'companies' ,'companies.user')
-                ->get();
-
-        return datatables()
-            ->of($result)
-            ->addColumn('entity', 'users')
-            ->addColumn('action', 'id')
-            ->addColumn('actions', 'shared/_actions')
-            ->rawColumns(['actions'])
-            ->toJson();
     }
 }

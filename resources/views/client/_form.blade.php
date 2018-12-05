@@ -40,7 +40,7 @@
     @if ($errors->has('cell_phone')) <p class="help-block">{{ $errors->first('cell_phone') }}</p> @endif
 </div>
 
-@if( !auth()->user()->hasRole('Compañia') )
+@if( !auth()->user()->hasRole('Compania') )
     <!-- Companies Form Input -->
     <div class="form-group @if ($errors->has('companies')) has-error @endif">
         {!! Form::label('companies', trans_choice('words.Company', 2)) !!}

@@ -59,7 +59,7 @@ class HeadquartersController extends Controller
         }
         
 
-        return redirect()->back()->with('alert', $alert); 
+        return redirect()->route('headquarters.index')->with('alert', $alert); 
     }
 
     /**

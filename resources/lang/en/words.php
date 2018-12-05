@@ -44,7 +44,6 @@ return[
     'MenuPadre' => 'Parent Menu',
     'Active' => 'Active',
     'Inactive' => 'Inactive',
-    'Inspectionsubtype' => 'Inspection Subtype',
 
     //To App Latout Menu
     'ManagementTools' => 'Tools',
@@ -139,12 +138,24 @@ return[
     'ErrorRangeDate' => 'The start date can not be longer than the final date',
     'MainMenu' => 'Main menu',
     'DropdownMenu' => 'Dropdown menu',
+    'Icon' => 'Icon',
+    'Application' => 'Application',
+    'Master' => 'Master',
+    'ClientMenu' => 'Client Menu',
+    'Inspection' => 'Inspection',
+    'FormatEI' => 'Expediting and inspection format',
+    'AgendaEmpty' => 'There are no agendas',
+    
     //Supports
     'upload_sopports'    =>  'Load Supports',
     'supports'           =>  'Supports',
     'browse'             =>  'Browse',
     'upload'             =>  'Upload',
     'browseMsg'          =>  'Select files...',
-    'manage'             =>  'Manage'
+    'manage'             =>  'Manage',
+    'not_upload'         =>  'The file {file} could not be uploaded',
+    'not_ext_valid'      =>  'The file {file} extension is not allowed',
+    'exceeded_weight'    =>  'The file {file} has exceeded the size limit of 20MB',
+    'file_not_valid'     =>  'The file {file} is not valid'
 ];
 ?>

@@ -42,5 +42,9 @@ class Inspector extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    public function inspection_appointments(){
+        return $this->hasMany('App\InspectionAppointment');
+    }
 
 }
