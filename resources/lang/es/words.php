@@ -130,6 +130,7 @@ return[
     'DateGreater' => 'La fecha debe ser mayor a la actual',
     'ActiveMessage' => '¿Seguro que quieres activarlo?',
     'InactiveMessage' => '¿Seguro que quieres inactivarlo?',
+    'ThereNoContract' => 'No hay contrato entre el cliente y la empresa seleccionada.',
     'To' => 'hasta',
     'UpdatedAt' => 'Actualizado en',
     'ErrorRangeDate' => 'La fecha de inicio no puede ser mayor a la fecha final',
