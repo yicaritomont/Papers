@@ -24,6 +24,7 @@ use Url;
 use nusoap_client;
 use Artisaninweb\SoapWrapper\SoapWrapper;
 use SoapClient;
+use Session;
 
 class InspectorController extends Controller
 {
@@ -343,27 +344,58 @@ class InspectorController extends Controller
          * El bloque comentado a continuacion muestera como debe ser el consumo del WS de sellado del tiempo
          */
         /*$signaSelladoFirma = new WsdlSelladoTiempoController();
-        $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
 
-        echo "<br> TOKEN ".$tokenSelladoFirma['Token']."<br>";
-        if($tokenSelladoFirma['ResultadoOperacion'] == 0)
+        // Verifica que se tenga la variable token en session
+        if(!Session::has('TokenWSLSello'))
+        {           
+            // solicita el token para el sellado de firma
+            $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
+            if($tokenSelladoFirma['ResultadoOperacion'] == 0)
+            {
+                // se registra el token en una variable de session
+                Session::put('TokenWSLSello', $tokenSelladoFirma['Token']);
+            }
+        }    
+
+       
+        // Verifica el tiempo restante para el token
+        $token = session()->get('TokenWSLSello');
+        $consultaEstadoToken = $signaSelladoFirma->consultaEstadoToken($token);        
+        if($consultaEstadoToken['Duracion']<=0)
         {
+            //Solicita y asigna de nuevo el token
+            $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
+            Session::put('TokenWSLSello', $tokenSelladoFirma['Token']);
+        }
+        else
+        {
+            // Realice los llamados a metodos del ws.
             echo "<hr>";
-            $base64File = HashUtilidades::TakeByte('');
-            echo " base 64 del documento ".$base64File;
-            echo "<hr>";
-            echo " array de bytes ejemplo ".'FqG3Jo2Zv+UX8NbDv5brW0PW5R520XqjOI/uHA0VuNw=';
-            echo "<hr>";
-
-            $SelladoFirma = $signaSelladoFirma->selladoDocumento($tokenSelladoFirma['Token'],$base64File);
+            $base64File = HashUtilidades::generarBase64Documento('');            
+           /* $SelladoFirma = $signaSelladoFirma->selladoDocumento($tokenSelladoFirma['Token'],$base64File);
 
             echo "<hr> SELLADO DE FIRMA";
             echo "<pre>";
             print_r($SelladoFirma);
-            echo "</pre>";
-            var_dump($SelladoFirma);
-            
+            echo "</pre>";*/
+           
+           /* $hashdocumento = HashUtilidades::generarHash(HashUtilidades::generarBase64Documento(''));
+            echo "<hr>";
+            echo $hashdocumento;
+            /*$SelladoHashDocumento = $signaSelladoFirma->selladoHashDocumento($tokenSelladoFirma['Token'],$hashdocumento);
+
+            echo "<hr> SELLADO HASH DOCUMENTO";
+            echo "<pre>";
+            print_r($SelladoHashDocumento);
+            echo "</pre>";*/
+
+            /*$consultaSellado = $signaSelladoFirma->consumoConsulta(session()->get('TokenWSLSello'));
+            echo "<hr>";
+            echo "<pre>";
+            print_r($consultaSellado);
+            echo "</pre>";            
         }*/
+
         /**
          * El bloque  comentado a continuacion muestra como debe ser consumo del WS de firma 
          */
@@ -388,19 +420,25 @@ class InspectorController extends Controller
          */
 
         
-        $concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
+        /*$concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
         $hash = HashUtilidades::generarHash($concatenado);
         $hash = HashUtilidades::generarHash('HolaSOyElhash');
         $signa = new ManejadorPeticionesController();
-        $obtenerToken = $signa->obtenerAuthToken();
-        //$obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQyNzMxODM1LCJleHAiOjE1NDI3MzI3MzUsImlhdCI6MTU0MjczMTgzNSwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.jiMRvZ6MP1L-Ourpx6R2qbCRHrS3VVz4U5Cr9a4VDlE";
+        //$obtenerToken = $signa->obtenerAuthToken();
+        $obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQzOTUwNTIyLCJleHAiOjE1NDM5NTE0MjIsImlhdCI6MTU0Mzk1MDUyMiwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.zxognh6Wcv1n1hdUcScgAArZyxz1rUY7GEIpQnBT2fM";
 
         echo "<pre>";
         print_r($obtenerToken);
         echo "</pre>";
         if($obtenerToken != "")
         {
-            $registrar_documento = $signa->registrarDocumento($obtenerToken,asset('images/imagenes_user/cropper.jpg'));           
+            $sourcePath=asset('files/test.pdf');
+            $registrar_documento = $signa->registrarDocumento($obtenerToken,$sourcePath);
+
+            echo "<pre>";
+            print_r($registrar_documento);
+            echo "</pre>";
+            /*$registrar_documento = $signa->registrarDocumento($obtenerToken,asset('images/imagenes_user/cropper.jpg'));           
             
             echo $hash;
 
@@ -423,8 +461,8 @@ class InspectorController extends Controller
             $certificado_hash = $signa->hashCertificado($obtenerToken,$hash);
             echo "<pre>";
             print_r($certificado_hash);
-            echo "</pre>";
-        }
+            echo "</pre>";*/
+        //}
         
         return view('inspector.card', compact('infoInspector','usuario'));
 

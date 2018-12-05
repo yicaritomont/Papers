@@ -34,25 +34,6 @@ class HashUtilidades
         echo $data;    
     }
 
-    public static function create_byte_array($string)
-    {
-        $array = array();
-        foreach(str_split($string) as $char){
-            array_push($array, sprintf("%02X", ord($char)));
-        }
-    
-        return implode(' ', $array);
-    }
-    
-    public static function TakeByte($file)
-    {
-        $file=asset('files/test.pdf');
-        //$byteArray = file($file);
-        $source = file_get_contents($file);
-        $byteArray = HashUtilidades::create_byte_array($source);
-        return $byteArray;
-    }
-
     public static function generarHashDocumento($file)
     {
         $file=asset('files/test.pdf');
