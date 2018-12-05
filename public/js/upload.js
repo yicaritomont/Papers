@@ -24,6 +24,7 @@ var upload = {
     theme: 'fa',
     language: props.lang,
     allowedPreviewTypes: ['image', 'html', 'text', 'video', 'audio','pdf','office','other'],
+    allowedFileExtensions: [],
     elErrorContainer: '#kartik-file-errors',
     removeClass: "btn btn-danger",
     uploadClass: "btn btn-success",
@@ -87,8 +88,9 @@ var vm = new Vue({
                     vm.initData( response.data.files, response.data.path );
                     vm.path = response.data.path;
                 }
-                $(props.input).fileinput(upload).on('fileuploaded', function(e, params) {
-                    
+                $(props.input).fileinput(upload).on('fileuploaded', function(e, params) 
+                {
+
                 }).on('filebatchuploadsuccess', function(event, data) {
                     vm.initData(data.jqXHR.responseJSON, vm.path );
                 });
@@ -135,10 +137,10 @@ var vm = new Vue({
                         break;
                 }
                 config.push(conf);
-
             }
 
             var obj = {
+                allowedFileExtensions: this.types,
                 overwriteInitial: false,
                 initialPreview: urls,
                 initialPreviewAsData : true,
