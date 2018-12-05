@@ -6,7 +6,11 @@
 
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ trans_choice('words.Client', 2) }} </h3>
+            @if(isset($companies))
+                <h3 class="modal-title">{{ trans_choice('words.Client', 2) }} @lang('words.Of') {{ $companies->user->name }}</h3>
+            @else
+                <h3 class="modal-title">{{ trans_choice('words.Client', 2) }} </h3>
+            @endif
         </div>
         <div class="col-md-7 page-action text-right">
             @can('add_clients')
@@ -56,18 +60,27 @@
             ];
 
             @can('edit_clients', 'delete_clients')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}";
+                @if(isset($companies))
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}";
+                @else
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'company' => 'none', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}";
+                @endif
+
                 columns.push({data: 'actions', className: 'text-center w1em'},)
-                dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'relations' => 'user']) }}";
-                dataTableObject.columns = columns;
+                @if(isset($companies))
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'company' => 'user.companies,'.$companies->slug, 'relations' => 'user']) }}";
+                @else
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'company' => 'none', 'relations' => 'user']) }}";
+                @endif
+
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
+            dataTableObject.columns = columns;
+
             var table = $('.dataTable').DataTable(dataTableObject);
-            // new $.fn.dataTable.FixedHeader( table );
         });
     </script>
 @endsection

@@ -56,13 +56,15 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');
 
     //Consultar datos para dataTable
-    Route::get('datatable/{model}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatable')->name('datatable');
+    Route::get('datatable/{model}/{company?}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatable')->name('datatable');
+    
+    //Consultar datos para dataTable con una consulta relacionada
+    // Route::get('datatableCompany/{model}/{company}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatableWhere')->name('datatableCompany');
 
-    //Consultar los usuarios de una compañia para dataTable
+    //Consultar por una compañia para dataTable
     Route::get('users/companyTable/{company}', 'UserController@companyTable')->name('users.companyTable');
-
-    //Consultar los inspectores de una compañia para dataTable
     Route::get('inspectors/companyTable/{company}', 'InspectorController@companyTable')->name('inspectors.companyTable');
+    Route::get('clients/companyTable/{company}', 'ClientController@companyTable')->name('clients.companyTable');
 
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');

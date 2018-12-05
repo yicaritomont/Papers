@@ -37,8 +37,6 @@ class InspectorController extends Controller
      */
     public function index(Request $request)
     {
-        /* dd(Company::find(session()->get('Session_Company'))->slug);
-        dd(session()->get('Session_Company')); */
         if( !auth()->user()->hasRole('Admin') ){
             $request['id'] = Company::findOrFail(session()->get('Session_Company'))->slug;
         }
@@ -76,6 +74,11 @@ class InspectorController extends Controller
      */
     public function store(Request $request)
     {
+        //Si no es administrador agregue la compañia en sesión
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['companies'] = session()->get('Session_Company');
+        }
+
         if($request->id_inspector != "")
         {
             $this->validate($request, [
@@ -189,7 +192,7 @@ class InspectorController extends Controller
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $user = $inspector->user;
 
-        if($this->compareCompanySession($inspector->companies)){
+        if(CompanyController::compareCompanySession($inspector->companies)){
             return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities', 'companies','user'));
         }else{
             abort(403, 'This action is unauthorized.');
@@ -208,8 +211,13 @@ class InspectorController extends Controller
         //Get the inspector
         $inspector = Inspector::findOrFail($id);
 
-        if( !$this->compareCompanySession($inspector->companies) ){
+        if( !CompanyController::compareCompanySession($inspector->companies) ){
             abort(403, 'This action is unauthorized.');        
+        }
+
+        //Si no es administrador agregue la compañia en sesión
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['companies'] = session()->get('Session_Company');
         }
 
         $this->validate($request, [
@@ -260,7 +268,7 @@ class InspectorController extends Controller
     {
         $inspector = Inspector::findOrFail($id);
 
-        if( !$this->compareCompanySession($inspector->companies) ){
+        if( !CompanyController::compareCompanySession($inspector->companies) ){
             abort(403, 'This action is unauthorized.');        
         }
 
@@ -308,13 +316,29 @@ class InspectorController extends Controller
 
     public function companyTable($company)
     {
-        $result = Inspector::query()
+        /* $result = Inspector::query()
                 ->join('company_inspector', 'company_inspector.inspector_id', '=', 'inspectors.id')
                 ->join('companies', 'companies.id', '=', 'company_inspector.company_id')
                 ->select('inspectors.*')
                 ->where('companies.slug', '=', $company)
                 ->with('companies', 'profession', 'inspectorType', 'user', 'companies.user')
-                ->get();
+                ->get(); */
+
+        /* $r2 = Inspector::query()
+            ->with(['companies', 'profession', 'inspectorType', 'user', 'companies.user', 'companies' => function($query){
+                $query->where('slug', '=', 'c4ca4238a0b923820dcc509a6f75849b');
+            }])
+        ->get(); */
+
+        $result = Inspector::query()
+            ->with(['profession:id,name', 'inspectorType', 'user'])
+            ->whereHas('companies', function($q) use($company){
+                $q->where('slug', '=', $company);
+            })
+        ->get();
+
+        /* dd($r2);
+        dd($result); */
 
         return datatables()
             ->of($result)
@@ -356,7 +380,7 @@ class InspectorController extends Controller
     {
         $infoInspector = Inspector::findOrFail($id);
         
-        if( !$this->compareCompanySession($infoInspector->companies) ){
+        if( !CompanyController::compareCompanySession($infoInspector->companies) ){
             abort(403, 'This action is unauthorized.');        
         }
 
@@ -481,29 +505,5 @@ class InspectorController extends Controller
             json_encode($response = ['citiesCountry'=>$citiesCountry]);
         }
     return $response;
-    }
-
-    /**
-	 * Funcion para comparar la compañia es sesión con la compañia de un usuario
-	 */
-    public function compareCompanySession($companies){
-        // Si es usuario retorne la vista
-        if(auth()->user()->hasRole('Admin'))
-        {
-            return true;
-        }
-        else
-        {
-            
-            // Recorra las compañias del inspector a consultar y comparelas con la conpañia en sesion, si es falso devuelva un mensaje de error
-            foreach($companies as $company)
-            {
-                if($company->id == Company::findOrFail(session()->get('Session_Company'))->id)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }

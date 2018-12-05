@@ -57,19 +57,24 @@
 
             @can('edit_users', 'delete_users')
                 @if(isset($companies))
-                    dataTableObject.ajax = "{{ route('users.companyTable', $companies->slug) }}";
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'company' => 'companies,'.$companies->slug, 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}";
                 @else
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}";
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'company' => 'none', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}";
                 @endif
 
                 columns.push({data: 'actions', className: 'text-center w1em'},)
-                dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'relations' => 'roles,companies,companies.user']) }}";
-                dataTableObject.columns = columns;
+                @if(isset($companies))
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'company' => 'companies,'.$companies->slug, 'relations' => 'roles,companies,companies.user']) }}";
+                @else
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'User', 'company' => 'none', 'relations' => 'roles,companies,companies.user']) }}";
+                @endif
+
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
+            
+            dataTableObject.columns = columns;
 
             dataTableObject.columnDefs.push(
                 {
@@ -95,8 +100,7 @@
                 }
             );       
 
-            var table = $('.dataTable').DataTable(dataTableObject);                       
-            // new $.fn.dataTable.FixedHeader( table );
+            var table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
 @endsection

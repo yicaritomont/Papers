@@ -52,18 +52,17 @@
             ];
 
             @can('edit_headquarters', 'delete_headquarters')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}";
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}";
                 columns.push({data: 'actions', className: 'text-center w1em'},)
-                dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'relations' => 'cities,client,client.user']) }}";
-                dataTableObject.columns = columns;
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'relations' => 'cities,client,client.user']) }}";
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
             
-            var table = $('.dataTable').DataTable(dataTableObject);               
-            // new $.fn.dataTable.FixedHeader( table );
+            dataTableObject.columns = columns;
+
+            var table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
 @endsection

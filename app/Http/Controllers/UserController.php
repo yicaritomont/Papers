@@ -24,6 +24,10 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['id'] = Company::findOrFail(session()->get('Session_Company'))->slug;
+        }
+        
         if($request->get('id')){
             $companies = Company::with('user:id,name')->where('slug','=',$request->get('id'))->get()->first();
             return view('user.index', compact('companies'));

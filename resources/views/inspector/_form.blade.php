@@ -48,12 +48,20 @@
     @if ($errors->has('email')) <p class="help-block">{{ $errors->first('email') }}</p> @endif
 </div>
 
-@if(Auth::user()->roles->pluck('id')[0] != 1)
+{{-- @if(Auth::user()->roles->pluck('id')[0] != 1)
     @if(session()->get('Session_Company') != "")
         <b>{{ App\Company::find(session()->get('Session_Company'))->name }}</b>
         {!! Form::hidden('companies', session()->get('Session_Company')) !!}
     @endif
 @else
+    <!-- Companies Form Input -->
+    <div class="form-group @if ($errors->has('companies')) has-error @endif">
+        {!! Form::label('companies[]', trans_choice('words.Company', 2)) !!}
+        {!! Form::select('companies[]', $companies, isset($user) ? $user->companies->pluck('id')->toArray() : null,  ['class' => 'input-body', 'multiple']) !!}
+        @if ($errors->has('companies')) <p class="help-block">{{ $errors->first('companies') }}</p> @endif
+    </div>
+@endif --}}
+@if( auth()->user()->hasRole('Admin') )
     <!-- Companies Form Input -->
     <div class="form-group @if ($errors->has('companies')) has-error @endif">
         {!! Form::label('companies[]', trans_choice('words.Company', 2)) !!}

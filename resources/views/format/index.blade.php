@@ -53,18 +53,17 @@
             };
 
             @can('edit_formats','delete_preformats')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Format', 'entity' => 'formats', 'identificador' => 'id','relations' => 'preformato,company.user,client.user']) }}";
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Format', 'company' => 'none', 'entity' => 'formats', 'identificador' => 'id', 'relations' => 'preformato,company.user,client.user']) }}";
                 columns.push({data: 'actions', className: 'text-center w1em'},)
-                dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Format', 'entity' => 'formats']) }}";
-                dataTableObject.columns = columns;
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Format', 'company' => 'none', 'relations' => 'preformato,company.user,client.user']) }}";
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
+            dataTableObject.columns = columns;
+
             var table = $('.dataTable').DataTable(dataTableObject);
-            // new $.fn.dataTable.FixedHeader( table );
         });
     </script>
 @endsection

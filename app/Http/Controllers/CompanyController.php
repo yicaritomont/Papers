@@ -223,4 +223,28 @@ class CompanyController extends Controller
             'status' => $result
         ]);
     }
+
+    /**
+	 * Funcion para comparar la compañia es sesión con la compañia de un usuario
+	 */
+    public static function compareCompanySession($companies){
+        // Si es usuario retorne la vista
+        if(auth()->user()->hasRole('Admin'))
+        {
+            return true;
+        }
+        else
+        {
+            
+            // Recorra las compañias del inspector a consultar y comparelas con la conpañia en sesion, si es falso devuelva un mensaje de error
+            foreach($companies as $company)
+            {
+                if($company->id == Company::findOrFail(session()->get('Session_Company'))->id)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 }

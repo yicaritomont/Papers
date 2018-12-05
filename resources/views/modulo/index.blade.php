@@ -46,19 +46,18 @@
             ];
 
             @can('edit_modulos', 'delete_modulos')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Modulo', 'entity' => 'modulos', 'identificador' => 'id', 'relations' => 'none']) }}";
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Modulo', 'company' => 'none', 'entity' => 'modulos', 'identificador' => 'id', 'relations' => 'none']) }}";
 
                 columns.push({data: 'actions', className: 'text-center w1em'},)
-                dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 dataTableObject.ajax = "{{ route('datatable', ['model' => 'Modulo']) }}";
-                dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan           
 
-            var table = $('.dataTable').DataTable(dataTableObject);         
-            // new $.fn.dataTable.FixedHeader( table );
+            dataTableObject.columns = columns;
+
+            var table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
 @endsection

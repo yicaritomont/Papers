@@ -3,11 +3,7 @@
         <i class="fa fa-edit"></i>
     </a>
 
-    @php
-        $parameters = Route::current()->parameters();
-    @endphp
-
-    @if( $parameters['entity'] == 'formats' )
+    @if( $entity == 'formats' )
         <a href="{{ route($entity.'.supports', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-warning">
             <i class="glyphicon glyphicon-folder-open"></i></a>
     @endif

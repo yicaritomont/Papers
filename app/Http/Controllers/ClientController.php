@@ -17,8 +17,18 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['id'] = Company::findOrFail(session()->get('Session_Company'))->slug;
+        }
+
+        if($request['id']){
+            $companies = Company::with('user:id,name')->where('slug','=',$request['id'])->first();
+            
+            return view('client.index', compact('companies'));
+        }
+        
         return view('client.index');
     }
 
@@ -42,12 +52,10 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         
-        //Se valida si es un usuario con rol compañia agregue al request la compañuia en sesión
+        //Se valida si es un usuario con rol compañia agregue al request la compañia en sesión
         if( auth()->user()->hasRole('Compania') ){
             $request['companies'] = auth()->user()->companies->pluck('id');
         }
-        dd($request['companies'] = auth()->user()->companies);
-        dd($request['companies'] = auth()->user()->companies->pluck('id'));
 
         $this->validate($request, [
             'name'              => 'required',
@@ -114,10 +122,17 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
-        $client = Client::findOrFail($client->id);
-        //dd($client);
         $user = $client->user;
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
+
+        // dd($client->user->companies);
+
+        if(CompanyController::compareCompanySession($client->user->companies)){
+            return view('client.edit', compact('user', 'client', 'companies'));
+        }else{
+            abort(403, 'This action is unauthorized.');
+        }
+
         return view('client.edit', compact('user', 'client', 'companies'));
     }
 
@@ -130,6 +145,10 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
+        if( !CompanyController::compareCompanySession($client->user->companies) ){
+            abort(403, 'This action is unauthorized.');        
+        }
+
         if( !auth()->user()->hasRole('Compania') ){
             $this->validate($request, [
                 'name'              => 'required',
@@ -186,6 +205,10 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
+        if( !CompanyController::compareCompanySession($client->user->companies) ){
+            abort(403, 'This action is unauthorized.');        
+        }
+
         if($client)
         {
             //Se activan o desactivan las sedes que tiene el cliente
@@ -220,5 +243,28 @@ class ClientController extends Controller
                 'status' => $menssage,
             ]);
         }
+    }
+
+    public function companyTable($company)
+    {
+        // dd($company);
+        $result = Client::query()
+                ->join('users', 'users.id', '=', 'clients.user_id')
+                ->join('user_company', 'user_company.user_id', '=', 'users.id')
+                ->join('companies', 'companies.id', '=', 'user_company.company_id')
+                ->select('clients.*')
+                ->where('companies.slug', '=', $company)
+                ->with('user')
+                ->get();
+
+        // dd($result);
+
+        return datatables()
+            ->of($result)
+            ->addColumn('entity', 'inspectors')
+            ->addColumn('action', 'id')
+            ->addColumn('actions', 'shared/_actions')
+            ->rawColumns(['actions'])
+            ->toJson();
     }
 }

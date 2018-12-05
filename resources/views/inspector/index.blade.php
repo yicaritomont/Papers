@@ -81,9 +81,9 @@
             ];
 
             @if(isset($companies))
-                dataTableObject.ajax = "{{ route('inspectors.companyTable', $companies->slug) }}";
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
+                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'company' => 'none', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
             @endif
 
             columns.push({data: 'actions', className: 'text-center w1em'});
@@ -121,8 +121,6 @@
                         btn += '</ul></div>';
 
                         return data + btn;
-                        //return data + btn;
-                        //return data + '<a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+row.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a><a target="_blank" href="'+window.Laravel.url+'/inspectoragendas/inspector/'+row.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.InspectorAgenda", 2)}}</a><a target="_blank" href="'+window.Laravel.url+'/inspectionappointments/inspector/'+row.id+'" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> @lang("words.Whatch") {{trans_choice("words.Inspectionappointment", 2)}}</a>';
                     }
                 },
                 setDataTable([-2, -3])
