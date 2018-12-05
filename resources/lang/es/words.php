@@ -148,6 +148,10 @@ return[
     'browse'             =>  'Examinar' ,
     'upload'             =>  'Subir',
     'browseMsg'          =>  'Seleccione archivos...',
-    'manage'             =>  'Gestionar'
-];
+    'manage'             =>  'Gestionar',
+    'not_upload'         =>  'El archivo {file} no pudo ser subido',
+    'not_ext_valid'      =>  'La extensión del archivo {file} no esta permitida',
+    'exceeded_weight'    =>  'El archivo {file} ha excedido el limite de tamaño de 20MB',
+    'file_not_valid'     =>  'El archivo {file} no es valido'
+ ];
 ?>
