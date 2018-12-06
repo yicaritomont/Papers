@@ -1,3 +1,4 @@
+// console.log('URL desde laravel '+window.Laravel.url);
 $(window).ready(inicial);
 
 function inicial (argument)
@@ -120,7 +121,9 @@ function obtenerUrl()
 
     //Concatena la informacion para construir la url
     var url = window.location.protocol+'//'+window.location.host+'/'+vector[1];
-
+    console.log('Ruta absoluta '+rutaAbsoluta);
+    console.log('URL '+url);
+    
     return url;
 }
 
@@ -394,7 +397,7 @@ $(document).on('submit','.formDelete',function(e){
     });
 });
 
-// Ajax para los formularios editar y eliminar de los calendarios
+// Ajax para los formularios actualizar y eliminar de los calendarios
 $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
     var idForm = $(this).attr('id');
     var modal = this.dataset.modal;
@@ -773,7 +776,7 @@ function llenarCabeceraFormato()
     {
         $.ajax({
             type: "GET",
-            url: obtenerUrl()+"/public/ajxllenarCabeceraFormato",
+            url: window.Laravel.url+"/ajxllenarCabeceraFormato",
             dataType:'json',
             data: {select:select, company:company, preformato:preformato}
             }).done(function(response)
@@ -833,7 +836,7 @@ function cargarSelectClients()
     {
         $.ajax({
             type: "GET",
-            url: obtenerUrl()+"/public/ajxcargarSelectClients",
+            url: window.Laravel.url+"/ajxcargarSelectClients",
             dataType:'json',
             data: {company:company}
             }).done(function(response)

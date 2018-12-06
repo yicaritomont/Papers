@@ -23,13 +23,12 @@ class HeadquartersRequest extends FormRequest
      */
     public function rules()
     {
-        if(isset($this->route('headquarters')->id)){
+        if( auth()->user()->hasRole('Cliente') ){
             return [
-                'client_id' => 'required',
                 'cities_id' => 'required',
-                'name' => 'required',
-                'address' => 'required',
-                'country' => 'required',
+                'name'      => 'required',
+                'address'   => 'required',
+                'country'   => 'required',
             ];
         }
 

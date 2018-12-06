@@ -12,12 +12,14 @@
     @if ($errors->has('address')) <p class="help-block">{{ $errors->first('address') }}</p> @endif
 </div>
 
-<!-- Client of Headquarters Form Select -->
-<div class="form-group @if ($errors->has('client_id')) has-error @endif">
-    {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
-    {!!Form::select('client_id', $clients, isset($headquarters) ? $headquarters->client_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
-    @if ($errors->has('client_id')) <p class="help-block">{{ $errors->first('client_id') }}</p> @endif
-</div>
+@if( !auth()->user()->hasRole('Cliente') )
+    <!-- Client of Headquarters Form Select -->
+    <div class="form-group @if ($errors->has('client_id')) has-error @endif">
+        {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
+        {!!Form::select('client_id', $clients, isset($headquarters) ? $headquarters->client_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
+        @if ($errors->has('client_id')) <p class="help-block">{{ $errors->first('client_id') }}</p> @endif
+    </div>
+@endif
 
 <!-- Country of Headquarters Form Select -->
 <div class="form-group  @if ($errors->has('country')) has-error @endif">
