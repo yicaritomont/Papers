@@ -133,6 +133,7 @@ return[
     'ActiveMessage' => '¿Are you sure you want to activate it?',
     'InactiveMessage' => '¿Are you sure you want to inactivate it?',
     'ThereNoContract' => 'There is no contract between the client and the selected company',
+    'FormatExists' => 'The format for the contract is already completed',
     'To' => 'to',
     'UpdatedAt' => 'Updated At',
     'ErrorRangeDate' => 'The start date can not be longer than the final date',
@@ -143,9 +144,8 @@ return[
     'Master' => 'Master',
     'ClientMenu' => 'Client Menu',
     'Inspection' => 'Inspection',
-    'FormatEI' => 'Expediting and inspection format',
     'AgendaEmpty' => 'There are no agendas',
-    
+
     //Supports
     'upload_sopports'    =>  'Load Supports',
     'supports'           =>  'Supports',
@@ -156,6 +156,8 @@ return[
     'not_upload'         =>  'The file {file} could not be uploaded',
     'not_ext_valid'      =>  'The file {file} extension is not allowed',
     'exceeded_weight'    =>  'The file {file} has exceeded the size limit of 20MB',
-    'file_not_valid'     =>  'The file {file} is not valid'
+    'file_not_valid'     =>  'The file {file} is not valid',
+
+    'ErrorLinkFormat' => 'Could not link the format with the appointment.',
 ];
 ?>

@@ -14,8 +14,10 @@
                         <div class="col-md-12">
                             @if(isset($inspector))
                                 <h3 class="modal-title">{{ count($inspector->inspector_agendas) }} {{ trans_choice('words.InspectorAgenda', count($inspector->inspector_agendas)) }} {{ $inspector->user->name }}  </h3>
+                            @elseif(isset($companies))
+                                <h3 class="modal-title">@choice('words.InspectorAgenda', 2)</h3>
                             @else
-                                <h3 class="modal-title">{{ $quantity }} {{ trans_choice('words.InspectorAgenda', $quantity) }} </h3>
+                                <h3 class="modal-title">{{ $quantity }} @choice('words.InspectorAgenda', $quantity) </h3>
                             @endif
                         </div>
                     </div>
@@ -150,8 +152,6 @@
     <input type="hidden" id="url" value="{{ route('inspectoragendas.index') }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <input type="hidden" id="selectOption" value="{{trans('words.ChooseOption')}}">
-    
-    {{-- {{ dd(session('alert')) }} --}}
 @endsection
 
 @section('scripts')
@@ -163,6 +163,8 @@
         calendarObj.customButtons = null;
         @if(isset($inspector))
             calendarObj.events = $('#url').val()+'/events/{{ $inspector->id }}';
+        @elseif(isset($companies))
+            calendarObj.events = $('#url').val()+'/events/none/{{ $companies->slug }}';
         @else
             calendarObj.events = $('#url').val()+'/events';
         @endif

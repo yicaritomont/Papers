@@ -14,6 +14,7 @@ use App\Contract;
 use App\User;
 use App\Estilo;
 use App\File;
+use App\InspectionAppointment;
 use PDF;
 use DB;
 use App\Http\Controllers\Config;
@@ -37,7 +38,7 @@ class FormatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $formato = Preformato::where('id',1)->first();
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
@@ -65,7 +66,10 @@ class FormatController extends Controller
       }
         $preformats = Preformato::pluck('name', 'id');
 
-        //$format = Format::where(
+        if($request->get('appointment')){
+            $appointment = $request->get('appointment');
+            return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
+        }
         return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats'));
     }
 
@@ -94,7 +98,24 @@ class FormatController extends Controller
         $format->status = 1;
 
       if ($format->save()) {
-          $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasAdded')];
+          if($request->appointment){
+            $cita = InspectionAppointment::findOrFail($request->appointment);
+
+            if($cita->appointment_states_id == 2)
+            {
+                $cita->format_id = $format->id;
+
+                if($cita->save())
+                {
+                    $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasAdded')];
+                }
+            }
+            else
+            {
+                $alert = ['success', trans('words.ErrorLinkFormat')];
+            }
+          }
+          // $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasAdded')];
       } else {
           $alert = ['error',trans('words.UnableCreate').' '.trans_choice('words.Format',1)];
       }
@@ -205,34 +226,52 @@ class FormatController extends Controller
     {
       if ($_GET['select'] != '')
       {
-        $client = Client::join('users', 'users.id', '=', 'clients.user_id')
-                        ->select('clients.id AS id', 'users.name AS name')
-                        ->where('clients.id',$_GET['select'])
-                        ->get()
-                        ->first();
-        if ($_GET['company'] != '')
+        $format = Format::where('company_id','=',$_GET['company'])
+            ->where('client_id','=',$_GET['select'])
+            ->where('preformat_id','=',$_GET['preformato'])
+            ->get()->first();
+        if (!isset($format) & $format == '')
         {
-          $company = Company::where('id',$_GET['company'])->first();
-          $usuario = User::find($company->user_id);
-        } else {
-          $company = Company::where('id',session()->get('Session_Company'))->first();
-          $usuario = User::find($company->user_id);
-        }
-        $usuario->image ='<img width="40%" src="'.asset($usuario->picture).'">';
-        $usuario->iso ='<img width="40%" src="'.asset('images/iso.jpg').'">';
-        $contract = Contract::where('company_id',$company->id)
-          ->where('client_id','=',$client->id)
-          ->first();
-        $error = trans('words.ThereNoContract');
-            $preformato = Preformato::where('id',$_GET['preformato'])->first();
+          $client = Client::join('users', 'users.id', '=', 'clients.user_id')
+                          ->select('clients.id AS id', 'users.name AS name')
+                          ->where('clients.id',$_GET['select'])
+                          ->get()
+                          ->first();
+          if ($_GET['company'] != '')
+          {
+            $company = Company::where('id',$_GET['company'])->first();
+            $usuario = User::find($company->user_id);
+          } else {
+            $company = Company::where('id',session()->get('Session_Company'))->first();
+            $usuario = User::find($company->user_id);
+          }
+          $usuario->image ='<img width="40%" src="'.asset($usuario->picture).'">';
+          $usuario->iso ='<img width="40%" src="'.asset('images/iso.jpg').'">';
+          $contract = Contract::where('company_id',$company->id)
+            ->where('client_id','=',$client->id)
+            ->first();
+          $preformato = Preformato::where('id',$_GET['preformato'])->first();
 
+          json_encode($response = [
+            'company' => $usuario,
+            'client' => $client,
+            'contract' => $contract,
+            'preformato' => $preformato,
+          ]);
+          if (!isset($contract))
+          {
+            $error = trans('words.ThereNoContract');
             json_encode($response = [
-                'company' => $usuario,
-                'client' => $client,
-                'contract' => $contract,
-                'preformato' => $preformato,
-                'error' => $error,
-              ]);
+              'error' => $error,
+            ]);
+          }
+        } else {
+           $error = trans('words.FormatExists');
+           json_encode($response = [
+               'error' => $error,
+             ]);
+        }
+
       }
       return $response;
     }
@@ -285,7 +324,7 @@ class FormatController extends Controller
 
 							$name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
 							$upload_success = $item->move($destinationPath, $name_url['name'] );
-		
+
 							if( $upload_success )
 							{
 								$new_file = array
@@ -296,11 +335,11 @@ class FormatController extends Controller
 									'user_id'       =>  Auth::id(),
 									'extension'     =>  $upload_success->getExtension()
 								);
-		
+
 								$insert = File::insertGetId($new_file);
 								$new_file['id'] = $insert;
 								array_push($response,$new_file);
-		
+
 							}else{
 								$response = $this->addError($response,'not_upload',$item);
 							}
@@ -382,7 +421,7 @@ class FormatController extends Controller
         $clear = preg_replace("[^A-Za-z0-9]", "", $string);
         return $clear;
 	}
-	
+
 	public function getValidSize( $file )
 	{
 		$size = $file->getClientSize();
@@ -403,7 +442,7 @@ class FormatController extends Controller
 		if( in_array($ext,$types) ){
 			return true;
 		}
-		return false;		
+		return false;
 	}
 
 	public function addError( $response , $message , $file )

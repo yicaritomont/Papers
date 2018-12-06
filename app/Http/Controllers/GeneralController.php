@@ -26,12 +26,12 @@ class GeneralController extends Controller
 
         if($company != 'none'){
             $company = explode(',', $company);
-            // dd($company);
+
             $data->whereHas($company[0], function($q) use($company){
                 $q->where('slug', '=', $company[1]);
             });
         }
-    
+
         return datatables()
             ->of($data)
             ->addColumn('entity', $entity)

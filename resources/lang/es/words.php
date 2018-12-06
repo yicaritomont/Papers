@@ -130,6 +130,7 @@ return[
     'ActiveMessage' => '¿Seguro que quieres activarlo?',
     'InactiveMessage' => '¿Seguro que quieres inactivarlo?',
     'ThereNoContract' => 'No hay contrato entre el cliente y la empresa seleccionada.',
+    'FormatExists' =>'El formato para el contrato ya se encuentra diligenciado',
     'To' => 'hasta',
     'UpdatedAt' => 'Actualizado en',
     'ErrorRangeDate' => 'La fecha de inicio no puede ser mayor a la fecha final',
@@ -140,9 +141,8 @@ return[
     'Master' => 'Maestra',
     'ClientMenu' => 'Menú del cliente',
     'Inspection' => 'Inspección',
-    'FormatEI' => 'Formato expedición e inspección',
     'AgendaEmpty' => 'No existen agendas',
-    
+
     //Formatos
     'upload_sopports'    =>  'Cargar Soportes',
     'supports'           =>  'Soportes',
@@ -153,6 +153,8 @@ return[
     'not_upload'         =>  'El archivo {file} no pudo ser subido',
     'not_ext_valid'      =>  'La extensión del archivo {file} no esta permitida',
     'exceeded_weight'    =>  'El archivo {file} ha excedido el limite de tamaño de 20MB',
-    'file_not_valid'     =>  'El archivo {file} no es valido'
+    'file_not_valid'     =>  'El archivo {file} no es valido',
+
+    'ErrorLinkFormat' => 'No se pudo vincular el formato con la cita.',
  ];
 ?>

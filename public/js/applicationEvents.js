@@ -1,3 +1,4 @@
+// console.log('URL desde laravel '+window.Laravel.url);
 $(window).ready(inicial);
 
 function inicial (argument)
@@ -19,9 +20,9 @@ function inicial (argument)
         processing: true,
     };
 
-    
+
     //Campo fecha
-    
+
     var datePickerObj = {
         autoclose: true,
         format: 'yyyy-mm-dd',
@@ -29,7 +30,7 @@ function inicial (argument)
         orientation: "bottom auto",
         forceParse: false,
     };
-    
+
     //Se valida el idioma
     if(window.Laravel.language == 'es'){
         dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};
@@ -120,7 +121,9 @@ function obtenerUrl()
 
     //Concatena la informacion para construir la url
     var url = window.location.protocol+'//'+window.location.host+'/'+vector[1];
-
+    console.log('Ruta absoluta '+rutaAbsoluta);
+    console.log('URL '+url);
+    
     return url;
 }
 
@@ -394,7 +397,7 @@ $(document).on('submit','.formDelete',function(e){
     });
 });
 
-// Ajax para los formularios editar y eliminar de los calendarios
+// Ajax para los formularios actualizar y eliminar de los calendarios
 $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
     var idForm = $(this).attr('id');
     var modal = this.dataset.modal;
@@ -465,10 +468,10 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
 
             $('.form-group').removeClass('has-error');
             $('.errors').empty();
-            
+
             $('#'+idForm).find(':input').each(function(){
                 var idInput = $(this).attr('id');
-                
+
                 if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
                     $(this).parents('.form-group').addClass('has-error');
                     $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput][0]));
@@ -613,7 +616,7 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
     $(form+' #'+fielDate+'end_date').val(endDate);
     $('#country').trigger("chosen:updated");
     $('#city_id').trigger("chosen:updated");
-    
+
     $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
 }
 
@@ -757,7 +760,7 @@ function fillSelect(url, select, edit){
             $(select).val(edit);
         }
         $(select).trigger("chosen:updated");
-        
+
     })
     .fail(function(res){
         alert('Error.');
@@ -773,19 +776,25 @@ function llenarCabeceraFormato()
     {
         $.ajax({
             type: "GET",
-            url: obtenerUrl()+"/public/ajxllenarCabeceraFormato",
+            url: window.Laravel.url+"/ajxllenarCabeceraFormato",
             dataType:'json',
             data: {select:select, company:company, preformato:preformato}
             }).done(function(response)
                 {
                     if(!jQuery.isEmptyObject(response))
                     {
+                      console.log(response.error);
+                      if (response.error != null)
+                      { swal({
+                        title: response.error,
+                        type: 'warning',
+                        animation: false,
+                        customClass: 'animateErrorIcon '
+                    });
+                    } else {
                       var html_plantilla_formato = response.preformato.format;
                       if( preformato != '')
                       {
-
-                        if (response.contract != null)
-                        {
                           if(preformato == 1)
                           {
                             //var plantilla_formato = $('#plantilla_formato').clone();
@@ -797,25 +806,18 @@ function llenarCabeceraFormato()
                             html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
                             html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
                             html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
-                            html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
-                            html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
+                            html_plantilla_formato = html_plantilla_formato.replace('*num_page*',' ');
+                            html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','');
                           }
 
                           $('#contenedor_formato').html(html_plantilla_formato);
                           $('#contenedor_formato').show();
-                        } else{
-                          swal({
-                            title: response.error,
-                            type: 'warning',
-                            animation: false,
-                            customClass: 'animateErrorIcon '
-                        });
-                        }
                       } else {
                         $('#plantilla_formato').css('display','none');
                         $('#contenedor_formato').css('display','none');
                       }
                     }
+                  }
             });
         }
   }
@@ -834,7 +836,7 @@ function cargarSelectClients()
     {
         $.ajax({
             type: "GET",
-            url: obtenerUrl()+"/public/ajxcargarSelectClients",
+            url: window.Laravel.url+"/ajxcargarSelectClients",
             dataType:'json',
             data: {company:company}
             }).done(function(response)
@@ -882,13 +884,13 @@ $(document).on("click",".oculto ul li",function()
 $(document).on("keyup", '#icon', function()
 {
     var value=$(this).val();
-    
+
     if(value == '')
     {
         $('.picker .input-group-addon').html('<i class="fa fa-hashtag"></i>');
         $('#icon-hidden').val('');
     }
-    $('.oculto ul li i').each(function() 
+    $('.oculto ul li i').each(function()
     {
         if ($(this).data('icon').search(value) > -1) $(this).closest("li").show();
         else $(this).closest("li").hide();
