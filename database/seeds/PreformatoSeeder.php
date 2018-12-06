@@ -974,12 +974,12 @@ class PreformatoSeeder extends Seeder
           </div>
           <script type="text/php">
            if (isset($pdf)) {
-               $text = "page {PAGE_NUM} / {PAGE_COUNT}";
+               $text = "{PAGE_COUNT}";
                $size = 10;
                $font = $fontMetrics->getFont("Verdana");
                $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
-               $x = ($pdf->get_width() - $width) / 2;
-               $y = $pdf->get_height() - 35;
+               $x = $pdf->get_width() -80;
+               $y = $pdf->get_height() - 690;
                $pdf->page_text($x, $y, $text, $font, $size);
            }
          </script>',
