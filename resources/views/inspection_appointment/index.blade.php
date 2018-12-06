@@ -267,7 +267,7 @@
                     @endcan
                 }else{
                     @can('add_formats')
-                        $('.btns').append('<button class="btn btn-default btn-form-slide" data-toggle="#fillFormat">@lang("words.Create") @choice("words.Format", 1)</button>');
+                        $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="{{ route("formats.create", ["appointmentId" => "1"]) }}">@lang("words.Create") @choice("words.Format", 1)</a>');
                     @endcan
                 }
             }else{

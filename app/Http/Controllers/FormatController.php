@@ -37,8 +37,11 @@ class FormatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        if($request->get('appointmentId')){
+            dd('Existe');
+        }
         $formato = Preformato::where('id',1)->first();
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $company = Company::where('id',session()->get('Session_Company'))->first();

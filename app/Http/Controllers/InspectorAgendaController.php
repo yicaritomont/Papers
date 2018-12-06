@@ -119,7 +119,7 @@ class InspectorAgendaController extends Controller
         ->where('slug','=',$slug)
         ->get()[0]; */
         
-        $inspectorAgenda = InspectorAgenda::with('city')
+        $inspectorAgenda = InspectorAgenda::with('city:id,countries_id')
             ->where('slug','=',$slug)
         ->get()->first();
         
@@ -128,6 +128,8 @@ class InspectorAgendaController extends Controller
         if( !CompanyController::compareCompanySession($inspectorAgenda->inspector->user->companies) ){
             abort(403, 'This action is unauthorized.');
         }
+
+        // dd($inspectorAgenda->city);
         
         echo json_encode([
             'agenda' => $inspectorAgenda,
