@@ -269,7 +269,7 @@ class InspectorController extends Controller
         $inspector = Inspector::findOrFail($id);
 
         if( !CompanyController::compareCompanySession($inspector->companies) ){
-            abort(403, 'This action is unauthorized.');        
+            abort(403, 'This action is unauthorized.');
         }
 
         // $this->authorize('validateCompany', $inspector->companies->first());

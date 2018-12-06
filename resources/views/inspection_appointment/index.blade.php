@@ -12,6 +12,8 @@
                 <div class="panel-heading">
                     @if(isset($inspector))
                         <h3 class="modal-title">{{ count($inspector->inspection_appointments) }} {{ trans_choice('words.Inspectionappointment', count($inspector->inspection_appointments)) }}  @lang('words.Of') {{ $inspector->user->name }}  </h3>
+                    @elseif(isset($company))
+                        <h3 class="modal-title">@choice('words.Inspectionappointment', 2)</h3>
                     @else
                         <h3 class="modal-title">{{ $quantity }} {{ trans_choice('words.Inspectionappointment', $quantity) }} </h3>
                     @endif
@@ -223,6 +225,8 @@
 
         @if(isset($inspector))
             calendarObj.events = $('#url').val()+'/events/{{ $inspector->id }}';
+        @elseif(isset($company))
+            calendarObj.events = $('#url').val()+'/events/none/{{ $company->slug }}';
         @else
             calendarObj.events = $('#url').val()+'/events';
         @endif

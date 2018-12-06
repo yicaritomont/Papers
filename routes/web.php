@@ -38,8 +38,8 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('enviaCompania/{id}',array('as'=>'enviaCompania','uses'=>'UserController@PostMultiple'));
 
     //Eventos Calendario
-    Route::get('inspectionappointments/events/{id?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
-    Route::get('inspectoragendas/events/{id?}', 'InspectorAgendaController@events')->name('inspectoragendas.events');
+    Route::get('inspectionappointments/events/{id?}/{company?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
+    Route::get('inspectoragendas/events/{id?}/{company?}', 'InspectorAgendaController@events')->name('inspectoragendas.events');
 
     //Completar las citas
     Route::put('inspectionappointments/{inspectionappointment}/complete', 'InspectionAppointmentController@complete')->name('inspectionappointments.complete');

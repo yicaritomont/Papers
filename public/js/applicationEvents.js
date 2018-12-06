@@ -394,7 +394,7 @@ $(document).on('submit','.formDelete',function(e){
     });
 });
 
-// Ajax para los formularios editar y eliminar de los calendarios
+// Ajax para los formularios actualizar y eliminar de los calendarios
 $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
     var idForm = $(this).attr('id');
     var modal = this.dataset.modal;
