@@ -133,6 +133,7 @@ return[
     'ActiveMessage' => '¿Are you sure you want to activate it?',
     'InactiveMessage' => '¿Are you sure you want to inactivate it?',
     'ThereNoContract' => 'There is no contract between the client and the selected company',
+    'FormatExists' => 'The format for the contract is already completed',
     'To' => 'to',
     'UpdatedAt' => 'Updated At',
     'ErrorRangeDate' => 'The start date can not be longer than the final date',
@@ -145,7 +146,7 @@ return[
     'Inspection' => 'Inspection',
     'FormatEI' => 'Expediting and inspection format',
     'AgendaEmpty' => 'There are no agendas',
-    
+
     //Supports
     'upload_sopports'    =>  'Load Supports',
     'supports'           =>  'Supports',
