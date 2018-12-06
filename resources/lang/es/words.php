@@ -130,6 +130,7 @@ return[
     'ActiveMessage' => '¿Seguro que quieres activarlo?',
     'InactiveMessage' => '¿Seguro que quieres inactivarlo?',
     'ThereNoContract' => 'No hay contrato entre el cliente y la empresa seleccionada.',
+    'FormatExists' =>'El formato para el contrato ya se encuentra diligenciado',
     'To' => 'hasta',
     'UpdatedAt' => 'Actualizado en',
     'ErrorRangeDate' => 'La fecha de inicio no puede ser mayor a la fecha final',
@@ -142,7 +143,7 @@ return[
     'Inspection' => 'Inspección',
     'FormatEI' => 'Formato expedición e inspección',
     'AgendaEmpty' => 'No existen agendas',
-    
+
     //Formatos
     'upload_sopports'    =>  'Cargar Soportes',
     'supports'           =>  'Soportes',
