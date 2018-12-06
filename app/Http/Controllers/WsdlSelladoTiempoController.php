@@ -182,11 +182,7 @@ class WsdlSelladoTiempoController extends Controller
         else
         {
             $dataResponse =[];
-            $xmlArray = XmlArray::xml2array($response);
-            echo "<pre>";
-            print_r($xmlArray);
-            echo "</pre>";
-            exit();
+            $xmlArray = XmlArray::xml2array($response);            
             if(count($xmlArray)>0)
             {
                 foreach ($xmlArray as $content => $soap) 
@@ -309,7 +305,11 @@ class WsdlSelladoTiempoController extends Controller
                         if($body['ConsultaEstadoTokenResult']['ResultadoOperacion']['Codigo']['value'] == 0)
                         {
                             $dataResponse['Duracion'] = $body['ConsultaEstadoTokenResult']['Duracion']['value'];
-                        } 
+                        }
+                        else
+                        {
+                            $dataResponse['Duracion'] = 0;
+                        }
                         
                     }
                 }    

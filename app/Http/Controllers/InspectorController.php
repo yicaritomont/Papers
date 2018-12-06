@@ -351,63 +351,74 @@ class InspectorController extends Controller
 
         // Se trae la información del usuario
         $usuario = User::find($infoInspector->user_id);
-        $code = "";
+        $code = "";  
 
         /**
          * El bloque comentado a continuacion muestera como debe ser el consumo del WS de sellado del tiempo
          */
-        /*$signaSelladoFirma = new WsdlSelladoTiempoController();
+        /*
+        $signaSelladoFirma = new WsdlSelladoTiempoController();
 
         // Verifica que se tenga la variable token en session
-        if(!Session::has('TokenWSLSello'))
-        {           
+        if(!Session::has('TokenWSLSello'))        
+        {       
             // solicita el token para el sellado de firma
             $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
             if($tokenSelladoFirma['ResultadoOperacion'] == 0)
             {
                 // se registra el token en una variable de session
                 Session::put('TokenWSLSello', $tokenSelladoFirma['Token']);
+                Session::save();
             }
         }    
 
        
         // Verifica el tiempo restante para el token
         $token = session()->get('TokenWSLSello');
-        $consultaEstadoToken = $signaSelladoFirma->consultaEstadoToken($token);        
+        $consultaEstadoToken = $signaSelladoFirma->consultaEstadoToken($token);     
+        echo " Duracion ".$consultaEstadoToken['Duracion']."<br>";
         if($consultaEstadoToken['Duracion']<=0)
         {
+            echo "solicita otro token y lo agrega a la temporal";
             //Solicita y asigna de nuevo el token
             $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
             Session::put('TokenWSLSello', $tokenSelladoFirma['Token']);
+            Session::save();
         }
-        else
+        
+        if($token != "")
         {
             // Realice los llamados a metodos del ws.
-            echo "<hr>";
+            
+            echo "TOKEN ->".$token;
             $base64File = HashUtilidades::generarBase64Documento('');            
-           /* $SelladoFirma = $signaSelladoFirma->selladoDocumento($tokenSelladoFirma['Token'],$base64File);
-
+            
+            $SelladoFirma = $signaSelladoFirma->selladoDocumento($tokenSelladoFirma['Token'],$base64File);
             echo "<hr> SELLADO DE FIRMA";
             echo "<pre>";
             print_r($SelladoFirma);
-            echo "</pre>";*/
+            echo "</pre>";
            
-           /* $hashdocumento = HashUtilidades::generarHash(HashUtilidades::generarBase64Documento(''));
+            $hashdocumento = base64_encode(HashUtilidades::generarHashDocumento(''));
             echo "<hr>";
             echo $hashdocumento;
-            /*$SelladoHashDocumento = $signaSelladoFirma->selladoHashDocumento($tokenSelladoFirma['Token'],$hashdocumento);
+            echo "<br>";
+            echo "FqG3Jo2Zv+UX8NbDv5brW0PW5R520XqjOI/uHA0VuNw=";
+            $SelladoHashDocumento = $signaSelladoFirma->selladoHashDocumento($token,$hashdocumento);
 
             echo "<hr> SELLADO HASH DOCUMENTO";
             echo "<pre>";
             print_r($SelladoHashDocumento);
-            echo "</pre>";*/
+            echo "</pre>";
 
-            /*$consultaSellado = $signaSelladoFirma->consumoConsulta(session()->get('TokenWSLSello'));
+            $consultaSellado = $signaSelladoFirma->consumoConsulta(session()->get('TokenWSLSello'));
             echo "<hr>";
             echo "<pre>";
             print_r($consultaSellado);
-            echo "</pre>";            
-        }*/
+            echo "</pre>";       
+            
+        }
+        */
 
         /**
          * El bloque  comentado a continuacion muestra como debe ser consumo del WS de firma 

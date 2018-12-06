@@ -38,8 +38,20 @@ class HashUtilidades
     {
         $file=asset('files/test.pdf');
 
-        return hash_file('sha256', $file);
+        return hash_file('md5', $file);
 
+    }
+
+    public static function base64binary()
+    {
+        $file=asset('files/test.pdf');
+        $realname = "/usr/local/ampps/www/roles-permissions/public/files/test.pdf";
+        $fd = fopen($file, 'rb');
+        $size = filesize($realname);
+        $cont = fread($fd, $size);
+        fclose($fd);
+        $encimg = base64_encode($cont);
+        return $encimg;
     }
 
 }
