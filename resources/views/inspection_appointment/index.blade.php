@@ -263,11 +263,11 @@
 
                 if(event.format_id){
                     @can('edit_formats')
-                        $('.btns').append('<button class="btn btn-default btn-form-slide" data-toggle="#fillFormat">@lang("words.Edit") @choice("words.Format", 1)</button>');
+                        $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/'+event.format_id+'/edit">@lang("words.Edit") @choice("words.Format", 1)</a>');
                     @endcan
                 }else{
                     @can('add_formats')
-                        $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="{{ route("formats.create", ["appointmentId" => "1"]) }}">@lang("words.Create") @choice("words.Format", 1)</a>');
+                        $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/create?appointment='+event.id+'">@lang("words.Create") @choice("words.Format", 1)</a>');
                     @endcan
                 }
             }else{

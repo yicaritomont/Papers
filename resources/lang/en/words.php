@@ -156,6 +156,8 @@ return[
     'not_upload'         =>  'The file {file} could not be uploaded',
     'not_ext_valid'      =>  'The file {file} extension is not allowed',
     'exceeded_weight'    =>  'The file {file} has exceeded the size limit of 20MB',
-    'file_not_valid'     =>  'The file {file} is not valid'
+    'file_not_valid'     =>  'The file {file} is not valid',
+
+    'ErrorLinkFormat' => 'Could not link the format with the appointment.',
 ];
 ?>

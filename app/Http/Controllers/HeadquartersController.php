@@ -19,6 +19,10 @@ class HeadquartersController extends Controller
      */
     public function index()
     {
+        if(auth()->user()->hasRole('Cliente')){
+            $clientAuth = auth()->user()->clients;
+            return view('headquarters.index', compact('clientAuth'));
+        }
         return view('headquarters.index');
     }
 
@@ -48,6 +52,9 @@ class HeadquartersController extends Controller
      */
     public function store(HeadquartersRequest $request)
     {
+        if( auth()->user()->hasRole('Cliente') ){
+            $request['client_id'] = auth()->user()->clients->id;
+        }
         if(Client::findOrFail($request['client_id'])->status == 1){
             $headquarters = Headquarters::create($request->all());
             $headquarters->slug = md5($headquarters->id);
@@ -81,6 +88,10 @@ class HeadquartersController extends Controller
      */
     public function edit(Headquarters $headquarters)
     {
+        if( auth()->user()->hasRole('Cliente') && auth()->user()->clients->id != $headquarters->client_id ){
+            abort(403, 'This action is unauthorized.');
+        }
+
         $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
             ->select('clients.id AS id', 'users.name AS name')
             ->where('clients.status', 1)
@@ -102,6 +113,14 @@ class HeadquartersController extends Controller
      */
     public function update(HeadquartersRequest $request, Headquarters $headquarters)
     {
+        if( auth()->user()->hasRole('Cliente') && auth()->user()->clients->id != $headquarters->client_id ){
+            abort(403, 'This action is unauthorized.');
+        }
+
+        if( auth()->user()->hasRole('Cliente') ){
+            $request['client_id'] = auth()->user()->clients->id;
+        }
+
         if(Client::findOrFail($request['client_id'])->status == 1){
             $headquarters->update($request->all());
 
@@ -121,6 +140,10 @@ class HeadquartersController extends Controller
      */
     public function destroy(Headquarters $headquarters)
     {
+        if( auth()->user()->hasRole('Cliente') && auth()->user()->clients->id != $headquarters->client_id ){
+            abort(403, 'This action is unauthorized.');
+        }
+
         if($headquarters)
         {
 		    switch ($headquarters->status) 

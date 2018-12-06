@@ -170,7 +170,7 @@
                                                         </li>
                                                     @endcan
 
-                                                     <!--@can('view_professions')
+                                                    {{-- @can('view_professions')
                                                         <li class="{{ Request::is('professions*') ? 'active' : '' }}">
                                                             <a href="{{ route('professions.index') }}">
                                                                 <span class="text-primary glyphicon glyphicon-education"></span>{{trans_choice('words.Profession',2)}}
@@ -244,7 +244,7 @@
                                                                 <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.InspectorAgenda',2)}}
                                                             </a>
                                                         </li>
-                                                    @endcan -->
+                                                    @endcan --}}
                                                 @endif
                                             </ul>
                                         </li>

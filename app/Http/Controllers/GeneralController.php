@@ -26,6 +26,7 @@ class GeneralController extends Controller
 
         if($company != 'none'){
             $company = explode(',', $company);
+
             $data->whereHas($company[0], function($q) use($company){
                 $q->where('slug', '=', $company[1]);
             });
