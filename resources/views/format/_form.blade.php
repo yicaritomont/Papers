@@ -1,5 +1,5 @@
 <div class="form-group @if ($errors->has('company_id')) has-error @endif" id="motrarcompanies" style="display:{!! $companyselect !!};">
-    <label for="name">@lang('words.Company')</label>
+    <label for="name">@choice('words.Company',1)</label>
     {!! Form::select('company_id',$companies, isset($user) ? $user->companies->pluck('id')->toArray() : null, ['class' => 'input-body','id' => 'company_formato',$disabled,'placeholder' => trans('words.ChooseOption')]) !!}
     @if ($errors->has('company_id')) <p class="help-block">{{ $errors->first('company_id')}}</p> @endif
 </div>
@@ -11,7 +11,7 @@
     </div>
 </div>
 <div class="form-group @if ($errors->has('preformat_id')) has-error @endif" id="contenedor_preformat">
-    <label for="name">@lang('words.Preformato')</label>
+    <label for="name">@choice('words.Preformato',1)</label>
     {!! Form::select('preformat_id',$preformats, null, ['class' => 'input-body','id' => 'format_preformato',$disabled,'placeholder' => trans('words.ChooseOption')]) !!}
     @if ($errors->has('preformat_id')) <p class="help-block">{{ $errors->first('preformat_id')}}</p> @endif
 </div>

@@ -16,6 +16,7 @@ use App\Estilo;
 use App\File;
 use PDF;
 use DB;
+use App\Http\Controllers\Config;
 
 class FormatController extends Controller
 {
@@ -38,7 +39,6 @@ class FormatController extends Controller
      */
     public function create()
     {
-        $format = Format::pluck('id');
         $formato = Preformato::where('id',1)->first();
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $company = Company::where('id',session()->get('Session_Company'))->first();
@@ -65,6 +65,7 @@ class FormatController extends Controller
       }
         $preformats = Preformato::pluck('name', 'id');
 
+        //$format = Format::where(
         return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats'));
     }
 
@@ -222,14 +223,16 @@ class FormatController extends Controller
         $contract = Contract::where('company_id',$company->id)
           ->where('client_id','=',$client->id)
           ->first();
-          $preformato = Preformato::where('id',$_GET['preformato'])->first();
+        $error = trans('words.ThereNoContract');
+            $preformato = Preformato::where('id',$_GET['preformato'])->first();
 
-          json_encode($response = [
-              'company' => $usuario,
-              'client' => $client,
-              'contract' => $contract,
-              'preformato' => $preformato,
-            ]);
+            json_encode($response = [
+                'company' => $usuario,
+                'client' => $client,
+                'contract' => $contract,
+                'preformato' => $preformato,
+                'error' => $error,
+              ]);
       }
       return $response;
     }
@@ -245,7 +248,10 @@ class FormatController extends Controller
                         ->select('clients.id AS id', 'users.name AS name')
                         ->get()
                         ->pluck('name', 'id');
-                    json_encode($response = [ 'clients' => $clients]);
+          $ChooseOption = trans('words.ChooseOption');
+                    json_encode($response = [
+                      'clients' => $clients,
+                      'ChooseOption' => $ChooseOption]);
         }
         return $response;
     }
@@ -365,7 +371,9 @@ class FormatController extends Controller
       $format_replace = str_replace($eliminar,'',$format->format);
       $config_format = $estilos->estilos.$format_replace;
       $pdf = \App::make('dompdf.wrapper');
+      $pdf->getDomPDF()->set_option("enable_php", true);
       $pdf->loadHTML($config_format);
+
       return $pdf->stream();
     }
 
