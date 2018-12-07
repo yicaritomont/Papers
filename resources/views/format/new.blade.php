@@ -16,9 +16,9 @@
                                 @include('format._form')
                             </div>
                             <input type="hidden" name="format_expediction" id="format_expediction">
-                        <!-- Submit Form Button -->
-                  <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.Create') !!}</span>
-                    {!! Form::close() !!}
+                            <!-- Submit Form Button -->
+                            <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.Create') !!}</span>
+                        {!! Form::close() !!}
                 </div>
         </div>
     </div>

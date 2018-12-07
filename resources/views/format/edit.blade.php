@@ -5,6 +5,7 @@
 @section('content')
 <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
     <a href="{{ route('formats.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
+    
     <div class="panel panel-default">
         <div class="panel-header-form">
             <h3 class="panel-titles">@lang('words.Edit') {{ $formato->name  }}</h3>
@@ -17,10 +18,14 @@
                 <input type="hidden" name="format_expediction" id="format_expediction">
                 <input type="hidden" name="state" id="state" value="1">
           <div  style="display:{!! $state_format !!};">
-            <div class="col-xs-6">
+            <div class="col-xs-4">
+                <a href="{{ route('formats.supports', [str_singular('formats') => $formato->id])  }}" class="btn btn-primary btn-body">
+                {!! trans('words.upload_sopports') !!}</a>
+            </div>
+            <div class="col-xs-4">
               <span class="btn btn-primary btn-body" id="boton_firmar_formato">{!! trans('words.SignFormat') !!}</span>
             </div>
-            <div class="col-xs-6">
+            <div class="col-xs-4">
               <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.SaveChanges') !!}</span>
             </div>
           <div>
