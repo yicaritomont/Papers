@@ -34,31 +34,24 @@ class HashUtilidades
         echo $data;    
     }
 
-    public static function create_byte_array($string)
-    {
-        $array = array();
-        foreach(str_split($string) as $char){
-            array_push($array, sprintf("%02X", ord($char)));
-        }
-    
-        return implode(' ', $array);
-    }
-    
-    public static function TakeByte($file)
-    {
-        $file=asset('files/test.pdf');
-        //$byteArray = file($file);
-        $source = file_get_contents($file);
-        $byteArray = HashUtilidades::create_byte_array($source);
-        return $byteArray;
-    }
-
     public static function generarHashDocumento($file)
     {
         $file=asset('files/test.pdf');
 
-        return hash_file('sha256', $file);
+        return hash_file('md5', $file);
 
+    }
+
+    public static function base64binary()
+    {
+        $file=asset('files/test.pdf');
+        $realname = "/usr/local/ampps/www/roles-permissions/public/files/test.pdf";
+        $fd = fopen($file, 'rb');
+        $size = filesize($realname);
+        $cont = fread($fd, $size);
+        fclose($fd);
+        $encimg = base64_encode($cont);
+        return $encimg;
     }
 
 }

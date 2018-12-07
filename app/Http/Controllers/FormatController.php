@@ -56,14 +56,14 @@ class FormatController extends Controller
                             ->get()
                             ->pluck('name', 'id');
         } else {
-          $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+            $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
                         ->join('user_company','user_company.user_id','=','users.id')
                         ->join('companies','companies.id','=','user_company.company_id')
                         ->where('companies.id',session()->get('Session_Company'))
                         ->select('clients.id AS id', 'users.name AS name')
                         ->get()
                         ->pluck('name', 'id');
-      }
+        }
         $preformats = Preformato::pluck('name', 'id');
 
         if($request->get('appointment')){
@@ -97,7 +97,7 @@ class FormatController extends Controller
         $format->format = $request->format_expediction;
         $format->status = 1;
 
-      if ($format->save()) {
+        if ($format->save()) {
           if($request->appointment){
             $cita = InspectionAppointment::findOrFail($request->appointment);
 

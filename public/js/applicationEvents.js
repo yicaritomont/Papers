@@ -662,27 +662,27 @@ function verifyInspector()
 }
 
 function guardarHtml(e) {
-  e.preventDefault();
-  camposLlenos();
+    e.preventDefault();
+    camposLlenos();
     var contenedorHtml = $('#contenedor_formato').html();
     if($('#contenedor_formato').css('display') == 'none'){
       var contenedorHtml = $('#plantilla_formato').html();
     }
 
-  $('#format_expediction').val(contenedorHtml);
-  $('#plantilla_formato').css('display','none');
-  $('#form_expediction').submit();
+    $('#format_expediction').val(contenedorHtml);
+    $('#plantilla_formato').css('display','none');
+    $('#form_expediction').submit();
 }
 
 function camposLlenos() {
-  $('body').find('input').each(function(e){
+    $('body').find('input').each(function(e){
     let objInput = $(this);
     if(objInput.val() != '') {
       objInput.attr('value',objInput.val());
     }
-  });
+});
 
-  $('body').find('textarea').each(function(e){
+$('body').find('textarea').each(function(e){
     let objInput = $(this);
     if(objInput.val() != '') {
       var valor = objInput.val();
@@ -690,27 +690,28 @@ function camposLlenos() {
       objInput.val('');
       objInput.append(valor);
     }
-  });
+});
 
-  $('body').find(':checkbox').each(function(e){
+$('body').find(':checkbox').each(function(e){
     let objInput = $(this);
     if(objInput.is(":checked")) {
       objInput.attr('checked','checked');
     }
-  });
+});
 
-  $('body').find(':radio').each(function(e){
+$('body').find(':radio').each(function(e){
     let objInput = $(this);
     if(objInput.is(":checked")) {
       objInput.attr('checked','checked');
     }
   });
 }
- function deshabilitarCampos(){
-    $('#state').val('2');
-     $('#plantilla_formato').find('input, textarea, button, select').prop('disabled',true);
 
- }
+function deshabilitarCampos(){
+    $('#state').val('2');
+    $('#plantilla_formato').find('input, textarea, button, select').prop('disabled',true);
+
+}
 
 function calendar(obj){
     $("#calendar").fullCalendar({
@@ -791,10 +792,13 @@ function llenarCabeceraFormato()
                         animation: false,
                         customClass: 'animateErrorIcon '
                     });
+                    $('#boton_guardar_html').attr("disabled", true);
                     } else {
                       var html_plantilla_formato = response.preformato.format;
                       if( preformato != '')
                       {
+                            $('#boton_guardar_html').attr("disabled", false);
+
                           if(preformato == 1)
                           {
                             //var plantilla_formato = $('#plantilla_formato').clone();
@@ -815,19 +819,21 @@ function llenarCabeceraFormato()
                       } else {
                         $('#plantilla_formato').css('display','none');
                         $('#contenedor_formato').css('display','none');
+
+
                       }
                     }
                   }
             });
-        }
-  }
+    }
+}
 
-      function limpiarFormulario()
-      {
-        $('#format_preformato').val('');
-        $('#plantilla_formato').css('display','none');
-        $('#contenedor_formato').css('display','none');
-      }
+function limpiarFormulario()
+{
+    $('#format_preformato').val('');
+    $('#plantilla_formato').css('display','none');
+    $('#contenedor_formato').css('display','none');
+}
 
 function cargarSelectClients()
 {
