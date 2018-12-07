@@ -7,11 +7,6 @@
         <div class="col-md-5">
             <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Format',$result->count()) }}</h3>
         </div>
-        <div class="col-md-7 page-action text-right">
-            @can('add_formats')
-                <a href="{{ route('formats.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i>@lang('words.Create')</a>
-            @endcan
-        </div>
     </div>
 
     <div class="result-set">
