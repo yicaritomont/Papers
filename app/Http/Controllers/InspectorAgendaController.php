@@ -72,6 +72,82 @@ class InspectorAgendaController extends Controller
     }
 
     /**
+     * Almacena un nuevo recurso por medio de ajax.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        if( auth()->user()->hasRole('Inspector') ){
+            $request['inspector_id'] = auth()->user()->inspectors->id;
+        }elseif( !auth()->user()->hasRole('Admin') ){
+            if( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
+                abort(403, 'This action is unauthorized.');
+            }
+        }
+
+        $request->validate([
+            'start_date'    => 'required|date|date_format:Y-m-d',
+            'end_date'      => 'required|date|date_format:Y-m-d',
+            'inspector_id'  => 'required',
+            'country'       => 'required',
+            'city_id'       => 'required',
+        ]);
+
+        // Validar si la fecha de inicio ingresada supera a la fecha final
+        if($request->start_date >$request->end_date){
+            echo json_encode([
+                'error' => trans('words.ErrorRangeDate'),
+            ]);
+        }
+        else
+        {
+            //Contadores de error para las validaciones
+            $contError=0;
+
+            //Se consulta todas las Agendas filtradas por un inspector
+            $inspectorAgenda = InspectorAgenda::where('inspector_id', '=', $request->input('inspector_id'))->get();
+
+            foreach($inspectorAgenda as $item){
+                if(($request->input('end_date') < $item->end_date && $request->input('start_date') < $item->start_date && $request->input('end_date') < $item->start_date) || ($request->input('end_date') > $item->end_date && $request->input('start_date') > $item->start_date && $request->input('start_date') > $item->end_date)){
+                    //Se comprueba si las horas ingresadas no se crucen con otra agenda el mismo día
+                }else{
+                    $contError++;   
+                }
+            }
+
+            if($request->start_date < date('Y-m-d')){
+                echo json_encode([
+                    'error' => trans('words.DateGreater'),
+                ]);
+            }else{
+                //Si la agenda ya esta ocupada
+                if($contError > 0){
+                    echo json_encode([
+                        'error' => trans('words.AgendaBusy'),
+                    ]);
+                }else{     
+
+                    //Si paso las validaciones cree una Agenda
+                    $agenda = InspectorAgenda::create([
+                        'inspector_id'  => $request['inspector_id'],
+                        'city_id'       => $request['city_id'],
+                        'start_date'    => $request['start_date'],
+                        'end_date'      => $request['end_date'],
+                    ]);
+                    $agenda->slug = md5($agenda->id);
+                    $agenda->save();
+
+                    echo json_encode([
+                        'status' => trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasAdded'),
+                    ]);
+                }
+            }
+        }
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \App\InspectorAgenda  $inspectorAgenda
@@ -134,117 +210,6 @@ class InspectorAgendaController extends Controller
         echo json_encode([
             'agenda' => $inspectorAgenda,
         ]);
-    }
-
-    /**
-     * Almacena un nuevo recurso por medio de ajax.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        if( auth()->user()->hasRole('Inspector') ){
-            $request['inspector_id'] = auth()->user()->inspectors->id;
-        }elseif( !auth()->user()->hasRole('Admin') ){
-            // dd(Inspector::find($request['inspector_id'])->companies);
-            if( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
-                abort(403, 'This action is unauthorized.');
-            }
-        }
-
-        $request->validate([
-            'start_date'    => 'required|date|date_format:Y-m-d',
-            'end_date'      => 'required|date|date_format:Y-m-d',
-            'inspector_id'  => 'required',
-            'country'       => 'required',
-            'city_id'       => 'required',
-        ]);
-
-        /* Log::info(auth()->user()->inspectors->id);
-        // Log::info($request['companies'] = auth()->user()->companies);
-        dd('XD'); */
-
-        // Validar si la fecha de inicio ingresada supera a la fecha final
-        if($request->start_date >$request->end_date){
-            echo json_encode([
-                'error' => trans('words.ErrorRangeDate'),
-            ]);
-        }
-        else
-        {
-            //Contadores de error para las validaciones
-            $contError=0;
-
-            //Se consulta todas las Agendas filtradas por un inspector
-            $inspectorAgenda = InspectorAgenda::where('inspector_id', '=', $request->input('inspector_id'))->get();
-
-            foreach($inspectorAgenda as $item){
-                if(($request->input('end_date') < $item->end_date && $request->input('start_date') < $item->start_date && $request->input('end_date') < $item->start_date) || ($request->input('end_date') > $item->end_date && $request->input('start_date') > $item->start_date && $request->input('start_date') > $item->end_date)){
-                    //Se comprueba si las horas ingresadas no se crucen con otra agenda el mismo día
-                }else{
-                    $contError++;   
-                }
-            }
-
-            if($request->start_date < date('Y-m-d')){
-                echo json_encode([
-                    'error' => trans('words.DateGreater'),
-                ]);
-            }else{
-                //Si la agenda ya esta ocupada
-                if($contError > 0){
-                    echo json_encode([
-                        'error' => trans('words.AgendaBusy'),
-                    ]);
-                }else{     
-
-                    //Si paso las validaciones cree una Agenda
-                    $agenda = InspectorAgenda::create([
-                        'inspector_id'  => $request['inspector_id'],
-                        'city_id'       => $request['city_id'],
-                        'start_date'    => $request['start_date'],
-                        'end_date'      => $request['end_date'],
-                    ]);
-                    $agenda->slug = md5($agenda->id);
-                    $agenda->save();
-
-                    echo json_encode([
-                        'status' => trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasAdded'),
-                    ]);
-                }
-            }
-        }
-    }
-
-    /**
-     * Muestra los resultados de la tabla agenda para mostrarlos en el calendario
-     *
-     * @return JSON
-     */
-    public function events($id='none', $company=null)
-    {
-        $result = InspectorAgenda::query()->join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
-                ->join('users', 'users.id', '=', 'inspectors.user_id')
-                ->select('users.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'inspector_id');
-
-        if($id != 'none'){
-            $result = $result->where('inspectors.id', $id)->get();
-        }elseif($company){
-            // dd($result->inspector);
-            $result = $result->whereHas('inspector.user.companies', function($q) use($company){
-                $q->where('slug', '=', $company);
-            })->get();
-        }else{
-            $result = $result->get();
-        }
-
-        //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario
-        foreach($result as $item){
-            $item->end = $item->end.'T23:59:59';
-        }
-        echo json_encode($result);
-
     }
 
     /**
@@ -325,13 +290,6 @@ class InspectorAgendaController extends Controller
 
                     
                     /* ------------------Validacion editar-citas------------------- */
-                    
-                    //Se consultas las citas filtrado por el inspector de la agenda a eliminar, se exceptuan las citas reprogramadas (5) y/o canceladas (6)
-                    /* $citas = InspectionAppointment::where([
-                        ['inspector_id', '=', $agenda->inspector_id],
-                        ['appointment_states_id', '!=', 5],
-                        ['appointment_states_id', '!=', 6],
-                    ])->get(); */
 
                     //Se consultas las citas filtrado por el inspector de la agenda a eliminar, se exceptuan las citas reprogramadas (5) y/o canceladas (6)
                     $citas1 = InspectionAppointment::select('start_date', 'end_date')
@@ -351,13 +309,6 @@ class InspectorAgendaController extends Controller
                     ->get();
                             
                     foreach($citas as $cita){
-                        /* if($agenda->date == $cita->date){
-                            if($agenda->start_time <= $cita->start_time && $agenda->end_time >= $cita->end_time){
-                                if($request->start_time > $cita->start_time || $request->end_time < $cita->end_time){
-                                    $contCitasError++;
-                                }
-                            }
-                        } */
                         //Se valida si la agenda a editar contiene una o más citas
                         if($cita->start_date >= $agenda->start_date && $cita->end_date <= $agenda->end_date){
                             //Comprueba si las fechas ingresadas de la agenda afectan las citas
@@ -386,10 +337,6 @@ class InspectorAgendaController extends Controller
                         }else{
                             $agenda->update($request->all());
                         }
-                        
-                        /* echo json_encode([
-                            'status' => $request->all(),
-                        ]); */
 
                         echo json_encode([
                             'status' => trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasUpdated'),
@@ -450,5 +397,35 @@ class InspectorAgendaController extends Controller
                 'status' => trans_choice('words.InspectorAgenda', 1).' '.trans('words.HasEliminated'),
             ]);
         }
-    }    
+    }
+
+    /**
+     * Muestra los resultados de la tabla agenda para mostrarlos en el calendario
+     *
+     * @return JSON
+     */
+    public function events($id='none', $company=null)
+    {
+        $result = InspectorAgenda::query()->join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
+                ->join('users', 'users.id', '=', 'inspectors.user_id')
+                ->select('users.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'inspector_id');
+
+        if($id != 'none'){
+            $result = $result->where('inspectors.id', $id)->get();
+        }elseif($company){
+            // dd($result->inspector);
+            $result = $result->whereHas('inspector.user.companies', function($q) use($company){
+                $q->where('slug', '=', $company);
+            })->get();
+        }else{
+            $result = $result->get();
+        }
+
+        //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario
+        foreach($result as $item){
+            $item->end = $item->end.'T23:59:59';
+        }
+        echo json_encode($result);
+
+    }
 }

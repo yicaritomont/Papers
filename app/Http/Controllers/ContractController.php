@@ -6,6 +6,7 @@ use App\Contract;
 use App\Client;
 use App\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ContractController extends Controller
 {
@@ -57,11 +58,16 @@ class ContractController extends Controller
             'client_id' => 'required',
             'company_id' => 'required',
         ]);
-        if (Contract::create($request->except('_token'))) {
 
-            $alert = ['success', trans_choice('words.Contract', 1).' '.trans('words.HasAdded')];
+        if(Client::find($request['client_id'])->user->companies->pluck('id')->contains($request['company_id'])){
+            if (Contract::create($request->except('_token'))) {
 
-        } else {
+                $alert = ['success', trans_choice('words.Contract', 1).' '.trans('words.HasAdded')];
+    
+            } else {
+                $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Contract', 1)];
+            }
+        }else{
             $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Contract', 1)];
         }
 
@@ -169,6 +175,25 @@ class ContractController extends Controller
             $menssage = \Lang::get('validation.MessageError');
             echo json_encode([
                 'status' => $menssage,
+            ]);
+        }
+    }
+
+    /**
+     * Filtrar el cliente del contrato seleccionado
+     */
+    public function clients($id = null)
+    {
+        if($id)
+        {
+            echo json_encode([
+                'client' => Contract::findOrFail($id)->client->user->name,
+                ]);
+        }
+        else
+        {
+            echo json_encode([
+                'client' => trans('words.Select').'  '.trans_choice('words.Contract', 1)
             ]);
         }
     }

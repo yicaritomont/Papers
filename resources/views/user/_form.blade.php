@@ -22,7 +22,7 @@
 <!-- Image Form Input -->
 <div class="form-group @if ($errors->has('picture')) has-error @endif">
     <label for="picture">@lang('words.Picture')</label>
-    {!! Form::file('picture', old('picture'), ['class' => 'input-body', 'type'=>'file', 'accept'=>'image/*']) !!}`
+    {!! Form::file('picture', old('picture'), ['class' => 'input-body', 'type'=>'file', 'accept'=>'image/*']) !!}
     @if ($errors->has('picture')) <p class="help-block">{{ $errors->first('picture') }}</p> @endif
 </div>
 
@@ -30,14 +30,14 @@
 <div class="form-group @if ($errors->has('roles')) has-error @endif">
     {!! Form::label('roles[]', 'Roles') !!}
     {{-- {{dd($user->roles->pluck('id')->toArray())}} --}}
-    {!! Form::select('roles[]', $roles, isset($user) ? $user->roles->pluck('id')->toArray() : null,  ['class' => 'input-body', 'multiple']) !!}
+    {!! Form::select('roles[]', $roles, isset($user) ? $user->roles->pluck('id')->toArray() : null,  ['class' => 'input-body form-control chosen-select', 'multiple', 'data-placeholder' => trans('words.ChooseOption')]) !!}
     @if ($errors->has('roles')) <p class="help-block">{{ $errors->first('roles') }}</p> @endif
 </div>
 
 <!-- Companies Form Input -->
 <div class="form-group @if ($errors->has('companies')) has-error @endif">
     {!! Form::label('companies[]', trans_choice('words.Company', 2)) !!}
-    {!! Form::select('companies[]', $companies, isset($user) ? $user->companies->pluck('id')->toArray() : null,  ['class' => 'input-body', 'multiple']) !!}
+    {!! Form::select('companies[]', $companies, isset($user) ? $user->companies->pluck('id')->toArray() : null,  ['class' => 'input-body form-control chosen-select', 'multiple', 'data-placeholder' => trans('words.ChooseOption')]) !!}
     @if ($errors->has('companies')) <p class="help-block">{{ $errors->first('companies') }}</p> @endif
 </div>
 

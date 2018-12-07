@@ -162,11 +162,24 @@
         var calendarObj = {};
         calendarObj.customButtons = null;
         @if(isset($inspector))
-            calendarObj.events = $('#url').val()+'/events/{{ $inspector->id }}';
+            calendarObj.events = {
+                url: $('#url').val()+'/events/{{ $inspector->id }}',
+                type: 'POST',
+                data: { _token: $('#_token').val() },
+            };
         @elseif(isset($companies))
-            calendarObj.events = $('#url').val()+'/events/none/{{ $companies->slug }}';
+            calendarObj.events = {
+                url: $('#url').val()+'/events/none/{{ $companies->slug }}',
+                type: 'POST',
+                data: { _token: $('#_token').val() },
+            };
         @else
-            calendarObj.events = $('#url').val()+'/events';
+            calendarObj.events = {
+                url: $('#url').val()+'/events',
+                type: 'POST',
+                data: { _token: $('#_token').val() },
+            };
+            
         @endif
         calendarObj.eventClick = function(event)
         {

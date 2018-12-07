@@ -468,6 +468,29 @@ class InspectorController extends Controller
             $citiesCountry[''] = 'Seleccione..';
             json_encode($response = ['citiesCountry'=>$citiesCountry]);
         }
-    return $response;
+        return $response;
     }
+
+    /**
+	 * Seleccionar los contratos en base a la compañia del inspector seleccionado
+	 */
+    public function contracts($id = null)
+    {
+        $contratos = [];
+
+        if($id)
+        {
+            foreach(Inspector::find($id)->companies as $company)
+            {
+                $contratos = array_merge($contratos, $company->contracts->toArray());
+            }
+        }
+
+        array_unshift($contratos, ['id' => '', 'name' => trans('words.ChooseOption')]);
+
+        echo json_encode([
+            'status' => $contratos
+        ]);
+    }
+    
 }

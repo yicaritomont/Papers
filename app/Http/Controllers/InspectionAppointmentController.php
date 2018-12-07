@@ -112,6 +112,8 @@ class InspectionAppointmentController extends Controller
      */
     public function store(InspectionAppointmentRequest $request)
     {
+        $request['client_id'] = Contract::findOrFail($request->contract_id)->client->id;
+
         // Validación de ingreso de datos que no corresponden a la compañia en sesion
         if( !auth()->user()->hasRole('Admin') ){
             if( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){

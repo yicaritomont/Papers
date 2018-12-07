@@ -38,8 +38,8 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('enviaCompania/{id}',array('as'=>'enviaCompania','uses'=>'UserController@PostMultiple'));
 
     //Eventos Calendario
-    Route::get('inspectionappointments/events/{id?}/{company?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
-    Route::get('inspectoragendas/events/{id?}/{company?}', 'InspectorAgendaController@events')->name('inspectoragendas.events');
+    Route::post('inspectionappointments/events/{id?}/{company?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
+    Route::post('inspectoragendas/events/{id?}/{company?}', 'InspectorAgendaController@events')->name('inspectoragendas.events');
 
     //Completar las citas
     Route::put('inspectionappointments/{inspectionappointment}/complete', 'InspectionAppointmentController@complete')->name('inspectionappointments.complete');
@@ -51,6 +51,10 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('inspectiontypes/subtypes/{id?}', 'InspectionTypeController@subtypes')->name('inspectionappointments.subtypes');
     Route::get('country/cities/{id?}', 'GeneralController@cities')->name('general.cities');
     Route::get('companies/clients/{company?}', 'CompanyController@clients')->name('company.clients');
+    Route::get('inspectors/contracts/{id?}', 'InspectorController@contracts')->name('inspectors.contracts');
+
+    //Actualización campo informativo
+    Route::get('contracts/clients/{id?}', 'ContractController@clients')->name('contracts.clients');
 
     // ????
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');

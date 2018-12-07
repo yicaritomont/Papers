@@ -18,7 +18,7 @@
 <!-- Company of Contract Form Select -->
 <div class="form-group @if ($errors->has('company_id')) has-error @endif">
     {!! Form::label('company_id', trans_choice('words.Company', 1)) !!}
-    {!!Form::select('company_id', $companies, isset($contract) ? $contract->company_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
+    {!!Form::select('company_id', $companies, isset($contract) ? $contract->company_id : null, ['class' => 'input-body form-control chosen-select', 'placeholder' => trans('words.ChooseOption')])!!}
     @if ($errors->has('company_id')) <p class="help-block">{{ $errors->first('company_id') }}</p> @endif
 </div>
 
@@ -26,8 +26,8 @@
 <div class="form-group @if ($errors->has('client_id')) has-error @endif">
     {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
     {{-- {!!Form::select('client_id', $clients, isset($contract) ? $contract->client_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!} --}}
-    <select id="client_id" name="client_id" class="input-body">
-        <option value="">@lang('words.ChooseOption')</option>
+    <select id="client_id" name="client_id" class="input-body form-control chosen-select">
+        <option selected value>@lang('words.ChooseOption')</option>
     </select>
     @if ($errors->has('client_id')) <p class="help-block">{{ $errors->first('client_id') }}</p> @endif
 </div>

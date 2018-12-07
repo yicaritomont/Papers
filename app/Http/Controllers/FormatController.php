@@ -114,8 +114,9 @@ class FormatController extends Controller
             {
                 $alert = ['success', trans('words.ErrorLinkFormat')];
             }
+          }else{
+              $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasAdded')];
           }
-          // $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasAdded')];
       } else {
           $alert = ['error',trans('words.UnableCreate').' '.trans_choice('words.Format',1)];
       }

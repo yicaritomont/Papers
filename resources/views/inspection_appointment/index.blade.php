@@ -224,11 +224,26 @@
         calendarObj.customButtons = null;
 
         @if(isset($inspector))
-            calendarObj.events = $('#url').val()+'/events/{{ $inspector->id }}';
+            //calendarObj.events = $('#url').val()+'/events/{{ $inspector->id }}';
+            calendarObj.events = {
+                url: $('#url').val()+'/events/{{ $inspector->id }}',
+                type: 'POST',
+                data: { _token: $('#_token').val() },
+            };
         @elseif(isset($company))
-            calendarObj.events = $('#url').val()+'/events/none/{{ $company->slug }}';
+            //calendarObj.events = $('#url').val()+'/events/none/{{ $company->slug }}';
+            calendarObj.events = {
+                url: $('#url').val()+'/events/none/{{ $company->slug }}',
+                type: 'POST',
+                data: { _token: $('#_token').val() },
+            };
         @else
-            calendarObj.events = $('#url').val()+'/events';
+            //calendarObj.events = $('#url').val()+'/events';
+            calendarObj.events = {
+                url: $('#url').val()+'/events',
+                type: 'POST',
+                data: { _token: $('#_token').val() },
+            };
         @endif
 
         calendarObj.eventClick = function(event)
@@ -236,7 +251,6 @@
             //Resetar y setear el action el formulario de completar si existe el elemento
             if($('#completeAppointment')[0])
             {
-                console.log('Entrooo');
                 $('#completeAppointment')[0].reset();
                 $('#completeAppointment').attr('action', $('#url').val()+'/'+event.id+'/complete');
             }

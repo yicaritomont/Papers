@@ -159,5 +159,6 @@ return[
     'file_not_valid'     =>  'The file {file} is not valid',
 
     'ErrorLinkFormat' => 'Could not link the format with the appointment.',
+    'Select' => 'Select',
 ];
 ?>
