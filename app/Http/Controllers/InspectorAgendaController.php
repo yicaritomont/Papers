@@ -9,6 +9,7 @@ use App\InspectionAppointment;
 use App\Country;
 use App\Citie;
 use App\User;
+use App\Company;
 use DB;
 use App\Http\Requests\InspectorAgendaRequest;
 use Illuminate\Http\Request;
@@ -24,12 +25,16 @@ class InspectorAgendaController extends Controller
      */
     public function index(Request $request)
     {
-        if(auth()->user()->hasRole('Inspector'))
+
+        $quantity = InspectorAgenda::all()->count();
+        $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
+        $countries = Country::all()->pluck('name', 'id');
+
+        if(auth()->user()->hasRole('Inspector')){
             $request['id'] = auth()->user()->inspectors->id;
+        }
 
         if($request->get('id')){
-            $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
-            $countries = Country::all()->pluck('name', 'id');
 
             $inspector = Inspector::findOrFail($request->get('id'));
 
@@ -41,18 +46,18 @@ class InspectorAgendaController extends Controller
             $this->authorize('validateId', $inspector);
             
             return view('inspector_agenda.index', compact('inspectors', 'countries', 'inspector'));
-        }else{
-            $quantity = InspectorAgenda::all()->count();
-            $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
-            $countries = Country::all()->pluck('name', 'id');
+            
+        }elseif( !auth()->user()->hasRole('Admin') ){
+            $companySlug = Company::findOrFail(session()->get('Session_Company'))->slug;;
+            $inspectors = Inspector::with('user')->whereHas('user.companies', function($q) use($companySlug){
+                $q->where('slug', '=', $companySlug);
+            })->get()->pluck('user.name', 'id');
+            $companies = Company::with('user:id,name')->where('slug','=',$companySlug)->first();
 
+            return view('inspector_agenda.index', compact('companies', 'inspectors', 'countries'));
+        }else{
             return view('inspector_agenda.index', compact('quantity', 'inspectors', 'countries'));
         }
-        /* if(auth()->user()->hasRole('Inspector'))
-        {
-            return redirect()->route('inspectoragendas.inspector', auth()->user()->inspectors->id);
-        } */
-        // $result = InspectorAgenda::with(['inspector'])->paginate();
         
     }
 
@@ -74,19 +79,27 @@ class InspectorAgendaController extends Controller
      */
     public function show($slug)
     {
+        
         $agenda = InspectorAgenda::join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
-            ->join('users', 'users.id', '=', 'inspectors.user_id')
-            ->join('cities', 'cities.id', '=', 'inspector_agendas.city_id')
-            ->join('countries', 'countries.id', '=', 'cities.countries_id')
+        ->join('users', 'users.id', '=', 'inspectors.user_id')
+        ->join('cities', 'cities.id', '=', 'inspector_agendas.city_id')
+        ->join('countries', 'countries.id', '=', 'cities.countries_id')
             ->select('cities.name AS city',
-                    'countries.name AS country',
-                    'users.name AS inspector',
-                    'start_date',
-                    'end_date',
-                    'inspector_id')
+            'countries.name AS country',
+            'users.name AS inspector',
+            'start_date',
+            'end_date',
+            'inspector_id')
             ->where('inspector_agendas.slug', $slug)
         ->firstOrFail();
-        $this->authorize('validateId', Inspector::findOrFail($agenda->inspector_id));
+        
+        $inspector = Inspector::findOrFail($agenda->inspector_id);
+
+        $this->authorize('validateId', $inspector);
+
+        if( !CompanyController::compareCompanySession($inspector->user->companies) ){
+            abort(403, 'This action is unauthorized.');
+        }
 
         echo json_encode([
             'agenda' => $agenda,
@@ -106,14 +119,18 @@ class InspectorAgendaController extends Controller
         ->where('slug','=',$slug)
         ->get()[0]; */
         
-        $inspectorAgenda = InspectorAgenda::with('city')
+        $inspectorAgenda = InspectorAgenda::with('city:id,countries_id')
             ->where('slug','=',$slug)
         ->get()->first();
         
-        $this->authorize('validateId', Inspector::findOrFail($inspectorAgenda->inspector_id));
-        // dd('Paso');
-/*         $headquarters = Headquarters::all();
-        $inspectors = Inspector::all(); */
+        $this->authorize('validateId', $inspectorAgenda->inspector);
+
+        if( !CompanyController::compareCompanySession($inspectorAgenda->inspector->user->companies) ){
+            abort(403, 'This action is unauthorized.');
+        }
+
+        // dd($inspectorAgenda->city);
+        
         echo json_encode([
             'agenda' => $inspectorAgenda,
         ]);
@@ -129,6 +146,11 @@ class InspectorAgendaController extends Controller
     {
         if( auth()->user()->hasRole('Inspector') ){
             $request['inspector_id'] = auth()->user()->inspectors->id;
+        }elseif( !auth()->user()->hasRole('Admin') ){
+            // dd(Inspector::find($request['inspector_id'])->companies);
+            if( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
+                abort(403, 'This action is unauthorized.');
+            }
         }
 
         $request->validate([
@@ -200,14 +222,19 @@ class InspectorAgendaController extends Controller
      *
      * @return JSON
      */
-    public function events($id=null)
+    public function events($id='none', $company=null)
     {
-        $result = InspectorAgenda::join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
+        $result = InspectorAgenda::query()->join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
                 ->join('users', 'users.id', '=', 'inspectors.user_id')
                 ->select('users.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'inspector_id');
 
-        if($id){
+        if($id != 'none'){
             $result = $result->where('inspectors.id', $id)->get();
+        }elseif($company){
+            // dd($result->inspector);
+            $result = $result->whereHas('inspector.user.companies', function($q) use($company){
+                $q->where('slug', '=', $company);
+            })->get();
         }else{
             $result = $result->get();
         }
@@ -231,6 +258,13 @@ class InspectorAgendaController extends Controller
     {
         if( auth()->user()->hasRole('Inspector') ){
             $request['inspector_id'] = auth()->user()->inspectors->id;
+        }
+
+        //Se consulta la agenda por el identificador
+        $agenda = InspectorAgenda::where('slug', '=', $slug)->get()->first();
+
+        if( !CompanyController::compareCompanySession($agenda->inspector->user->companies) ){
+            abort(403, 'This action is unauthorized.');
         }
 
         if($request['drop'] != null){
@@ -269,8 +303,8 @@ class InspectorAgendaController extends Controller
                 ['slug', '!=', $slug]
             ])->get();
 
-            foreach($inspectorAgendas as $agenda){
-                if(($request->input('end_date') < $agenda->end_date && $request->input('start_date') < $agenda->start_date && $request->input('end_date') < $agenda->start_date) || ($request->input('end_date') > $agenda->end_date && $request->input('start_date') > $agenda->start_date && $request->input('start_date') > $agenda->end_date)){
+            foreach($inspectorAgendas as $value){
+                if(($request->input('end_date') < $value->end_date && $request->input('start_date') < $value->start_date && $request->input('end_date') < $value->start_date) || ($request->input('end_date') > $value->end_date && $request->input('start_date') > $value->start_date && $request->input('start_date') > $value->end_date)){
                     //Se comprueba si las fechas ingresadas no se crucen con otra agenda del mismo inspector
                 }else{
                     $contAgendaError++;   
@@ -292,11 +326,6 @@ class InspectorAgendaController extends Controller
                     
                     /* ------------------Validacion editar-citas------------------- */
                     
-                    //Se consulta la agenda por el identificador
-                    $agenda = InspectorAgenda::where('slug', '=', $slug)->get()->first();
-
-                    
-                
                     //Se consultas las citas filtrado por el inspector de la agenda a eliminar, se exceptuan las citas reprogramadas (5) y/o canceladas (6)
                     /* $citas = InspectionAppointment::where([
                         ['inspector_id', '=', $agenda->inspector_id],
@@ -384,9 +413,15 @@ class InspectorAgendaController extends Controller
         $cont=0;
         
         //Se consulta la agenda por el identificador
-        $agenda = InspectorAgenda::where('slug','=',$slug)->get()[0];
+        $agenda = InspectorAgenda::where('slug','=',$slug)->get()->first();
+
+        // $inspector = Inspector::findOrFail($agenda->inspector_id);
         
-        $this->authorize('validateId', Inspector::findOrFail($agenda->inspector_id));
+        $this->authorize('validateId', $agenda->inspector);
+
+        if( !CompanyController::compareCompanySession($agenda->inspector->user->companies) ){
+            abort(403, 'This action is unauthorized.');
+        }
         
         //Se consultas las citas filtrado por el inspector de la agenda a eliminar, se exceptuan las citas reprogramadas (5) y/o canceladas (6)
         $citas = InspectionAppointment::where([

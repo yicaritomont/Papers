@@ -8,7 +8,7 @@
             <h3 class="modal-title"> @choice('words.Headquarters', 2) </h3>
         </div>
         <div class="col-md-7 page-action text-right">
-            @can('add_posts')
+            @can('edit_headquarters')
                 <a href="{{ route('headquarters.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
             @endcan
         </div>
@@ -32,7 +32,6 @@
             </thead>
         </table>
     </div>
-
 @endsection
 
 @section('scripts')
@@ -52,11 +51,20 @@
             ];
 
             @can('edit_headquarters', 'delete_headquarters')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}";
+                @if(isset($clientAuth))
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'client,'.$clientAuth->slug, 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}";
+                @else    
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}";
+                @endif
+
                 columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'relations' => 'cities,client,client.user']) }}";
+                @if(isset($clientAuth))
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'client,'.$clientAuth->slug, 'relations' => 'cities,client,client.user']) }}";
+                @else    
+                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'relations' => 'cities,client,client.user']) }}";
+                @endif
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
             

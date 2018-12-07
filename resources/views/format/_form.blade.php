@@ -18,3 +18,6 @@
 <div id="plantilla_formato" class="col-xs-12" style="display:{!! $mostrar_formato !!};overflow-y: scroll;">{!! $formato->format!!}</div>
     <div class="panel panel-default col-xs-12" name="format"   id="contenedor_formato" style="display:none;overflow-y: scroll;">
 </div>
+@if(isset($appointment))
+    <input type="hidden" name="appointment" value="{{ $appointment }}">
+@endif

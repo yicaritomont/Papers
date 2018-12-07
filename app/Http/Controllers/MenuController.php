@@ -301,7 +301,7 @@ class MenuController extends Controller
         $lastMenuHead = Menu::orderBy('id', 'desc')->first();
         if($request->menu_id == 0)
         {
-            $menu->menu_id = (int)$lastMenuHead->id+1;
+            $menu->menu_id = $menu->id;
         }
         else
         {

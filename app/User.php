@@ -48,7 +48,10 @@ class User extends Authenticatable
     public function inspectors()
     {
         return $this->hasOne('App\Inspector');
-        /* return $this->belongsTo(Inspector::class);
-        return $this->belongsTo('App\Inspector','inspector_type_id','id'); */
+    }
+
+    public function clients()
+    {
+        return $this->hasOne('App\Client');
     }
 }
