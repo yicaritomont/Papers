@@ -57,9 +57,9 @@
 
             @can('edit_contracts', 'delete_contracts')
                 @if(isset($companies))
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Contract', 'company' => 'company,'.$companies->slug, 'entity' => 'contracts', 'identificador' => 'id', 'relations' => 'company,client,client.user,company.user']) }}";
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Contract', 'company' => 'company,'.$companies->slug, 'entity' => 'contracts', 'identificador' => 'id', 'relations' => 'company,client,client.user,company.user']) }}"};
                 @else
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Contract', 'company' => 'none', 'entity' => 'contracts', 'identificador' => 'id', 'relations' => 'company,client,client.user,company.user']) }}";
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Contract', 'company' => 'none', 'entity' => 'contracts', 'identificador' => 'id', 'relations' => 'company,client,client.user,company.user']) }}"};
                 @endif
 
                 
@@ -67,14 +67,16 @@
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 @if(isset($companies))
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Contract', 'company' => 'company,'.$companies->slug, 'relations' => 'company,client,client.user,company.user']) }}";
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Contract', 'company' => 'company,'.$companies->slug, 'relations' => 'company,client,client.user,company.user']) }}"};
                 @else
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Contract', 'company' => 'none', 'relations' => 'company,client,client.user,company.user']) }}";
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Contract', 'company' => 'none', 'relations' => 'company,client,client.user,company.user']) }}"};
                 @endif
 
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
             dataTableObject.columns = columns;
 
             var table = $('.dataTable').DataTable(dataTableObject);

@@ -161,26 +161,19 @@
         //Se define un objeto que contenga las caracteristicas particulares de cada calendario y luego se definen
         var calendarObj = {};
         calendarObj.customButtons = null;
+
         @if(isset($inspector))
-            calendarObj.events = {
-                url: $('#url').val()+'/events/{{ $inspector->id }}',
-                type: 'POST',
-                data: { _token: $('#_token').val() },
-            };
+            calendarObj.events = {url: $('#url').val()+'/events/{{ $inspector->id }}'};
         @elseif(isset($companies))
-            calendarObj.events = {
-                url: $('#url').val()+'/events/none/{{ $companies->slug }}',
-                type: 'POST',
-                data: { _token: $('#_token').val() },
-            };
+            calendarObj.events = {url: $('#url').val()+'/events/none/{{ $companies->slug }}'};
         @else
-            calendarObj.events = {
-                url: $('#url').val()+'/events',
-                type: 'POST',
-                data: { _token: $('#_token').val() },
-            };
+            calendarObj.events = {url: $('#url').val()+'/events'};
             
         @endif
+        
+        calendarObj.events.type = 'POST';
+        calendarObj.events.data = { _token: window.Laravel.csrfToken };
+
         calendarObj.eventClick = function(event)
         {
             //Cambiar el action del formulario

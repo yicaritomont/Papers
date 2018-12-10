@@ -460,6 +460,7 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
 
     })
     .done(function(res){
+        console.log(res);
         var res = JSON.parse(res);
 
         console.log(res);

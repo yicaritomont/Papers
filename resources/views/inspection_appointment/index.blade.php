@@ -224,27 +224,15 @@
         calendarObj.customButtons = null;
 
         @if(isset($inspector))
-            //calendarObj.events = $('#url').val()+'/events/{{ $inspector->id }}';
-            calendarObj.events = {
-                url: $('#url').val()+'/events/{{ $inspector->id }}',
-                type: 'POST',
-                data: { _token: $('#_token').val() },
-            };
+            calendarObj.events = {url: $('#url').val()+'/events/{{ $inspector->id }}'};
         @elseif(isset($company))
-            //calendarObj.events = $('#url').val()+'/events/none/{{ $company->slug }}';
-            calendarObj.events = {
-                url: $('#url').val()+'/events/none/{{ $company->slug }}',
-                type: 'POST',
-                data: { _token: $('#_token').val() },
-            };
+            calendarObj.events = {url: $('#url').val()+'/events/none/{{ $company->slug }}'};
         @else
-            //calendarObj.events = $('#url').val()+'/events';
-            calendarObj.events = {
-                url: $('#url').val()+'/events',
-                type: 'POST',
-                data: { _token: $('#_token').val() },
-            };
+            calendarObj.events = {url: $('#url').val()+'/events'};
         @endif
+
+        calendarObj.events.type = 'POST';
+        calendarObj.events.data = { _token: window.Laravel.csrfToken };
 
         calendarObj.eventClick = function(event)
         {

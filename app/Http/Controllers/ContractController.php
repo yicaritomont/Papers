@@ -50,8 +50,6 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-
         $this->validate($request, [
             'name' => 'required|min:2',
             'date' => 'required|date|date_format:Y-m-d',
@@ -126,8 +124,6 @@ class ContractController extends Controller
             'client_id' => 'required',
             'company_id' => 'required',
         ]);
-
-        // dd($request->except('_method', '_token'));
 
         $contract->update($request->all());
 

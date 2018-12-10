@@ -61,22 +61,25 @@
 
             @can('edit_clients', 'delete_clients')
                 @if(isset($companies))
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}";
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}"};
                 @else
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'company' => 'none', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}";
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'company' => 'none', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}"};
                 @endif
 
                 columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
                 @if(isset($companies))
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'company' => 'user.companies,'.$companies->slug, 'relations' => 'user']) }}";
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'company' => 'user.companies,'.$companies->slug, 'relations' => 'user']) }}"};
                 @else
-                    dataTableObject.ajax = "{{ route('datatable', ['model' => 'Client', 'company' => 'none', 'relations' => 'user']) }}";
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'company' => 'none', 'relations' => 'user']) }}"};
                 @endif
 
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
+
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
 
             dataTableObject.columns = columns;
 

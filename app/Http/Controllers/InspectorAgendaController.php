@@ -204,8 +204,6 @@ class InspectorAgendaController extends Controller
         if( !CompanyController::compareCompanySession($inspectorAgenda->inspector->user->companies) ){
             abort(403, 'This action is unauthorized.');
         }
-
-        // dd($inspectorAgenda->city);
         
         echo json_encode([
             'agenda' => $inspectorAgenda,
@@ -413,7 +411,6 @@ class InspectorAgendaController extends Controller
         if($id != 'none'){
             $result = $result->where('inspectors.id', $id)->get();
         }elseif($company){
-            // dd($result->inspector);
             $result = $result->whereHas('inspector.user.companies', function($q) use($company){
                 $q->where('slug', '=', $company);
             })->get();

@@ -48,14 +48,16 @@
             ];
 
             @can('edit_inspectionsubtypes','delete_inspectionsubtypes')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionSubtype', 'company' => 'none', 'entity' => 'inspectionsubtypes', 'identificador' => 'id', 'relations' => 'inspection_types']) }}";
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'InspectionSubtype', 'company' => 'none', 'entity' => 'inspectionsubtypes', 'identificador' => 'id', 'relations' => 'inspection_types']) }}"};
                 columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionSubtype', 'company' => 'none', 'relations' => 'inspection_types']) }}";
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'InspectionSubtype', 'company' => 'none', 'relations' => 'inspection_types']) }}"};
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
   
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
             dataTableObject.columns = columns;
 
             var table = $('.dataTable').DataTable(dataTableObject);

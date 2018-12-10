@@ -81,12 +81,12 @@
             ];
 
             @if(isset($companies))
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'company' => 'none', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'company' => 'none', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
             @endif
 
-            columns.push({data: 'actions', className: 'text-center w1em'});
+            columns.push({data: 'actions', className: 'text-center w1em', order: false});
             dataTableObject.columns = columns;
 
             dataTableObject.columnDefs.push(
@@ -126,10 +126,10 @@
                 setDataTable([-2, -3])
             );
 
-            //dataTableObject.columnDefs = columnDefs;
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
 
             var table = $('.dataTable').DataTable(dataTableObject);
-            // new $.fn.dataTable.FixedHeader( table );
         });
     </script>
 @endsection

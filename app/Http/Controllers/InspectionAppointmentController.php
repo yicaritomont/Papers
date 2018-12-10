@@ -90,8 +90,6 @@ class InspectionAppointmentController extends Controller
      */
     public function create(Request $request)
     {
-        
-        // dd($request->except('date'));
         $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
         $appointment_states = AppointmentState::pluck('name', 'id');
         $appointment_locations = AppointmentLocation::pluck('coordenada','id');
@@ -269,8 +267,6 @@ class InspectionAppointmentController extends Controller
         }elseif( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
             abort(403, 'This action is unauthorized.');
         }
-
-        dd('Paso');
 
         $request->validate([
             'inspector_id'  => 'required',
