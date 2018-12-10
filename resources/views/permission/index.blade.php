@@ -50,10 +50,10 @@
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Permission', 'company' => 'none', 'entity' => 'permissions', 'identificador' => 'name', 'relations' => 'none']) }}"};
  
                 columns.push({data: 'actions', className: 'text-center w1em'},)
-                dataTableObject.columnDefs = [setDataTable([-2, -3])];
+                dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Permission']) }}"};
-                dataTableObject.columnDefs = [setDataTable([-1, -2])];
+                dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endcan
 
             dataTableObject.ajax.type = 'POST';

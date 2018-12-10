@@ -58,14 +58,14 @@
                 @endif
 
                 columns.push({data: 'actions', className: 'text-center w1em'},)
-                dataTableObject.columnDefs = [setDataTable([-2, -3])];
+                dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 @if(isset($clientAuth))
                     dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'client,'.$clientAuth->slug, 'relations' => 'cities,client,client.user']) }}"};
                 @else    
                     dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'relations' => 'cities,client,client.user']) }}"};
                 @endif
-                dataTableObject.columnDefs = [setDataTable([-1, -2])];
+                dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endcan
             
             dataTableObject.ajax.type = 'POST';

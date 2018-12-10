@@ -56,10 +56,10 @@
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}"};
                 
                 columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columnDefs = [setDataTable([-2, -3])];
+                dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'relations' => 'user']) }}"};
-                dataTableObject.columnDefs = [setDataTable([-1, -2])];
+                dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endif
 
             dataTableObject.columns = columns;

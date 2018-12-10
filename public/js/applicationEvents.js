@@ -1,5 +1,9 @@
-// console.log('URL desde laravel '+window.Laravel.url);
 $(window).ready(inicial);
+
+$(window).resize(function(){
+    changeTopToast();
+    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
+});
 
 function inicial (argument)
 {
@@ -58,25 +62,12 @@ function inicial (argument)
         no_results_text: chosenText,
     });
 
-    // if(window.Laravel.language == 'es') datePickerObj.language = 'es';
-
     $('.input-group.date').datepicker(datePickerObj);
 
     //Para que no permita seleccionar un dia antertior al actual
     datePickerObj.startDate = new Date();
 
     $('.input-group.date-range-inputs input').datepicker(datePickerObj);
-
-    $('.input-group.date').datepicker({
-        format: "yyyy-mm-dd",
-        startDate: new Date()
-    })
-
-    /* console.log($(window).height());
-    console.log('Alto: '+$('.container.body').height());
-
-    console.log(window.innerHeight);
-    console.log($(window).outerHeight()); */
 
     $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
 }
@@ -99,8 +90,8 @@ if($('#icon')[0])
 
 //Todos los select que requieran una petición ajax para llenar otro select
 $('#company_id').on('change', function(event, edit){
-    if( !$.isNumeric(edit) )
-    {
+    // Se valida si la variable edit es numerica, si no lo es asignele undefined
+    if( !$.isNumeric(edit) ){
         edit = undefined;
     }
     
@@ -118,6 +109,15 @@ $('.inspector-contract').on('change',function(event, edit){
     });
 });
 
+$('.country').on('change',function(event, edit){
+    // Se valida si la variable edit es numerica, si no lo es asignele undefined
+    if( !$.isNumeric(edit) ){
+        edit = undefined;
+    }
+    fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit);
+});
+
+// Actualización campo cliente en base al formato seleccionado
 $('#contract_id').on('change',function(event){
     console.log('Cambio contrato con id '+$(this).val());
     $.ajax({
@@ -136,16 +136,10 @@ $('#contract_id').on('change',function(event){
     });
 });
 
-$('.country').on('change',function(event, edit){
-    // Se valida si la variable edit es numerica, si no lo es asignele undefined
-    if( !$.isNumeric(edit) )
-    {
-        edit = undefined;
-    }
-    fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit);
-});
+// Evento para ocultar o mostrar elementos sin datos consultados
+$(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
 
-function setDataTable(targets){
+function formatDateTable(targets){
     return {
         targets:targets,
         render: function(data, type, row, meta){
@@ -165,8 +159,6 @@ function obtenerUrl()
 
     //Concatena la informacion para construir la url
     var url = window.location.protocol+'//'+window.location.host+'/'+vector[1];
-    console.log('Ruta absoluta '+rutaAbsoluta);
-    console.log('URL '+url);
     
     return url;
 }
@@ -334,11 +326,16 @@ function verifyPassword()
     }
 }
 
-//Retorna los mensajes de alerta en base al
+//Retorna los mensajes de alerta
 function alert(color, msg){
     return '<div class="alert alert-'+color+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+msg+'</div>';
 }
 
+function spanError(error){
+    return '<p class="help-block">'+error+'</p>';
+}
+
+// Ocultar o mostrar elementos con animación slide
 function slideForms(obj, funcRes) {
     var selector = obj.data('toggle');
     $('.formSlide:not('+selector+')').slideUp('slow');
@@ -373,12 +370,6 @@ function confirmModal(form, msg, type, revertFunc){
         }
     });
 }
-
-$(window).resize(function(){
-    changeTopToast();
-    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
-    // $('.dataTable').DataTable().columns.adjust().draw();
-});
 
 function changeTopToast(){
     $('.swal2-top-end').css('top', $('.nav_menu').outerHeight());
@@ -526,10 +517,6 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
     });
 });
 
-function spanError(error){
-    return '<p class="help-block">'+error+'</p>';
-}
-
 // Ajax para ver agendas y citas
 $('.showCalendar').on('click', function(e){
     var objElement = $(this);
@@ -664,9 +651,6 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
     $('#city_id').trigger("chosen:updated");
 }
 
-$(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
-
-
 function verifyInspector()
 {
     var idInspector = $(this).val();
@@ -780,10 +764,6 @@ function calendar(obj){
 }
 
 function fillSelect(url, select, edit, funcRes){
-    /* console.log(url);
-    console.log(select);
-    console.log(edit);
-    console.log(funcRes); */
     $.ajax({
         url:url,
         type:'GET',
@@ -971,3 +951,23 @@ $('.form-group.picker .input-group-addon').on('click', function(){
         $(".oculto").fadeIn("fast");
     }
 });
+
+function ajax(url, type, data, funcDone, funcError)
+{
+    $.ajax({
+        url: url,
+        type: type,
+        dataType:'json',
+        data: data,
+    })
+    .done(function(res){
+        funcDone()
+    })
+    .fail(function(res){
+        console.log('error\n');
+        console.log(res);
+    })
+    .error(function(res){
+        if(funcError) funcError();
+    });
+}
