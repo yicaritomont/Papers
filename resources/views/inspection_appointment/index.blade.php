@@ -180,24 +180,11 @@
 
                     @can('add_formats')
                         {!! Form::open(['method' => 'POST', 'class' => 'formCalendar formSlide', 'id' => 'fillFormat', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
-                            <div class="form-group @if ($errors->has('company')) has-error @endif" id="motrarcompanies">
-                                <label for="company_formato">@lang('words.Company')</label>
-                                {!! Form::select('company_id',$companies, isset($user) ? $user->companies->pluck('id')->toArray() : null, ['class' => 'input-body','id' => 'company_formato', 'placeholder' => trans('words.ChooseOption')]) !!}
-                                @if ($errors->has('company')) <p class="help-block">{{ $errors->first('company')}}</p> @endif
+                            <div id="contenedorHtml">
+                                @include('format._form')
                             </div>
-                            <div class="form-group @if ($errors->has('client')) has-error @endif">
-                                <label for="cliente_formato">@choice('words.Client', 1)</label>
-                                <div  id="contenedor_client">
-                                {!! Form::select('client_id',$clients, null, ['class' => 'input-body','id' => 'cliente_formato', 'placeholder' => trans('words.ChooseOption')]) !!}
-                                @if ($errors->has('client')) <p class="help-block">{{ $errors->first('client')}}</p> @endif
-                                </div>
-                            </div>
-                            <div class="form-group @if ($errors->has('preformat')) has-error @endif" id="contenedor_preformat">
-                                <label for="format_preformato">@lang('words.Preformato')</label>
-                                {!! Form::select('preformat_id',$preformats, null, ['class' => 'input-body','id' => 'format_preformato', 'placeholder' => trans('words.ChooseOption')]) !!}
-                                @if ($errors->has('preformat')) <p class="help-block">{{ $errors->first('preformat')}}</p> @endif
-                            </div>                     
-                            {!! Form::submit(trans('words.Complete'), ['class' => 'btn btn-primary btn-block']) !!}
+                            <input type="hidden" name="format_expediction" id="format_expediction">
+                            <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.Create') !!}</span>
                         {!! Form::close() !!}
                     @endcan
                 

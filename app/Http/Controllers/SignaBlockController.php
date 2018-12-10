@@ -64,12 +64,26 @@ class SignaBlockController
     {
         $client = $this->crearCliente();
         $body = fopen($documento, 'r');
+        $name = "file";
         try 
         {
             $res = $client->request('POST',$this->baseUrl.'documento',[
-                'file' => $documento,
-                'headers'   => $this->headers($token)
-            ]);
+                'multipart' => [
+                    [
+                        'name'  =>  $name,
+                        'FileContents'  => fopen($documento, 'r'),
+                        'contents'      => fopen($documento, 'r'),
+                        'headers'       =>  [
+                            'Content-Type' => 'text/plain',
+                            'Content-Disposition'   => 'form-data; name="FileContents"; filename="'. $name .'"',
+                            'authorization' => $token
+                        ],
+                        // 'contents' => $resource,
+                    ],
+                'headers' => ['authorization' => $token]
+                ],
+                ]);
+            //$res = $client->request("POST", $this->baseUrl.'documento', array('content-type' => 'multipart/form-data'), array($documento), array(), '');
                     
             return json_decode($res->getBody());
         } 
@@ -77,6 +91,11 @@ class SignaBlockController
         {
             return false;
         }
+
+       /* $url = $this->minkParameters["base_url"] . '/' . ltrim($url, '/'); 
+$file = new \Symfony\Component\HttpFoundation\File\UploadedFile($path, "video");
+$fields = json_encode($table->getColumnsHash()[0]); //array("user" => "test")*/
+//$this->client->request("POST", $url, array('content-type' => 'multipart/form-data'), array($file), array(), $fields);
     }   
 
 
@@ -96,7 +115,7 @@ class SignaBlockController
         {
             $res = $client->request('GET',$this->baseUrl.'documento/info/'.$document_hash,[
                 //'document_hash' => $document_hash,
-                'headers'   => $this->headers($token)
+                'headers'   => ['authorization' => $this->headers($token)]
             ]);
             return json_decode($res->getBody());
         } 
@@ -121,7 +140,7 @@ class SignaBlockController
         {
             $res = $client->request('GET',$this->baseUrl.'documento/certificado/'.$document_hash,[
                 //'document_hash' => $document_hash,
-                'headers'   => $this->headers($token)
+                'headers'   => ['authorization' => $this->headers($token)]
             ]);
 
             return json_decode($res->getBody());
@@ -149,7 +168,7 @@ class SignaBlockController
                 'form_params' => [
                     'hash' => $hash
                 ],
-                'headers'   => $this->headers($token)
+                'headers'   => ['authorization'=>$this->headers($token)]
             ]);
             return json_decode($res->getBody());
         } 

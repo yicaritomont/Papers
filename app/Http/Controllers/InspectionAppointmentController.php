@@ -29,6 +29,34 @@ class InspectionAppointmentController extends Controller
      */
     public function index(Request $request)
     {
+        $formato = Preformato::where('id',1)->first();
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
+        $company = Company::where('id',session()->get('Session_Company'))->first();
+        $companyselect ='none';
+        $mostrar_formato = 'none';
+        $disabled = '';
+        if($company == '')
+        {
+            $company = new Company();
+            $company->name = 'Administracion Principal';
+            $companyselect = 'block';
+            $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+                            ->select('clients.id AS id', 'users.name AS name')
+                            ->get()
+                            ->pluck('name', 'id');
+        } 
+        else 
+        {
+            $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+                        ->join('user_company','user_company.user_id','=','users.id')
+                        ->join('companies','companies.id','=','user_company.company_id')
+                        ->where('companies.id',session()->get('Session_Company'))
+                        ->select('clients.id AS id', 'users.name AS name')
+                        ->get()
+                        ->pluck('name', 'id');
+        }
+        $preformats = Preformato::pluck('name', 'id');
+
         if(auth()->user()->hasRole('Inspector')){
             $request['id'] = auth()->user()->inspectors->id;
         }
@@ -77,10 +105,10 @@ class InspectionAppointmentController extends Controller
 
             $company = Company::with('user:id,name')->where('slug','=',$companySlug)->first();
 
-            return view('inspection_appointment.index', compact('company', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
+            return view('inspection_appointment.index', compact('company', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats','format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
         }
 
-        return view('inspection_appointment.index',compact('quantity', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
+        return view('inspection_appointment.index',compact('quantity', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats','format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
     }
 
     /**
