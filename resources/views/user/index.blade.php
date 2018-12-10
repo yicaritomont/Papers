@@ -81,21 +81,23 @@
                     //En la columna 4 (roles) se recorre el areglo y luego se muestran los nombres de cada posición
                     targets: 4,
                     render: function(data, type, row){
-                        var res = '';
-                        data.forEach(function(element){
-                            res += element.name+' ';
+                        var res = [];
+                        data.forEach(function(elem){
+                            res.push(elem.name);
                         });
-                        return res;
+
+                        return res.join(', ');
                     }
                 },{
                     //En la columna 3 (companies) se recorre el areglo y luego se muestran los nombres de cada posición
                     targets: 3,
                     render: function(data, type, row){
-                        var res = '';
-                        data.forEach(function(element){
-                            res += element.user.name+' ';
+                        var res = [];
+                        data.forEach(function(elem){
+                            res.push(elem.user.name);
                         });
-                        return res;
+
+                        return res.join(', ');
                     }
                 }
             );       
