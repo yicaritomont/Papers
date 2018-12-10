@@ -156,5 +156,6 @@ return[
     'file_not_valid'     =>  'El archivo {file} no es valido',
 
     'ErrorLinkFormat' => 'No se pudo vincular el formato con la cita.',
+    'Select' => 'Seleccione',
  ];
 ?>

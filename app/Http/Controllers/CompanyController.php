@@ -94,7 +94,7 @@ class CompanyController extends Controller
     {
         
         $users = $company->users;
-        //dd($users->count());
+        
         return view('company.show', compact('company', 'users'));
     }
 

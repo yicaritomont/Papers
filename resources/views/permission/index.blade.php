@@ -47,15 +47,17 @@
             ];
 
             @can('delete_permissions')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Permission', 'company' => 'none', 'entity' => 'permissions', 'identificador' => 'name', 'relations' => 'none']) }}";
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Permission', 'company' => 'none', 'entity' => 'permissions', 'identificador' => 'name', 'relations' => 'none']) }}"};
  
                 columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Permission']) }}";
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Permission']) }}"};
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
             dataTableObject.columns = columns;
 
             var table = $('.dataTable').DataTable(dataTableObject);

@@ -10,7 +10,21 @@ function inicial (argument)
     $('#boton_guardar_html').click(guardarHtml);
     $('#boton_firmar_formato').click(deshabilitarCampos);
     $('#boton_firmar_formato').click(guardarHtml);
-    $('#company_formato').change(cargarSelectClients);
+    // $('#company_formato').change(cargarSelectClients);
+    $('#company_formato').on('change', function(event, edit){
+        if( !$.isNumeric(edit) )
+        {
+            edit = undefined;
+        }
+        
+        fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#cliente_formato', edit, () => {
+            $('#format_preformato').val('');
+            $('#cliente_formato').change(limpiarFormulario);
+            // $('#format_preformato').change(llenarCabeceraFormato);
+            $('#plantilla_formato').css('display','none');
+            $('#contenedor_formato').css('display','none');
+        });
+    });
     $('#format_preformato').change(llenarCabeceraFormato);
 
     //Se definen atributos generales de DataTable
@@ -85,11 +99,41 @@ if($('#icon')[0])
 
 //Todos los select que requieran una petición ajax para llenar otro select
 $('#company_id').on('change', function(event, edit){
+    if( !$.isNumeric(edit) )
+    {
+        edit = undefined;
+    }
+    
     fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#client_id', edit);
 });
 
 $('.inspection_type_id').on('change',function(event, edit){
     fillSelect(window.Laravel.url+'/inspectiontypes/subtypes/'+$(this).val(), '.inspection_subtype_id', edit);
+});
+
+$('.inspector-contract').on('change',function(event, edit){
+    console.log('Cambio');
+    fillSelect(window.Laravel.url+'/inspectors/contracts/'+$(this).val(), '#contract_id', edit, () => {
+        $('#contract_id').trigger('change');
+    });
+});
+
+$('#contract_id').on('change',function(event){
+    console.log('Cambio contrato con id '+$(this).val());
+    $.ajax({
+        url:window.Laravel.url+'/contracts/clients/'+$(this).val(),
+        type:'GET',
+        dataType: 'json',
+        data:{
+            _token: $('#_token').val(),
+        }
+    })
+    .done(function(res){
+        $('#client_id').val(res.client);
+    })
+    .fail(function(res){
+        alert('Error.');
+    });
 });
 
 $('.country').on('change',function(event, edit){
@@ -416,6 +460,7 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
 
     })
     .done(function(res){
+        console.log(res);
         var res = JSON.parse(res);
 
         console.log(res);
@@ -615,9 +660,8 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
     $(form+' #'+fielDate+'start_date').val(startDate);
     $(form+' #'+fielDate+'end_date').val(endDate);
     $('#country').trigger("chosen:updated");
-    $('#city_id').trigger("chosen:updated");
-
     $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+    $('#city_id').trigger("chosen:updated");
 }
 
 $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
@@ -735,20 +779,21 @@ function calendar(obj){
     });
 }
 
-function fillSelect(url, select, edit){
-    console.log(edit);
-    console.log(url);
+function fillSelect(url, select, edit, funcRes){
+    /* console.log(url);
     console.log(select);
-
+    console.log(edit);
+    console.log(funcRes); */
     $.ajax({
         url:url,
         type:'GET',
+        dataType:'json',
         data:{
             _token: $('#_token').val(),
         }
     })
     .done(function(res){
-        res = JSON.parse(res);
+        console.log(res);
 
         $(select).empty();
 
@@ -762,6 +807,7 @@ function fillSelect(url, select, edit){
         }
         $(select).trigger("chosen:updated");
 
+        if(funcRes) funcRes();
     })
     .fail(function(res){
         alert('Error.');
@@ -773,7 +819,10 @@ function llenarCabeceraFormato()
     var preformato = $(this).val();
     var select = $('#cliente_formato').val();
     var company = $('#company_formato').val();
-    if(select != "")
+    if($('#format_preformato').val() == ''){
+        $('#contenedor_formato').empty();
+        $('#contenedor_formato').hide();
+    }else if(select != "")
     {
         $.ajax({
             type: "GET",
@@ -782,6 +831,8 @@ function llenarCabeceraFormato()
             data: {select:select, company:company, preformato:preformato}
             }).done(function(response)
                 {
+                    console.log(response);
+                    console.log(response);
                     if(!jQuery.isEmptyObject(response))
                     {
                       console.log(response.error);

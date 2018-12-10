@@ -53,12 +53,12 @@
             ];
 
             @if(Gate::check('edit_companies') || Gate::check('delete_companies') || Gate::check('view_users') || Gate::check('view_inspectors'))
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}";
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}"};
                 
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'relations' => 'user']) }}";
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'relations' => 'user']) }}"};
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endif
 
@@ -96,6 +96,9 @@
                     }
                 });
             @endif
+
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
 
             var table = $('.dataTable').DataTable(dataTableObject);
         });

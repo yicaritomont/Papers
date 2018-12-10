@@ -29,7 +29,6 @@ class InspectorPolicy
 
     public function validateId(User $user, Inspector $inspector)
     {
-        Log::info('Entroooooo');
         return $user->id === $inspector->user_id;
     }
 }

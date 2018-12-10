@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Auth\Access\Gate;
 use App\Modulo;
 use App\Menu;
+use Illuminate\Support\Facades\Log;
 
 
 class MadeMenuProvider extends ServiceProvider
@@ -60,14 +61,9 @@ class MadeMenuProvider extends ServiceProvider
         $children = [];
         foreach ($data as $line1)
         {
-            
-            
-            /* if ($line['id'] == $line1['menu_id']) */
             if ($line['id'] == $line1['menu_id'] && $line1['id'] != $line1['menu_id'])
             {
-                // return $line1;
                 $childrenTemp = self::getChildren($data, $line1);
-                // return $childrenTemp;
                 
                 if($line1['url'])
                 {
@@ -94,40 +90,23 @@ class MadeMenuProvider extends ServiceProvider
             ->orderby('name')
             ->get()
             ->toArray();
-
-        // dd($menu);
+        
         return $menu;
-    }
-
-    public static function prueba()
-    {
-        return 'XD';
     }
 
     public static function menus()
     {
-        // dd(self::prueba());
-        // $menus = self;
         $data = self::optionsMenu();
         $menuAll = [];
         foreach ($data as $line)
         {
             if($line['id'] == $line['menu_id'])
             {
-                // var_dump($line['id'] . '<br>');
-                //dd(self::getChildren($data, $line));
                 $item = [ array_merge($line, ['submenu' => self::getChildren($data, $line) ]) ];
                 $menuAll = array_merge($menuAll, $item);
-                /* var_dump(self::getChildren($data, $line));
-                echo '<br><br>'; */
             }
-            // dd(self::getChildren($data, $line));
-            //dd(count(self::getChildren($data, $line)));
-            // var_dump(self::getChildren($data, $line));
         }
-        /* dd($menuAll);
-        dd('Fin'); */
-        // dd($menuAll);
+
         return $menuAll;
     }
 }

@@ -71,19 +71,31 @@
                     //En la columna 6 (companies) se recorre el areglo y luego se muestran los nombres de cada posición
                     targets: 6,
                     render: function(data, type, row){
-                        var res = '';
-                        data.forEach(function(element){
-                            res += element.user.name+' ';
+                        var res = [];
+                        data.forEach(function(elem){
+                            res.push(elem.user.name);
                         });
-                        return res;
+
+                        return res.join(', ');
+                        /*return data.map(function(elem){
+                            return elem.user.name;
+                        }).join(", ");*/
                     }
                 }
             ];
 
-            @if(isset($companies))
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
+            @if(Gate::check('edit_inspectors') || Gate::check('delete_inspectors') || Gate::check('view_inspectoragendas') || Gate::check('view_inspectionappointments'))
+                @if(isset($companies))
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
+                @else
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'company' => 'none', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
+                @endif
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Inspector', 'company' => 'none', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}";
+                @if(isset($companies))
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'company' => 'user.companies,'.$companies->slug, 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
+                @else
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'company' => 'none', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
+                @endif
             @endif
 
             columns.push({data: 'actions', className: 'text-center w1em'});
@@ -126,10 +138,10 @@
                 setDataTable([-2, -3])
             );
 
-            //dataTableObject.columnDefs = columnDefs;
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
 
             var table = $('.dataTable').DataTable(dataTableObject);
-            // new $.fn.dataTable.FixedHeader( table );
         });
     </script>
 @endsection

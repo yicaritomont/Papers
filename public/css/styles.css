@@ -447,3 +447,13 @@ tr.child ul.dtr-details li{
     margin-top: 20px !important;
     height: 80px !important
 }
+
+.nav-sm ul.nav.child_menu li a{
+    display: inline-block;
+}
+
+.nav-sm .nav.side-menu li a i{
+    display: inline;
+    vertical-align: middle;
+    margin-right: .2em;
+}

@@ -118,8 +118,6 @@ class InspectionAppointmentController extends Controller
      */
     public function create(Request $request)
     {
-        
-        // dd($request->except('date'));
         $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
         $appointment_states = AppointmentState::pluck('name', 'id');
         $appointment_locations = AppointmentLocation::pluck('coordenada','id');
@@ -140,6 +138,8 @@ class InspectionAppointmentController extends Controller
      */
     public function store(InspectionAppointmentRequest $request)
     {
+        $request['client_id'] = Contract::findOrFail($request->contract_id)->client->id;
+
         // Validación de ingreso de datos que no corresponden a la compañia en sesion
         if( !auth()->user()->hasRole('Admin') ){
             if( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
@@ -295,8 +295,6 @@ class InspectionAppointmentController extends Controller
         }elseif( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
             abort(403, 'This action is unauthorized.');
         }
-
-        dd('Paso');
 
         $request->validate([
             'inspector_id'  => 'required',
