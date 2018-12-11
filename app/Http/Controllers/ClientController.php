@@ -125,8 +125,6 @@ class ClientController extends Controller
         $user = $client->user;
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
 
-        // dd($client->user->companies);
-
         if(CompanyController::compareCompanySession($client->user->companies)){
             return view('client.edit', compact('user', 'client', 'companies'));
         }else{
@@ -189,8 +187,6 @@ class ClientController extends Controller
         $user->save();
         $user->companies()->sync($request->companies);
 
-        // dd($request->only('identification', 'phone', 'cell_phone'));
-        //$client->user->update($request->except('password'));
         $client->update($request->only('identification', 'phone', 'cell_phone', 'companies'));
 
         $alert = ['success', trans_choice('words.Client', 1).' '.trans('words.HasUpdated')];

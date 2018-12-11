@@ -211,19 +211,21 @@
         calendarObj.customButtons = null;
 
         @if(isset($inspector))
-            calendarObj.events = $('#url').val()+'/events/{{ $inspector->id }}';
+            calendarObj.events = {url: $('#url').val()+'/events/{{ $inspector->id }}'};
         @elseif(isset($company))
-            calendarObj.events = $('#url').val()+'/events/none/{{ $company->slug }}';
+            calendarObj.events = {url: $('#url').val()+'/events/none/{{ $company->slug }}'};
         @else
-            calendarObj.events = $('#url').val()+'/events';
+            calendarObj.events = {url: $('#url').val()+'/events'};
         @endif
+
+        calendarObj.events.type = 'POST';
+        calendarObj.events.data = { _token: window.Laravel.csrfToken };
 
         calendarObj.eventClick = function(event)
         {
             //Resetar y setear el action el formulario de completar si existe el elemento
             if($('#completeAppointment')[0])
             {
-                console.log('Entrooo');
                 $('#completeAppointment')[0].reset();
                 $('#completeAppointment').attr('action', $('#url').val()+'/'+event.id+'/complete');
             }

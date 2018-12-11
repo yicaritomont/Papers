@@ -24,8 +24,14 @@ class Company extends Model
         return $this->belongsToMany(Inspector::class, 'company_inspector');
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
+    }
+
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
     }
 
 }

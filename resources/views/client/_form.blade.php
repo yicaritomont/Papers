@@ -44,7 +44,7 @@
     <!-- Companies Form Input -->
     <div class="form-group @if ($errors->has('companies')) has-error @endif">
         {!! Form::label('companies', trans_choice('words.Company', 2)) !!}
-        {!! Form::select('companies', $companies, isset($user) ? $user->companies->pluck('id')->toArray() : null,  ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')]) !!}
+        {!! Form::select('companies', $companies, isset($user) ? $user->companies->pluck('id')->toArray() : null,  ['class' => 'input-body form-control chosen-select', 'placeholder' => trans('words.ChooseOption')]) !!}
         @if ($errors->has('companies')) <p class="help-block">{{ $errors->first('companies') }}</p> @endif
     </div>
 @endif
