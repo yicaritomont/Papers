@@ -16,7 +16,7 @@ class PreformatoController extends Controller
     public function index()
     {
         $result = Preformato::all();
-
+        
         return view('preformato.index', compact('result'));
     }
 

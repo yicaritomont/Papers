@@ -29,7 +29,6 @@ class FormatController extends Controller
     public function index()
     {
         $result = Format::latest()->paginate();
-
         return view('format.index', compact('result'));
     }
 

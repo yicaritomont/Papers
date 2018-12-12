@@ -983,7 +983,7 @@ class PreformatoSeeder extends Seeder
                $pdf->page_text($x, $y, $text, $font, $size);
            }
          </script>',
-      'state' => 1),
+      'status' => 1),
     );
 
     foreach ($preformatos as $preformato) {
