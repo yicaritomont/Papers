@@ -183,6 +183,10 @@
             //Se limpia las alertas
             $('.msgError').html('');
 
+            //Limpiar las validaciones
+            $('.form-group').removeClass('has-error');
+            $('.errors').empty();
+
             //Ocultar los formularios desplegables
             $(".formSlide").hide();
 

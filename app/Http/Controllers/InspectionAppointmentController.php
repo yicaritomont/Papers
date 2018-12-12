@@ -296,8 +296,11 @@ class InspectionAppointmentController extends Controller
 
         $inspection_appointment = InspectionAppointment::findOrFail($id);
 
+        // Validar si se modifico el id del formlario
         if( !CompanyController::compareCompanySession($inspection_appointment->inspector->user->companies) ){
             abort(403, 'This action is unauthorized.');
+
+        // Validar si se modifico el id del campo inspectores
         }elseif( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
             abort(403, 'This action is unauthorized.');
         }
