@@ -103,8 +103,8 @@
                             </div>
 
                             <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
-                                {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
-                                {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body', 'placeholder'=>trans('words.ChooseOption')]) !!}
+                                {!! Form::label('edit-inspector_id', trans_choice("words.Inspector", 1)) !!}
+                                {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2', 'placeholder'=>trans('words.ChooseOption'), 'id' => 'edit-inspector_id']) !!}
                                 <div class="errors"></div>
                             </div>
 

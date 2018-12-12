@@ -12,12 +12,12 @@
 </div>
 <div class="form-group @if ($errors->has('profession_id')) has-error @endif">
     {!! Form::label('profession_id', trans_choice('words.Profession', 1)) !!}
-    {!! Form::select('profession_id',$professions,null, array('class' => 'input-body chosen-select form-control', 'required', 'placeholder' => trans('words.ChooseOption'))) !!}
+    {!! Form::select('profession_id',$professions,null, array('class' => 'input-body select2 form-control', 'placeholder' => trans('words.ChooseOption'))) !!}
     @if ($errors->has('profession_id')) <p class="help-block">{{ $errors->first('profession_id') }}</p> @endif
 </div>
 <div class="form-group @if ($errors->has('inspector_type_id')) has-error @endif">
     {!! Form::label('inspector_type_id', trans_choice('words.InspectorType', 1)) !!}
-    {!! Form::select('inspector_type_id',$inspector_types,null, array('class' => 'input-body chosen-select form-control','required', 'placeholder' => trans('words.ChooseOption'))) !!}
+    {!! Form::select('inspector_type_id',$inspector_types,null, array('class' => 'input-body select2 form-control', 'placeholder' => trans('words.ChooseOption'))) !!}
     @if ($errors->has('inspector_type_id')) <p class="help-block">{{ $errors->first('inspector_type_id') }}</p> @endif
 </div>
 
@@ -65,7 +65,7 @@
     <!-- Companies Form Input -->
     <div class="form-group @if ($errors->has('companies')) has-error @endif">
         {!! Form::label('companies[]', trans_choice('words.Company', 2)) !!}
-        {!! Form::select('companies[]', $companies, isset($user) ? $user->companies->pluck('id')->toArray() : null,  ['class' => 'input-body chosen-select form-control', 'multiple', 'data-placeholder' => trans('words.ChooseOption')]) !!}
+        {!! Form::select('companies[]', $companies, isset($user) ? $user->companies->pluck('id')->toArray() : null,  ['class' => 'input-body select2 form-control', 'multiple', 'data-placeholder' => trans('words.ChooseOption')]) !!}
         @if ($errors->has('companies')) <p class="help-block">{{ $errors->first('companies') }}</p> @endif
     </div>
 @endif

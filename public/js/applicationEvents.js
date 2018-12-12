@@ -2,7 +2,7 @@ $(window).ready(inicial);
 
 $(window).resize(function(){
     changeTopToast();
-    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
+    // $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
 });
 
 function inicial (argument)
@@ -16,11 +16,6 @@ function inicial (argument)
     $('#boton_firmar_formato').click(guardarHtml);
     // $('#company_formato').change(cargarSelectClients);
     $('#company_formato').on('change', function(event, edit){
-        if( !$.isNumeric(edit) )
-        {
-            edit = undefined;
-        }
-        
         fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#cliente_formato', edit, () => {
             $('#format_preformato').val('');
             $('#cliente_formato').change(limpiarFormulario);
@@ -58,9 +53,11 @@ function inicial (argument)
         chosenText = 'No matches for';
     }
 
-    $(".chosen-select").chosen({
+    /* $(".chosen-select").chosen({
         no_results_text: chosenText,
-    });
+    }); */
+
+    $('.select2').select2();
 
     $('.input-group.date').datepicker(datePickerObj);
 
@@ -69,7 +66,7 @@ function inicial (argument)
 
     $('.input-group.date-range-inputs input').datepicker(datePickerObj);
 
-    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
+    // $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
 }
 
 // Si existe el campo icon cargue el archivo con todos los iconos de font awesome
@@ -90,11 +87,6 @@ if($('#icon')[0])
 
 //Todos los select que requieran una petición ajax para llenar otro select
 $('#company_id').on('change', function(event, edit){
-    // Se valida si la variable edit es numerica, si no lo es asignele undefined
-    if( !$.isNumeric(edit) ){
-        edit = undefined;
-    }
-    
     fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#client_id', edit);
 });
 
@@ -103,37 +95,29 @@ $('.inspection_type_id').on('change',function(event, edit){
 });
 
 $('.inspector-contract').on('change',function(event, edit){
-    console.log('Cambio');
     fillSelect(window.Laravel.url+'/inspectors/contracts/'+$(this).val(), '#contract_id', edit, () => {
         $('#contract_id').trigger('change');
     });
 });
 
 $('.country').on('change',function(event, edit){
-    // Se valida si la variable edit es numerica, si no lo es asignele undefined
-    if( !$.isNumeric(edit) ){
-        edit = undefined;
-    }
     fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit);
 });
 
 // Actualización campo cliente en base al formato seleccionado
 $('#contract_id').on('change',function(event){
-    console.log('Cambio contrato con id '+$(this).val());
-    $.ajax({
-        url:window.Laravel.url+'/contracts/clients/'+$(this).val(),
-        type:'GET',
-        dataType: 'json',
-        data:{
-            _token: $('#_token').val(),
+    $('#client_id_loading').css('display', 'inline-block');
+
+    // ajax parameters: url, Method, Function done, Function error(optional)
+    ajax(
+        window.Laravel.url+'/contracts/clients/'+$(this).val(),
+        'GET',
+        {_token: $('#_token').val()},
+        (res) => {
+            $('#client_id').val(res.client);
+            $('#client_id_loading').hide();
         }
-    })
-    .done(function(res){
-        $('#client_id').val(res.client);
-    })
-    .fail(function(res){
-        alert('Error.');
-    });
+    );
 });
 
 // Evento para ocultar o mostrar elementos sin datos consultados
@@ -383,53 +367,45 @@ const toast = swal.mixin({
 });
 
 // Ajax para los formularios de eliminar exceptuando los calendarios
-$(document).on('submit','.formDelete',function(e){
-    console.log($(this).attr('action'));
+$(document).on('submit','.formDelete',function(e)
+{
     e.preventDefault();
 
-    console.log($(this).serialize());
+    // ajax parameters: url, Method, Function done, Function error(optional)
+    ajax(
+        $(this).attr('action'),
+        'POST',
+        $(this).serialize(),
+        (res) => {
+            //Si no exite algun error
+            if(!res.error){
 
-    $.ajax({
-        url:$(this).attr('action'),
-        type:'POST',
-        data:$(this).serialize(),
-    })
-    .done(function(res){
-        var res = JSON.parse(res);
+                toast({
+                    type: 'success',
+                    title: res.status
+                });
 
-        //Si no exite algun error
-        if(!res.error){
+                changeTopToast();
 
-            toast({
-                type: 'success',
-                title: res.status
-            });
-
-            changeTopToast();
-
-            $('.dataTable').DataTable().ajax.reload();
-        }else{
-            toast({
-                type: 'error',
-                title: res.error
-            });
-            changeTopToast();
+                $('.dataTable').DataTable().ajax.reload();
+            }else{
+                toast({
+                    type: 'error',
+                    title: res.error
+                });
+                changeTopToast();
+            }
+        },
+        (res) => {
+            if(res.status == 403){
+                toast({
+                    type: 'error',
+                    title: res.responseJSON.message
+                });
+                changeTopToast();
+            }
         }
-    })
-    .fail(function(res){
-        console.log('error\n'+res);
-        console.log(res);
-    })
-    .error(function(res){
-        console.log(res.status);
-        if(res.status == 403){
-            toast({
-                type: 'error',
-                title: res.responseJSON.message
-            });
-            changeTopToast();
-        }
-    });
+    );
 });
 
 // Ajax para los formularios actualizar y eliminar de los calendarios
@@ -444,77 +420,68 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
 
     e.preventDefault();
 
-    $.ajax({
-        url:$(this).attr('action'),
-        type:'POST',
-        data:datos,
+    // ajax parameters: url, Method, Function done, Function error(optional)
+    ajax(
+        $(this).attr('action'),
+        'POST',
+        datos,
+        (res) => {
+            //Si no exite algun error
+            if(!res.error){
 
-    })
-    .done(function(res){
-        console.log(res);
-        var res = JSON.parse(res);
-
-        console.log(res);
-
-        //Si no exite algun error
-        if(!res.error){
-
-            $(modal).modal('hide');
-            $('#'+idForm)[0].reset();
-            $('.msgError').html('');
-            $("#calendar").fullCalendar('refetchEvents');
-
-            toast({
-                type: 'success',
-                title: res.status
-            });
-
-            changeTopToast();
-        }else{
-            //Si la respuesta es en modal
-            if(salida == true){
-                swal('Error',res.error,'error');
-
-            //Si la respuesta es en toast
-            }else if(revertFunc){
-                revertFunc();
-                toast({
-                    type: 'error',
-                    title: res.error
-                });
-                changeTopToast();
-            }
-            else{
+                $(modal).modal('hide');
+                $('#'+idForm)[0].reset();
                 $('.msgError').html('');
-                $('.msgError').append(alert('danger', res.error));
-            }
+                $("#calendar").fullCalendar('refetchEvents');
 
-        }
-    })
-    .fail(function(res){
-        console.log('fail\n'+res);
-        console.log(res);
-    })
-    .error(function(res){
-        console.log(res.status);
-        if(res.status == 403){
-            $('.msgError').html('');
-            $('.msgError').append(alert('danger', res.responseJSON.message));
-        }else if(res.status == 422){
+                toast({
+                    type: 'success',
+                    title: res.status
+                });
 
-            $('.form-group').removeClass('has-error');
-            $('.errors').empty();
+                changeTopToast();
+            }else{
+                //Si la respuesta es en modal
+                if(salida == true){
+                    swal('Error',res.error,'error');
 
-            $('#'+idForm).find(':input').each(function(){
-                var idInput = $(this).attr('id');
-
-                if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
-                    $(this).parents('.form-group').addClass('has-error');
-                    $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput][0]));
+                //Si la respuesta es en toast
+                }else if(revertFunc){
+                    revertFunc();
+                    toast({
+                        type: 'error',
+                        title: res.error
+                    });
+                    changeTopToast();
                 }
-            });
+                else{
+                    $('.msgError').html('');
+                    $('.msgError').append(alert('danger', res.error));
+                }
+
+            }
+        },
+        (res) => {
+            if(res.status == 403){
+                $('.msgError').html('');
+                $('.msgError').append(alert('danger', res.responseJSON.message));
+            }else if(res.status == 422){
+    
+                $('.form-group').removeClass('has-error');
+                $('.errors').empty();
+    
+                $('#'+idForm).find(':input').each(function(){
+                    var idInput = $(this).attr('name');
+                    /* console.log(idInput);
+                    console.log($(this).attr('name')); */
+                    if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
+                        $(this).parents('.form-group').addClass('has-error');
+                        $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput][0]));
+                    }
+                });
+            }
         }
-    });
+    );
 });
 
 // Ajax para ver agendas y citas
@@ -525,36 +492,33 @@ $('.showCalendar').on('click', function(e){
     if($(objElement.data('toggle')).css('display') == 'block'){
         slideForms(objElement);
     }else{
-        $.ajax({
-            url:$(this).attr('data-route'),
-            type:'GET',
-        })
-        .done(function(res){
-            var res = JSON.parse(res);
-
-            if(res.cita){
-                showAppointment(res.cita);
-            }else if(res.agenda){
-                $.each(res.agenda, function(key, value){
-                    if(key.substr(-4) == 'date'){
-                        value = moment(value, 'YYYY-MM-DD').format('dddd D MMMM YYYY');
-                    }
-
-                    $('#cell-'+key).html(value);
-                });
-
+        // ajax parameters: url, Method, Function done, Function error(optional)
+        ajax(
+            $(this).attr('data-route'),
+            'GET',
+            null,
+            (res) => {
+                if(res.cita){
+                    showAppointment(res.cita);
+                }else if(res.agenda){
+                    $.each(res.agenda, function(key, value){
+                        if(key.substr(-4) == 'date'){
+                            value = moment(value, 'YYYY-MM-DD').format('dddd D MMMM YYYY');
+                        }
+    
+                        $('#cell-'+key).html(value);
+                    });
+    
+                }
+                slideForms(objElement);
+            },
+            (res) => {
+                if(res.status == 403){
+                    $('.msgError').html('');
+                    $('.msgError').append(alert('danger', res.responseJSON.message));
+                }
             }
-            slideForms(objElement);
-        })
-        .fail(function(res){
-            console.log('error\n'+res);
-        })
-        .error(function(res){
-            if(res.status == 403){
-                $('.msgError').html('');
-                $('.msgError').append(alert('danger', res.responseJSON.message));
-            }
-        });
+        );
     }
 });
 
@@ -585,54 +549,56 @@ $(document).on('click', '.editCalendar', function(e){
     if($(objElement.data('toggle')).css('display') == 'block'){
         slideForms(objElement);
     }else{
-        $.ajax({
-            url:$(this).attr('data-route'),
-            type:'GET',
-        })
-        .done(function(res){
-            var res = JSON.parse(res);
+        // ajax parameters: url, Method, Function done, Function error(optional)
+        ajax(
+            $(this).attr('data-route'),
+            'GET',
+            null,
+            (res) => {
+                if(objElement.data('toggle') == '#editAgenda')
+                {
+                    var aFields = ['start_date', 'end_date'];
 
-            if(objElement.data('toggle') == '#editAgenda')
-            {
-                var aFields = ['start_date', 'end_date', 'inspector_id'];
+                    //Se rellena el formulario de editar con los valores correspondientes
+                    $.map(aFields, function(nomField){
+                        $('#modalEditDel #'+nomField).val(res.agenda[nomField]);
+                    });
 
-                //Se rellena el formulario de editar con los valores correspondientes
-                $.map(aFields, function(nomField){
-                    $('#modalEditDel #'+nomField).val(res.agenda[nomField]);
-                });
+                    //Actualización de campos select
+                    $('#modalEditDel #edit-inspector_id').val(res.agenda.inspector_id).trigger('change');  
+                    $('#modalEditDel #edit-city_id').val(res.agenda.city_id).trigger('change');
+                    $('#modalEditDel #edit-country').val(res.agenda.city.countries_id);
 
-                $('#modalEditDel #country').val(res.agenda.city.countries_id);
-                $('#modalEditDel #country').trigger("chosen:updated");
-                $('#editAgenda').attr('action', $('#url').val()+'/'+res.agenda.slug);
+                    $('#editAgenda').attr('action', $('#url').val()+'/'+res.agenda.slug);
 
-                slideForms(objElement, () => {
-                    $('#modalEditDel #country').trigger('change',res.agenda.city_id);
-                });
+                    slideForms(objElement, () => {
+                        $('#modalEditDel #edit-country').trigger('change',res.agenda.city_id);
+                    });
 
+                }
+                else if(objElement.data('toggle') == '#editAppointment')
+                {
+                    var aFields = ['start_date', 'end_date'];
+
+                    //Se rellena el formulario de editar con los valores correspondientes
+                    $.map(aFields, function(nomField){
+                        $('#modalEditDel #'+nomField).val(res.cita[nomField]);
+                    });
+
+                    $('#modalEditDel #edit-inspector_id').val(res.cita.inspector_id).trigger('change');
+
+                    $('#editAppointment').attr('action', $('#url').val()+'/'+res.cita.id);
+
+                    slideForms(objElement);
+                }
+            },
+            (res) => {
+                if(res.status == 403){
+                    $('.msgError').html('');
+                    $('.msgError').append(alert('danger', res.responseJSON.message));
+                }
             }
-            else if(objElement.data('toggle') == '#editAppointment')
-            {
-                var aFields = ['inspector_id', 'start_date', 'end_date'];
-
-                //Se rellena el formulario de editar con los valores correspondientes
-                $.map(aFields, function(nomField){
-                    $('#modalEditDel #'+nomField).val(res.cita[nomField]);
-                });
-
-                $('#editAppointment').attr('action', $('#url').val()+'/'+res.cita.id);
-
-                slideForms(objElement);
-            }
-        })
-        .fail(function(res){
-            console.log('error\n'+res);
-        })
-        .error(function(res){
-            if(res.status == 403){
-                $('.msgError').html('');
-                $('.msgError').append(alert('danger', res.responseJSON.message));
-            }
-        });
+        );
     }
 });
 
@@ -646,9 +612,9 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
     $(form)[0].reset();
     $(form+' #'+fielDate+'start_date').val(startDate);
     $(form+' #'+fielDate+'end_date').val(endDate);
-    $('#country').trigger("chosen:updated");
-    $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-    $('#city_id').trigger("chosen:updated");
+    $(form+' .input-body.select2').trigger('change');
+    // $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+    $('#city_id').trigger("change");
 }
 
 function verifyInspector()
@@ -760,38 +726,39 @@ function calendar(obj){
         dayClick: obj.dayClick,
         editable: true,
         eventDrop: obj.eventDrop,
+        // themeSystem: 'bootstrap4'
     });
 }
 
 function fillSelect(url, select, edit, funcRes){
-    $.ajax({
-        url:url,
-        type:'GET',
-        dataType:'json',
-        data:{
-            _token: $('#_token').val(),
+
+    // Se valida si la variable edit es numerica, si no lo es asignele undefined
+    if( !$.isNumeric(edit) ) edit = undefined;
+
+    $(select+'_loading').css('display', 'inline-block');
+
+    // ajax parameters: url, Method, Function done, Function error(optional)
+    ajax(
+        url,
+        'GET',
+        {_token: $('#_token').val()},
+        (res) => {
+            $(select).empty();
+
+            $.each(res.status, function( key, value )
+            {
+                $(select).append('<option value="'+value.id+'">'+value.name+'</option>');
+            });
+
+            if(edit){
+                $(select).val(edit);
+            }
+
+            $(select+'_loading').hide();
+
+            if(funcRes) funcRes();
         }
-    })
-    .done(function(res){
-        console.log(res);
-
-        $(select).empty();
-
-        $.each(res.status, function( key, value )
-        {
-            $(select).append('<option value="'+value.id+'">'+value.name+'</option>');
-        });
-
-        if(edit){
-            $(select).val(edit);
-        }
-        $(select).trigger("chosen:updated");
-
-        if(funcRes) funcRes();
-    })
-    .fail(function(res){
-        alert('Error.');
-    });
+    );
 }
 
 function llenarCabeceraFormato()
@@ -804,58 +771,59 @@ function llenarCabeceraFormato()
         $('#contenedor_formato').hide();
     }else if(select != "")
     {
-        $.ajax({
-            type: "GET",
-            url: window.Laravel.url+"/ajxllenarCabeceraFormato",
-            dataType:'json',
-            data: {select:select, company:company, preformato:preformato}
-            }).done(function(response)
+        // ajax parameters: url, Method, Function done, Function error(optional)
+        ajax(
+            window.Laravel.url+"/ajxllenarCabeceraFormato",
+            'GET',
+            {select:select, company:company, preformato:preformato},
+            (response) => {
+                console.log(response);
+                if(!jQuery.isEmptyObject(response))
                 {
-                    console.log(response);
-                    console.log(response);
-                    if(!jQuery.isEmptyObject(response))
+                    console.log(response.error);
+                    if (response.error != null)
                     {
-                      console.log(response.error);
-                      if (response.error != null)
-                      { swal({
+                        swal({
                         title: response.error,
                         type: 'warning',
                         animation: false,
                         customClass: 'animateErrorIcon '
-                    });
-                    $('#boton_guardar_html').attr("disabled", true);
+                        });
+                        $('#boton_guardar_html').attr("disabled", true);
                     } else {
-                      var html_plantilla_formato = response.preformato.format;
-                      if( preformato != '')
-                      {
+                        var html_plantilla_formato = response.preformato.format;
+                        if( preformato != '')
+                        {
                             $('#boton_guardar_html').attr("disabled", false);
 
-                          if(preformato == 1)
-                          {
-                            //var plantilla_formato = $('#plantilla_formato').clone();
-                            html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
-                            html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
-                            html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
-                            html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
-                            html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
-                            html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
-                            html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
-                            html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
-                            html_plantilla_formato = html_plantilla_formato.replace('*num_page*',' ');
-                            html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','');
-                          }
+                            if(preformato == 1)
+                            {
+                                //var plantilla_formato = $('#plantilla_formato').clone();
+                                html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
+                                html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
+                                html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
+                                html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
+                                html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
+                                html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
+                                html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
+                                html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
+                                html_plantilla_formato = html_plantilla_formato.replace('*num_page*',' ');
+                                html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','');
+                            }
 
-                          $('#contenedor_formato').html(html_plantilla_formato);
-                          $('#contenedor_formato').show();
-                      } else {
-                        $('#plantilla_formato').css('display','none');
-                        $('#contenedor_formato').css('display','none');
+                            $('#contenedor_formato').html(html_plantilla_formato);
+                            $('#contenedor_formato').show();
+                        } else {
+                            $('#plantilla_formato').css('display','none');
+                            $('#contenedor_formato').css('display','none');
 
 
-                      }
+                        }
                     }
-                  }
-            });
+                }
+            }
+        );
+        
     }
 }
 
@@ -961,13 +929,13 @@ function ajax(url, type, data, funcDone, funcError)
         data: data,
     })
     .done(function(res){
-        funcDone()
+        funcDone(res)
     })
     .fail(function(res){
         console.log('error\n');
         console.log(res);
     })
     .error(function(res){
-        if(funcError) funcError();
+        if(funcError) funcError(res);
     });
 }

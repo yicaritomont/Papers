@@ -43,13 +43,7 @@
 
         <!-- Datatable -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/dataTables.bootstrap.min.css')}}">
-        {{-- <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/fixedHeader.bootstrap.min.css')}}"> --}}
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/dataTable/responsive.bootstrap.min.css')}}">
-        {{-- <link href="{{asset('vendors/datatables.net-bs/css/dataTables.bootstrap.min.css')}}" rel="stylesheet">
-        <link href="{{asset('vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css')}}" rel="stylesheet">
-        <link href="{{asset('vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css')}}" rel="stylesheet">
-        <link href="{{asset('vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css')}}" rel="stylesheet">
-        <link href="{{asset('vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css')}}" rel="stylesheet"> --}}
 
         <!-- File Input -->
         <link href="{{ asset('file-input/css/fileinput.min.css') }}" media="all" rel="stylesheet" type="text/css" />
@@ -57,9 +51,8 @@
         <!-- SweetAlert -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
 
-        <!-- Chosen -->
-        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosenStyle.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosen.min.css')}}">
+        <!-- Select 2 -->
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/select2/select2.min.css')}}">
         
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
@@ -231,6 +224,10 @@
                                         @endif
 
                                         <li><a href="javascript:;">@lang('header.Help')</a></li>
+                                        <li class="lang-menu">
+                                            <a href="{{ route('change_lang', ['lang' => 'es']) }}"><span class="badge badge-primary">ES</span></a>
+                                            <a href="{{ route('change_lang', ['lang' => 'en']) }}"><span class="badge badge-primary">EN</span></a>
+                                        </li>
                                         <li>
                                             <a href="{{ route('logout') }}"
                                                 onclick="event.preventDefault();
@@ -274,14 +271,14 @@
                                     </ul>
                                 </li>
                                 @endif
-                                <li><a href="{{ route('change_lang', ['lang' => 'es']) }}"><span class="badge badge-primary">ES</span></a></li>
-                                <li><a href="{{ route('change_lang', ['lang' => 'en']) }}"><span class="badge badge-primary">EN</span></a></li>
+                                {{-- <li><a href="{{ route('change_lang', ['lang' => 'es']) }}"><span class="badge badge-primary">ES</span></a></li>
+                                <li><a href="{{ route('change_lang', ['lang' => 'en']) }}"><span class="badge badge-primary">EN</span></a></li> --}}
                             </ul>
                         </nav>
                     </div>
                 </div>
                 <!-- /top navigation -->
-                <div class="right_col" role="main" style="min-height: 100vh;">
+                <div class="right_col" role="main">
 
                     {{-- <div class="content-page"> --}}
                         {{-- <div id="flash-msg">
@@ -364,8 +361,9 @@
     <script src="{{ asset('js/lib/momentTz/moment-timezone-with-data-2012-2022.min.js') }}"></script>
 
     <!-- Chosen -->
-    <script src="{{asset('js/lib/chosen/chosen.jquery.min.js')}}"></script>
-    <script src="{{asset('js/lib/chosen/chosen.proto.min.js')}}"></script>
+    {{-- <script src="{{asset('js/lib/chosen/chosen.proto.min.js')}}"></script>
+    <script src="{{asset('js/lib/chosen/chosen.jquery.min.js')}}"></script> --}}
+    <script src="{{asset('js/lib/select2/select2.min.js')}}"></script>
     
     <!-- Vue JS -->
     <script src="{{ asset('js/vue.js') }}"></script>

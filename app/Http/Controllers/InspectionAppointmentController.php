@@ -288,6 +288,12 @@ class InspectionAppointmentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'inspector_id'  => 'required',
+            'start_date'    => 'required|date|date_format:Y-m-d',
+            'end_date'      => 'required|date|date_format:Y-m-d',
+        ]);
+
         $inspection_appointment = InspectionAppointment::findOrFail($id);
 
         if( !CompanyController::compareCompanySession($inspection_appointment->inspector->user->companies) ){
@@ -295,12 +301,6 @@ class InspectionAppointmentController extends Controller
         }elseif( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
             abort(403, 'This action is unauthorized.');
         }
-
-        $request->validate([
-            'inspector_id'  => 'required',
-            'start_date'    => 'required|date|date_format:Y-m-d',
-            'end_date'      => 'required|date|date_format:Y-m-d',
-        ]);
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
         if($request->start_date >$request->end_date)
