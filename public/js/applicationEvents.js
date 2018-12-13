@@ -1,3 +1,4 @@
+// console.log('URL desde laravel '+window.Laravel.url);
 $(window).ready(inicial);
 
 function inicial (argument)
@@ -9,7 +10,21 @@ function inicial (argument)
     $('#boton_guardar_html').click(guardarHtml);
     $('#boton_firmar_formato').click(deshabilitarCampos);
     $('#boton_firmar_formato').click(guardarHtml);
-    $('#company_formato').change(cargarSelectClients);
+    // $('#company_formato').change(cargarSelectClients);
+    $('#company_formato').on('change', function(event, edit){
+        if( !$.isNumeric(edit) )
+        {
+            edit = undefined;
+        }
+        
+        fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#cliente_formato', edit, () => {
+            $('#format_preformato').val('');
+            $('#cliente_formato').change(limpiarFormulario);
+            // $('#format_preformato').change(llenarCabeceraFormato);
+            $('#plantilla_formato').css('display','none');
+            $('#contenedor_formato').css('display','none');
+        });
+    });
     $('#format_preformato').change(llenarCabeceraFormato);
 
     //Se definen atributos generales de DataTable
@@ -19,10 +34,6 @@ function inicial (argument)
         processing: true,
     };
 
-    //Se valida el idioma
-    if(window.Laravel.language == 'es'){
-        dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};
-    }
 
     //Campo fecha
 
@@ -34,7 +45,20 @@ function inicial (argument)
         forceParse: false,
     };
 
-    if(window.Laravel.language == 'es') datePickerObj.language = 'es';
+    //Se valida el idioma
+    if(window.Laravel.language == 'es'){
+        dataTableObject.language = {url: window.Laravel.url+'/js/lib/dataTable/Spanish.json'};
+        datePickerObj.language = 'es';
+        chosenText = 'No hay coincidencias para ';
+    }else{
+        chosenText = 'No matches for';
+    }
+
+    $(".chosen-select").chosen({
+        no_results_text: chosenText,
+    });
+
+    // if(window.Laravel.language == 'es') datePickerObj.language = 'es';
 
     $('.input-group.date').datepicker(datePickerObj);
 
@@ -62,7 +86,7 @@ if($('#icon')[0])
 {
     $.getScript(window.Laravel.url+'/js/icons.js', function( data, textStatus, jqxhr )
     {
-        var iconos="<ul>";
+        var iconos='<div id="text"></div><ul>';
         $.each(fA, function(key, value){
             iconos += '<li title="'+value+'"><i data-icon="'+value+'" class="fa '+value+'"></i></li>';
         });
@@ -75,15 +99,50 @@ if($('#icon')[0])
 
 //Todos los select que requieran una petición ajax para llenar otro select
 $('#company_id').on('change', function(event, edit){
-    fillSelect(window.Laravel.url+'/companies/'+$(this).val()+'/clients', '#client_id', edit);
+    if( !$.isNumeric(edit) )
+    {
+        edit = undefined;
+    }
+    
+    fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#client_id', edit);
 });
 
 $('.inspection_type_id').on('change',function(event, edit){
-    fillSelect(window.Laravel.url+'/inspectiontypes/'+$(this).val()+'/subtypes', '.inspection_subtype_id', edit);
+    fillSelect(window.Laravel.url+'/inspectiontypes/subtypes/'+$(this).val(), '.inspection_subtype_id', edit);
+});
+
+$('.inspector-contract').on('change',function(event, edit){
+    console.log('Cambio');
+    fillSelect(window.Laravel.url+'/inspectors/contracts/'+$(this).val(), '#contract_id', edit, () => {
+        $('#contract_id').trigger('change');
+    });
+});
+
+$('#contract_id').on('change',function(event){
+    console.log('Cambio contrato con id '+$(this).val());
+    $.ajax({
+        url:window.Laravel.url+'/contracts/clients/'+$(this).val(),
+        type:'GET',
+        dataType: 'json',
+        data:{
+            _token: $('#_token').val(),
+        }
+    })
+    .done(function(res){
+        $('#client_id').val(res.client);
+    })
+    .fail(function(res){
+        alert('Error.');
+    });
 });
 
 $('.country').on('change',function(event, edit){
-    fillSelect(window.Laravel.url+'/country/'+$(this).val()+'/cities', '.city_id', edit);
+    // Se valida si la variable edit es numerica, si no lo es asignele undefined
+    if( !$.isNumeric(edit) )
+    {
+        edit = undefined;
+    }
+    fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit);
 });
 
 function setDataTable(targets){
@@ -106,7 +165,9 @@ function obtenerUrl()
 
     //Concatena la informacion para construir la url
     var url = window.location.protocol+'//'+window.location.host+'/'+vector[1];
-
+    console.log('Ruta absoluta '+rutaAbsoluta);
+    console.log('URL '+url);
+    
     return url;
 }
 
@@ -278,10 +339,10 @@ function alert(color, msg){
     return '<div class="alert alert-'+color+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+msg+'</div>';
 }
 
-function slideForms(obj, cualquierWea) {
+function slideForms(obj, funcRes) {
     var selector = obj.data('toggle');
     $('.formSlide:not('+selector+')').slideUp('slow');
-    $(selector).slideToggle('slow', cualquierWea);
+    $(selector).slideToggle('slow', funcRes);
 };
 
 //Funcion para el mensaje de confirmación de eliminación por Ajax
@@ -316,6 +377,7 @@ function confirmModal(form, msg, type, revertFunc){
 $(window).resize(function(){
     changeTopToast();
     $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
+    // $('.dataTable').DataTable().columns.adjust().draw();
 });
 
 function changeTopToast(){
@@ -367,12 +429,19 @@ $(document).on('submit','.formDelete',function(e){
         console.log('error\n'+res);
         console.log(res);
     })
-    .always(function(res){
-        console.log('complete\n'+res);
-    })
+    .error(function(res){
+        console.log(res.status);
+        if(res.status == 403){
+            toast({
+                type: 'error',
+                title: res.responseJSON.message
+            });
+            changeTopToast();
+        }
+    });
 });
 
-// Ajax para los formularios editar y eliminar de los calendarios
+// Ajax para los formularios actualizar y eliminar de los calendarios
 $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
     var idForm = $(this).attr('id');
     var modal = this.dataset.modal;
@@ -391,6 +460,7 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
 
     })
     .done(function(res){
+        console.log(res);
         var res = JSON.parse(res);
 
         console.log(res);
@@ -431,25 +501,28 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
         }
     })
     .fail(function(res){
-        console.log('error\n'+res);
+        console.log('fail\n'+res);
         console.log(res);
     })
-    .always(function(res){
-        console.log('complete\n'+res);
-    })
     .error(function(res){
+        console.log(res.status);
+        if(res.status == 403){
+            $('.msgError').html('');
+            $('.msgError').append(alert('danger', res.responseJSON.message));
+        }else if(res.status == 422){
 
-        $('.form-group').removeClass('has-error');
-        $('.errors').empty();
+            $('.form-group').removeClass('has-error');
+            $('.errors').empty();
 
-        $('#'+idForm).find(':input').each(function(){
-            var idInput = $(this).attr('id');
+            $('#'+idForm).find(':input').each(function(){
+                var idInput = $(this).attr('id');
 
-            if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
-                $(this).parents('.form-group').addClass('has-error');
-                $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput]));
-            }
-        });
+                if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
+                    $(this).parents('.form-group').addClass('has-error');
+                    $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput][0]));
+                }
+            });
+        }
     });
 });
 
@@ -488,6 +561,12 @@ $('.showCalendar').on('click', function(e){
         })
         .fail(function(res){
             console.log('error\n'+res);
+        })
+        .error(function(res){
+            if(res.status == 403){
+                $('.msgError').html('');
+                $('.msgError').append(alert('danger', res.responseJSON.message));
+            }
         });
     }
 });
@@ -535,9 +614,9 @@ $(document).on('click', '.editCalendar', function(e){
                     $('#modalEditDel #'+nomField).val(res.agenda[nomField]);
                 });
 
-
                 $('#modalEditDel #country').val(res.agenda.city.countries_id);
-                $('#editAgenda').attr('action', $('#url').val()+'/ajax/'+res.agenda.slug);
+                $('#modalEditDel #country').trigger("chosen:updated");
+                $('#editAgenda').attr('action', $('#url').val()+'/'+res.agenda.slug);
 
                 slideForms(objElement, () => {
                     $('#modalEditDel #country').trigger('change',res.agenda.city_id);
@@ -560,6 +639,12 @@ $(document).on('click', '.editCalendar', function(e){
         })
         .fail(function(res){
             console.log('error\n'+res);
+        })
+        .error(function(res){
+            if(res.status == 403){
+                $('.msgError').html('');
+                $('.msgError').append(alert('danger', res.responseJSON.message));
+            }
         });
     }
 });
@@ -574,7 +659,9 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
     $(form)[0].reset();
     $(form+' #'+fielDate+'start_date').val(startDate);
     $(form+' #'+fielDate+'end_date').val(endDate);
+    $('#country').trigger("chosen:updated");
     $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+    $('#city_id').trigger("chosen:updated");
 }
 
 $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
@@ -619,27 +706,27 @@ function verifyInspector()
 }
 
 function guardarHtml(e) {
-  e.preventDefault();
-  camposLlenos();
+    e.preventDefault();
+    camposLlenos();
     var contenedorHtml = $('#contenedor_formato').html();
     if($('#contenedor_formato').css('display') == 'none'){
       var contenedorHtml = $('#plantilla_formato').html();
     }
 
-  $('#format_expediction').val(contenedorHtml);
-  $('#plantilla_formato').css('display','none');
-  $('#form_expediction').submit();
+    $('#format_expediction').val(contenedorHtml);
+    $('#plantilla_formato').css('display','none');
+    $('#form_expediction').submit();
 }
 
 function camposLlenos() {
-  $('body').find('input').each(function(e){
+    $('body').find('input').each(function(e){
     let objInput = $(this);
     if(objInput.val() != '') {
       objInput.attr('value',objInput.val());
     }
-  });
+});
 
-  $('body').find('textarea').each(function(e){
+$('body').find('textarea').each(function(e){
     let objInput = $(this);
     if(objInput.val() != '') {
       var valor = objInput.val();
@@ -647,27 +734,28 @@ function camposLlenos() {
       objInput.val('');
       objInput.append(valor);
     }
-  });
+});
 
-  $('body').find(':checkbox').each(function(e){
+$('body').find(':checkbox').each(function(e){
     let objInput = $(this);
     if(objInput.is(":checked")) {
       objInput.attr('checked','checked');
     }
-  });
+});
 
-  $('body').find(':radio').each(function(e){
+$('body').find(':radio').each(function(e){
     let objInput = $(this);
     if(objInput.is(":checked")) {
       objInput.attr('checked','checked');
     }
   });
 }
- function deshabilitarCampos(){
-    $('#state').val('2');
-     $('#plantilla_formato').find('input, textarea, button, select').prop('disabled',true);
 
- }
+function deshabilitarCampos(){
+    $('#state').val('2');
+    $('#plantilla_formato').find('input, textarea, button, select').prop('disabled',true);
+
+}
 
 function calendar(obj){
     $("#calendar").fullCalendar({
@@ -691,28 +779,35 @@ function calendar(obj){
     });
 }
 
-function fillSelect(url, select, edit){
+function fillSelect(url, select, edit, funcRes){
+    /* console.log(url);
+    console.log(select);
     console.log(edit);
-
+    console.log(funcRes); */
     $.ajax({
         url:url,
         type:'GET',
+        dataType:'json',
         data:{
             _token: $('#_token').val(),
         }
     })
     .done(function(res){
-        res = JSON.parse(res);
+        console.log(res);
 
         $(select).empty();
 
-        $.each(res.status, function( key, value ) {
+        $.each(res.status, function( key, value )
+        {
             $(select).append('<option value="'+value.id+'">'+value.name+'</option>');
         });
 
         if(edit){
             $(select).val(edit);
         }
+        $(select).trigger("chosen:updated");
+
+        if(funcRes) funcRes();
     })
     .fail(function(res){
         alert('Error.');
@@ -724,52 +819,72 @@ function llenarCabeceraFormato()
     var preformato = $(this).val();
     var select = $('#cliente_formato').val();
     var company = $('#company_formato').val();
-    if(select != "")
+    if($('#format_preformato').val() == ''){
+        $('#contenedor_formato').empty();
+        $('#contenedor_formato').hide();
+    }else if(select != "")
     {
         $.ajax({
             type: "GET",
-            url: obtenerUrl()+"/public/ajxllenarCabeceraFormato",
+            url: window.Laravel.url+"/ajxllenarCabeceraFormato",
             dataType:'json',
             data: {select:select, company:company, preformato:preformato}
             }).done(function(response)
                 {
+                    console.log(response);
+                    console.log(response);
                     if(!jQuery.isEmptyObject(response))
                     {
+                      console.log(response.error);
+                      if (response.error != null)
+                      { swal({
+                        title: response.error,
+                        type: 'warning',
+                        animation: false,
+                        customClass: 'animateErrorIcon '
+                    });
+                    $('#boton_guardar_html').attr("disabled", true);
+                    } else {
                       var html_plantilla_formato = response.preformato.format;
                       if( preformato != '')
                       {
-                        if(preformato == 1)
-                        {
-                          //var plantilla_formato = $('#plantilla_formato').clone();
-                          html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
-                          html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
-                          html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
-                          html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
-                          html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
-                          html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
-                          html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
-                          html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
-                          html_plantilla_formato = html_plantilla_formato.replace('*num_page*','1');
-                          html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','5');
-                        }
-                        console.log(response);
-                        $('#contenedor_formato').html(html_plantilla_formato);
-                        $('#contenedor_formato').show();
+                            $('#boton_guardar_html').attr("disabled", false);
+
+                          if(preformato == 1)
+                          {
+                            //var plantilla_formato = $('#plantilla_formato').clone();
+                            html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
+                            html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
+                            html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
+                            html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
+                            html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
+                            html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
+                            html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
+                            html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
+                            html_plantilla_formato = html_plantilla_formato.replace('*num_page*',' ');
+                            html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','');
+                          }
+
+                          $('#contenedor_formato').html(html_plantilla_formato);
+                          $('#contenedor_formato').show();
                       } else {
                         $('#plantilla_formato').css('display','none');
                         $('#contenedor_formato').css('display','none');
+
+
                       }
                     }
+                  }
             });
-        }
-  }
+    }
+}
 
-      function limpiarFormulario()
-      {
-        $('#format_preformato').val('');
-        $('#plantilla_formato').css('display','none');
-        $('#contenedor_formato').css('display','none');
-      }
+function limpiarFormulario()
+{
+    $('#format_preformato').val('');
+    $('#plantilla_formato').css('display','none');
+    $('#contenedor_formato').css('display','none');
+}
 
 function cargarSelectClients()
 {
@@ -778,13 +893,13 @@ function cargarSelectClients()
     {
         $.ajax({
             type: "GET",
-            url: obtenerUrl()+"/public/ajxcargarSelectClients",
+            url: window.Laravel.url+"/ajxcargarSelectClients",
             dataType:'json',
             data: {company:company}
             }).done(function(response)
             {
         var select = '<select name="client_id" id="cliente_formato" class="input-body">';
-                        select +='<option selected="selected">Seleccione una opción</option>';
+                        select +='<option selected="selected">'+response.ChooseOption+'</option>';
         $.map(response.clients, function(name, id)
         {
             select += '<option value="'+id+'">'+name+'</option>';
@@ -804,6 +919,8 @@ function cargarSelectClients()
 
 // Campo selector de iconos
 
+$('#icon').removeAttr('disabled');
+
 $('#icon').on('focus', function(e){
     $(".oculto").fadeIn("fast");
 });
@@ -817,15 +934,40 @@ $(document).on("click",".oculto ul li",function()
     $(".inputpicker").val($(this).find("i").data("icon"));
     $('.picker .input-group-addon').html('<i class="fa '+$(this).find("i").data("icon")+'"></i>');
     $('#icon-hidden').val($(this).find("i").data("icon"));
+    $(".oculto").fadeOut("fast");
 });
 
+// Al realizar la busqueda muestre los iconos resultantes, si no hay coincidencias muestre un mensaje y si vacia la busqueda deseleccione el icono
 $(document).on("keyup", '#icon', function()
 {
     var value=$(this).val();
 
-    $(".oculto ul li i").each(function()
+    if(value == '')
+    {
+        $('.picker .input-group-addon').html('<i class="fa fa-hashtag"></i>');
+        $('#icon-hidden').val('');
+    }
+    $('.oculto ul li i').each(function()
     {
         if ($(this).data('icon').search(value) > -1) $(this).closest("li").show();
         else $(this).closest("li").hide();
     });
+    if($('.oculto ul li i').is(":visible"))
+    {
+        $('.oculto #text').empty();
+    }else{
+        $('.oculto #text').html(chosenText+' '+value);
+    }
+});
+
+// Cuando clickee en el boton del icono oculte o muestre los iconos
+$('.form-group.picker .input-group-addon').on('click', function(){
+    if($('.oculto').is(":visible"))
+    {
+        $(".oculto").fadeOut("fast");
+    }
+    else
+    {
+        $(".oculto").fadeIn("fast");
+    }
 });

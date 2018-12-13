@@ -10,7 +10,7 @@
     <!-- URL Input -->
     <div class="form-group @if ($errors->has('url')) has-error @endif">
         {!! Form::label('url', trans('words.Url')) !!}
-        {!! Form::select('url', $url, isset($user) ? $user->url->pluck('id')->toArray() : null,  ['class' => 'input-body', 'placeholder' => (isset($menus) && $menus['url']) ? trans('words.ChooseOption') : trans('words.DropdownMenu')]) !!}
+        {!! Form::select('url', $url, isset($user) ? $user->url->pluck('id')->toArray() : null,  ['class' => 'input-body form-control chosen-select', 'placeholder' => (isset($menus) && $menus['url']) ? trans('words.ChooseOption') : trans('words.DropdownMenu')]) !!}
         {{-- {!! Form::select('url', $url, isset($user) ? $user->url->pluck('id')->toArray() : null,  ['class' => 'input-body', 'placeholder' => trans('words.DropdownMenu')]) !!} --}}
         @if ($errors->has('url')) <p class="help-block">{{ $errors->first('url') }}</p> @endif
     </div> 
@@ -20,21 +20,21 @@
 <!-- Menu Input -->
 <div class="form-group @if ($errors->has('menu_id')) has-error @endif">
     {!! Form::label('menu_id', trans('words.MenuPadre') ) !!}
-    {!! Form::select('menu_id', $menu, isset($user) ? $user->menu->pluck('id')->toArray() : null,  ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')]) !!}
+    {!! Form::select('menu_id', $menu, isset($user) ? $user->menu->pluck('id')->toArray() : null,  ['class' => 'input-body form-control chosen-select', 'placeholder' => trans('words.ChooseOption')]) !!}
     @if ($errors->has('menu_id')) <p class="help-block">{{ $errors->first('menu_id') }}</p> @endif
 </div>
 
 <!-- Icon Input -->
 <div class="form-group picker @if ($errors->has('icon')) has-error @endif">
     {{-- <label for="icon">@lang('words.Icon')</label> --}}
-    {!! Form::label('icon', trans('words.Icon') ) !!}
+    {!! Form::label('icono', trans('words.Icon') ) !!}
     
     <div class="input-group">
-        <span class="input-group-addon"><i class="fa {{ isset($menus->icon) ? $menus->icon : 'fa-fonticons' }}"></i></span>
-        {!! Form::text('icon', null, ['class' => 'input-body inputpicker', 'autocomplete' => 'off']) !!}
+        <span class="input-group-addon"><i class="fa {{ isset($menus->icon) ? $menus->icon : 'fa-hashtag' }}"></i></span>
+        {!! Form::text('icono', isset($menus) ? $menus->icon : old('icon'), ['class' => 'input-body inputpicker', 'autocomplete' => 'off', 'disabled', 'id' => 'icon']) !!}
         {{-- <input type="text" id="icon" class="input-body inputpicker" autocomplete="off"> --}}
     </div>
     @if ($errors->has('icon')) <p class="help-block">{{ $errors->first('icon') }}</p> @endif
 </div>
 
-<input type="hidden" name="icon" id="icon-hidden" value="{{ isset($menus) ? $menus->icon : null }}">
+<input type="hidden" name="icon" id="icon-hidden" value="{{ isset($menus) ? $menus->icon : old('icon') }}">

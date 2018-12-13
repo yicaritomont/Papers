@@ -5,7 +5,11 @@
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title"> {{ trans_choice('words.Contract', 2) }} </h3>
+            @if(isset($companies))
+                <h3 class="modal-title">@choice('words.Contract', 2) @lang('words.Of') {{ $companies->user->name }}</h3>
+            @else
+                <h3 class="modal-title"> @choice('words.Contract', 2)</h3>
+            @endif
         </div>
         <div class="col-md-7 page-action text-right">
             @can('add_posts')
@@ -52,18 +56,30 @@
             ];
 
             @can('edit_contracts', 'delete_contracts')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Contract', 'entity' => 'contracts', 'identificador' => 'id', 'relations' => 'company,client,client.user,company.user']) }}";
-                columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columns = columns;
+                @if(isset($companies))
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Contract', 'company' => 'company,'.$companies->slug, 'entity' => 'contracts', 'identificador' => 'id', 'relations' => 'company,client,client.user,company.user']) }}"};
+                @else
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Contract', 'company' => 'none', 'entity' => 'contracts', 'identificador' => 'id', 'relations' => 'company,client,client.user,company.user']) }}"};
+                @endif
+
+                
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Contract', 'relations' => 'company,client,client.user,company.user']) }}";
-                dataTableObject.columns = columns;
+                @if(isset($companies))
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Contract', 'company' => 'company,'.$companies->slug, 'relations' => 'company,client,client.user,company.user']) }}"};
+                @else
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Contract', 'company' => 'none', 'relations' => 'company,client,client.user,company.user']) }}"};
+                @endif
+
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
-            var table = $('.dataTable').DataTable(dataTableObject);                
-            // new $.fn.dataTable.FixedHeader( table );
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
+            dataTableObject.columns = columns;
+
+            var table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
 @endsection

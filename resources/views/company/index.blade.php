@@ -53,39 +53,54 @@
             ];
 
             @if(Gate::check('edit_companies') || Gate::check('delete_companies') || Gate::check('view_users') || Gate::check('view_inspectors'))
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}";
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}"};
                 
                 columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columns = columns;
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Company', 'relations' => 'user']) }}";
-                dataTableObject.columns = columns;
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'relations' => 'user']) }}"};
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endif
+
+            dataTableObject.columns = columns;
 
             @if(Gate::check('view_users') || Gate::check('view_inspectors'))
                 dataTableObject.columnDefs.push({
                     //En la columna 8 (actions) se agregan nuevos botones
                     targets: 8,
                     render: function(data, type, row){
-                        var btn = '';
+                        var btn =   '<div class="dropdown" style="display:inline-block">\
+                                        <button class="btn btn-xs btn-primary dropdown-toggle" type="button" id="watchMenu" data-toggle="dropdown">\
+                                            <i class="fa fa-eye"></i>\
+                                        </button>\
+                                        <ul class="dropdown-menu pull-right" aria-labelledby="watchMenu" style="text-align:right">';
+
                         @can('view_users')
-                            btn += '<a href="'+window.Laravel.url+'/users/company/'+row.slug+'" class="btn btn-xs btn-primary">';
-                            btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") @lang("words.User")</a>';
-                            
+                            btn +=  '<li>\
+                                        <a target="_blank" href="'+window.Laravel.url+'/users?id='+row.slug+'">\
+                                            @lang("words.Whatch") @lang("words.User")\
+                                        </a>\
+                                    </li>';
                         @endcan
                         @can('view_inspectors')
-                            btn += '<a href="'+window.Laravel.url+'/inspectors/company/'+row.slug+'" class="btn btn-xs btn-primary">';
-                            btn += '<i class="fa fa-eye"></i>@lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a>';
+                            btn +=  '<li>\
+                                        <a target="_blank" href="'+window.Laravel.url+'/inspectors?id='+row.slug+'">\
+                                            @lang("words.Whatch") @choice("words.Inspector", 2)\
+                                        </a>\
+                                    </li>';
                         @endcan
+
+                        btn += '</ul></div>';
+
                         return data + btn;
                     }
                 });
             @endif
 
-            var table = $('.dataTable').DataTable(dataTableObject);                
-            // new $.fn.dataTable.FixedHeader( table );
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
+
+            var table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
 @endsection

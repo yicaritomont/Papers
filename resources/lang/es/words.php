@@ -44,7 +44,6 @@ return[
     'MenuPadre' => 'Menú Padre',
     'Active' => 'Activo',
     'Inactive' => 'Inactivo',
-    'Inspectionsubtype' => 'Subtipo Inspección',
 
     //To App Latout Menu
     'ManagementTools' => 'Herramientas',
@@ -130,11 +129,25 @@ return[
     'DateGreater' => 'La fecha debe ser mayor a la actual',
     'ActiveMessage' => '¿Seguro que quieres activarlo?',
     'InactiveMessage' => '¿Seguro que quieres inactivarlo?',
+    'ThereNoContract' => 'No hay contrato entre el cliente y la empresa seleccionada.',
+    'FormatExists' =>'El formato para el contrato ya se encuentra diligenciado',
     'To' => 'hasta',
     'UpdatedAt' => 'Actualizado en',
     'ErrorRangeDate' => 'La fecha de inicio no puede ser mayor a la fecha final',
     'MainMenu' => 'Menú principal',
     'DropdownMenu' => 'Menú desplegable',
+    'Icon' => 'Icono',
+    'Application' => 'Aplicación',
+    'Master' => 'Maestra',
+    'ClientMenu' => 'Menú del cliente',
+    'Inspection' => 'Inspección',
+    'AgendaEmpty' => 'No existen agendas',
+    'ErrorLinkFormat'    => 'No se pudo vincular el formato con la cita.',
+    'Select'             => 'Seleccione',
+
+
+
+    
     //Formatos
     'upload_sopports'    =>  'Cargar Soportes',
     'supports'           =>  'Soportes',
@@ -148,6 +161,7 @@ return[
     'file_not_valid'     =>  'El archivo {file} no es valido',
     'error_name_file'    =>  'Error! en el nombre archivos',
     'des_error_name_file'=>  'Debe ingresar el nombre en todos los archivos',
-    'btn_verify'         =>  'Verificar'
+    'btn_verify'         =>  'Verificar',
+
  ];
 ?>

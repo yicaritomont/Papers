@@ -43,7 +43,7 @@ class CompanyController extends Controller
         $request->validate([
             'name' => 'required',
             'address' => 'required',
-            'phone' => 'required',
+            'phone' => 'required|numeric',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'activity' => 'required',
@@ -76,7 +76,7 @@ class CompanyController extends Controller
 
             $alert = ['success', trans_choice('words.Company',1).' '.trans('words.HasAdded')];
 
-            return redirect()->back()->with('alert', $alert);  
+            return redirect()->route('companies.index')->with('alert', $alert);  
 
         }else{
             $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Company',1)];
@@ -94,7 +94,7 @@ class CompanyController extends Controller
     {
         
         $users = $company->users;
-        //dd($users->count());
+        
         return view('company.show', compact('company', 'users'));
     }
 
@@ -122,7 +122,7 @@ class CompanyController extends Controller
         $request->validate([
             'name' => 'required',
             'address' => 'required',
-            'phone' => 'required',
+            'phone' => 'required|numeric',
             'email' => 'required|email|unique:users,email,'.$company->user->id,
             'activity' => 'required',
         ]);
@@ -208,7 +208,8 @@ class CompanyController extends Controller
         }
     }
 
-    public function clients($id){
+    public function clients($id = null)
+    {
 
         $result = Client::join('users', 'users.id', '=', 'clients.user_id')
             ->join('user_company', 'user_company.user_id', '=', 'users.id')
@@ -221,5 +222,29 @@ class CompanyController extends Controller
         echo json_encode([
             'status' => $result
         ]);
+    }
+
+    /**
+	 * Funcion para comparar la compañia es sesión con la compañia de un usuario
+	 */
+    public static function compareCompanySession($companies){
+        // Si es usuario retorne la vista
+        if(auth()->user()->hasRole('Admin'))
+        {
+            return true;
+        }
+        else
+        {
+            
+            // Recorra las compañias del inspector a consultar y comparelas con la conpañia en sesion, si es falso devuelva un mensaje de error
+            foreach($companies as $company)
+            {
+                if($company->id == Company::findOrFail(session()->get('Session_Company'))->id)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

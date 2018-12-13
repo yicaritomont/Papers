@@ -144,6 +144,7 @@ return [
         'contract_id' => 'Contract',
         'estimated_start_date' => 'Start Date',
         'estimated_end_date' => 'End Date',
+        'menu_id' => 'Parent menu',
     ],
 
     'PermissionTake' => 'Permission has been taken',

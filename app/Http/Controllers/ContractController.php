@@ -6,6 +6,7 @@ use App\Contract;
 use App\Client;
 use App\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ContractController extends Controller
 {
@@ -14,8 +15,18 @@ class ContractController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['id'] = Company::findOrFail(session()->get('Session_Company'))->slug;
+        }
+        
+        if($request->get('id')){
+            $companies = Company::with('user:id,name')->where('slug', '=', $request->get('id'))->first();
+            
+            return view('contract.index', compact('companies'));
+        }
+
         return view('contract.index');
     }
 
@@ -26,13 +37,8 @@ class ContractController extends Controller
      */
     public function create()
     {
-       /*  $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
-                        ->select('clients.id AS id', 'users.name AS name')
-                        ->get()
-                        ->pluck('name', 'id'); */
-
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
-        /* dd($company); */
+
         return view('contract.new', compact(['clients', 'companies']));
     }
 
@@ -44,23 +50,26 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-
         $this->validate($request, [
             'name' => 'required|min:2',
-            'date' => 'date',
+            'date' => 'required|date|date_format:Y-m-d',
             'client_id' => 'required',
             'company_id' => 'required',
         ]);
-        if (Contract::create($request->except('_token'))) {
 
-            $alert = ['success', trans_choice('words.Contract', 1).' '.trans('words.HasAdded')];
+        if(Client::find($request['client_id'])->user->companies->pluck('id')->contains($request['company_id'])){
+            if (Contract::create($request->except('_token'))) {
 
-        } else {
+                $alert = ['success', trans_choice('words.Contract', 1).' '.trans('words.HasAdded')];
+    
+            } else {
+                $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Contract', 1)];
+            }
+        }else{
             $alert = ['error', trans('words.UnableCreate').' '.trans_choice('words.Contract', 1)];
         }
 
-        return redirect()->back()->with('alert', $alert);
+        return redirect()->route('contracts.index')->with('alert', $alert);
     }
 
     /**
@@ -89,7 +98,11 @@ class ContractController extends Controller
 
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
 
-        return view('contract.edit', compact(['contract', 'clients', 'companies']));
+        if(CompanyController::compareCompanySession([$contract->company])){
+            return view('contract.edit', compact(['contract', 'clients', 'companies']));
+        }else{
+            abort(403, 'This action is unauthorized.');
+        }
     }
 
     /**
@@ -101,15 +114,16 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract)
     {
+        if( !CompanyController::compareCompanySession([$contract->company]) ){
+            abort(403, 'This action is unauthorized.');        
+        }
 
         $this->validate($request, [
             'name' => 'required|min:2',
-            'date' => 'date',
+            'date' => 'date|date_format:Y-m-d',
             'client_id' => 'required',
             'company_id' => 'required',
         ]);
-
-        // dd($request->except('_method', '_token'));
 
         $contract->update($request->all());
 
@@ -125,7 +139,9 @@ class ContractController extends Controller
      */
     public function destroy(Contract $contract)
     {
-        // dd($contract);
+        if( !CompanyController::compareCompanySession([$contract->company]) ){
+            abort(403, 'This action is unauthorized.');        
+        }
 
         if($contract)
         {
@@ -155,6 +171,25 @@ class ContractController extends Controller
             $menssage = \Lang::get('validation.MessageError');
             echo json_encode([
                 'status' => $menssage,
+            ]);
+        }
+    }
+
+    /**
+     * Filtrar el cliente del contrato seleccionado
+     */
+    public function clients($id = null)
+    {
+        if($id)
+        {
+            echo json_encode([
+                'client' => Contract::findOrFail($id)->client->user->name,
+                ]);
+        }
+        else
+        {
+            echo json_encode([
+                'client' => trans('words.Select').'  '.trans_choice('words.Contract', 1)
             ]);
         }
     }

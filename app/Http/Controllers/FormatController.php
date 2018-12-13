@@ -14,8 +14,10 @@ use App\Contract;
 use App\User;
 use App\Estilo;
 use App\File;
+use App\InspectionAppointment;
 use PDF;
 use DB;
+use App\Http\Controllers\Config;
 
 class FormatController extends Controller
 {
@@ -36,9 +38,8 @@ class FormatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        $format = Format::pluck('id');
         $formato = Preformato::where('id',1)->first();
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $company = Company::where('id',session()->get('Session_Company'))->first();
@@ -55,16 +56,20 @@ class FormatController extends Controller
                             ->get()
                             ->pluck('name', 'id');
         } else {
-          $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+            $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
                         ->join('user_company','user_company.user_id','=','users.id')
                         ->join('companies','companies.id','=','user_company.company_id')
                         ->where('companies.id',session()->get('Session_Company'))
                         ->select('clients.id AS id', 'users.name AS name')
                         ->get()
                         ->pluck('name', 'id');
-      }
+        }
         $preformats = Preformato::pluck('name', 'id');
 
+        if($request->get('appointment')){
+            $appointment = $request->get('appointment');
+            return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
+        }
         return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats'));
     }
 
@@ -92,8 +97,26 @@ class FormatController extends Controller
         $format->format = $request->format_expediction;
         $format->status = 1;
 
-      if ($format->save()) {
-          $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasAdded')];
+        if ($format->save()) {
+          if($request->appointment){
+            $cita = InspectionAppointment::findOrFail($request->appointment);
+
+            if($cita->appointment_states_id == 2)
+            {
+                $cita->format_id = $format->id;
+
+                if($cita->save())
+                {
+                    $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasAdded')];
+                }
+            }
+            else
+            {
+                $alert = ['success', trans('words.ErrorLinkFormat')];
+            }
+          }else{
+              $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasAdded')];
+          }
       } else {
           $alert = ['error',trans('words.UnableCreate').' '.trans_choice('words.Format',1)];
       }
@@ -204,32 +227,52 @@ class FormatController extends Controller
     {
       if ($_GET['select'] != '')
       {
-        $client = Client::join('users', 'users.id', '=', 'clients.user_id')
-                        ->select('clients.id AS id', 'users.name AS name')
-                        ->where('clients.id',$_GET['select'])
-                        ->get()
-                        ->first();
-        if ($_GET['company'] != '')
+        $format = Format::where('company_id','=',$_GET['company'])
+            ->where('client_id','=',$_GET['select'])
+            ->where('preformat_id','=',$_GET['preformato'])
+            ->get()->first();
+        if (!isset($format) & $format == '')
         {
-          $company = Company::where('id',$_GET['company'])->first();
-          $usuario = User::find($company->user_id);
-        } else {
-          $company = Company::where('id',session()->get('Session_Company'))->first();
-          $usuario = User::find($company->user_id);
-        }
-        $usuario->image ='<img width="40%" src="'.asset($usuario->picture).'">';
-        $usuario->iso ='<img width="40%" src="'.asset('images/iso.jpg').'">';
-        $contract = Contract::where('company_id',$company->id)
-          ->where('client_id','=',$client->id)
-          ->first();
+          $client = Client::join('users', 'users.id', '=', 'clients.user_id')
+                          ->select('clients.id AS id', 'users.name AS name')
+                          ->where('clients.id',$_GET['select'])
+                          ->get()
+                          ->first();
+          if ($_GET['company'] != '')
+          {
+            $company = Company::where('id',$_GET['company'])->first();
+            $usuario = User::find($company->user_id);
+          } else {
+            $company = Company::where('id',session()->get('Session_Company'))->first();
+            $usuario = User::find($company->user_id);
+          }
+          $usuario->image ='<img width="40%" src="'.asset($usuario->picture).'">';
+          $usuario->iso ='<img width="40%" src="'.asset('images/iso.jpg').'">';
+          $contract = Contract::where('company_id',$company->id)
+            ->where('client_id','=',$client->id)
+            ->first();
           $preformato = Preformato::where('id',$_GET['preformato'])->first();
 
           json_encode($response = [
-              'company' => $usuario,
-              'client' => $client,
-              'contract' => $contract,
-              'preformato' => $preformato,
+            'company' => $usuario,
+            'client' => $client,
+            'contract' => $contract,
+            'preformato' => $preformato,
+          ]);
+          if (!isset($contract))
+          {
+            $error = trans('words.ThereNoContract');
+            json_encode($response = [
+              'error' => $error,
             ]);
+          }
+        } else {
+           $error = trans('words.FormatExists');
+           json_encode($response = [
+               'error' => $error,
+             ]);
+        }
+
       }
       return $response;
     }
@@ -245,7 +288,10 @@ class FormatController extends Controller
                         ->select('clients.id AS id', 'users.name AS name')
                         ->get()
                         ->pluck('name', 'id');
-                    json_encode($response = [ 'clients' => $clients]);
+          $ChooseOption = trans('words.ChooseOption');
+                    json_encode($response = [
+                      'clients' => $clients,
+                      'ChooseOption' => $ChooseOption]);
         }
         return $response;
     }
@@ -280,7 +326,7 @@ class FormatController extends Controller
 
 							$name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
 							$upload_success = $item->move($destinationPath, $name_url['name'] );
-		
+
 							if( $upload_success )
 							{
 								$new_file = array
@@ -291,11 +337,11 @@ class FormatController extends Controller
 									'user_id'       =>  Auth::id(),
 									'extension'     =>  $upload_success->getExtension()
 								);
-		
+
 								$insert = File::insertGetId($new_file);
 								$new_file['id'] = $insert;
 								array_push($response,$new_file);
-		
+
 							}else{
 								$response = $this->addError($response,'not_upload',$item);
 							}
@@ -360,22 +406,35 @@ class FormatController extends Controller
     public function downloadPDF($id)
     {
       $format = Format::find($id);
-      $estilos = Estilo::find(1);
+      $estilos = Estilo::where('name','=','estilo_pdf')->first();
+      $pagination = Estilo::where('name','=','paginate_pdf')->first();
       $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
         '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
-      $format_replace = str_replace($eliminar,'',$format->format);
-      $config_format = $estilos->estilos.$format_replace;
-      $pdf = \App::make('dompdf.wrapper');
-      $pdf->loadHTML($config_format);
-      return $pdf->stream();
-    }
+      if ($format != '')
+      {
+        $format_pdf = str_replace($eliminar,'',$format->format);
+        $supports = File::where('format_id','=',$format->id)->get();
+        $file_pdf = '';
+        foreach( $supports AS $key => $item )
+        {
+            $file_pdf .= '<div class="contenedor_image"><img class="image" src="'.public_path().'/'.$item->nombre_url.'"/></di>';
+        }
+        $config_format = $estilos->estilos.$format_pdf.$file_pdf.$pagination->estilos;
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadHTML($config_format);
+        return $pdf->stream();
+      } else {
+        return redirect()->route('formats.index');
+      }
+  }
 
     public function clearString( $string )
     {
         $clear = preg_replace("[^A-Za-z0-9]", "", $string);
         return $clear;
 	}
-	
+
 	public function getValidSize( $file )
 	{
 		$size = $file->getClientSize();
@@ -396,7 +455,7 @@ class FormatController extends Controller
 		if( in_array($ext,$types) ){
 			return true;
 		}
-		return false;		
+		return false;
 	}
 
 	public function addError( $response , $message , $file )

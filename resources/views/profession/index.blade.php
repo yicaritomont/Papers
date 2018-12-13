@@ -46,19 +46,20 @@
             ];
 
             @can('edit_professions','delete_professions')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Profession', 'entity' => 'professions', 'identificador' => 'id', 'relations' => 'none']) }}";
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Profession', 'company' => 'none', 'entity' => 'professions', 'identificador' => 'id', 'relations' => 'none']) }}"};
                 
-                columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columns = columns;
+                columns.push({data: 'actions', className: 'text-center w1em'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];     
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'Profession']) }}";
-                dataTableObject.columns = columns;
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Profession', 'company' => 'none']) }}"};
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
 
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
+            dataTableObject.columns = columns;
+
             var table = $('.dataTable').DataTable(dataTableObject);
-            // new $.fn.dataTable.FixedHeader( table );
         });
     </script>
 @endsection

@@ -46,18 +46,19 @@
             ];
 
             @can('edit_inspectiontypes','delete_inspectiontypes')
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionType', 'entity' => 'inspectiontypes', 'identificador' => 'id', 'relations' => 'none']) }}";
-                columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columns = columns;
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'InspectionType', 'company' => 'none', 'entity' => 'inspectiontypes', 'identificador' => 'id', 'relations' => 'none']) }}"};
+                columns.push({data: 'actions', className: 'text-center w1em'},);
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
-                dataTableObject.ajax = "{{ route('datatable', ['model' => 'InspectionType']) }}";
-                dataTableObject.columns = columns;
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'InspectionType', 'company' => 'none']) }}"};
                 dataTableObject.columnDefs = [setDataTable([-1, -2])];
             @endcan
             
-            var table = $('.dataTable').DataTable(dataTableObject);                    
-            // new $.fn.dataTable.FixedHeader( table );
+            dataTableObject.ajax.type = 'POST';
+            dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
+            dataTableObject.columns = columns;
+
+            var table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
 @endsection

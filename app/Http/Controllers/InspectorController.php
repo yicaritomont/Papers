@@ -24,6 +24,8 @@ use Url;
 use nusoap_client;
 use Artisaninweb\SoapWrapper\SoapWrapper;
 use SoapClient;
+use Session;
+use Illuminate\Support\Facades\Log;
 
 class InspectorController extends Controller
 {
@@ -34,10 +36,15 @@ class InspectorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($company_slug=null)
+    public function index(Request $request)
     {
-        if(isset($company_slug)){
-            $companies = Company::with('user')->where('slug','=',$company_slug)->get()->first();
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['id'] = Company::findOrFail(session()->get('Session_Company'))->slug;
+        }
+        
+        if($request->get('id')){
+            $companies = Company::with('user:id,name')->where('slug','=',$request->get('id'))->first();
+            
             return view('inspector.index', compact('companies'));
         }
         return view('inspector.index');
@@ -68,12 +75,17 @@ class InspectorController extends Controller
      */
     public function store(Request $request)
     {
+        //Si no es administrador agregue la compañia en sesión
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['companies'] = session()->get('Session_Company');
+        }
+
         if($request->id_inspector != "")
         {
             $this->validate($request, [
                 'name'              => 'bail|required|min:2',
                 'identification'    => 'required|numeric',
-                'phone'             => 'required|string',
+                'phone'             => 'required|numeric',
                 'addres'            => 'required|string',
                 'email'             => 'required|email|unique:users,email',
                 'profession_id'     => 'required',
@@ -86,7 +98,7 @@ class InspectorController extends Controller
             $this->validate($request, [
                 'name'              => 'bail|required|min:2',
                 'identification'    => 'required|unique:inspectors|numeric',
-                'phone'             => 'required|string',
+                'phone'             => 'required|numeric',
                 'addres'            => 'required|string',
                 'email'             => 'required|email|unique:users,email',
                 'profession_id'     => 'required',
@@ -181,7 +193,11 @@ class InspectorController extends Controller
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $user = $inspector->user;
 
-        return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities', 'companies','user'));
+        if(CompanyController::compareCompanySession($inspector->companies)){
+            return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities', 'companies','user'));
+        }else{
+            abort(403, 'This action is unauthorized.');
+        }
     }
 
      /**
@@ -196,10 +212,19 @@ class InspectorController extends Controller
         //Get the inspector
         $inspector = Inspector::findOrFail($id);
 
+        if( !CompanyController::compareCompanySession($inspector->companies) ){
+            abort(403, 'This action is unauthorized.');        
+        }
+
+        //Si no es administrador agregue la compañia en sesión
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['companies'] = session()->get('Session_Company');
+        }
+
         $this->validate($request, [
             'name'              => 'bail|required|min:2',
             'identification'    => 'required|numeric|unique:inspectors,identification,'.$id,
-            'phone'             => 'required|string',
+            'phone'             => 'required|numeric',
             'addres'            => 'required|string',
             'email'             => 'required|email|unique:users,email,'.$inspector->user_id,
             'profession_id'     => 'required',
@@ -208,8 +233,6 @@ class InspectorController extends Controller
         ]);
 
         $request['roles'] = 2;
-            
-        // $inspector->fill($request->except('permissions'));
         
         $user = $inspector->user;
         // Update user
@@ -224,7 +247,7 @@ class InspectorController extends Controller
         $inspector->update([
             'identification'    => $request['identification'],
             'phone'             => $request['phone'],
-            'address'           => $request['addres'],
+            'addres'           => $request['addres'],
             'profession_id'     => $request['profession_id'],
             'inspector_type_id' => $request['inspector_type_id'],
             'user_id'           => $user->id,
@@ -245,6 +268,12 @@ class InspectorController extends Controller
     public function destroy($id)
     {
         $inspector = Inspector::findOrFail($id);
+
+        if( !CompanyController::compareCompanySession($inspector->companies) ){
+            abort(403, 'This action is unauthorized.');
+        }
+
+        // $this->authorize('validateCompany', $inspector->companies->first());
 
         if($inspector)
         {
@@ -286,26 +315,6 @@ class InspectorController extends Controller
         return redirect()->back(); */
     }
 
-    public function companyTable($company)
-    {
-        $result = Inspector::query()
-                ->join('company_inspector', 'company_inspector.inspector_id', '=', 'inspectors.id')
-                ->join('companies', 'companies.id', '=', 'company_inspector.company_id')
-                ->select('inspectors.*')
-                ->where('companies.slug', '=', $company)
-                ->with('companies', 'profession', 'inspectorType', 'user', 'companies.user')
-                ->get();
-
-        return datatables()
-            ->of($result)
-            ->addColumn('entity', 'inspectors')
-            ->addColumn('action', 'id')
-            ->addColumn('actions', 'shared/_actions')
-            ->rawColumns(['actions'])
-            ->toJson();
-    }
-
-
     /**
      *
     */
@@ -334,36 +343,83 @@ class InspectorController extends Controller
      */
     public function IdCardInspector($id)
     {
-        $infoInspector = Inspector::find($id);        
+        $infoInspector = Inspector::findOrFail($id);
+        
+        if( !CompanyController::compareCompanySession($infoInspector->companies) ){
+            abort(403, 'This action is unauthorized.');        
+        }
+
         // Se trae la información del usuario
         $usuario = User::find($infoInspector->user_id);
-        $code = "";
+        $code = "";  
 
         /**
          * El bloque comentado a continuacion muestera como debe ser el consumo del WS de sellado del tiempo
          */
-        /*$signaSelladoFirma = new WsdlSelladoTiempoController();
-        $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
+        /*
+        $signaSelladoFirma = new WsdlSelladoTiempoController();
 
-        echo "<br> TOKEN ".$tokenSelladoFirma['Token']."<br>";
-        if($tokenSelladoFirma['ResultadoOperacion'] == 0)
+        // Verifica que se tenga la variable token en session
+        if(!Session::has('TokenWSLSello'))        
+        {       
+            // solicita el token para el sellado de firma
+            $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
+            if($tokenSelladoFirma['ResultadoOperacion'] == 0)
+            {
+                // se registra el token en una variable de session
+                Session::put('TokenWSLSello', $tokenSelladoFirma['Token']);
+                Session::save();
+            }
+        }    
+
+       
+        // Verifica el tiempo restante para el token
+        $token = session()->get('TokenWSLSello');
+        $consultaEstadoToken = $signaSelladoFirma->consultaEstadoToken($token);     
+        echo " Duracion ".$consultaEstadoToken['Duracion']."<br>";
+        if($consultaEstadoToken['Duracion']<=0)
         {
-            echo "<hr>";
-            $base64File = HashUtilidades::TakeByte('');
-            echo " base 64 del documento ".$base64File;
-            echo "<hr>";
-            echo " array de bytes ejemplo ".'FqG3Jo2Zv+UX8NbDv5brW0PW5R520XqjOI/uHA0VuNw=';
-            echo "<hr>";
-
+            echo "solicita otro token y lo agrega a la temporal";
+            //Solicita y asigna de nuevo el token
+            $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
+            Session::put('TokenWSLSello', $tokenSelladoFirma['Token']);
+            Session::save();
+        }
+        
+        if($token != "")
+        {
+            // Realice los llamados a metodos del ws.
+            
+            echo "TOKEN ->".$token;
+            $base64File = HashUtilidades::generarBase64Documento('');            
+            
             $SelladoFirma = $signaSelladoFirma->selladoDocumento($tokenSelladoFirma['Token'],$base64File);
-
             echo "<hr> SELLADO DE FIRMA";
             echo "<pre>";
             print_r($SelladoFirma);
             echo "</pre>";
-            var_dump($SelladoFirma);
+           
+            $hashdocumento = base64_encode(HashUtilidades::generarHashDocumento(''));
+            echo "<hr>";
+            echo $hashdocumento;
+            echo "<br>";
+            echo "FqG3Jo2Zv+UX8NbDv5brW0PW5R520XqjOI/uHA0VuNw=";
+            $SelladoHashDocumento = $signaSelladoFirma->selladoHashDocumento($token,$hashdocumento);
+
+            echo "<hr> SELLADO HASH DOCUMENTO";
+            echo "<pre>";
+            print_r($SelladoHashDocumento);
+            echo "</pre>";
+
+            $consultaSellado = $signaSelladoFirma->consumoConsulta(session()->get('TokenWSLSello'));
+            echo "<hr>";
+            echo "<pre>";
+            print_r($consultaSellado);
+            echo "</pre>";       
             
-        }*/
+        }
+        */
+
         /**
          * El bloque  comentado a continuacion muestra como debe ser consumo del WS de firma 
          */
@@ -387,20 +443,26 @@ class InspectorController extends Controller
          * El bloque comentado acontinuacion muestra como deben de realizar las peticiones para blokchain.
          */
 
-        /*
-        $concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
+        
+        /*$concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
         $hash = HashUtilidades::generarHash($concatenado);
         $hash = HashUtilidades::generarHash('HolaSOyElhash');
         $signa = new ManejadorPeticionesController();
-        $obtenerToken = $signa->obtenerAuthToken();
-        $obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQyNzMxODM1LCJleHAiOjE1NDI3MzI3MzUsImlhdCI6MTU0MjczMTgzNSwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.jiMRvZ6MP1L-Ourpx6R2qbCRHrS3VVz4U5Cr9a4VDlE";
+        //$obtenerToken = $signa->obtenerAuthToken();
+        $obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQzOTUwNTIyLCJleHAiOjE1NDM5NTE0MjIsImlhdCI6MTU0Mzk1MDUyMiwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.zxognh6Wcv1n1hdUcScgAArZyxz1rUY7GEIpQnBT2fM";
 
         echo "<pre>";
         print_r($obtenerToken);
         echo "</pre>";
         if($obtenerToken != "")
         {
-            $registrar_documento = $signa->registrarDocumento($obtenerToken,asset('images/imagenes_user/cropper.jpg'));           
+            $sourcePath=asset('files/test.pdf');
+            $registrar_documento = $signa->registrarDocumento($obtenerToken,$sourcePath);
+
+            echo "<pre>";
+            print_r($registrar_documento);
+            echo "</pre>";
+            /*$registrar_documento = $signa->registrarDocumento($obtenerToken,asset('images/imagenes_user/cropper.jpg'));           
             
             echo $hash;
 
@@ -423,9 +485,9 @@ class InspectorController extends Controller
             $certificado_hash = $signa->hashCertificado($obtenerToken,$hash);
             echo "<pre>";
             print_r($certificado_hash);
-            echo "</pre>";
-        }
-        */
+            echo "</pre>";*/
+        //}
+        
         return view('inspector.card', compact('infoInspector','usuario'));
 
     }
@@ -455,6 +517,29 @@ class InspectorController extends Controller
             $citiesCountry[''] = 'Seleccione..';
             json_encode($response = ['citiesCountry'=>$citiesCountry]);
         }
-    return $response;
+        return $response;
     }
+
+    /**
+	 * Seleccionar los contratos en base a la compañia del inspector seleccionado
+	 */
+    public function contracts($id = null)
+    {
+        $contratos = [];
+
+        if($id)
+        {
+            foreach(Inspector::find($id)->companies as $company)
+            {
+                $contratos = array_merge($contratos, $company->contracts->toArray());
+            }
+        }
+
+        array_unshift($contratos, ['id' => '', 'name' => trans('words.ChooseOption')]);
+
+        echo json_encode([
+            'status' => $contratos
+        ]);
+    }
+    
 }

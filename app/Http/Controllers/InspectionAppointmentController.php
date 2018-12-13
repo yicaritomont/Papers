@@ -18,6 +18,7 @@ use DB;
 use View;
 use App\Http\Requests\InspectionAppointmentRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class InspectionAppointmentController extends Controller
 {
@@ -26,12 +27,42 @@ class InspectionAppointmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // dd(date('Y-m-d H:i:s'));
-        // $clients = Client::pluck('identification', 'id');
+        $formato = Preformato::where('id',1)->first();
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
+        $company = Company::where('id',session()->get('Session_Company'))->first();
+        $companyselect ='none';
+        $mostrar_formato = 'none';
+        $disabled = '';
+        if($company == '')
+        {
+            $company = new Company();
+            $company->name = 'Administracion Principal';
+            $companyselect = 'block';
+            $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+                            ->select('clients.id AS id', 'users.name AS name')
+                            ->get()
+                            ->pluck('name', 'id');
+        } 
+        else 
+        {
+            $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
+                        ->join('user_company','user_company.user_id','=','users.id')
+                        ->join('companies','companies.id','=','user_company.company_id')
+                        ->where('companies.id',session()->get('Session_Company'))
+                        ->select('clients.id AS id', 'users.name AS name')
+                        ->get()
+                        ->pluck('name', 'id');
+        }
+        $preformats = Preformato::pluck('name', 'id');
+
+        if(auth()->user()->hasRole('Inspector')){
+            $request['id'] = auth()->user()->inspectors->id;
+        }
+
         $clients = Client::with('user')->get()->pluck('user.name', 'id');
-        $result = InspectionAppointment::latest()->with(['inspector', 'appointmentState', 'inspectionSubtype'])->paginate();
+        $quantity = InspectionAppointment::all()->count();
         $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
         $contracts = Contract::pluck('name', 'id');
         $appointment_states = AppointmentState::where([
@@ -42,7 +73,42 @@ class InspectionAppointmentController extends Controller
         $inspection_types = InspectionType::pluck('name', 'id');
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $preformats = Preformato::pluck('name', 'id');
-        return view('inspection_appointment.index',compact('result', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
+
+        if($request->get('id')){
+
+            $inspector = Inspector::findOrFail($request->get('id'));
+
+            if(count($inspector->inspection_appointments) == 0)
+            {
+                Session::flash('alert', ['info', trans('words.AppointmentEmpty')]);
+            }
+
+            $this->authorize('validateId', $inspector);
+
+            return view('inspection_appointment.index',compact('inspector', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats'));
+
+        }elseif( !auth()->user()->hasRole('Admin') ){
+
+            $companySlug = Company::findOrFail(session()->get('Session_Company'))->slug;
+
+            $inspectors = Inspector::whereHas('user.companies', function($q) use($companySlug){
+                $q->where('slug', '=', $companySlug);
+            })->get()->pluck('user.name', 'id');
+
+            $contracts = Contract::whereHas('company', function($q) use($companySlug){
+                $q->where('slug', '=', $companySlug);
+            })->get()->pluck('name', 'id');
+
+            $clients = Client::whereHas('user.companies', function($q) use($companySlug){
+                $q->where('slug', '=', $companySlug);
+            })->get()->pluck('user.name', 'id');
+
+            $company = Company::with('user:id,name')->where('slug','=',$companySlug)->first();
+
+            return view('inspection_appointment.index', compact('company', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats','format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
+        }
+
+        return view('inspection_appointment.index',compact('quantity', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats','format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
     }
 
     /**
@@ -52,9 +118,7 @@ class InspectionAppointmentController extends Controller
      */
     public function create(Request $request)
     {
-        
-        // dd($request->except('date'));
-        $inspectors = Inspector::pluck('name', 'id');
+        $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
         $appointment_states = AppointmentState::pluck('name', 'id');
         $appointment_locations = AppointmentLocation::pluck('coordenada','id');
         $inspection_types = InspectionType::pluck('name', 'id');
@@ -74,6 +138,18 @@ class InspectionAppointmentController extends Controller
      */
     public function store(InspectionAppointmentRequest $request)
     {
+        $request['client_id'] = Contract::findOrFail($request->contract_id)->client->id;
+
+        // Validación de ingreso de datos que no corresponden a la compañia en sesion
+        if( !auth()->user()->hasRole('Admin') ){
+            if( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
+                abort(403, 'This action is unauthorized.');
+            }elseif( !CompanyController::compareCompanySession([Contract::find($request['contract_id'])->company]) ){
+                abort(403, 'This action is unauthorized.');
+            }elseif( !CompanyController::compareCompanySession(Client::find($request['client_id'])->user->companies) ){
+                abort(403, 'This action is unauthorized.');
+            }
+        }
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
         if($request->estimated_start_date >$request->estimated_end_date)
@@ -165,11 +241,16 @@ class InspectionAppointmentController extends Controller
      */
     public function show($id)
     {
-        $cita = InspectionAppointment::query()
-            ->with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract:id,name', 'inspector.user:id,name')
+        $cita = InspectionAppointment::with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract:id,name', 'inspector.user:id,name')
             ->where('inspection_appointments.id', $id)
         ->first();
+        
+        $this->authorize('validateId', $cita->inspector);
 
+        if( !CompanyController::compareCompanySession($cita->inspector->user->companies) ){
+            abort(403, 'This action is unauthorized.');
+        }
+        
         echo json_encode([
             'cita' => $cita,
         ]);
@@ -189,6 +270,10 @@ class InspectionAppointmentController extends Controller
 
         $inspection_appointment = InspectionAppointment::with('inspectionSubtype')->find($id);
 
+        if( !CompanyController::compareCompanySession($inspection_appointment->inspector->user->companies) ){
+            abort(403, 'This action is unauthorized.');
+        }
+
         echo json_encode([
             'cita' => $inspection_appointment,
         ]);
@@ -203,10 +288,18 @@ class InspectionAppointmentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $inspection_appointment = InspectionAppointment::findOrFail($id);
+
+        if( !CompanyController::compareCompanySession($inspection_appointment->inspector->user->companies) ){
+            abort(403, 'This action is unauthorized.');
+        }elseif( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
+            abort(403, 'This action is unauthorized.');
+        }
+
         $request->validate([
             'inspector_id'  => 'required',
-            'start_date'    => 'required|date',
-            'end_date'      => 'required|date',
+            'start_date'    => 'required|date|date_format:Y-m-d',
+            'end_date'      => 'required|date|date_format:Y-m-d',
         ]);
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
@@ -218,10 +311,9 @@ class InspectionAppointmentController extends Controller
         }
         else
         {
-
+            
+            
             //Se valida si es una cita con estado activa
-            $inspection_appointment = InspectionAppointment::findOrFail($id);
-
             if($inspection_appointment->appointment_states_id == 2){
         
                 //Contadores de error para las validaciones
@@ -332,6 +424,11 @@ class InspectionAppointmentController extends Controller
     public function destroy($id)
     {
         $inspection_appointment = InspectionAppointment::findOrFail($id);
+
+        if( !CompanyController::compareCompanySession($inspection_appointment->inspector->user->companies) ){
+            abort(403, 'This action is unauthorized.');
+        }
+
         $inspection_appointment->appointment_states_id = 6;
         $inspection_appointment->save();
         // $inspection_appointment->delete();
@@ -343,27 +440,11 @@ class InspectionAppointmentController extends Controller
     }
 
     /**
-     * Busca el inspector seleccionado.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function inspector($id)
-    {
-        $result = InspectionAppointment::where('inspector_id', '=', $id)->latest()->with(['inspector', 'appointmentState', 'inspectionType'])->paginate();
-        $inspectors = Inspector::pluck('name', 'id');
-        $appointment_states = AppointmentState::pluck('name', 'id');
-        $appointment_locations = AppointmentLocation::pluck('coordenada','id');
-        $inspection_types = InspectionType::pluck('name', 'id');
-        return view('inspection_appointment.index',compact('result', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'id'));
-    }
-
-    /**
      * Muestra los resultados de la tabla citas para mostrarlos en el calendario
      *
      * @return JSON
      */
-    public function events()
+    public function events($id='none', $company=null)
     {
         $solicitadas = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
             ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
@@ -376,11 +457,18 @@ class InspectionAppointmentController extends Controller
                 'appointment_states.color AS className',
                 'appointment_states_id',
                 'format_id')
-        ->where([
-            ['appointment_states_id', 1],
-        ]);
+        ->where('appointment_states_id', 1);
 
-        $result = InspectionAppointment::join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
+        if($id != 'none'){
+            $solicitadas = $solicitadas->where('inspector_id', $id);
+        }elseif($company){
+            $solicitadas = $solicitadas->whereHas('inspector.user.companies', function($q) use($company){
+                $q->where('slug', '=', $company);
+            });
+        }
+
+        $result = InspectionAppointment::
+            join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
             ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
             ->join('users', 'users.id', '=', 'inspectors.user_id')
             ->select('start_date AS start',
@@ -391,11 +479,22 @@ class InspectionAppointmentController extends Controller
                 'appointment_states.color',
                 'appointment_states_id',
                 'format_id')
-        ->where('appointment_states_id', 2)
-        ->orWhere('appointment_states_id', 3)
-        ->orWhere('appointment_states_id', 4)
-        ->union($solicitadas)
-        ->get();
+            ->where(function($q){
+                $q->where('appointment_states_id', 2)  
+                    ->orWhere('appointment_states_id', 3)
+                    ->orWhere('appointment_states_id', 4);
+            })    
+        ->union($solicitadas);
+
+        if($id != 'none'){
+            $result = $result->where('inspectors.id', $id);
+        }elseif($company){
+            $result = $result->whereHas('inspector.user.companies', function($q) use($company){
+                $q->where('slug', '=', $company);
+            });
+        }
+
+        $result = $result->get();
 
         //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario y un alert al className para los colores de los eventos
         foreach($result as $item){
@@ -409,9 +508,15 @@ class InspectionAppointmentController extends Controller
     {
 
         $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
+            'start_date' => 'required|date|date_format:Y-m-d',
+            'end_date' => 'required|date|date_format:Y-m-d',
         ]);
+
+        $appointment = InspectionAppointment::find($id);
+
+        if( !CompanyController::compareCompanySession($appointment->inspector->user->companies) ){
+            abort(403, 'This action is unauthorized.');
+        }
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
         if($request->start_date >$request->end_date)
@@ -423,7 +528,7 @@ class InspectionAppointmentController extends Controller
         else
         {
 
-            $appointment = InspectionAppointment::find($id);
+            
 
             //Se valida si es una cita con estado solicitada
             if($appointment->appointment_states_id == 1){
@@ -521,10 +626,6 @@ class InspectionAppointmentController extends Controller
 
     public function format(Request $request, $id)
     {
-
-        /* echo json_encode([
-            'status' => Preformato::find($request->preformat_id)->format,
-        ]); */
         $cita = InspectionAppointment::findOrFail($id);
 
         if($cita->appointment_states_id == 2)
@@ -544,8 +645,6 @@ class InspectionAppointmentController extends Controller
 
                 if($cita->save())
                 {
-
-                    Log::info('Id de cita: '.$format->id);
                     echo json_encode([
                         'status' => trans_choice('words.Format',1).' '.trans('words.HasAdded'),
                     ]);

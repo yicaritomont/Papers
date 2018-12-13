@@ -44,4 +44,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Company::class, 'user_company');
     }
+
+    public function inspectors()
+    {
+        return $this->hasOne('App\Inspector');
+    }
+
+    public function clients()
+    {
+        return $this->hasOne('App\Client');
+    }
 }

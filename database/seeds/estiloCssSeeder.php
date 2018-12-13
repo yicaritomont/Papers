@@ -14,35 +14,9 @@ class estiloCssSeeder extends Seeder
     {
       $estilos = array(
         array('id' => 1,
-          'estilos' => /*'<style>
-            @page {
-              margin: 180px 50px;
-            }
-            #header {
-              position: fixed;
-              left: 0px;
-              top: -180px;
-              right: 0px;
-              height: 150px;
-              text-align: center;
-            }
-            #header .page:after {
-              content: counter(page, decimal);
-            }
-            img {
-              height : 100px;
-              width : 100px;
-            }
-            #footer {
-              position: fixed;
-              left: 0px;
-              bottom: -180px;
-              right: 0px;
-              height: 80px;}
-            #footer .page:after {
-              content: counter(page, upper-roman); }
-          </style>'*/
-          '<style>
+          'name' => 'estilo_pdf',
+          'estilos' =>
+            '<style>
             @page {
               margin: 200px 50px 80px 50px;
               font-size: 12px;
@@ -70,15 +44,35 @@ class estiloCssSeeder extends Seeder
               right: 0px;
               height: 10px;
              }
-            #footer .page:after {
-              content: counter(page, upper-roman);
-             }
              table>tbody>tr>td>textarea {
                width: 50px !important;
               }
-              table{page-break-inside: avoid;}
+              table {
+                page-break-inside: avoid;
+               }
+              .contenedor_image {
+                width: 600px;
+                height: 700px;
+               }
+               .image {
+                height: auto;
+                max-width: 99%;
+               }
           </style>',
         ),
+        array('id' => 2,
+          'name' => 'paginate_pdf',
+          'estilos' =>'<script type="text/php">
+            if (isset($pdf)) {
+                $text = "page {PAGE_NUM} / {PAGE_COUNT}";
+                $size = 10;
+                $font = $fontMetrics->getFont("Verdana");
+                $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
+                $x = ($pdf->get_width() - $width) / 2;
+                $y = $pdf->get_height() - 35;
+                $pdf->page_text($x, $y, $text, $font, $size);
+            }
+          </script>'),
       );
 
       foreach ($estilos as $estilo) {

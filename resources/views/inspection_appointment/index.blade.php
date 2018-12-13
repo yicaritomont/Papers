@@ -7,23 +7,16 @@
     <div class="msgAlert"></div>    
     
     <div class="row">
-        <div class="col-xs-12 col-md-8 col-md-offset-2">
+        <div class="col-xs-12 col-lg-8 col-lg-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-md-5">
-                            @if(isset($id))
-                                <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Inspectionappointment', $result->count()) }}  @lang('words.Of') {{ $result[0]->inspector['name'] }}  </h3>
-                            @else
-                                <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Inspectionappointment', $result->count()) }} </h3>
-                            @endif
-                        </div>
-                        <div class="col-md-7 text-right">
-                            @if(isset($id))
-                                <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
-                            @endif
-                        </div>
-                    </div>                        
+                    @if(isset($inspector))
+                        <h3 class="modal-title">{{ count($inspector->inspection_appointments) }} {{ trans_choice('words.Inspectionappointment', count($inspector->inspection_appointments)) }}  @lang('words.Of') {{ $inspector->user->name }}  </h3>
+                    @elseif(isset($company))
+                        <h3 class="modal-title">@choice('words.Inspectionappointment', 2)</h3>
+                    @else
+                        <h3 class="modal-title">{{ $quantity }} {{ trans_choice('words.Inspectionappointment', $quantity) }} </h3>
+                    @endif
                 </div>
                 <div class="panel-body">
                     <div id="calendar"></div>
@@ -187,24 +180,11 @@
 
                     @can('add_formats')
                         {!! Form::open(['method' => 'POST', 'class' => 'formCalendar formSlide', 'id' => 'fillFormat', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
-                            <div class="form-group @if ($errors->has('company')) has-error @endif" id="motrarcompanies">
-                                <label for="company_formato">@lang('words.Company')</label>
-                                {!! Form::select('company_id',$companies, isset($user) ? $user->companies->pluck('id')->toArray() : null, ['class' => 'input-body','id' => 'company_formato', 'placeholder' => trans('words.ChooseOption')]) !!}
-                                @if ($errors->has('company')) <p class="help-block">{{ $errors->first('company')}}</p> @endif
+                            <div id="contenedorHtml">
+                                @include('format._form')
                             </div>
-                            <div class="form-group @if ($errors->has('client')) has-error @endif">
-                                <label for="cliente_formato">@choice('words.Client', 1)</label>
-                                <div  id="contenedor_client">
-                                {!! Form::select('client_id',$clients, null, ['class' => 'input-body','id' => 'cliente_formato', 'placeholder' => trans('words.ChooseOption')]) !!}
-                                @if ($errors->has('client')) <p class="help-block">{{ $errors->first('client')}}</p> @endif
-                                </div>
-                            </div>
-                            <div class="form-group @if ($errors->has('preformat')) has-error @endif" id="contenedor_preformat">
-                                <label for="format_preformato">@lang('words.Preformato')</label>
-                                {!! Form::select('preformat_id',$preformats, null, ['class' => 'input-body','id' => 'format_preformato', 'placeholder' => trans('words.ChooseOption')]) !!}
-                                @if ($errors->has('preformat')) <p class="help-block">{{ $errors->first('preformat')}}</p> @endif
-                            </div>                     
-                            {!! Form::submit(trans('words.Complete'), ['class' => 'btn btn-primary btn-block']) !!}
+                            <input type="hidden" name="format_expediction" id="format_expediction">
+                            <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.Create') !!}</span>
                         {!! Form::close() !!}
                     @endcan
                 
@@ -229,13 +209,23 @@
         //Se define un objeto que contenga las caracteristicas particulares de cada calendario y luego se definen
         var calendarObj = {};
         calendarObj.customButtons = null;
-        calendarObj.events = $('#url').val()+'/events';
+
+        @if(isset($inspector))
+            calendarObj.events = {url: $('#url').val()+'/events/{{ $inspector->id }}'};
+        @elseif(isset($company))
+            calendarObj.events = {url: $('#url').val()+'/events/none/{{ $company->slug }}'};
+        @else
+            calendarObj.events = {url: $('#url').val()+'/events'};
+        @endif
+
+        calendarObj.events.type = 'POST';
+        calendarObj.events.data = { _token: window.Laravel.csrfToken };
+
         calendarObj.eventClick = function(event)
         {
             //Resetar y setear el action el formulario de completar si existe el elemento
             if($('#completeAppointment')[0])
             {
-                console.log('Entrooo');
                 $('#completeAppointment')[0].reset();
                 $('#completeAppointment').attr('action', $('#url').val()+'/'+event.id+'/complete');
             }
@@ -262,11 +252,11 @@
 
                 if(event.format_id){
                     @can('edit_formats')
-                        $('.btns').append('<button class="btn btn-default btn-form-slide" data-toggle="#fillFormat">@lang("words.Edit") @choice("words.Format", 1)</button>');
+                        $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/'+event.format_id+'/edit">@lang("words.Edit") @choice("words.Format", 1)</a>');
                     @endcan
                 }else{
                     @can('add_formats')
-                        $('.btns').append('<button class="btn btn-default btn-form-slide" data-toggle="#fillFormat">@lang("words.Create") @choice("words.Format", 1)</button>');
+                        $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/create?appointment='+event.id+'">@lang("words.Create") @choice("words.Format", 1)</a>');
                     @endcan
                 }
             }else{

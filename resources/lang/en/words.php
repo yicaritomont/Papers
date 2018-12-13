@@ -30,7 +30,7 @@ return[
     'User' => 'User',
     'Permissions' => 'Permissions',
     'Permission' => 'Permission',
-    'Preformato' => 'Preformato|Preformatos',
+    'Preformato' => 'Preformat|Preformats',
     'Format' => 'Format|Formats',
     'Created' => 'Created',
     'Deleted' => 'Deleted',
@@ -44,7 +44,6 @@ return[
     'MenuPadre' => 'Parent Menu',
     'Active' => 'Active',
     'Inactive' => 'Inactive',
-    'Inspectionsubtype' => 'Inspection Subtype',
 
     //To App Latout Menu
     'ManagementTools' => 'Tools',
@@ -133,11 +132,24 @@ return[
     'DateGreater' => 'The date must be greater than the current',
     'ActiveMessage' => '¿Are you sure you want to activate it?',
     'InactiveMessage' => '¿Are you sure you want to inactivate it?',
+    'ThereNoContract' => 'There is no contract between the client and the selected company',
+    'FormatExists' => 'The format for the contract is already completed',
     'To' => 'to',
     'UpdatedAt' => 'Updated At',
     'ErrorRangeDate' => 'The start date can not be longer than the final date',
     'MainMenu' => 'Main menu',
     'DropdownMenu' => 'Dropdown menu',
+    'Icon' => 'Icon',
+    'Application' => 'Application',
+    'Master' => 'Master',
+    'ClientMenu' => 'Client Menu',
+    'Inspection' => 'Inspection',
+    'AgendaEmpty' => 'There are no agendas',
+    'ErrorLinkFormat' => 'Could not link the format with the appointment.',
+    'Select' => 'Select',
+
+
+    
     //Supports
     'upload_sopports'    =>  'Load Supports',
     'supports'           =>  'Supports',
@@ -152,5 +164,7 @@ return[
     'error_name_file'    =>  'Error! in the name files',
     'des_error_name_file'=>  'You must enter the name in all files',
     'btn_verify'         =>  'check'
+
+
 ];
 ?>

@@ -15,6 +15,7 @@ class CreateEstilosCssTable extends Migration
     {
         Schema::create('estilos', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
             $table->longText('estilos');
             $table->timestamps();
         });

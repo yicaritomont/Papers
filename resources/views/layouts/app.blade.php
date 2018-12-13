@@ -56,6 +56,10 @@
         <!-- SweetAlert -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
 
+        <!-- Chosen -->
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosenStyle.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosen.min.css')}}">
+        
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
 
@@ -114,7 +118,7 @@
                             <div class="menu_section">
                                 <h3>General</h3>
                                     <ul class="nav side-menu">
-                                        <li><a><i class="fa fa-cogs"></i> @lang('words.ManagementTools') <span class="fa fa-chevron-down"></span></a>
+                                        {{-- <li><a><i class="fa fa-cogs"></i> @lang('words.ManagementTools') <span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">
                                                 @if (Auth::check())
                                                     @can('view_users')
@@ -164,85 +168,9 @@
                                                             </a>
                                                         </li>
                                                     @endcan
-
-                                                     <!--@can('view_professions')
-                                                        <li class="{{ Request::is('professions*') ? 'active' : '' }}">
-                                                            <a href="{{ route('professions.index') }}">
-                                                                <span class="text-primary glyphicon glyphicon-education"></span>{{trans_choice('words.Profession',2)}}
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-
-                                                     @can('view_inspectortypes')
-                                                        <li class="{{ Request::is('inspectortypes*') ? 'active' : '' }}">
-                                                            <a href="{{ route('inspectortypes.index') }}">
-                                                                <span class="text-info glyphicon glyphicon-pushpin"></span> {{trans_choice('words.InspectorType',2)}}
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-
-                                                    @can('view_clients')
-                                                        <li class="{{ Request::is('clients*') ? 'active' : '' }}">
-                                                            <a href="{{ route('clients.index') }}">
-                                                                <span class="text-warning glyphicon glyphicon-user"></span> {{trans_choice('words.Client',2)}}
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-
-                                                    @can('view_inspectors')
-                                                        <li class="{{ Request::is('inspectors*') ? 'active' : '' }}">
-                                                            <a href="{{ route('inspectors.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-sunglasses"></span> {{trans_choice('words.Inspector',2)}}
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-
-                                                    @can('view_inspectiontypes')
-                                                        <li class="{{ Request::is('inspectiontypes*') ? 'active' : '' }}">
-                                                            <a href="{{ route('inspectiontypes.index') }}">
-                                                                <span class="text-dark glyphicon glyphicon-folder-open"></span> {{trans_choice('words.InspectionType',2)}}
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-                                                     @can('view_inspectionsubtypes')
-                                                        <li class="{{ Request::is('nspectionsubtypes*') ? 'active' : '' }}">
-                                                            <a href="{{ route('inspectionsubtypes.index') }}">
-                                                                <span class="text-dark glyphicon glyphicon-refresh"></span> {{trans_choice('words.InspectionSubtype',2)}}
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-                                                    @can('view_headquarters')
-                                                        <li class="{{ Request::is('headquarters*') ? 'active' : '' }}">
-                                                            <a href="{{ route('headquarters.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-home"></span> {{trans_choice('words.Headquarters',2)}}
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-
-                                                    @can('view_companies')
-                                                        <li class="{{ Request::is('companies*') ? 'active' : '' }}">
-                                                            <a href="{{ route('companies.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.Company',2)}}
-                                                            </a>
-                                                        </li>
-                                                    @endcan
-
-                                                     @can('view_inspectionappointments')
-                                                        <li class="{{ Request::is('inspectionappointments*') ? 'active' : '' }}">
-                                                            <a href="{{ route('inspectionappointments.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-copy"></span> {{trans_choice('words.Inspectionappointment',2)}}
-                                                    @endcan
-
-                                                    @can('view_inspectoragendas')
-                                                        <li class="{{ Request::is('inspectoragendas*') ? 'active' : '' }}">
-                                                            <a href="{{ route('inspectoragendas.index') }}">
-                                                                <span class="text-white glyphicon glyphicon-briefcase"></span> {{trans_choice('words.InspectorAgenda',2)}}
-                                                            </a>
-                                                        </li>
-                                                    @endcan -->
                                                 @endif
                                             </ul>
-                                        </li>
+                                        </li> --}}
                                         <!--<li><a><i class="fa fa-suitcase"></i> App <span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">
                                                 @can('view_posts')
@@ -258,10 +186,6 @@
                                         <!-- Made Menu, with modules -->
                                         {{-- {{ dd(MadeMenu::menus()) }} --}}
                                         @foreach (MadeMenu::menus() as $key => $item)
-                                            {{-- @if ($item['parent'] != 0) --}}
-                                            {{-- @if ($item['id'] != $item['menu_id'])
-                                                @break
-                                            @endif --}}
                                             @include('shared.menu-item', ['item' => $item])
                                         @endforeach
 
@@ -426,22 +350,9 @@
     <!-- Datatable -->
     <script src="{{ asset('js/lib/dataTable/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/dataTables.bootstrap.min.js') }}"></script>
-    {{-- <script src="{{ asset('js/lib/dataTable/dataTables.fixedHeader.min.js') }}"></script> --}}
     <script src="{{ asset('js/lib/dataTable/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/responsive.bootstrap.min.js') }}"></script>
-    {{-- <script src="{{asset('vendors/datatables.net/js/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-buttons/js/dataTables.buttons.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.flash.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.html5.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-buttons/js/buttons.print.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-keytable/js/dataTables.keyTable.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-responsive/js/dataTables.responsive.min.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js')}}"></script>
-    <script src="{{asset('vendors/datatables.net-scroller/js/dataTables.scroller.min.js')}}"></script> --}}
-
+    
     <!-- SweetAlert -->
     <script src="{{ asset('js/lib/sweetAlert/sweetalert2.min.js') }}"></script>
 
@@ -451,6 +362,10 @@
     <!-- Moment timezone -->
     <script src="{{ asset('js/lib/momentTz/moment-timezone-with-data-2012-2022.min.js') }}"></script>
 
+    <!-- Chosen -->
+    <script src="{{asset('js/lib/chosen/chosen.jquery.min.js')}}"></script>
+    <script src="{{asset('js/lib/chosen/chosen.proto.min.js')}}"></script>
+    
     <!-- Vue JS -->
     <script src="{{ asset('js/vue.js') }}"></script>
     <script src="{{ asset('js/axios.min.js') }}"></script>

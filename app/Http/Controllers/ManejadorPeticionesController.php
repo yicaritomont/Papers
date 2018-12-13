@@ -42,7 +42,10 @@ class ManejadorPeticionesController
     public function registrarDocumento($token,$documento)
     {
         $controller = new SignaBlockController;
-        $response = $controller->documento($token,$documento);        
+        $response = $controller->documento($token,$documento); 
+        print_r($response);
+        var_dump($response);
+        exit();       
         if($response)
         {
             if($response->result == "OK")

@@ -37,32 +37,9 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('elegirCompania', array('as' => 'elegirCompania', 'uses'=>'UserController@ShowMultiple'));
     Route::get('enviaCompania/{id}',array('as'=>'enviaCompania','uses'=>'UserController@PostMultiple'));
 
-    // Consultar los usuarios de una compañia
-    Route::get('user/{company?}', 'UserController@index')->name('users.company');
-
-    //Consultar los usuarios de una compañia D?
-    Route::get('users/company/{company?}', 'UserController@index')->name('users.company');
-
-    //Consultar los inspectores de una compañia D?
-    Route::get('inspectors/company/{company?}', 'InspectorController@index')->name('inspectors.company');
-
-    //Vista tabla de agendas D?
-    Route::get('inspectoragendas/list', 'InspectorAgendaController@list')->name('inspectoragendas.view');
-
-    //Consultar agendas de un inspector y en una vista dada D?
-    // Route::get('inspectoragendas/inspector/{id}/{view}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
-
-    //Acciones ajax de agendas
-    Route::post('inspectoragendas/ajax', 'InspectorAgendaController@storeAjax')->name('inspectoragendas.store.ajax');
-    Route::put('inspectoragendas/ajax/{inspectoragenda}', 'InspectorAgendaController@updateAjax')->name('inspectoragendas.update.ajax');
-    Route::delete('inspectoragendas/ajax/{inspectoragenda}', 'InspectorAgendaController@destroyAjax')->name('inspectoragendas.destroy.ajax');
-
     //Eventos Calendario
-    Route::get('inspectionappointments/events', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
-    Route::get('inspectoragendas/events', 'InspectorAgendaController@events')->name('inspectoragendas.events');
-
-    //Consultar las agendas de un inspector
-    // Route::get('inspectoragendas/{id}', 'InspectorAgendaController@inspector')->name('inspectoragendas.inspector');
+    Route::post('inspectionappointments/events/{id?}/{company?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
+    Route::post('inspectoragendas/events/{id?}/{company?}', 'InspectorAgendaController@events')->name('inspectoragendas.events');
 
     //Completar las citas
     Route::put('inspectionappointments/{inspectionappointment}/complete', 'InspectionAppointmentController@complete')->name('inspectionappointments.complete');
@@ -71,26 +48,27 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::post('inspectionappointments/{inspectionappointment}/format', 'InspectionAppointmentController@format')->name('inspectionappointments.format');
 
     //Actualización de campos desplegables
-    // Route::post('inspectionappointments/subtypes', 'InspectionAppointmentController@subtypes')->name('inspectionappointments.subtypes');
-    Route::get('inspectiontypes/{id}/subtypes', 'InspectionTypeController@subtypes')->name('inspectionappointments.subtypes');
-    // Route::post('inspectoragendas/cities', 'InspectorAgendaController@cities')->name('inspectoragendas.cities');
-    Route::get('country/{id}/cities', 'GeneralController@cities')->name('general.cities');
-    Route::get('companies/{company}/clients', 'CompanyController@clients')->name('company.clients');
+    Route::get('inspectiontypes/subtypes/{id?}', 'InspectionTypeController@subtypes')->name('inspectionappointments.subtypes');
+    Route::get('country/cities/{id?}', 'GeneralController@cities')->name('general.cities');
+    Route::get('companies/clients/{company?}', 'CompanyController@clients')->name('company.clients');
+    Route::get('inspectors/contracts/{id?}', 'InspectorController@contracts')->name('inspectors.contracts');
+
+    //Actualización campo informativo
+    Route::get('contracts/clients/{id?}', 'ContractController@clients')->name('contracts.clients');
 
     // ????
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');
 
-    //Consultar las citas de un inspector
-    Route::get('inspectionappointments/inspector/{id?}', 'InspectionAppointmentController@inspector')->name('inspectionappointments.inspector');
-
     //Consultar datos para dataTable
-    Route::get('datatable/{model}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatable')->name('datatable');
+    Route::post('datatable/{model}/{company?}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatable')->name('datatable');
+    
+    //Consultar datos para dataTable con una consulta relacionada
+    // Route::get('datatableCompany/{model}/{company}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatableWhere')->name('datatableCompany');
 
-    //Consultar los usuarios de una compañia para dataTable
+    //Consultar por una compañia para dataTable
     Route::get('users/companyTable/{company}', 'UserController@companyTable')->name('users.companyTable');
-
-    //Consultar los inspectores de una compañia para dataTable
     Route::get('inspectors/companyTable/{company}', 'InspectorController@companyTable')->name('inspectors.companyTable');
+    Route::get('clients/companyTable/{company}', 'ClientController@companyTable')->name('clients.companyTable');
 
     Route::resource('users', 'UserController');
     Route::resource('roles', 'RoleController');
