@@ -118,11 +118,11 @@ var vm = new Vue({
                 }).on('fileloaded', function(event, file, previewId, index, reader) {
                     var domHT = document.getElementById(previewId,index);
                     vm.setInput(domHT,index);
-                }).on('filepreajax', function() {
+                }).on('filepreajax', function(event) {
                     var response = vm.verifyNames();
                     if( response.failed.length > 0 ){
                         vm.renderizarError(response.failed);
-                        return false;
+                        event.stopPropagation();
                     }else{
 
                     }
@@ -211,7 +211,7 @@ var vm = new Vue({
         setInput( dom , index ){
             var input = document.createElement("INPUT");
             input.setAttribute("type", "text");
-            input.setAttribute("class","form-control");
+            input.setAttribute("class","form-control name-lb");
             input.setAttribute("placeholder","Ingrese el nombre del archivo");
             input.setAttribute("name","name_file_"+index);
             dom.insertBefore(input,dom.children[1]);
@@ -231,13 +231,24 @@ var vm = new Vue({
             return fields;
         },
         renderizarError( errors ){
-            swal("Good job!", "You clicked the button!", "success", {
-                button: "Aww yiss!",
+            swal(this.messages.error_name_file, this.messages.des_error_name_file, "error", {
+                button: this.messages.btn_verify,
             });
             for( var i = 0 ; i < errors.length; i++ ){
-
+                errors[i].style.border = "2px solid red";
             }
-        }
+        },
+        changeBorder( e ){
+            var input = e.target;
+            var value = e.target.value;
+            if( value.trim() != "" ){
+                input.style.border = "2px solid green";
+            }else{
+                input.style.border = "2px solid red";
+            }
+        }   
     }
 });
 
+          
+$(document).on('keyup','.name-lb',vm.changeBorder);
