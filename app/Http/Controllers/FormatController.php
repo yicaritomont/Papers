@@ -259,6 +259,7 @@ class FormatController extends Controller
     public function upload( Request $request )
     {
         $response = array();
+        dd($request->all());
         //Obtenemos el id del formato
         $format_id = $request->input('formato_id');
         $file_id = $request->input('file_id');
@@ -411,5 +412,11 @@ class FormatController extends Controller
 			$response['error'] = "<li>".$text."</li>";
 		}
 		return $response;
-	}
+    }
+    
+    public function getAjaxMessage()
+    {
+        $words = \Lang::get('words');
+        return response()->json($words);
+    }
 }

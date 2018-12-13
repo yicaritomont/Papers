@@ -145,6 +145,9 @@ return[
     'not_upload'         =>  'El archivo {file} no pudo ser subido',
     'not_ext_valid'      =>  'La extensión del archivo {file} no esta permitida',
     'exceeded_weight'    =>  'El archivo {file} ha excedido el limite de tamaño de 20MB',
-    'file_not_valid'     =>  'El archivo {file} no es valido'
+    'file_not_valid'     =>  'El archivo {file} no es valido',
+    'error_name_file'    =>  'Error! en el nombre archivos',
+    'des_error_name_file'=>  'Debe ingresar el nombre en todos los archivos',
+    'btn_verify'         =>  'Verificar'
  ];
 ?>

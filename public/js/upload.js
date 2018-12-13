@@ -14,7 +14,16 @@ var props = {
     'input'             :   '#input-supports',
     'lang'              :   $('#lang').val(),
     '_token'            :   $("[name='_token']").val(),
-    'formato_id'        :   $("[name='formato']").val()
+    'formato_id'        :   $("[name='formato']").val(),
+    OBJECT_PARAMS       : '<param name="controller" value="true" />\n' +
+                            '      <param name="allowFullScreen" value="true" />\n' +
+                            '      <param name="allowScriptAccess" value="always" />\n' +
+                            '      <param name="autoPlay" value="false" />\n' +
+                            '      <param name="autoStart" value="false" />\n'+
+                            '      <param name="quality" value="high" />\n',
+    DEFAULT_PREVIEW     : '<div class="file-preview-other">\n' +
+                        '   <span class="{previewFileIconClass}">{previewFileIcon}</span>\n' +
+                        '</div>'
 };
 
 var upload = {
@@ -55,6 +64,9 @@ var upload = {
         'gif'   : '<i class="far fa-images text-warning"></i>',
         'wav'   : '<i class="fas fa-volume-up text-info"></i>',
         'ogg'   : '<i class="fas fa-volume-up text-info"></i>'
+    },
+    previewTemplates: {
+
     }
 };
 
@@ -63,14 +75,24 @@ var vm = new Vue({
     data    :   {
         language: props.lang,
         path: null,
-        types   : []
+        types   : [],
+        messages: []
     },
     mounted()
     {
+        this.getMessages();
         this.getInitialData();
         this.getAllExt();
     },
     methods   : {
+        getMessages()
+        {
+            axios.post('../../getMessageAjax')
+            .then(function(response){
+                vm.messages = response.data;
+            })
+            .catch(function(error){console.log(error)});
+        },
         getAllExt ()
         {
             for( var i in exts ){
@@ -93,6 +115,17 @@ var vm = new Vue({
 
                 }).on('filebatchuploadsuccess', function(event, data) {
                     vm.initData(data.jqXHR.responseJSON, vm.path );
+                }).on('fileloaded', function(event, file, previewId, index, reader) {
+                    var domHT = document.getElementById(previewId,index);
+                    vm.setInput(domHT,index);
+                }).on('filepreajax', function() {
+                    var response = vm.verifyNames();
+                    if( response.failed.length > 0 ){
+                        vm.renderizarError(response.failed);
+                        return false;
+                    }else{
+
+                    }
                 });
             })
             .catch(function (error) {
@@ -174,6 +207,36 @@ var vm = new Vue({
             theBlob.lastModifiedDate = new Date();
             theBlob.name = fileName;
             return theBlob;
+        },
+        setInput( dom , index ){
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "text");
+            input.setAttribute("class","form-control");
+            input.setAttribute("placeholder","Ingrese el nombre del archivo");
+            input.setAttribute("name","name_file_"+index);
+            dom.insertBefore(input,dom.children[1]);
+        },
+        verifyNames(){
+            var fields = {'success' : [] , 'failed' : []};
+            var base = "name_file_";
+            var names = document.querySelectorAll("[name^='"+base+"']");
+            for( var i = 0 ; i < names.length ; i++ ){
+                var value = names[i].value;
+                if( value.trim() == "" ){
+                    fields.failed.push(names[i]);
+                }else{
+                    fields.success.push(names[i]);
+                }
+            }
+            return fields;
+        },
+        renderizarError( errors ){
+            swal("Good job!", "You clicked the button!", "success", {
+                button: "Aww yiss!",
+            });
+            for( var i = 0 ; i < errors.length; i++ ){
+
+            }
         }
     }
 });
