@@ -1,3 +1,5 @@
+var guiaAgendas = [];
+
 $(window).ready(inicial);
 
 $(window).resize(function(){
@@ -65,8 +67,6 @@ function inicial (argument)
     datePickerObj.startDate = new Date();
 
     $('.input-group.date-range-inputs input').datepicker(datePickerObj);
-
-    // $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
 }
 
 // Si existe el campo icon cargue el archivo con todos los iconos de font awesome
@@ -85,6 +85,81 @@ if($('#icon')[0])
     });
 }
 
+// Pintar las citas en el calendario de acuerdo a la compañia seleccionada
+$('#citas-compania').on('change', function(event){
+    var companyVal = $(this).val();
+    
+    $('.fc-day.bgEvent').removeClass('bgEvent');
+    $('#appointment_loading').css('display', 'inline-block');
+    $('#company_id').val(companyVal);
+
+    if(companyVal){
+        $('#subtypeFilter').attr('disabled', false);
+    }else{
+        $('#subtypeFilter').attr('disabled', true);
+    }
+
+    // Se eliminan los origines de los eventos
+    $("#calendar").fullCalendar('removeEventSources');
+
+    // Se añade un origen de evento de acuerdo a la compañía seleccionada
+    $("#calendar").fullCalendar('addEventSource', {
+        url:$('#url').val()+'/events/company/'+companyVal,
+        type:'POST',
+        data:{ _token: window.Laravel.csrfToken},
+        success: function(){
+            $('#appointment_loading').hide();
+
+            //Cargue los subtipos
+            $('#subtypeFilter').trigger('change');
+
+            //Llene el select clientes
+            fillSelect(window.Laravel.url+'/companies/clients/'+companyVal, '#client_id');
+        }
+    });
+});
+
+$('#subtypeFilter').on('change', function(event, edit){
+    $('#inspection_subtype_id').val($(this).val());
+
+    if($(this).val()){
+       // ajax parameters: url, Method, data, Function done, Function error(optional)
+        ajax(
+            window.Laravel.url+'/inspectoragendas/subtype',
+            'POST',
+            {_token: $('#_token').val(),
+            subtype_id: $(this).val(),
+            company_id: $('#citas-compania').val()},
+            (res) => {
+                if(res.msg){
+                    $('.fc-day.bgEvent').removeClass('bgEvent');
+                    swal({
+                        type: 'warning',
+                        titleText: res.msg
+                    });
+                }else{
+                    guiaAgendas = [];
+                    $.each(res.agendas, function(key, value){
+                        guiaAgendas.push(value);
+                    });
+                    
+                    colorearAgendas();
+                }
+            }
+        ); 
+    }else{
+        $('.fc-day.bgEvent').removeClass('bgEvent');
+    }
+});
+
+function colorearAgendas()
+{
+    $('.fc-day.bgEvent').removeClass('bgEvent');
+    $.each(guiaAgendas, function(key, objAgenda){
+        $('.fc-day[data-date="'+objAgenda+'"]').addClass('bgEvent');
+    });
+}
+
 //Todos los select que requieran una petición ajax para llenar otro select
 $('#company_id').on('change', function(event, edit){
     fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#client_id', edit);
@@ -94,21 +169,26 @@ $('.inspection_type_id').on('change',function(event, edit){
     fillSelect(window.Laravel.url+'/inspectiontypes/subtypes/'+$(this).val(), '.inspection_subtype_id', edit);
 });
 
-$('.inspector-contract').on('change',function(event, edit){
+/* $('.inspector-contract').on('change',function(event, edit){
     fillSelect(window.Laravel.url+'/inspectors/contracts/'+$(this).val(), '#contract_id', edit, () => {
         $('#contract_id').trigger('change');
     });
-});
+}); */
 
 $('.country').on('change',function(event, edit){
     fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit);
 });
 
-// Actualización campo cliente en base al formato seleccionado
+$('.client-contract').on('change', function(event, edit){
+    console.log('Cliente cambio');
+    fillSelect(window.Laravel.url+'/clients/contracts/'+$(this).val(), '#contract_id', edit);
+});
+
+/* // Actualización campo cliente en base al formato seleccionado
 $('#contract_id').on('change',function(event){
     $('#client_id_loading').css('display', 'inline-block');
 
-    // ajax parameters: url, Method, Function done, Function error(optional)
+    // ajax parameters: url, Method, data, Function done, Function error(optional)
     ajax(
         window.Laravel.url+'/contracts/clients/'+$(this).val(),
         'GET',
@@ -118,7 +198,7 @@ $('#contract_id').on('change',function(event){
             $('#client_id_loading').hide();
         }
     );
-});
+}); */
 
 // Evento para ocultar o mostrar elementos sin datos consultados
 $(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
@@ -371,7 +451,7 @@ $(document).on('submit','.formDelete',function(e)
 {
     e.preventDefault();
 
-    // ajax parameters: url, Method, Function done, Function error(optional)
+    // ajax parameters: url, Method, data, Function done, Function error(optional)
     ajax(
         $(this).attr('action'),
         'POST',
@@ -408,7 +488,7 @@ $(document).on('submit','.formDelete',function(e)
     );
 });
 
-// Ajax para los formularios actualizar y eliminar de los calendarios
+// Ajax para los formularios crear, actualizar y eliminar de los calendarios
 $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
     var idForm = $(this).attr('id');
     var modal = this.dataset.modal;
@@ -420,7 +500,7 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
 
     e.preventDefault();
 
-    // ajax parameters: url, Method, Function done, Function error(optional)
+    // ajax parameters: url, Method, data, Function done, Function error(optional)
     ajax(
         $(this).attr('action'),
         'POST',
@@ -438,6 +518,9 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
                     type: 'success',
                     title: res.status
                 });
+
+                //Actualizar los días disponibles
+                $('#subtypeFilter').trigger('change');
 
                 changeTopToast();
             }else{
@@ -492,7 +575,7 @@ $('.showCalendar').on('click', function(e){
     if($(objElement.data('toggle')).css('display') == 'block'){
         slideForms(objElement);
     }else{
-        // ajax parameters: url, Method, Function done, Function error(optional)
+        // ajax parameters: url, Method, data, Function done, Function error(optional)
         ajax(
             $(this).attr('data-route'),
             'GET',
@@ -524,17 +607,18 @@ $('.showCalendar').on('click', function(e){
 
 function showAppointment(Cita){
     $('#cell-request_date').html(moment.tz(Cita.request_date.replace(' ', 'T')+'Z', moment.tz.guess()).format('MMMM DD YYYY, h:mm:ss a'));
-    $('#cell-inspector').html(Cita.inspector.user.name);
     $('#cell-inspectionType').html(Cita.inspection_subtype.inspection_types.name);
     $('#cell-inspectionSubtype').html(Cita.inspection_subtype.name);
     $('#cell-client').html(Cita.client.user.name);
     $('#cell-contract').html(Cita.contract.name);
 
     if(Cita.appointment_states_id != 1){
+        $('#cell-inspector').html(Cita.inspector.user.name).parent().show();
         $('#cell-assignment_date').html(moment.tz(Cita.assignment_date.replace(' ', 'T')+'Z', moment.tz.guess()).format('MMMM DD YYYY, h:mm:ss a')).parent().show();
         $('#cell-estimated_start_date').html(moment(Cita.estimated_end_date, 'YYYY-MM-DD').format('dddd D MMMM YYYY')).parent().show();
         $('#cell-estimated_end_date').html(moment(Cita.estimated_start_date, 'YYYY-MM-DD').format('dddd D MMMM YYYY')).parent().show();
     }else{
+        $('#cell-inspector').empty().parent().hide();
         $('#cell-assignment_date').empty().parent().hide();
         $('#cell-estimated_start_date').empty().parent().hide();
         $('#cell-estimated_end_date').empty().parent().hide();
@@ -549,7 +633,7 @@ $(document).on('click', '.editCalendar', function(e){
     if($(objElement.data('toggle')).css('display') == 'block'){
         slideForms(objElement);
     }else{
-        // ajax parameters: url, Method, Function done, Function error(optional)
+        // ajax parameters: url, Method, data, Function done, Function error(optional)
         ajax(
             $(this).attr('data-route'),
             'GET',
@@ -718,7 +802,7 @@ function calendar(obj){
         header:{
             "left":"prev,next today,createButton",
             "center":"title",
-            "right":"month,agendaWeek,listMonth"
+            "right":"month,listMonth"
         },
         events: obj.events,
         eventClick: obj.eventClick,
@@ -726,7 +810,15 @@ function calendar(obj){
         dayClick: obj.dayClick,
         editable: true,
         eventDrop: obj.eventDrop,
-        // themeSystem: 'bootstrap4'
+        eventDragStart: obj.eventDragStart,
+        eventDragStop: obj.eventDragStop,
+        /* eventAfterAllRender: function (){
+            $('.fc-next-button, .fc-prev-button').on('click', colorearAgendas);
+        }, */
+        viewRender: function(view, element) {
+            colorearAgendas();
+        }
+        // themeSystem: 'bootstrap4'$('#calendar').fullCalendar('renderEvents', vectorEventos);
     });
 }
 
@@ -737,7 +829,7 @@ function fillSelect(url, select, edit, funcRes){
 
     $(select+'_loading').css('display', 'inline-block');
 
-    // ajax parameters: url, Method, Function done, Function error(optional)
+    // ajax parameters: url, Method, data, Function done, Function error(optional)
     ajax(
         url,
         'GET',
@@ -771,7 +863,7 @@ function llenarCabeceraFormato()
         $('#contenedor_formato').hide();
     }else if(select != "")
     {
-        // ajax parameters: url, Method, Function done, Function error(optional)
+        // ajax parameters: url, Method, data, Function done, Function error(optional)
         ajax(
             window.Laravel.url+"/ajxllenarCabeceraFormato",
             'GET',

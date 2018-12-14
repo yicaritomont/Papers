@@ -208,9 +208,8 @@ class CompanyController extends Controller
         }
     }
 
-    public function clients($id = null)
+    public function clients($id)
     {
-
         $result = Client::join('users', 'users.id', '=', 'clients.user_id')
             ->join('user_company', 'user_company.user_id', '=', 'users.id')
             ->select('clients.id', 'users.name')

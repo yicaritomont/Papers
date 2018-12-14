@@ -8,15 +8,26 @@
     
     <div class="row">
         <div class="col-xs-12 col-lg-8 col-lg-offset-2">
+
+            <div class="inputs-header">
+                @if(auth()->user()->hasRole('Admin'))
+                    {!! Form::select('citas-compania',$companies, null, ['class' => 'input-body select2 form-control', 'id' => 'citas-compania', 'placeholder' => 'Compañias']) !!}
+                @endif
+                {{-- @if(isset($clientAuth)) --}}
+                    {!! Form::select('subtypes',$subtypes, null, ['class' => 'input-body select2 form-control', 'id' => 'subtypeFilter', 'placeholder' => 'Agendas disponibles por', (auth()->user()->hasRole('Admin')) ? 'disabled' : '']) !!}
+                {{-- @endif --}}
+            </div>
+
             <div class="panel panel-default">
                 <div class="panel-heading">
                     @if(isset($inspector))
-                        <h3 class="modal-title">{{ count($inspector->inspection_appointments) }} {{ trans_choice('words.Inspectionappointment', count($inspector->inspection_appointments)) }}  @lang('words.Of') {{ $inspector->user->name }}  </h3>
-                    @elseif(isset($company))
-                        <h3 class="modal-title">@choice('words.Inspectionappointment', 2)</h3>
+                        <h3 class="modal-title inline-block">{{ count($inspector->inspection_appointments) }} {{ trans_choice('words.Inspectionappointment', count($inspector->inspection_appointments)) }}  @lang('words.Of') {{ $inspector->user->name }}  </h3>
+                    @elseif(isset($quantity))
+                        <h3 class="modal-title inline-block">{{ $quantity }} {{ trans_choice('words.Inspectionappointment', $quantity) }} </h3>
                     @else
-                        <h3 class="modal-title">{{ $quantity }} {{ trans_choice('words.Inspectionappointment', $quantity) }} </h3>
+                        <h3 class="modal-title inline-block">@choice('words.Inspectionappointment', 2)</h3>
                     @endif
+                    <div class="loading" id="appointment_loading"></div>
                 </div>
                 <div class="panel-body">
                     <div id="calendar"></div>
@@ -124,6 +135,15 @@
                                     <span class="input-group-addon">@lang('words.To')</span>
                                     <input type="text" class="form-control input-date" name="end_date" id="end_date" autocomplete="off">
                                 </div>
+                                <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
+                                    {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
+                                    {{-- @if(auth()->user()->hasRole('Admin'))
+                                        {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control inspector-contract', 'placeholder'=>trans('words.ChooseOption')]) !!}
+                                    @else --}}
+                                        {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control', 'placeholder'=>trans('words.ChooseOption')]) !!}
+                                    {{-- @endif --}}
+                                    <div class="errors"></div>
+                                </div>
                                 <div class="errors"></div>
                             </div>
                             <!-- Submit Form Button -->                        
@@ -178,7 +198,7 @@
                         </table>
                     </div>
 
-                    @can('add_formats')
+                    {{-- @can('add_formats')
                         {!! Form::open(['method' => 'POST', 'class' => 'formCalendar formSlide', 'id' => 'fillFormat', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
                             <div id="contenedorHtml">
                                 @include('format._form')
@@ -186,7 +206,7 @@
                             <input type="hidden" name="format_expediction" id="format_expediction">
                             <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.Create') !!}</span>
                         {!! Form::close() !!}
-                    @endcan
+                    @endcan --}}
                 
                 </div>
                 <div class="modal-footer">
@@ -196,7 +216,6 @@
       
         </div>
     </div>
-
     <input type="hidden" id="url" value="{{route('inspectionappointments.index')}}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <input type="hidden" id="selectOption" value="{{trans('words.ChooseOption')}}">
@@ -211,18 +230,54 @@
         calendarObj.customButtons = null;
 
         @if(isset($inspector))
-            calendarObj.events = {url: $('#url').val()+'/events/{{ $inspector->id }}'};
+            calendarObj.events = {url: $('#url').val()+'/events/inspector/{{ $inspector->id }}'};
         @elseif(isset($company))
-            calendarObj.events = {url: $('#url').val()+'/events/none/{{ $company->slug }}'};
+            calendarObj.events = {url: $('#url').val()+'/events/company/{{ $company->slug }}'};
+        @elseif(isset($clientAuth))
+            calendarObj.events = {url: $('#url').val()+'/events/client/{{ $clientAuth }}'};
         @else
-            calendarObj.events = {url: $('#url').val()+'/events'};
+            {{-- calendarObj.events = {url: $('#url').val()+'/events'}; --}}
+            calendarObj.events = [];
         @endif
 
         calendarObj.events.type = 'POST';
         calendarObj.events.data = { _token: window.Laravel.csrfToken };
 
+        {{-- calendarObj.events = function(start, end, timezone, callback)
+        {
+            $.ajax({
+                url: $('#url').val()+'/events/client/{{ $clientAuth }}',
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    _token: window.Laravel.csrfToken
+                },
+                success: function(doc) {
+                    var events = [];
+                    $(doc).each(function(key, event) {
+                        console.log(event);
+                        var condicion = false;
+                        events.push({
+                            appointment_states_id:  condicion? 'hoi': 'chau',
+                            client_id:              event.client_id,
+                            title:                  event.title,
+                            start:                  event.start,
+                            end:                    event.end,
+                            color:                  event.color,
+                            format_id:              event.format_id,
+                            id:                     event.id,
+                            inspector_id:           event.inspector_id,
+                        });
+                    });
+                    console.log(events);
+                    callback(events);
+                }
+            });            
+        } --}}
+
         calendarObj.eventClick = function(event)
         {
+            console.log(event);
             //Resetar y setear el action el formulario de completar si existe el elemento
             if($('#completeAppointment')[0])
             {
@@ -279,23 +334,37 @@
         @can('add_inspectionappointments')
             calendarObj.select = function(startDate, endDate, jsEvent, view)
             {
+                
+                //if($('.fc-day[data-date="'+date.format()+'"]').hasClass('bgEvent')){
                 //Separar en fecha[0] y hora[1]
                 var start = startDate.format().split('T');
 
                 //Como al seleccionar los días la fecha final al día le agrega uno de más, hay que hacer la conversión
                 var ed = new Date(endDate.format());
                 ed = ed.getFullYear()+'-'+ ("0" + (ed.getMonth() + 1)).slice(-2) +'-'+("0" + ed.getDate()).slice(-2);
-            
+
                 //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
                 if(start != ed){
-                    limpiarForm(start[0], ed, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
-                    $('#modalCreate').modal('show');
+                    var filterDays = $('.fc-day').filter(function( index ){
+                        return $(this).attr('data-date') >= start[0] && $(this).attr('data-date') <= ed && $(this).hasClass('bgEvent');
+                    }).length;
+
+                    var selectDays = $('.fc-day').filter(function( index ){
+                        return $(this).attr('data-date') >= start[0] && $(this).attr('data-date') <= ed;
+                    }).length;
+
+                    if(filterDays == selectDays){
+                        limpiarForm(start[0], ed, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
+                        $('#modalCreate').modal('show');
+                    }
                 }
             };
             calendarObj.dayClick = function(date, jsEvent, view)
             {
-                limpiarForm(date.format(), null, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
-                $('#modalCreate').modal('show');
+                if($('.fc-day[data-date="'+date.format()+'"]').hasClass('bgEvent')){
+                    limpiarForm(date.format(), null, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
+                    $('#modalCreate').modal('show');
+                }
             };
 
             calendarObj.customButtons = {
@@ -314,21 +383,60 @@
         
         calendarObj.eventDrop = function(calEvent, delta, revertFunc)
         {
-            @can('edit_inspectionappointments')
-                var end = calEvent.end.format().split('T');
+            if(calEvent.inspector_id){
+                @can('edit_inspectionappointments')
+                    var end = calEvent.end.format().split('T');
 
-                $('#editAppointment').attr('action', $('#url').val()+'/'+calEvent.id);
-                $('#modalEditDel #start_date').val(calEvent.start.format());
-                $('#modalEditDel #end_date').val(end[0]);
-                $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
+                    $('#editAppointment').attr('action', $('#url').val()+'/'+calEvent.id);
+                    $('#modalEditDel #start_date').val(calEvent.start.format());
+                    $('#modalEditDel #end_date').val(end[0]);
+                    $('#modalEditDel #edit-inspector_id').val(calEvent.inspector_id);
 
-                confirmModal('#editAppointment', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
-            @else
+                    confirmModal('#editAppointment', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
+                @else
 
-                swal('Error','No puede realizar esta acción, no tienes permisos','error');
+                    swal('Error','No puede realizar esta acción, no tienes permisos','error');
+                    revertFunc();
+                
+                @endcan
+            }else{
+                swal('Error', 'No puede editar una cita solicitada', 'error');
                 revertFunc();
-            
-            @endcan
+            }
+        };
+
+        calendarObj.eventDragStart = function( event, jsEvent, ui, view )
+        {
+            ajax(
+                window.Laravel.url+'/inspectoragendas/subtype',
+                'POST',
+                {_token: $('#_token').val(),
+                subtype_id: $('#subtypeFilter').val(),
+                company_id: $('#citas-compania').val(),
+                inspector_id: event.inspector_id},
+                (res) => {
+                    console.log(res);
+                    if(res.msg){
+                         $('.fc-day.bgEvent').removeClass('bgEvent');
+                        /*swal({
+                            type: 'warning',
+                            titleText: res.msg
+                        }); */
+                    }else{
+                        guiaAgendas = [];
+                        $.each(res.agendas, function(key, value){
+                            guiaAgendas.push(value);
+                        });
+                        
+                        colorearAgendas();
+                    }
+                }
+            );
+        };
+
+        calendarObj.eventDragStop = function( event, jsEvent, ui, view )
+        {
+            $('#subtypeFilter').trigger('change');
         };
 
         //Se llama la función que inicializará el calendario de acuerdo al objeto enviado

@@ -480,7 +480,7 @@ tr.child ul.dtr-details li{
     border: 2px solid #aaccf0;
     border-radius: 50%;
     border-top-color: #2a3f54;
-    vertical-align: top;
+    vertical-align: sub;
     animation: spin 1s ease-in-out infinite;
     -webkit-animation: spin 1s ease-in-out infinite;
 }
@@ -528,4 +528,20 @@ tr.child ul.dtr-details li{
 
 .has-error .select2-selection{
     border: 1px solid #c7002d !important;
+}
+
+.bgEvent{
+    background-color: #efefef !important;
+}
+
+.inline-block{
+    display: inline-block;
+}
+
+.inputs-header span.select2, .inputs-header select{
+    margin-bottom: 10px;
+}
+
+.fc-list-empty-wrap2{
+    position: relative;
 }

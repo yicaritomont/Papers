@@ -385,7 +385,7 @@
     <!-- Js to application -->
     <script src="{{asset('js/applicationEvents.js')}}"></script>
 
-	   @yield('scripts')
+    @yield('scripts')
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('build/js/custom.js')}}"></script>

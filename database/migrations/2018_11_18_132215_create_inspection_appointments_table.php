@@ -15,7 +15,7 @@ class CreateInspectionAppointmentsTable extends Migration
     {
         Schema::create('inspection_appointments', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('inspector_id');
+            $table->unsignedInteger('inspector_id')->nullable();
             $table->unsignedInteger('appointment_states_id')->default(1);
             $table->unsignedInteger('appointment_location_id');
             $table->unsignedInteger('inspection_subtype_id');

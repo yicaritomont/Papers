@@ -160,5 +160,6 @@ return[
 
     'ErrorLinkFormat' => 'Could not link the format with the appointment.',
     'Select' => 'Select',
+    'NoMatches' => 'No matches',
 ];
 ?>

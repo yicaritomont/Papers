@@ -11,7 +11,7 @@
     <div class="errors"></div>
 </div>
 
-<div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
+{{-- <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
     {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
     @if(auth()->user()->hasRole('Admin'))
         {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control inspector-contract', 'placeholder'=>trans('words.ChooseOption')]) !!}
@@ -19,9 +19,9 @@
         {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control', 'placeholder'=>trans('words.ChooseOption')]) !!}
     @endif
     <div class="errors"></div>
-</div>
+</div> --}}
 
-<div class="form-group @if ($errors->has('inspection_type_id')) has-error @endif">
+{{-- <div class="form-group @if ($errors->has('inspection_type_id')) has-error @endif">
     {!! Form::label('inspection_type_id', trans_choice('words.InspectionType', 1)) !!}
     {!! Form::select('inspection_type_id',$inspection_types,null, ['class' => ['input-body select2 form-control', 'inspection_type_id'] ,'require', 'placeholder'=>trans('words.ChooseOption')]) !!}
     <div class="errors"></div>
@@ -34,11 +34,11 @@
         <option selected value>@lang('words.ChooseOption')</option>
     </select>
     <div class="errors"></div>
-</div>
+</div> --}}
 
 <div class="form-group @if ($errors->has('appointment_location_id')) has-error @endif">
     {!! Form::label('appointment_location_id', trans('words.AppointmentLocation')) !!}
-    {!! Form::select('appointment_location_id',$appointment_locations, null, array('class' => 'input-body select2 form-control','require')) !!}
+    {!! Form::select('appointment_location_id',$appointment_locations, null, ['class' => 'input-body select2 form-control']) !!}
     <div class="errors"></div>
 </div>
 
@@ -47,6 +47,15 @@
     {!! Form::select('contract_id',$contracts, null, ['class' => 'input-body','require', 'placeholder'=>trans('words.ChooseOption')]) !!}
     <div class="errors"></div>
 </div> --}}
+
+@if( !auth()->user()->hasRole('Cliente') )
+    <div class="form-group @if ($errors->has('client_id')) has-error @endif">
+        {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
+        {{-- {!! Form::text('client_id', trans('words.Select').'  '.trans_choice('words.Contract', 1), ['class' => 'input-body form-control','require', 'disabled']) !!} --}}
+        {!! Form::select('client_id',$clients, null, ['class' => 'input-body select2 form-control client-contract', 'placeholder'=>trans('words.ChooseOption')]) !!}
+        <div class="errors"></div>
+    </div>
+@endif
 
 <div class="form-group @if ($errors->has('contract_id')) has-error @endif">
     {!! Form::label('contract_id', trans_choice('words.Contract', 1)) !!}
@@ -64,13 +73,6 @@
     {!! Form::select('client_id',$clients, null, ['class' => 'input-body','require', 'placeholder'=>trans('words.ChooseOption')]) !!}
     <div class="errors"></div>
 </div> --}}
-
-<div class="form-group @if ($errors->has('client_id')) has-error @endif">
-    {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
-    <div class="loading" id="client_id_loading"></div>
-    {!! Form::text('client_id', trans('words.Select').'  '.trans_choice('words.Contract', 1), ['class' => 'input-body form-control','require', 'disabled']) !!}
-    <div class="errors"></div>
-</div>
 
 {{-- <div class="form-group @if ($errors->has('estimated_start_date')) has-error @endif">
     {!! Form::label('estimated_start_date', trans('words.StartDate')) !!}
@@ -93,3 +95,7 @@
 @if(isset($agenda))
     <input type="hidden" name="inspector_id" value="{{$agenda['inspector_id']}}">
 @endif
+
+<input type="hidden" name="inspection_subtype_id" id="inspection_subtype_id">
+
+<input type="hidden" name="company_id" id="company_id">

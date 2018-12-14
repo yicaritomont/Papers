@@ -157,5 +157,6 @@ return[
 
     'ErrorLinkFormat' => 'No se pudo vincular el formato con la cita.',
     'Select' => 'Seleccione',
+    'NoMatches' => 'No hay coincidencias',
  ];
 ?>

@@ -240,4 +240,23 @@ class ClientController extends Controller
             ]);
         }
     }
+
+    /**
+     * Retorna los contractos del inspector seleccionado
+     */
+    public function contracts($id = null)
+    {
+        if($id){
+            $contracts = Client::find($id)->contracts->map(function($item, $key){
+                return ['id' => $item->id, 'name' => $item->name];
+            })->prepend(['id' => '', 'name' => trans('words.ChooseOption')]);
+        }else{
+            $contracts = [['id' => '', 'name' => trans('words.ChooseOption')]];
+        }
+        // $contracts = Client::find($id)->contracts->pluck('name', 'id')->prepend(trans('words.ChooseOption'), 0);
+
+        echo json_encode([
+            'status' => $contracts
+        ]);
+    }
 }
