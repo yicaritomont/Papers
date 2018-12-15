@@ -22,4 +22,13 @@ class Client extends Model
         return $this->hasMany(Contract::class);
     }
 
+    public static function getClientContractsById($id)
+    {
+        $contracts = Contract::with('client')->whereHas('client', function($q) use($id){
+            $q->where('id', $id);
+        })->get();
+
+        return $contracts;
+    }
+
 }

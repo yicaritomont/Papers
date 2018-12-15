@@ -34,4 +34,13 @@ class Company extends Model
         return $this->hasMany(Contract::class);
     }
 
+    public static function getCompanyClientsById($id)
+    {
+        $clients = Client::with('user')->whereHas('user.companies', function($q) use($id){
+            $q->where('companies.id', $id);
+        })->get();
+
+        return $clients;
+    }
+
 }

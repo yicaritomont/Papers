@@ -54,11 +54,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('inspectiontypes/subtypes/{id?}', 'InspectionTypeController@subtypes')->name('inspectionappointments.subtypes');
     Route::get('country/cities/{id?}', 'GeneralController@cities')->name('general.cities');
     Route::get('companies/clients/{company?}', 'CompanyController@clients')->name('company.clients');
-    Route::get('inspectors/contracts/{id?}', 'InspectorController@contracts')->name('inspectors.contracts');
     Route::get('clients/contracts/{id?}', 'ClientController@contracts')->name('clients.contracts');
-
-    //Actualización campo informativo
-    Route::get('contracts/clients/{id?}', 'ContractController@clients')->name('contracts.clients');
 
     // ????
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');

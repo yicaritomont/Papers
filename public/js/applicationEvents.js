@@ -839,7 +839,9 @@ function fillSelect(url, select, edit, funcRes){
 
             $.each(res.status, function( key, value )
             {
-                $(select).append('<option value="'+value.id+'">'+value.name+'</option>');
+                if(key == 0){ key = ''}
+                $(select).append('<option value="'+key+'">'+value+'</option>');
+
             });
 
             if(edit){

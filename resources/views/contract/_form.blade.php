@@ -18,7 +18,7 @@
 <!-- Company of Contract Form Select -->
 <div class="form-group @if ($errors->has('company_id')) has-error @endif">
     {!! Form::label('company_id', trans_choice('words.Company', 1)) !!}
-    {!!Form::select('company_id', $companies, isset($contract) ? $contract->company_id : null, ['class' => 'input-body form-control select2', 'placeholder' => trans('words.ChooseOption')])!!}
+    {!!Form::select('company_id', $companies, isset($contract) ? $contract->company_id : null, ['class' => 'input-body form-control select2', 'disablePlaceholder' => true, 'placeholder' => trans('words.ChooseOption')])!!}
     @if ($errors->has('company_id')) <p class="help-block">{{ $errors->first('company_id') }}</p> @endif
 </div>
 

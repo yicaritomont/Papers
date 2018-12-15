@@ -152,6 +152,17 @@ class InspectionAppointmentController extends Controller
      */
     public function store(InspectionAppointmentRequest $request)
     {
+        // Si selecciono un cliente que no pertenece a la compañia
+        if( !Company::getCompanyClientsById($request->company_id)->pluck('id')->contains($request->client_id) )
+        {
+            abort(403, 'This action is unauthorized.');
+        }
+        // Si selecciono un contrato que no pertenece al cliente
+        elseif( !Client::getClientContractsById($request->client_id)->pluck('id')->contains($request->contract_id) )
+        {
+            abort(403, 'This action is unauthorized.');    
+        }
+
         if( !auth()->user()->hasRole('Admin') ){
             $request['client_id'] = auth()->user()->clients->id;
         }
