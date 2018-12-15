@@ -409,21 +409,24 @@ class FormatController extends Controller
       $pagination = Estilo::where('name','=','paginate_pdf')->first();
       $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
         '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
-      $format_pdf = str_replace($eliminar,'',$format->format);
-      $supports = File::where('format_id','=',$format->id)->get();
-      $file_pdf = '';
-      foreach( $supports AS $key => $item )
+      if ($format != '')
       {
-          $file_pdf .= '<div class="contenedor_image"><img class="image" src="'.public_path().'/'.$item->nombre_url.'"/></di>';
+        $format_pdf = str_replace($eliminar,'',$format->format);
+        $supports = File::where('format_id','=',$format->id)->get();
+        $file_pdf = '';
+        foreach( $supports AS $key => $item )
+        {
+            $file_pdf .= '<div class="contenedor_image"><img class="image" src="'.public_path().'/'.$item->nombre_url.'"/></di>';
+        }
+        $config_format = $estilos->estilos.$format_pdf.$file_pdf.$pagination->estilos;
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadHTML($config_format);
+        return $pdf->stream();
+      } else {
+        return redirect()->route('formats.index');
       }
-      //echo "<pre>";print_r($file_pdf);echo "</pre>";exit();
-      $config_format = $estilos->estilos.$format_pdf.$file_pdf.$pagination->estilos;
-      $pdf = \App::make('dompdf.wrapper');
-      $pdf->getDomPDF()->set_option("enable_php", true);
-      $pdf->loadHTML($config_format);
-
-      return $pdf->stream();
-    }
+  }
 
     public function clearString( $string )
     {
