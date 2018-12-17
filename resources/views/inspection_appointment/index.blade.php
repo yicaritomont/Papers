@@ -21,9 +21,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     @if(isset($inspector))
-                        <h3 class="modal-title inline-block">{{ count($inspector->inspection_appointments) }} {{ trans_choice('words.Inspectionappointment', count($inspector->inspection_appointments)) }}  @lang('words.Of') {{ $inspector->user->name }}  </h3>
-                    @elseif(isset($quantity))
-                        <h3 class="modal-title inline-block">{{ $quantity }} {{ trans_choice('words.Inspectionappointment', $quantity) }} </h3>
+                        <h3 class="modal-title inline-block">{{ trans_choice('words.Inspectionappointment', 2) }}  @lang('words.Of') {{ $inspector->user->name }}  </h3>
                     @else
                         <h3 class="modal-title inline-block">@choice('words.Inspectionappointment', 2)</h3>
                     @endif
@@ -115,7 +113,7 @@
 
                             <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
                                 {!! Form::label('edit-inspector_id', trans_choice("words.Inspector", 1)) !!}
-                                {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 inspectorField', 'placeholder'=>trans('words.ChooseOption'), 'id' => 'edit-inspector_id']) !!}
+                                {!! Form::select('inspector_id', isset($inspectors) ? $inspectors : [], isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 inspectorField', 'placeholder'=>trans('words.ChooseOption'), 'id' => 'edit-inspector_id']) !!}
                                 <div class="errors"></div>
                             </div>
 
@@ -139,7 +137,7 @@
                             </div>
                             <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
                                 {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
-                                    {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control inspectorField', 'placeholder'=>trans('words.ChooseOption')]) !!}
+                                    {!! Form::select('inspector_id', isset($inspectors) ? $inspectors : [], isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control inspectorField', 'placeholder'=>trans('words.ChooseOption')]) !!}
                                 <div class="errors"></div>
                             </div>
                             <!-- Submit Form Button -->                        

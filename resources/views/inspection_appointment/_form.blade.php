@@ -52,7 +52,7 @@
     <div class="form-group @if ($errors->has('client_id')) has-error @endif">
         {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
         {{-- {!! Form::text('client_id', trans('words.Select').'  '.trans_choice('words.Contract', 1), ['class' => 'input-body form-control','require', 'disabled']) !!} --}}
-        {!! Form::select('client_id',$clients, null, ['class' => 'input-body select2 form-control client-contract', 'placeholder'=>trans('words.ChooseOption')]) !!}
+        {!! Form::select('client_id', isset($clients) ? $clients : [], null, ['class' => 'input-body select2 form-control client-contract', 'placeholder'=>trans('words.ChooseOption')]) !!}
         <div class="errors"></div>
     </div>
 @endif
@@ -63,7 +63,7 @@
     @if(auth()->user()->hasRole('Admin'))
         {!! Form::select('contract_id', ['' => trans('words.ChooseOption')], null, ['class' => 'input-body select2 form-control']) !!}
     @else
-        {!! Form::select('contract_id',$contracts, null, ['class' => 'input-body select2 form-control','require', 'placeholder'=>trans('words.ChooseOption')]) !!}
+        {!! Form::select('contract_id', isset($contracts) ? $contracts : [], null, ['class' => 'input-body select2 form-control','require', 'placeholder'=>trans('words.ChooseOption')]) !!}
     @endif
     <div class="errors"></div>
 </div>
