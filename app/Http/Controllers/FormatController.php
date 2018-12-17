@@ -423,6 +423,7 @@ class FormatController extends Controller
       $pdf->loadHTML($config_format);
 
       return $pdf->stream();
+      //return $pdf->output();
     }
 
     public function clearString( $string )

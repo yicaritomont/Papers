@@ -9,7 +9,8 @@ function inicial (argument)
     $('#identificacion_inspector').blur(verifyInspector);
     $('#boton_guardar_html').click(guardarHtml);
     $('#boton_firmar_formato').click(deshabilitarCampos);
-    $('#boton_firmar_formato').click(guardarHtml);
+    //$('#boton_firmar_formato').click(guardarHtml);
+    $('#boton_firmar_formato').click(solicitarToken);
     // $('#company_formato').change(cargarSelectClients);
     $('#company_formato').on('change', function(event, edit){
         if( !$.isNumeric(edit) )
@@ -971,3 +972,82 @@ $('.form-group.picker .input-group-addon').on('click', function(){
         $(".oculto").fadeIn("fast");
     }
 });
+
+
+/**
+ * funcion de apoyo para solicitar al firmante del formato las key para traer la firma
+ */
+function solicitarToken()
+{
+    var id_formato = $(this).attr('value');
+    Swal.mixin({
+        input: 'text',
+        confirmButtonText: 'Next',
+        showCancelButton: true,
+        progressSteps: ['1', '2']
+    }).queue([
+        {
+            title: 'User',
+            text: 'User for signature '
+        },
+        {
+            title: 'Password',
+            text: 'Password for signature'
+        }
+        
+    ]).then((result) => 
+    {
+        if (result.value) 
+        {
+            $('#not_carga').show();
+            $.ajax({
+                type: "GET",
+                url: window.Laravel.url+"/autenticarUsuarioWSFirma",
+                dataType:'json',
+                data: {info:result.value}
+            }).done(function(response)
+            {      
+                $('#not_carga').hide();                
+                if(response.error == "")
+                {
+                    if(response.token != "")
+                    {
+                        Swal('Token Successfully generate');
+                        // Como se recibe el token se solicita la firma}
+                         $('#not_carga').show();
+                        $.ajax({
+                            type : "GET",
+                            url : window.Laravel.url+"/firmarDocumentoWSFirma",
+                            dataType : 'json',
+                            data : {token : response.token ,id_formato : id_formato }
+                        }).done(function(result)
+                        {
+                            $('#not_carga').hide();                            
+                            if(result.error == "")
+                            {
+                                if(result.respuestaFirma)
+                                {
+                                    Swal('Signed format with id '+result.respuestaFirma.IdFirma); 
+                                }
+                            }
+                            else
+                            {
+                                Swal(result.error);
+                            }
+                        })
+                        
+
+                    }
+                    else
+                    {
+                        Swal('Error!');
+                    }
+                }
+                else
+                {
+                    Swal(response.error);
+                }
+            });
+        }
+    })
+}

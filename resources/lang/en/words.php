@@ -160,5 +160,14 @@ return[
 
     'ErrorLinkFormat' => 'Could not link the format with the appointment.',
     'Select' => 'Select',
+
+    // Message for a signa 
+    'SignaPassword'     => 'You must append the signa password for signature',
+    'SignnaUser'        => 'You must append the signa user for signature',
+    'SignaFailToken'    => 'A valid token was not obtained. verify your username or password. Try again',
+    'SignaToken'        => 'The token is required',
+    'SignaFailFile'     => 'The file could not be accessed',
+    'SignaUserFail'     => 'The format is already signed by the same user',
+    'FormatTwoSigna'    => 'The format already has 2 signatures'
 ];
 ?>

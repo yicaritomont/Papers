@@ -13,7 +13,7 @@ class HashUtilidades
 
     public static function generarBase64Documento($sourcePath)
     {
-        $sourcePath=asset('files/test.pdf');
+       $sourcePath=asset('files/test.pdf');
 
         $source = file_get_contents($sourcePath);
         if (empty($source) ) 

@@ -402,5 +402,8 @@
             changeTopToast();
         </script>
     @endif
+        <div id="not_carga" class="notificacion_carga">
+            <span id="not_animada" class="animated infinite fadeInDown"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> CARGANDO <span id="pro"></span> . . .</span>
+        </div>
   </body>
 </html>
