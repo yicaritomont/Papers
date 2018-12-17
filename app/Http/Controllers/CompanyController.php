@@ -216,6 +216,14 @@ class CompanyController extends Controller
         return ['status' => $companyClients];
     }
 
+    public static function inspectors($id = null)
+    {
+        $companyInspectors = Company::getCompanyInspectorsById($id)->pluck('user.name', 'id')
+        ->prepend(trans('words.ChooseOption'), '0');
+
+        return ['status' => $companyInspectors];
+    }
+
     /**
 	 * Funcion para comparar la compañia es sesión con la compañia de un usuario
 	 */

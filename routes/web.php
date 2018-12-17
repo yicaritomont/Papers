@@ -54,6 +54,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('inspectiontypes/subtypes/{id?}', 'InspectionTypeController@subtypes')->name('inspectionappointments.subtypes');
     Route::get('country/cities/{id?}', 'GeneralController@cities')->name('general.cities');
     Route::get('companies/clients/{company?}', 'CompanyController@clients')->name('company.clients');
+    Route::get('companies/inspectors/{company?}', 'CompanyController@inspectors')->name('company.inspectors');
     Route::get('clients/contracts/{id?}', 'ClientController@contracts')->name('clients.contracts');
 
     // ????

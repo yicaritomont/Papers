@@ -13,9 +13,9 @@
                 @if(auth()->user()->hasRole('Admin'))
                     {!! Form::select('citas-compania',$companies, null, ['class' => 'input-body select2 form-control', 'id' => 'citas-compania', 'placeholder' => 'Compañias']) !!}
                 @endif
-                {{-- @if(isset($clientAuth)) --}}
+                @if( !isset($inspector) )
                     {!! Form::select('subtypes',$subtypes, null, ['class' => 'input-body select2 form-control', 'id' => 'subtypeFilter', 'placeholder' => 'Agendas disponibles por', (auth()->user()->hasRole('Admin')) ? 'disabled' : '']) !!}
-                {{-- @endif --}}
+                @endif
             </div>
 
             <div class="panel panel-default">
@@ -36,7 +36,7 @@
 
             <ul style="list-style-type:none">
                 @foreach($appointment_states as $state)
-                    <li><span class="glyphicon glyphicon-bookmark" style="color:{{ $state->color }}"></span> {{$state->name}}</li>
+                    <li><span class="glyphicon glyphicon-bookmark" style="color:{{ $state->color }}"></span> @lang('words.'.$state->name)</li>
                 @endforeach
             </ul>  
         </div>
@@ -115,7 +115,7 @@
 
                             <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
                                 {!! Form::label('edit-inspector_id', trans_choice("words.Inspector", 1)) !!}
-                                {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2', 'placeholder'=>trans('words.ChooseOption'), 'id' => 'edit-inspector_id']) !!}
+                                {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 inspectorField', 'placeholder'=>trans('words.ChooseOption'), 'id' => 'edit-inspector_id']) !!}
                                 <div class="errors"></div>
                             </div>
 
@@ -135,15 +135,11 @@
                                     <span class="input-group-addon">@lang('words.To')</span>
                                     <input type="text" class="form-control input-date" name="end_date" id="end_date" autocomplete="off">
                                 </div>
-                                <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
-                                    {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
-                                    {{-- @if(auth()->user()->hasRole('Admin'))
-                                        {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control inspector-contract', 'placeholder'=>trans('words.ChooseOption')]) !!}
-                                    @else --}}
-                                        {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control', 'placeholder'=>trans('words.ChooseOption')]) !!}
-                                    {{-- @endif --}}
-                                    <div class="errors"></div>
-                                </div>
+                                <div class="errors"></div>
+                            </div>
+                            <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
+                                {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
+                                    {!! Form::select('inspector_id',$inspectors, isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control inspectorField', 'placeholder'=>trans('words.ChooseOption')]) !!}
                                 <div class="errors"></div>
                             </div>
                             <!-- Submit Form Button -->                        
@@ -197,16 +193,6 @@
                             </tr>
                         </table>
                     </div>
-
-                    {{-- @can('add_formats')
-                        {!! Form::open(['method' => 'POST', 'class' => 'formCalendar formSlide', 'id' => 'fillFormat', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
-                            <div id="contenedorHtml">
-                                @include('format._form')
-                            </div>
-                            <input type="hidden" name="format_expediction" id="format_expediction">
-                            <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.Create') !!}</span>
-                        {!! Form::close() !!}
-                    @endcan --}}
                 
                 </div>
                 <div class="modal-footer">
@@ -231,8 +217,23 @@
 
         @if(isset($inspector))
             calendarObj.events = {url: $('#url').val()+'/events/inspector/{{ $inspector->id }}'};
+            ajax(
+                window.Laravel.url+'/inspectoragendas/subtype',
+                'POST',
+                {_token: $('#_token').val(),
+                subtype_id: {{ $inspector->inspectorType->inspection_subtypes_id }},
+                inspector_id: {{ $inspector->id }} },
+                (res) => {
+                    guiaAgendas = [];
+                    $.each(res.agendas, function(key, value){
+                        guiaAgendas.push(value);
+                    });
+                    
+                    colorearAgendas();
+                }
+            );
         @elseif(isset($company))
-            calendarObj.events = {url: $('#url').val()+'/events/company/{{ $company->slug }}'};
+            calendarObj.events = {url: $('#url').val()+'/events/company/{{ $company->id }}'};
         @elseif(isset($clientAuth))
             calendarObj.events = {url: $('#url').val()+'/events/client/{{ $clientAuth }}'};
         @else
@@ -395,12 +396,12 @@
                     confirmModal('#editAppointment', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
                 @else
 
-                    swal('Error','No puede realizar esta acción, no tienes permisos','error');
+                    swal('Error','@lang("words.PermissionError")','error');
                     revertFunc();
                 
                 @endcan
             }else{
-                swal('Error', 'No puede editar una cita solicitada', 'error');
+                swal('Error', '@lang("words.EditRequestedAppointment")', 'error');
                 revertFunc();
             }
         };
@@ -415,13 +416,8 @@
                 company_id: $('#citas-compania').val(),
                 inspector_id: event.inspector_id},
                 (res) => {
-                    console.log(res);
                     if(res.msg){
                          $('.fc-day.bgEvent').removeClass('bgEvent');
-                        /*swal({
-                            type: 'warning',
-                            titleText: res.msg
-                        }); */
                     }else{
                         guiaAgendas = [];
                         $.each(res.agendas, function(key, value){

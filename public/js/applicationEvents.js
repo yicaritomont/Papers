@@ -115,6 +115,9 @@ $('#citas-compania').on('change', function(event){
 
             //Llene el select clientes
             fillSelect(window.Laravel.url+'/companies/clients/'+companyVal, '#client_id');
+
+            //Llene el select de inspectores
+            fillSelect(window.Laravel.url+'/companies/inspectors/'+companyVal, '.inspectorField');
         }
     });
 });
@@ -123,7 +126,7 @@ $('#subtypeFilter').on('change', function(event, edit){
     $('#inspection_subtype_id').val($(this).val());
 
     if($(this).val()){
-       // ajax parameters: url, Method, data, Function done, Function error(optional)
+        // ajax parameters: url, Method, data, Function done, Function error(optional)
         ajax(
             window.Laravel.url+'/inspectoragendas/subtype',
             'POST',
@@ -146,7 +149,7 @@ $('#subtypeFilter').on('change', function(event, edit){
                     colorearAgendas();
                 }
             }
-        ); 
+        );
     }else{
         $('.fc-day.bgEvent').removeClass('bgEvent');
     }

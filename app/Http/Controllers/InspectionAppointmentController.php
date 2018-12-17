@@ -119,9 +119,10 @@ class InspectionAppointmentController extends Controller
 
             $company = Company::with('user:id,name')->where('slug','=',$companySlug)->first();
 
-            return view('inspection_appointment.index', compact('company', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats','format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
+            return view('inspection_appointment.index', compact('subtypes', 'company', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats','format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
         }
-
+        $inspectors = [];
+        $clients = [];
         return view('inspection_appointment.index',compact('subtypes', 'quantity', 'inspectors', 'appointment_states', 'appointment_locations', 'inspection_types', 'contracts', 'clients', 'companies', 'preformats','format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
     }
 
@@ -150,32 +151,25 @@ class InspectionAppointmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(InspectionAppointmentRequest $request)
+    public function store(Request $request)
     {
-        // Si selecciono un cliente que no pertenece a la compañia
-        if( !Company::getCompanyClientsById($request->company_id)->pluck('id')->contains($request->client_id) )
-        {
-            abort(403, 'This action is unauthorized.');
-        }
-        // Si selecciono un contrato que no pertenece al cliente
-        elseif( !Client::getClientContractsById($request->client_id)->pluck('id')->contains($request->contract_id) )
-        {
-            abort(403, 'This action is unauthorized.');    
-        }
-
         if( !auth()->user()->hasRole('Admin') ){
+            $request['company_id'] = session()->get('Session_Company');
+        }
+        
+        if( auth()->user()->hasRole('Cliente') ){
             $request['client_id'] = auth()->user()->clients->id;
         }
 
-        // Validación de ingreso de datos que no corresponden a la compañia en sesion
-        if( !auth()->user()->hasRole('Admin') ){
-            if( !CompanyController::compareCompanySession([Contract::find($request['contract_id'])->company]) ){
-                abort(403, 'This action is unauthorized.');
-            }elseif( !CompanyController::compareCompanySession(Client::find($request['client_id'])->user->companies) ){
-                abort(403, 'This action is unauthorized.');
-            }
-        }
+        $request->validate([
+            'appointment_location_id'   => 'required',
+            'contract_id'               => 'required',
+            'client_id'                 => 'required',
+            'estimated_start_date'      => 'required|date|date_format:Y-m-d',
+            'estimated_end_date'        => 'required|date|date_format:Y-m-d',
+        ]);
 
+        // Validación de campos ocultos
         if( !isset($request->company_id) )
         {
             echo json_encode([
@@ -188,6 +182,18 @@ class InspectionAppointmentController extends Controller
                 'error' => trans('words.Select').' '.trans_choice('words.InspectionSubtype', 1),
             ]);
         }
+
+        // Si selecciono un cliente que no pertenece a la compañia
+        if( !Company::getCompanyClientsById($request->company_id)->pluck('id')->contains($request->client_id) )
+        {
+            abort(403, 'This action is unauthorized.');
+        }
+        // Si selecciono un contrato que no pertenece al cliente
+        elseif( !Client::getClientContractsById($request->client_id)->pluck('id')->contains($request->contract_id) )
+        {
+            abort(403, 'This action is unauthorized.');    
+        }
+
         // Validar si la fecha de inicio ingresada supera a la fecha final
         elseif($request->estimated_start_date > $request->estimated_end_date)
         {
@@ -197,15 +203,18 @@ class InspectionAppointmentController extends Controller
         }
         else
         {
-            
             $fechasCitas = collect();
 
             
             for($i=$request->estimated_start_date ; $i<=$request->estimated_end_date ; $i = date("Y-m-d", strtotime($i ."+ 1 days"))){
                 $fechasCitas->push($i);
             }
-            // dd(json_decode(InspectorAgendaController::subtype($request->inspection_subtype_id, $request->company_id), true));
-            $agenasDisponibles = json_decode(InspectorAgendaController::subtype($request->inspection_subtype_id, $request->company_id), true);
+
+            $requestParam = new Request;
+            $requestParam->subtype_id = $request->inspection_subtype_id;
+            $requestParam->company_id = $request->company_id;
+
+            $agenasDisponibles = json_decode(InspectorAgendaController::subtype($requestParam), true);
 
             // Validar si seleccionó un subtipo
             if(isset($agenasDisponibles['agendas'])){
@@ -246,13 +255,23 @@ class InspectionAppointmentController extends Controller
      */
     public function show($id)
     {
-        $cita = InspectionAppointment::with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract:id,name', 'inspector.user:id,name')
+        $cita = InspectionAppointment::with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract.company', 'inspector.user:id,name')
             ->where('inspection_appointments.id', $id)
         ->first();
+        // dd($cita);
         
-        // $this->authorize('validateId', $cita->inspector);
-
-        if( !auth()->user()->hasRole('Cliente') && !CompanyController::compareCompanySession($cita->inspector->user->companies) ){
+        if(auth()->user()->hasRole('Cliente')){
+            // Validar si selecciono la cita de otro cliente
+            if( $cita->client_id != auth()->user()->clients->id ){
+                abort(403, 'This action is unauthorized.');
+            }
+        }elseif(auth()->user()->hasRole('Inspector')){
+            // Validar si esta seleccionando la cita de otro inspector
+            $this->authorize('validateId', $cita->inspector);
+        }
+        
+        // Si selecciono una cita que no pertenece a la compañia en sesión
+        if( !CompanyController::compareCompanySession([$cita->contract->company]) ){
             abort(403, 'This action is unauthorized.');
         }
         
@@ -275,7 +294,8 @@ class InspectionAppointmentController extends Controller
 
         $inspection_appointment = InspectionAppointment::with('inspectionSubtype')->find($id);
 
-        if( !CompanyController::compareCompanySession($inspection_appointment->inspector->user->companies) ){
+        // Si selecciono una cita que no pertenece a la compañia en sesión
+        if( !CompanyController::compareCompanySession([$inspection_appointment->contract->company]) ){
             abort(403, 'This action is unauthorized.');
         }
 
@@ -303,13 +323,17 @@ class InspectionAppointmentController extends Controller
         $inspection_appointment = InspectionAppointment::findOrFail($id);
 
         // Validar si se modifico el id del formulario
-        if( !CompanyController::compareCompanySession($inspection_appointment->inspector->user->companies) ){
+        if( !CompanyController::compareCompanySession([$inspection_appointment->contract->company]) ){
             abort(403, 'This action is unauthorized.');
 
         // Validar si se modifico el id del campo inspectores
-        }elseif( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
+        }elseif( !Company::getCompanyInspectorsById($inspection_appointment->contract->company->id)->pluck('id')->contains($request->inspector_id) )
+        {
             abort(403, 'This action is unauthorized.');
         }
+        /* if( !CompanyController::compareCompanySession(Inspector::findOrFail($request['inspector_id'])->companies) ){
+            abort(403, 'This action is unauthorized.');
+        } */
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
         if($request->start_date >$request->end_date)
@@ -434,8 +458,8 @@ class InspectionAppointmentController extends Controller
     {
         $inspection_appointment = InspectionAppointment::findOrFail($id);
 
-        // dd($inspection_appointment->contract->company);
-        if( !CompanyController::compareCompanySession($inspection_appointment->contract->company) ){
+        // Si selecciono una cita que no pertenece a la compañia en sesión
+        if( !CompanyController::compareCompanySession([$inspection_appointment->contract->company]) ){
             abort(403, 'This action is unauthorized.');
         }
 
@@ -454,6 +478,7 @@ class InspectionAppointmentController extends Controller
      */
     public function events($type=null, $id=null)
     {
+        // dd($id);
         $solicitadas = InspectionAppointment::
             join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
             ->join('clients', 'clients.id', '=', 'inspection_appointments.client_id')
@@ -509,8 +534,8 @@ class InspectionAppointmentController extends Controller
         if($type == 'inspector'){
             $result = $result->where('inspectors.id', $id);
         }elseif($type == 'company'){
-            $result = $result->whereHas('inspector.user.companies', function($q) use($id){
-                $q->where('companies.id', '=', $id);
+            $result = $result->whereHas('contract.company', function($q) use($id){
+                $q->where('id', '=', $id);
             });
         }
         elseif($type == 'client'){
@@ -536,13 +561,24 @@ class InspectionAppointmentController extends Controller
         $request->validate([
             'start_date' => 'required|date|date_format:Y-m-d',
             'end_date' => 'required|date|date_format:Y-m-d',
+            'inspector_id' => 'required',
         ]);
 
         $appointment = InspectionAppointment::find($id);
 
-        /* if( !CompanyController::compareCompanySession($appointment->inspector->user->companies) ){
+        if( !CompanyController::compareCompanySession([$appointment->contract->company]) ){
+            abort(403, 'This action is unauthorized.');
+        }
+
+        /* if( !CompanyController::compareCompanySession(Inspector::findOrFail($request->inspector_id)->companies) ){
             abort(403, 'This action is unauthorized.');
         } */
+
+        // Si selecciono un inspector que no pertenece a la compañia
+        if( !Company::getCompanyInspectorsById($appointment->contract->company->id)->pluck('id')->contains($request->inspector_id) )
+        {
+            abort(403, 'This action is unauthorized.');
+        }
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
         if($request->start_date >$request->end_date)

@@ -158,8 +158,16 @@ return[
     'exceeded_weight'    =>  'The file {file} has exceeded the size limit of 20MB',
     'file_not_valid'     =>  'The file {file} is not valid',
 
-    'ErrorLinkFormat' => 'Could not link the format with the appointment.',
-    'Select' => 'Select',
-    'NoMatches' => 'No matches',
+    'ErrorLinkFormat'           => 'Could not link the format with the appointment.',
+    'Select'                    => 'Select',
+    'NoMatches'                 => 'No matches',
+    'PermissionError'           => 'You can not perform this action, you do not have permission',
+    'EditRequestedAppointment'  => 'You can not edit a requested appointment',
+
+    //Estados de las citas
+    'Solicitado'    => 'Requested',
+    'Activo'        => 'Active',
+    'En proceso'    => 'In process',
+    'Finalizado'    => 'Finalized',
 ];
 ?>
