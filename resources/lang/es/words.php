@@ -155,7 +155,16 @@ return[
     'exceeded_weight'    =>  'El archivo {file} ha excedido el limite de tamaño de 20MB',
     'file_not_valid'     =>  'El archivo {file} no es valido',
 
-    'ErrorLinkFormat' => 'No se pudo vincular el formato con la cita.',
-    'Select' => 'Seleccione',
+    'ErrorLinkFormat'           => 'No se pudo vincular el formato con la cita.',
+    'Select'                    => 'Seleccione',
+    'NoMatches'                 => 'No hay coincidencias',
+    'PermissionError'           => 'No puedes realizar esta acción, no tienes permisos',
+    'EditRequestedAppointment'  => 'No puede editar una cita solicitada',
+
+    //Estados de las citas
+    'Solicitado'    => 'Solicitado',
+    'Activo'        => 'Activo',
+    'En proceso'    => 'En proceso',
+    'Finalizado'    => 'Finalizado',
  ];
 ?>

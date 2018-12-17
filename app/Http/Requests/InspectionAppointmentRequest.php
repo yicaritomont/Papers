@@ -24,11 +24,9 @@ class InspectionAppointmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'inspector_id'              => 'required',
             'appointment_location_id'   => 'required',
-            'inspection_type_id'        => 'required',
-            'inspection_subtype_id'     => 'required',
             'contract_id'               => 'required',
+            'client_id'                 => 'required',
             'estimated_start_date'      => 'required|date|date_format:Y-m-d',
             'estimated_end_date'        => 'required|date|date_format:Y-m-d',
         ];

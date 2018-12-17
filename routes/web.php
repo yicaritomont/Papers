@@ -38,7 +38,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('enviaCompania/{id}',array('as'=>'enviaCompania','uses'=>'UserController@PostMultiple'));
 
     //Eventos Calendario
-    Route::post('inspectionappointments/events/{id?}/{company?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
+    Route::post('inspectionappointments/events/{type?}/{id?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
     Route::post('inspectoragendas/events/{id?}/{company?}', 'InspectorAgendaController@events')->name('inspectoragendas.events');
 
     //Completar las citas
@@ -46,15 +46,16 @@ Route::group( ['middleware' => ['auth']], function() {
 
     //Formato de citas
     Route::post('inspectionappointments/{inspectionappointment}/format', 'InspectionAppointmentController@format')->name('inspectionappointments.format');
+    
+    // Consultar las agendas por un subtipo
+    Route::post('inspectoragendas/subtype', 'InspectorAgendaController@subtype')->name('inspectoragendas.subtype');
 
     //Actualización de campos desplegables
     Route::get('inspectiontypes/subtypes/{id?}', 'InspectionTypeController@subtypes')->name('inspectionappointments.subtypes');
     Route::get('country/cities/{id?}', 'GeneralController@cities')->name('general.cities');
     Route::get('companies/clients/{company?}', 'CompanyController@clients')->name('company.clients');
-    Route::get('inspectors/contracts/{id?}', 'InspectorController@contracts')->name('inspectors.contracts');
-
-    //Actualización campo informativo
-    Route::get('contracts/clients/{id?}', 'ContractController@clients')->name('contracts.clients');
+    Route::get('companies/inspectors/{company?}', 'CompanyController@inspectors')->name('company.inspectors');
+    Route::get('clients/contracts/{id?}', 'ClientController@contracts')->name('clients.contracts');
 
     // ????
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');

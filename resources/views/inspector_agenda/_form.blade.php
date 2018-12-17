@@ -14,23 +14,24 @@
 @if( !auth()->user()->hasRole('Inspector') )
     <!-- Inspector of Headquarters Form Select -->
     <div class="form-group">
-        {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
-        {!!Form::select('inspector_id', $inspectors, isset($inspectorAgenda) ? $inspectorAgenda->inspector_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!}
+        {!! Form::label(isset($edit) ? $edit.'inspector_id' :  'inspector_id', trans_choice("words.Inspector", 1)) !!}
+        {!!Form::select('inspector_id', $inspectors, isset($inspectorAgenda) ? $inspectorAgenda->inspector_id : null, ['class' => 'input-body select2 form-control', 'placeholder' => trans('words.ChooseOption'), 'id' => isset($edit) ? $edit.'inspector_id' :  'inspector_id'])!!}
         <div class="errors"></div>
     </div>
 @endif
 
-<!-- Country of Headquarters Form Select -->
+<!-- Country of Agenda Form Select -->
 <div class="form-group">
-    {!! Form::label('country', trans('words.Country')) !!}
-    {!!Form::select('country', $countries, isset($inspectorAgenda) ? $inspectorAgenda->country : null, ['class' => ['input-body', 'country', 'chosen-select', 'form-control'], 'placeholder' => trans('words.ChooseOption')])!!}
+    {!! Form::label(isset($edit) ? $edit.'country' :  'country', trans('words.Country')) !!}
+    {!!Form::select('country', $countries, isset($inspectorAgenda) ? $inspectorAgenda->country : null, ['class' => 'input-body country select2 form-control', 'placeholder' => trans('words.ChooseOption'), 'id' => isset($edit) ? $edit.'country' :  'country'])!!}
     <div class="errors"></div>
 </div>
 
 <div class="form-group">
-    {!! Form::label('city_id', trans('words.City')) !!}
+    {!! Form::label(isset($edit) ? $edit.'city_id' :  'city_id', trans('words.City')) !!}
+    <div class="loading city_id_loading"></div>
     {{-- {!! Form::select('city_id', null, null, ['class' => 'input-body','require', 'placeholder'=>trans('words.ChooseOption')]) !!} --}}
-    <select id="city_id" name="city_id" class="input-body city_id chosen-select form-control">
+    <select id="{{ isset($edit) ? $edit :  ''}}city_id" name="city_id" class="input-body city_id select2 form-control">
         <option selected value>@lang('words.ChooseOption')</option>
     </select>
     <div class="errors"></div>
