@@ -161,10 +161,11 @@ return[
     // Mensajes para signa
     'SignaPassword'     => 'Debe anexar la contraseña signa para firma',
     'SignnaUser'        => 'Debe anexar el usuario signa para firma',
-    'SignaFailToken'    => 'No se obtuvo un token valido. verifique su usuario o contraseña. intentelo de nuevo',
+    'SignaFailToken'    => 'No se obtuvo un token válido. verifique su usuario o contraseña. inténtelo de nuevo',
     'SignaToken'        => 'El token es requerido',
     'SignaFailFile'     => 'No se ha podido acceder al archivo',
     'SignaUserFail'     => 'El formato ya esta firmado por el mismo usuario',
-    'FormatTwoSigna'    => 'El formato ya cuenta con 2 firmas'
+    'FormatTwoSigna'    => 'El formato ya cuenta con 2 firmas',
+    'SignaReturnError'  => 'Errores en respuesta de servicio, intente más tarde'
  ];
 ?>

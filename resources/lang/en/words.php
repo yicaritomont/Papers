@@ -168,6 +168,7 @@ return[
     'SignaToken'        => 'The token is required',
     'SignaFailFile'     => 'The file could not be accessed',
     'SignaUserFail'     => 'The format is already signed by the same user',
-    'FormatTwoSigna'    => 'The format already has 2 signatures'
+    'FormatTwoSigna'    => 'The format already has 2 signatures',
+    'SignaReturnError'  => 'Errors in service response, try later'
 ];
 ?>

@@ -754,7 +754,7 @@ $('body').find(':radio').each(function(e){
 
 function deshabilitarCampos(){
     $('#state').val('2');
-    $('#plantilla_formato').find('input, textarea, button, select').prop('disabled',true);
+    $('#plantilla_formato').find('input, textarea, select').prop('disabled',true);
 
 }
 

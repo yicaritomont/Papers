@@ -116,6 +116,7 @@ Route::group( ['middleware' => ['auth']], function() {
     //Routes Firma
     Route::get('autenticarUsuarioWSFirma','ConsumirSignaController@autenticarUsuarioWSFirma')->name('autenticarUsuarioWSFirma');
     Route::get('firmarDocumentoWSFirma','ConsumirSignaController@firmarDocumentoWSFirma')->name('firmarDocumentoWSFirma');
+    Route::get('formats/signedFormats/{id}','FormatController@signedFormats')->name('formats.signedFormats');
 
 
 });
