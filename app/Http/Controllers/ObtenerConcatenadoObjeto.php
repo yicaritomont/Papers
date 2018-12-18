@@ -31,10 +31,23 @@ class ObtenerConcatenadoObjeto
         if($objeto)
         {
             $arregloObjeto = $objeto->toArray();
-            ksort($arregloObjeto);
-            $cadenaConcatenada = implode('_', str_replace(' ', '_',$arregloObjeto));
-        }
-        
+            $result = array();
+    
+            if (!is_array($arregloObjeto)) {
+                $arregloObjeto = func_get_args();
+            }
+    
+            foreach ($arregloObjeto as $key => $value) {
+                if (is_array($value)) {
+                    $result = array_merge($result, array_flatten($value));
+                } else {
+                    $result = array_merge($result, array($key => $value));
+                }
+            }
+    
+            $cadenaConcatenada = implode('_', str_replace(' ', '_',$result));            
+        }       
+
         return $cadenaConcatenada;
     }
 }

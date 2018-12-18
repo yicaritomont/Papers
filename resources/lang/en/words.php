@@ -158,11 +158,22 @@ return[
     'exceeded_weight'    =>  'The file {file} has exceeded the size limit of 20MB',
     'file_not_valid'     =>  'The file {file} is not valid',
 
-    'ErrorLinkFormat'           => 'Could not link the format with the appointment.',
-    'Select'                    => 'Select',
+    'ErrorLinkFormat' => 'Could not link the format with the appointment.',
+    'Select' => 'Select',
     'NoMatches'                 => 'No matches',
     'PermissionError'           => 'You can not perform this action, you do not have permission',
     'EditRequestedAppointment'  => 'You can not edit a requested appointment',
+
+    // Message for a signa 
+    'SignaPassword'     => 'You must append the signa password for signature',
+    'SignnaUser'        => 'You must append the signa user for signature',
+    'SignaFailToken'    => 'A valid token was not obtained. verify your username or password. Try again',
+    'SignaToken'        => 'The token is required',
+    'SignaFailFile'     => 'The file could not be accessed',
+    'SignaUserFail'     => 'The format is already signed by the same user',
+    'FormatTwoSigna'    => 'The format already has 2 signatures',
+    'SignaReturnError'  => 'Errors in service response, try later',
+    
 
     //Estados de las citas
     'Solicitado'    => 'Requested',

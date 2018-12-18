@@ -43,9 +43,6 @@ class ManejadorPeticionesController
     {
         $controller = new SignaBlockController;
         $response = $controller->documento($token,$documento); 
-        print_r($response);
-        var_dump($response);
-        exit();       
         if($response)
         {
             if($response->result == "OK")
@@ -56,6 +53,20 @@ class ManejadorPeticionesController
         return response()->json($this->jsonError);
     }
 
+    public function apijsonDocumento($token,$base64)
+    {
+        $controller = new SignaBlockController;
+        $response = $controller->apijsonDocumento($token,$base64);
+        if($response)
+        {
+            if($response->result == "OK")
+            {
+                return $response;
+            }
+        }
+        
+        return response()->json($this->jsonError);
+    }
     /**
      * Funcion para obtener la infomacion de la transaccion del documento firmado
      */

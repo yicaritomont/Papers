@@ -425,7 +425,7 @@ class InspectorController extends Controller
          */
 
         /*$signaFirma = new WsdlFirmaController();
-        $tokenFirma = $signaFirma->autenticacionUsuario();      
+        $tokenFirma = $signaFirma->autenticacionUsuario('ACME_pruebas','A0000usr78X');      
 
         if($tokenFirma['ResultadoAutenticacion'] == 0)
         {
@@ -436,6 +436,10 @@ class InspectorController extends Controller
           
             // Consume la forma del documento ,
             $respuestaFirma = $signaFirma->firmarDocumento($tokenFirma['Token'],$base64File,1,'300','800','200','100');
+
+            echo "<pre>";
+            echo print_r($respuestaFirma);
+            echo "</pre>";
         }*/
 
         
@@ -446,23 +450,27 @@ class InspectorController extends Controller
         
         /*$concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
         $hash = HashUtilidades::generarHash($concatenado);
-        $hash = HashUtilidades::generarHash('HolaSOyElhash');
         $signa = new ManejadorPeticionesController();
         //$obtenerToken = $signa->obtenerAuthToken();
-        $obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQzOTUwNTIyLCJleHAiOjE1NDM5NTE0MjIsImlhdCI6MTU0Mzk1MDUyMiwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.zxognh6Wcv1n1hdUcScgAArZyxz1rUY7GEIpQnBT2fM";
+        $obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQ0NTY3NjUyLCJleHAiOjE1NDQ1Njg1NTIsImlhdCI6MTU0NDU2NzY1MiwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.sHz4aJSwuG4tWSBonjf7iVsgE6RUEUDNva9pWM0pU2s";
 
         echo "<pre>";
         print_r($obtenerToken);
         echo "</pre>";
         if($obtenerToken != "")
         {
+            $docbase64 = HashUtilidades::generarBase64Documento('');
+            $apiDocumento = $signa->apijsonDocumento($obtenerToken,$docbase64);
+            echo "<pre>";
+            print_r($apiDocumento);
+            echo "</pre>";
             $sourcePath=asset('files/test.pdf');
             $registrar_documento = $signa->registrarDocumento($obtenerToken,$sourcePath);
 
             echo "<pre>";
             print_r($registrar_documento);
             echo "</pre>";
-            /*$registrar_documento = $signa->registrarDocumento($obtenerToken,asset('images/imagenes_user/cropper.jpg'));           
+            //$registrar_documento = $signa->registrarDocumento($obtenerToken,asset('images/imagenes_user/cropper.jpg'));           
             
             echo $hash;
 
@@ -485,8 +493,8 @@ class InspectorController extends Controller
             $certificado_hash = $signa->hashCertificado($obtenerToken,$hash);
             echo "<pre>";
             print_r($certificado_hash);
-            echo "</pre>";*/
-        //}
+            echo "</pre>";
+        }*/
         
         return view('inspector.card', compact('infoInspector','usuario'));
 
@@ -497,9 +505,8 @@ class InspectorController extends Controller
      */
     public static function qrInfoInspector($id)
     {
-        $url = new QR_Url($_SERVER["HTTP_HOST"].'/roles-permissions/public/validateInspector/'.$id);
+        $url = new QR_Url($_SERVER["HTTP_HOST"].'/roles-permissions/public/ReadQrInspector/'.$id);
         $url->setSize(4)->setMargin(2)->svg();
-
     }
 
     /**
@@ -540,6 +547,27 @@ class InspectorController extends Controller
         echo json_encode([
             'status' => $contratos
         ]);
+    }
+
+    /* función para almcenar las lecturas del qr del inspector */
+    public function ReadQrInspector($id)
+    {
+        $infoInspector = Inspector::findOrFail($id);
+        
+        if( !CompanyController::compareCompanySession($infoInspector->companies) ){
+            abort(403, 'This action is unauthorized.');        
+        }
+
+        // Se trae la información del usuario
+        $usuario = User::find($infoInspector->user_id);
+        $code = "";  
+        return view('inspector.lectura', compact('infoInspector','usuario'));
+    }
+
+    /** funcion para almacenar la lectura del qr */
+    public function saveReadInspector()
+    {
+        print_r($_POST);
     }
     
 }

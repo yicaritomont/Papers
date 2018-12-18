@@ -15,6 +15,7 @@ use App\User;
 use App\Estilo;
 use App\File;
 use App\InspectionAppointment;
+use App\SignaFormat;
 use PDF;
 use DB;
 use App\Http\Controllers\Config;
@@ -144,23 +145,31 @@ class FormatController extends Controller
     {
         $mostrar_formato = 'block';
         $companyselect ='block';
-        $state_format = '';
+        $state_format = $state_firma = '';
         if (session()->get('Session_Company') != '')
         {
           $companyselect ='none';
         }
         $formato = Format::find($id);
-        if ($formato != '') {
-          if ($formato->status == 2){
-            $state_format = 'none';
-          }
+        if ($formato != '') 
+        {
+            // Verifica la cantidad de firmas que lleva el formato
+            $consultar_cantidad_firmas = SignaFormat::where('id_formato',$id)->get()->count();
+            if($consultar_cantidad_firmas >=2)
+            {
+                $state_firma = 'none';
+            }
+            if ($formato->status == 2 )
+            {
+                $state_format = 'none';
+            }
         }
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $clients = Client::with('user')->get()->pluck('user.name', 'id');
         $preformats = Preformato::pluck('name', 'id');
         $disabled = 'disabled';
 
-        return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companies','clients','preformats','user','state_format'));
+        return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companies','clients','preformats','user','state_format','state_firma'));
     }
 
     /**
@@ -402,15 +411,40 @@ class FormatController extends Controller
         return response()->json(array($id => 'delete'));
     }
 
-    public function downloadPDF($id)
+    public function downloadPDF($id,$firma = "")
     {
-      $format = Format::find($id);
-      $estilos = Estilo::where('name','=','estilo_pdf')->first();
-      $pagination = Estilo::where('name','=','paginate_pdf')->first();
-      $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
+        $format = Format::find($id);
+        $estilos = Estilo::where('name','=','estilo_pdf')->first();
+        $pagination = Estilo::where('name','=','paginate_pdf')->first();
+        $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
         '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
-      if ($format != '')
-      {
+        if ($format != '')
+        {
+            $format_pdf = str_replace($eliminar,'',$format->format);
+            $supports = File::where('format_id','=',$format->id)->get();
+            $file_pdf = '';
+            foreach( $supports AS $key => $item )
+            {
+                $file_pdf .= '<div class="contenedor_image"><img class="image" src="'.public_path().'/'.$item->nombre_url.'"/></di>';
+            }
+            $config_format = $estilos->estilos.$format_pdf.$file_pdf.$pagination->estilos;
+            $pdf = \App::make('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->loadHTML($config_format);
+
+            return $pdf->stream();
+            //return $pdf->output();
+        }
+    }
+
+    public function downloadOnePagePDF($id,$firma = "")
+    {        
+        $format = Format::find($id);
+        
+        $estilos = Estilo::where('name','=','estilo_pdf')->first();
+        $pagination = Estilo::where('name','=','paginate_pdf')->first();
+        $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
+            '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
         $format_pdf = str_replace($eliminar,'',$format->format);
         $supports = File::where('format_id','=',$format->id)->get();
         $file_pdf = '';
@@ -418,15 +452,15 @@ class FormatController extends Controller
         {
             $file_pdf .= '<div class="contenedor_image"><img class="image" src="'.public_path().'/'.$item->nombre_url.'"/></di>';
         }
+        //echo "<pre>";print_r($file_pdf);echo "</pre>";exit();
         $config_format = $estilos->estilos.$format_pdf.$file_pdf.$pagination->estilos;
         $pdf = \App::make('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
         $pdf->loadHTML($config_format);
-        return $pdf->stream();
-      } else {
-        return redirect()->route('formats.index');
-      }
-  }
+
+        
+        return $pdf->output(1);
+    }
 
     public function clearString( $string )
     {
@@ -470,5 +504,12 @@ class FormatController extends Controller
 			$response['error'] = "<li>".$text."</li>";
 		}
 		return $response;
-	}
+    }
+    
+    public function signedFormats($id)
+    {
+        $format = SignaFormat::where('id_formato',$id)->orderBy('created_at', 'desc')->limit(1)->first();
+        $documento = HashUtilidades::obtenerDocumentoBase64($format->base64);
+        return $documento;
+    }
 }
