@@ -1,7 +1,13 @@
 @can('edit_'.$entity)
+  @if($status == 2)
+    <a href="{{ route($entity.'.edit', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-default">
+        <i class="glyphicon glyphicon-eye-open"></i>
+    </a>
+  @else
     <a href="{{ route($entity.'.edit', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-info">
         <i class="fa fa-edit"></i>
     </a>
+  @endif
 
     @php
         $parameters = Route::current()->parameters();        

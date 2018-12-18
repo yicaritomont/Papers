@@ -413,33 +413,32 @@ class FormatController extends Controller
 
     public function downloadPDF($id,$firma = "")
     {
-        
         $format = Format::find($id);
-        
         $estilos = Estilo::where('name','=','estilo_pdf')->first();
         $pagination = Estilo::where('name','=','paginate_pdf')->first();
         $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
-            '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
-        $format_pdf = str_replace($eliminar,'',$format->format);
-        $supports = File::where('format_id','=',$format->id)->get();
-        $file_pdf = '';
-        foreach( $supports AS $key => $item )
+        '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
+        if ($format != '')
         {
-            $file_pdf .= '<div class="contenedor_image"><img class="image" src="'.public_path().'/'.$item->nombre_url.'"/></di>';
-        }
-        //echo "<pre>";print_r($file_pdf);echo "</pre>";exit();
-        $config_format = $estilos->estilos.$format_pdf.$file_pdf.$pagination->estilos;
-        $pdf = \App::make('dompdf.wrapper');
-        $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadHTML($config_format);
+            $format_pdf = str_replace($eliminar,'',$format->format);
+            $supports = File::where('format_id','=',$format->id)->get();
+            $file_pdf = '';
+            foreach( $supports AS $key => $item )
+            {
+                $file_pdf .= '<div class="contenedor_image"><img class="image" src="'.public_path().'/'.$item->nombre_url.'"/></di>';
+            }
+            $config_format = $estilos->estilos.$format_pdf.$file_pdf.$pagination->estilos;
+            $pdf = \App::make('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->loadHTML($config_format);
 
-        return $pdf->stream();
-        //return $pdf->output();
+            return $pdf->stream();
+            //return $pdf->output();
+        }
     }
 
     public function downloadOnePagePDF($id,$firma = "")
-    {
-        
+    {        
         $format = Format::find($id);
         
         $estilos = Estilo::where('name','=','estilo_pdf')->first();
@@ -512,6 +511,5 @@ class FormatController extends Controller
         $format = SignaFormat::where('id_formato',$id)->orderBy('created_at', 'desc')->limit(1)->first();
         $documento = HashUtilidades::obtenerDocumentoBase64($format->base64);
         return $documento;
-
     }
 }

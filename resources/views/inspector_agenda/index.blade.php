@@ -3,11 +3,10 @@
 @section('title', trans_choice('words.InspectorAgenda', 1))
 
 @section('content')
-
     <div class="msgAlert"></div>
         
     <div class="row">
-        <div class="col-xs-12 col-lg-8 col-lg-offset-2">
+        <div class="col-md-12 col-lg-8 col-lg-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">              
                     <div class="row">
@@ -90,7 +89,7 @@
 
                     @can('edit_inspectoragendas')
                         {!! Form::open(['method' => 'PUT', 'class' => 'formCalendar formSlide', 'id' => 'editAgenda', 'data-modal'=>'#modalEditDel', 'style' => 'display:none']) !!}
-                            @include('inspector_agenda._form')
+                            @include('inspector_agenda._form', ['edit' => 'edit-'])
                             <!-- Submit Form Button -->                        
                             {!! Form::submit(trans('words.Edit'), ['class' => 'btn btn-primary btn-block']) !!}
                         {!! Form::close() !!}
@@ -149,6 +148,7 @@
         <h2>{{ auth()->user()->roles }}</h2>
     <br>
     <br> --}}
+    {{-- <div id="loading"></div> --}}
     <input type="hidden" id="url" value="{{ route('inspectoragendas.index') }}">
     <input type="hidden" id="_token" value="{{ csrf_token() }}">
     <input type="hidden" id="selectOption" value="{{trans('words.ChooseOption')}}">
@@ -168,7 +168,6 @@
             calendarObj.events = {url: $('#url').val()+'/events/none/{{ $companies->slug }}'};
         @else
             calendarObj.events = {url: $('#url').val()+'/events'};
-            
         @endif
         
         calendarObj.events.type = 'POST';
@@ -183,6 +182,10 @@
 
             //Se limpia las alertas
             $('.msgError').html('');
+
+            //Limpiar las validaciones
+            $('.form-group').removeClass('has-error');
+            $('.errors').empty();
 
             //Ocultar los formularios desplegables
             $(".formSlide").hide();
@@ -203,14 +206,14 @@
                 //Validar se se secciono un rango de dias, de lo contrario pase al evento dayClick
                 if(start != ed)
                 {
-                    limpiarForm(start[0], ed, '#formCreateAgenda', '', '.city_id');
+                    limpiarForm(start[0], ed, '#formCreateAgenda', '');
                     $('#modalCreate').modal('show');
                 }
             };
         
             calendarObj.dayClick = function(date, jsEvent, view)
             {
-                limpiarForm(date.format(), null, '#formCreateAgenda', '', '.city_id');
+                limpiarForm(date.format(), null, '#formCreateAgenda', '');
                 $('#modalCreate').modal('show');
             };
 

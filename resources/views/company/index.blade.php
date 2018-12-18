@@ -4,10 +4,10 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-xs-6">
             <h3 class="modal-title"> @choice('words.Company', 2) </h3>
         </div>
-        <div class="col-md-7 page-action text-right">
+        <div class="col-xs-6 page-action text-right">
             @can('add_companies')
                 <a href="{{ route('companies.create') }}" class="btn btn-primary btn-sm"> <i class="glyphicon glyphicon-plus-sign"></i> @lang('words.Create')</a>
             @endcan
@@ -56,10 +56,10 @@
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}"};
                 
                 columns.push({data: 'actions', className: 'text-center'},)
-                dataTableObject.columnDefs = [setDataTable([-2, -3])];
+                dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'relations' => 'user']) }}"};
-                dataTableObject.columnDefs = [setDataTable([-1, -2])];
+                dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endif
 
             dataTableObject.columns = columns;

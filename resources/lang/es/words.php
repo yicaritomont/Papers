@@ -157,6 +157,9 @@ return[
 
     'ErrorLinkFormat' => 'No se pudo vincular el formato con la cita.',
     'Select' => 'Seleccione',
+    'NoMatches'                 => 'No hay coincidencias',
+    'PermissionError'           => 'No puedes realizar esta acción, no tienes permisos',
+    'EditRequestedAppointment'  => 'No puede editar una cita solicitada',
 
     // Mensajes para signa
     'SignaPassword'     => 'Debe anexar la contraseña signa para firma',
@@ -166,6 +169,13 @@ return[
     'SignaFailFile'     => 'No se ha podido acceder al archivo',
     'SignaUserFail'     => 'El formato ya esta firmado por el mismo usuario',
     'FormatTwoSigna'    => 'El formato ya cuenta con 2 firmas',
-    'SignaReturnError'  => 'Errores en respuesta de servicio, intente más tarde'
+    'SignaReturnError'  => 'Errores en respuesta de servicio, intente más tarde',
+    
+
+    //Estados de las citas
+    'Solicitado'    => 'Solicitado',
+    'Activo'        => 'Activo',
+    'En proceso'    => 'En proceso',
+    'Finalizado'    => 'Finalizado',
  ];
 ?>

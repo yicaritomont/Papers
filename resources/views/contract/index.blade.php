@@ -64,7 +64,7 @@
 
                 
                 columns.push({data: 'actions', className: 'text-center w1em'},)
-                dataTableObject.columnDefs = [setDataTable([-2, -3])];
+                dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 @if(isset($companies))
                     dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Contract', 'company' => 'company,'.$companies->slug, 'relations' => 'company,client,client.user,company.user']) }}"};
@@ -72,7 +72,7 @@
                     dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Contract', 'company' => 'none', 'relations' => 'company,client,client.user,company.user']) }}"};
                 @endif
 
-                dataTableObject.columnDefs = [setDataTable([-1, -2])];
+                dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endcan
 
             dataTableObject.ajax.type = 'POST';
