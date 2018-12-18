@@ -1095,8 +1095,8 @@ function solicitarToken()
             });
         }
     })
+}
 
-    
 function ajax(url, type, data, funcDone, funcError)
 {
     $.ajax({
