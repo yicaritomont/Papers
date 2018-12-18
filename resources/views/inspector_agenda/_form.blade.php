@@ -15,7 +15,7 @@
     <!-- Inspector of Headquarters Form Select -->
     <div class="form-group">
         {!! Form::label(isset($edit) ? $edit.'inspector_id' :  'inspector_id', trans_choice("words.Inspector", 1)) !!}
-        {!!Form::select('inspector_id', $inspectors, isset($inspectorAgenda) ? $inspectorAgenda->inspector_id : null, ['class' => 'input-body select2 form-control', 'placeholder' => trans('words.ChooseOption'), 'id' => isset($edit) ? $edit.'inspector_id' :  'inspector_id'])!!}
+        {!!Form::select('inspector_id', isset($inspectors) ? $inspectors : [], isset($inspectorAgenda) ? $inspectorAgenda->inspector_id : null, ['class' => 'input-body select2 form-control inspectorField', 'placeholder' => trans('words.ChooseOption'), 'id' => isset($edit) ? $edit.'inspector_id' :  'inspector_id'])!!}
         <div class="errors"></div>
     </div>
 @endif

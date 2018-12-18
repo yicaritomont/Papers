@@ -94,13 +94,13 @@ $('#citas-compania').on('change', function(event){
     $('#company_id').val(companyVal);
 
     if(companyVal){
-        $('#subtypeFilter').attr('disabled', false);
+        $('#citas-subtipo').attr('disabled', false);
     }else{
-        $('#subtypeFilter').attr('disabled', true);
+        $('#citas-subtipo').attr('disabled', true);
     }
-
     // Se eliminan los origines de los eventos
     $("#calendar").fullCalendar('removeEventSources');
+    console.log('Cambio de campo compañia');
 
     // Se añade un origen de evento de acuerdo a la compañía seleccionada
     $("#calendar").fullCalendar('addEventSource', {
@@ -110,8 +110,7 @@ $('#citas-compania').on('change', function(event){
         success: function(){
             $('#appointment_loading').hide();
 
-            //Cargue los subtipos
-            $('#subtypeFilter').trigger('change');
+            console.log('Origen de evntos añadidos');
 
             //Llene el select clientes
             fillSelect(window.Laravel.url+'/companies/clients/'+companyVal, '#client_id');
@@ -122,10 +121,15 @@ $('#citas-compania').on('change', function(event){
     });
 });
 
-$('#subtypeFilter').on('change', function(event, edit){
+// Colorear los días disponibles del inspector en la vista citas
+$('#citas-subtipo').on('change', function(event, edit){
+    console.log('Cambio de tipo');
     $('#inspection_subtype_id').val($(this).val());
 
     if($(this).val()){
+
+        $('#appointment_loading').css('display', 'inline-block');
+
         // ajax parameters: url, Method, data, Function done, Function error(optional)
         ajax(
             window.Laravel.url+'/inspectoragendas/subtype',
@@ -135,12 +139,16 @@ $('#subtypeFilter').on('change', function(event, edit){
             company_id: $('#citas-compania').val()},
             (res) => {
                 if(res.msg){
+                    $('#appointment_loading').hide();
+                    
                     $('.fc-day.bgEvent').removeClass('bgEvent');
                     swal({
                         type: 'warning',
                         titleText: res.msg
                     });
                 }else{
+                    $('#appointment_loading').hide();
+                    
                     guiaAgendas = [];
                     $.each(res.agendas, function(key, value){
                         guiaAgendas.push(value);
@@ -153,6 +161,33 @@ $('#subtypeFilter').on('change', function(event, edit){
     }else{
         $('.fc-day.bgEvent').removeClass('bgEvent');
     }
+});
+
+// Pintar las agendas en el calendario de acuerdo a la compañia seleccionada
+$('#agenda-compania').on('change', function(event){
+    console.log($(this).val());
+    var companyVal = $(this).val();
+    console.log($('#url').val()+'/events/company/'+companyVal);
+    
+    $('#appointment_loading').css('display', 'inline-block');
+    // $('#company_id').val(companyVal);
+
+    // Se eliminan los origines de los eventos
+    $("#calendar").fullCalendar('removeEventSources');
+
+    // Se añade un origen de evento de acuerdo a la compañía seleccionada
+    $("#calendar").fullCalendar('addEventSource', {
+        url:$('#url').val()+'/events/company/'+companyVal,
+        type:'POST',
+        data:{ _token: window.Laravel.csrfToken},
+        success: function(res){
+            console.log(res);
+            $('#appointment_loading').hide();
+
+            //Llene el select de inspectores
+            fillSelect(window.Laravel.url+'/companies/inspectors/'+companyVal, '.inspectorField');
+        }
+    });
 });
 
 function colorearAgendas()
@@ -522,10 +557,11 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
                     title: res.status
                 });
 
-                //Actualizar los días disponibles
-                $('#subtypeFilter').trigger('change');
-
                 changeTopToast();
+
+                //Actualizar los días disponibles
+                $('#citas-subtipo').trigger('change');
+
             }else{
                 //Si la respuesta es en modal
                 if(salida == true){

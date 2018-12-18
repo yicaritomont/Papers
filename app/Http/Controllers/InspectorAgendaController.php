@@ -10,6 +10,7 @@ use App\Country;
 use App\Citie;
 use App\User;
 use App\Company;
+use App\InspectionSubtype;
 use DB;
 use App\Http\Requests\InspectorAgendaRequest;
 use Illuminate\Http\Request;
@@ -25,9 +26,9 @@ class InspectorAgendaController extends Controller
      */
     public function index(Request $request)
     {
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
+        $subtypes = InspectionSubtype::with('inspection_types')->get()->pluck('subtype_type', 'id');
 
-        $quantity = InspectorAgenda::all()->count();
-        $inspectors = Inspector::with('user')->get()->pluck('user.name', 'id');
         $countries = Country::all()->pluck('name', 'id');
 
         if(auth()->user()->hasRole('Inspector')){
@@ -45,18 +46,18 @@ class InspectorAgendaController extends Controller
 
             $this->authorize('validateId', $inspector);
             
-            return view('inspector_agenda.index', compact('inspectors', 'countries', 'inspector'));
+            return view('inspector_agenda.index', compact('countries', 'inspector'));
             
         }elseif( !auth()->user()->hasRole('Admin') ){
             $companySlug = Company::findOrFail(session()->get('Session_Company'))->slug;;
             $inspectors = Inspector::with('user')->whereHas('user.companies', function($q) use($companySlug){
                 $q->where('slug', '=', $companySlug);
             })->get()->pluck('user.name', 'id');
-            $companies = Company::with('user:id,name')->where('slug','=',$companySlug)->first();
+            $company = Company::with('user:id,name')->where('slug','=',$companySlug)->first();
 
-            return view('inspector_agenda.index', compact('companies', 'inspectors', 'countries'));
+            return view('inspector_agenda.index', compact('company', 'inspectors', 'countries'));
         }else{
-            return view('inspector_agenda.index', compact('quantity', 'inspectors', 'countries'));
+            return view('inspector_agenda.index', compact('countries', 'companies', 'subtypes'));
         }
         
     }
@@ -94,6 +95,12 @@ class InspectorAgendaController extends Controller
             'country'       => 'required',
             'city_id'       => 'required',
         ]);
+
+        // Si selecciono un cliente que no pertenece a la compañia
+        if( !Company::getCompanyInspectorsById($request->company_id)->pluck('id')->contains($request->client_id) )
+        {
+            abort(403, 'This action is unauthorized.');
+        }
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
         if($request->start_date >$request->end_date){
@@ -402,17 +409,18 @@ class InspectorAgendaController extends Controller
      *
      * @return JSON
      */
-    public function events($id='none', $company=null)
+    public function events($type=null, $id=null)
     {
-        $result = InspectorAgenda::query()->join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
+        
+        $result = InspectorAgenda::join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
                 ->join('users', 'users.id', '=', 'inspectors.user_id')
                 ->select('users.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'inspector_id');
-
-        if($id != 'none'){
+        
+        if($type == 'inspector'){
             $result = $result->where('inspectors.id', $id)->get();
-        }elseif($company){
-            $result = $result->whereHas('inspector.user.companies', function($q) use($company){
-                $q->where('slug', '=', $company);
+        }elseif($type == 'company'){
+            $result = $result->whereHas('inspector.user.companies', function($q) use($id){
+                $q->where('companies.id', '=', $id);
             })->get();
         }else{
             $result = $result->get();
@@ -438,8 +446,10 @@ class InspectorAgendaController extends Controller
         $company = ($request->company_id) ? Company::find($request->company_id)->id :  session()->get('Session_Company');
 
         $agendas = InspectorAgenda::with('inspector')
-            ->whereHas('inspector.inspectorType', function($q) use($subtype_id){
-                $q->where('inspection_subtypes_id', '=', $subtype_id);
+            ->when($subtype_id, function($q, $subtype_id){
+                return $q->whereHas('inspector.inspectorType', function($q) use($subtype_id){
+                    $q->where('inspection_subtypes_id', '=', $subtype_id);
+                });
             })
             ->whereHas('inspector.companies', function($q) use($company){
                 $q->where('companies.id', $company);
@@ -450,28 +460,30 @@ class InspectorAgendaController extends Controller
             ->select('start_date', 'end_date')
         ->get();
 
+        /* dd($agendas);
+        dd($request->all()); */
+
         $citas = InspectionAppointment::
-            whereIn('appointment_states_id', [2,3,4])
-            ->whereHas('inspector.inspectorType', function($q) use($subtype_id){
-                $q->where('inspection_subtypes_id', '=', $subtype_id);
-            })
-            ->whereHas('inspector.companies', function($q) use($company){
-                $q->where('companies.id', $company);
+            whereIn('appointment_states_id', [1,2,3,4])
+            ->when($subtype_id, function($q, $subtype_id){
+                return $q->whereHas('inspectionSubtype', function($q) use($subtype_id){
+                    $q->where('id', '=', $subtype_id);
+                });
+            })            
+            ->whereHas('contract.company', function($q) use($company){
+                $q->where('id', $company);
             })
             ->when($inspector_id, function($q, $inspector_id){
                 return $q->where('inspector_id', $inspector_id);
             })
-            ->select('start_date', 'end_date')
-        ->get();
+        ->get()->map(function($item, $key){
+            return ($item->start_date == null) ? ['start_date' => $item->estimated_start_date, 'end_date' => $item->estimated_end_date] : ['start_date' => $item->start_date, 'end_date' => $item->end_date];
+        });
+
+        // dd($citas);
 
         $fechasAgendas = [];
         $fechasCitas = [];
-
-        foreach($citas as $agenda){
-            for($i=$agenda->start_date ; $i<=$agenda->end_date ; $i = date("Y-m-d", strtotime($i ."+ 1 days"))){
-                $fechasCitas[] = $i;
-            }
-        }
 
         foreach($agendas as $agenda){
             for($i=$agenda->start_date ; $i<=$agenda->end_date ; $i = date("Y-m-d", strtotime($i ."+ 1 days"))){
@@ -479,7 +491,25 @@ class InspectorAgendaController extends Controller
             }
         }
 
-        $diasDisponibles = collect($fechasAgendas)->diff($fechasCitas);
+        $filtroAgendas = $fechasAgendas;
+        foreach($citas as $cita){
+            for($i=$cita['start_date'] ; $i<=$cita['end_date'] ; $i = date("Y-m-d", strtotime($i ."+ 1 days"))){
+
+                // Se recorre todas los días de las agendas, luego se compara con cada día de la cita, si coincide añada el día cita en un arreglo y elimine el día de la agenda
+                foreach($filtroAgendas as $key => $value){
+                    if($value == $i){
+                        $fechasCitas[$key] = $value;
+                        unset($filtroAgendas[$key]);
+                        break;
+                    }
+                }
+            }
+        }
+
+        $diasDisponibles = collect($fechasAgendas)->diffAssoc($fechasCitas)->unique();
+        
+        /* dd($fechasCitas);
+        $diasDisponibles = collect($fechasAgendas)->diff($fechasCitas); */
 
         if($diasDisponibles->isEmpty()){
             return json_encode([
