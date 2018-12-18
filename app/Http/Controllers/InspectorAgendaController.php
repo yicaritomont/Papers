@@ -26,15 +26,13 @@ class InspectorAgendaController extends Controller
      */
     public function index(Request $request)
     {
-        $companies = Company::with('user')->get()->pluck('user.name', 'id');
-        $subtypes = InspectionSubtype::with('inspection_types')->get()->pluck('subtype_type', 'id');
-
         $countries = Country::all()->pluck('name', 'id');
 
         if(auth()->user()->hasRole('Inspector')){
             $request['id'] = auth()->user()->inspectors->id;
         }
 
+        // Consultar a un inspector
         if($request->get('id')){
 
             $inspector = Inspector::findOrFail($request->get('id'));
@@ -49,15 +47,21 @@ class InspectorAgendaController extends Controller
             return view('inspector_agenda.index', compact('countries', 'inspector'));
             
         }elseif( !auth()->user()->hasRole('Admin') ){
-            $companySlug = Company::findOrFail(session()->get('Session_Company'))->slug;;
+            // $companySlug = Company::findOrFail(session()->get('Session_Company'))->slug;;
+            $company = Company::with('user:id,name')->where('id', '=', session()->get('Session_Company'))->first();
+
+            $companySlug = $company->slug;
+
             $inspectors = Inspector::with('user')->whereHas('user.companies', function($q) use($companySlug){
                 $q->where('slug', '=', $companySlug);
             })->get()->pluck('user.name', 'id');
-            $company = Company::with('user:id,name')->where('slug','=',$companySlug)->first();
 
             return view('inspector_agenda.index', compact('company', 'inspectors', 'countries'));
+            
+        // Administrador
         }else{
-            return view('inspector_agenda.index', compact('countries', 'companies', 'subtypes'));
+            $companies = Company::with('user')->get()->pluck('user.name', 'id');
+            return view('inspector_agenda.index', compact('countries', 'companies'));
         }
         
     }
@@ -97,10 +101,10 @@ class InspectorAgendaController extends Controller
         ]);
 
         // Si selecciono un cliente que no pertenece a la compañia
-        if( !Company::getCompanyInspectorsById($request->company_id)->pluck('id')->contains($request->client_id) )
+        /* if( !Company::getCompanyInspectorsById($request->company_id)->pluck('id')->contains($request->client_id) )
         {
             abort(403, 'This action is unauthorized.');
-        }
+        } */
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
         if($request->start_date >$request->end_date){
@@ -228,10 +232,16 @@ class InspectorAgendaController extends Controller
     {
         if( auth()->user()->hasRole('Inspector') ){
             $request['inspector_id'] = auth()->user()->inspectors->id;
+        }elseif( !auth()->user()->hasRole('Admin') ){
+            if( !CompanyController::compareCompanySession(Inspector::find($request['inspector_id'])->companies) ){
+                abort(403, 'This action is unauthorized.');
+            }
         }
 
         //Se consulta la agenda por el identificador
         $agenda = InspectorAgenda::where('slug', '=', $slug)->get()->first();
+
+        $this->authorize('validateId', $agenda->inspector);
 
         if( !CompanyController::compareCompanySession($agenda->inspector->user->companies) ){
             abort(403, 'This action is unauthorized.');

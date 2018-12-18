@@ -172,7 +172,7 @@
         @if(isset($inspector))
             calendarObj.events = {url: $('#url').val()+'/events/inspector/{{ $inspector->id }}'};
         @elseif(isset($company))
-            calendarObj.events = {url: $('#url').val()+'/events/company/{{ $company->slug }}'};
+            calendarObj.events = {url: $('#url').val()+'/events/company/{{ $company->id }}'};
         @else
             {{-- calendarObj.events = {url: $('#url').val()+'/events'}; --}}
             calendarObj.events = [];
@@ -248,7 +248,7 @@
                 $('#editAgenda').attr('action', $('#url').val()+'/'+calEvent.slug);
                 $('#modalEditDel #start_date').val(calEvent.start.format());
                 $('#modalEditDel #end_date').val(end[0]);
-                $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
+                $('#modalEditDel #edit-inspector_id').val(calEvent.inspector_id);
 
                 confirmModal('#editAgenda', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
 

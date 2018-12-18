@@ -213,8 +213,8 @@ $('.inspection_type_id').on('change',function(event, edit){
     });
 }); */
 
-$('.country').on('change',function(event, edit){
-    fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit);
+$('.country').on('change',function(event, edit, funcRes){
+    fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit, funcRes);
 });
 
 $('.client-contract').on('change', function(event, edit){
@@ -688,14 +688,16 @@ $(document).on('click', '.editCalendar', function(e){
                     });
 
                     //Actualización de campos select
-                    $('#modalEditDel #edit-inspector_id').val(res.agenda.inspector_id).trigger('change');  
-                    $('#modalEditDel #edit-city_id').val(res.agenda.city_id).trigger('change');
+                    $('#modalEditDel #edit-inspector_id').val(res.agenda.inspector_id).trigger('change');
                     $('#modalEditDel #edit-country').val(res.agenda.city.countries_id);
 
                     $('#editAgenda').attr('action', $('#url').val()+'/'+res.agenda.slug);
 
+                    // Cuando termine de ejecutar la animación slide cargue las ciudades de un país y cargado lo anterior seleccione una ciudad
                     slideForms(objElement, () => {
-                        $('#modalEditDel #edit-country').trigger('change',res.agenda.city_id);
+                        $('#modalEditDel #edit-country').trigger('change', [res.agenda.city_id, () => {
+                            $('#modalEditDel #edit-city_id').val(res.agenda.city_id).trigger('change');
+                        }]);
                     });
 
                 }
