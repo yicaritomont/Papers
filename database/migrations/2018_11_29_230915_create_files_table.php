@@ -19,6 +19,7 @@ class CreateFilesTable extends Migration
             $table->charset = 'utf8';
             $table->collation = 'utf8_unicode_ci';
             $table->increments('id');
+            $table->string('nombre');
             $table->unsignedInteger('format_id');
             $table->unsignedInteger('user_id');
             $table->string('nombre_url');

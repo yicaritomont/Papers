@@ -114,16 +114,15 @@ class DatabaseSeeder extends Seeder
         CitiesTableSeeder::run();
         //ClientTableSeeder::run();
         //HeadquartesTableSeeder::run();
-        // CompanyTableSeeder::run();
+        //CompanyTableSeeder::run();
         ProfessionTableSeeder::run();
         InspectionTypeTableSeeder::run();
         InspectionSubTypeTableSeeder::run();
         InspectorTypeTableSeeder::run();
-        ChangePasswordDaysSeeder::run();
         ModuloSeeder::run();
         MenuSeeder::run();
         PreformatoSeeder::run();
         estiloCssSeeder::run();
-
+        ChangePasswordDaysSeeder::run();
     }
 }

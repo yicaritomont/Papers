@@ -335,7 +335,7 @@ if (typeof NProgress != 'undefined') {
 		
 		if( typeof ($.plot) === 'undefined'){ return; }
 		
-		console.log('init_flot_chart');
+		//console.log('init_flot_chart');
 		
 		
 		
@@ -613,7 +613,7 @@ if (typeof NProgress != 'undefined') {
 		
 		if(typeof (jQuery.fn.vectorMap) === 'undefined'){ return; }
 		
-		console.log('init_JQVmap');
+		//console.log('init_JQVmap');
 	     
 			if ($('#world-map-gdp').length ){
 		 
@@ -655,7 +655,7 @@ if (typeof NProgress != 'undefined') {
 	function init_skycons(){
 				
 			if( typeof (Skycons) === 'undefined'){ return; }
-			console.log('init_skycons');
+			//console.log('init_skycons');
 		
 			var icons = new Skycons({
 				"color": "#73879C"
@@ -679,7 +679,7 @@ if (typeof NProgress != 'undefined') {
 				
 		if( typeof (Chart) === 'undefined'){ return; }
 		
-		console.log('init_chart_doughnut');
+		//console.log('init_chart_doughnut');
 	 
 		if ($('.canvasDoughnut').length){
 			
@@ -733,9 +733,9 @@ if (typeof NProgress != 'undefined') {
 			
 		if( typeof (Gauge) === 'undefined'){ return; }
 		
-		console.log('init_gauge [' + $('.gauge-chart').length + ']');
+		//console.log('init_gauge [' + $('.gauge-chart').length + ']');
 		
-		console.log('init_gauge');
+		//console.log('init_gauge');
 		
 
 		  var chart_gauge_settings = {
@@ -1566,10 +1566,10 @@ if (typeof NProgress != 'undefined') {
 		function init_daterangepicker() {
 
 			if( typeof ($.fn.daterangepicker) === 'undefined'){ return; }
-			console.log('init_daterangepicker');
+			//console.log('init_daterangepicker');
 		
 			var cb = function(start, end, label) {
-			  console.log(start.toISOString(), end.toISOString(), label);
+			  //console.log(start.toISOString(), end.toISOString(), label);
 			  $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
 			};
 
@@ -1641,7 +1641,7 @@ if (typeof NProgress != 'undefined') {
 	   function init_daterangepicker_right() {
 	      
 				if( typeof ($.fn.daterangepicker) === 'undefined'){ return; }
-				console.log('init_daterangepicker_right');
+				//console.log('init_daterangepicker_right');
 		  
 				var cb = function(start, end, label) {
 				  console.log(start.toISOString(), end.toISOString(), label);
@@ -1721,7 +1721,7 @@ if (typeof NProgress != 'undefined') {
 	    function init_daterangepicker_single_call() {
 	      
 			if( typeof ($.fn.daterangepicker) === 'undefined'){ return; }
-			console.log('init_daterangepicker_single_call');
+			//console.log('init_daterangepicker_single_call');
 		   
 			$('#single_cal1').daterangepicker({
 			  singleDatePicker: true,
@@ -1755,7 +1755,7 @@ if (typeof NProgress != 'undefined') {
 		function init_daterangepicker_reservation() {
 	      
 			if( typeof ($.fn.daterangepicker) === 'undefined'){ return; }
-			console.log('init_daterangepicker_reservation');
+			//console.log('init_daterangepicker_reservation');
 		 
 			$('#reservation').daterangepicker(null, function(start, end, label) {
 			  console.log(start.toISOString(), end.toISOString(), label);
@@ -1841,7 +1841,7 @@ if (typeof NProgress != 'undefined') {
 			
 		function init_CustomNotification() {
 			
-			console.log('run_customtabs');
+			//console.log('run_customtabs');
 			
 			if( typeof (CustomTabs) === 'undefined'){ return; }
 			console.log('init_CustomTabs');
@@ -1956,11 +1956,11 @@ if (typeof NProgress != 'undefined') {
 		
 		function init_charts() {
 			
-				console.log('run_charts  typeof [' + typeof (Chart) + ']');
+				//console.log('run_charts  typeof [' + typeof (Chart) + ']');
 			
 				if( typeof (Chart) === 'undefined'){ return; }
 				
-				console.log('init_charts');
+				//console.log('init_charts');
 			
 				
 				Chart.defaults.global.legend = {
@@ -2362,7 +2362,7 @@ if (typeof NProgress != 'undefined') {
 		function init_compose() {
 		
 			if( typeof ($.fn.slideToggle) === 'undefined'){ return; }
-			console.log('init_compose');
+			//console.log('init_compose');
 		
 			$('#compose, .compose-close').click(function(){
 				$('.compose').slideToggle();
@@ -2375,7 +2375,7 @@ if (typeof NProgress != 'undefined') {
 		    function  init_calendar() {
 					
 				if( typeof ($.fn.fullCalendar) === 'undefined'){ return; }
-				console.log('init_calendar');
+				//console.log('init_calendar');
 					
 				var date = new Date(),
 					d = date.getDate(),
@@ -2477,10 +2477,10 @@ if (typeof NProgress != 'undefined') {
 			
 			function init_DataTables() {
 				
-				console.log('run_datatables');
+				//console.log('run_datatables');
 				
 				if( typeof ($.fn.DataTable) === 'undefined'){ return; }
-				console.log('init_DataTables');
+				//console.log('init_DataTables');
 				
 				var handleDataTableButtons = function() {
 				  if ($("#datatable-buttons").length) {
