@@ -148,6 +148,11 @@ return[
     'theFormatInactive' => 'The format is in the Inactive state',
     'thePreformatInactive' => 'The preformat is in the Inactive state',
     'header' => 'Header',
+    'ErrorLinkFormat' => 'Could not link the format with the appointment.',
+    'Select' => 'Select',
+
+
+
     //Supports
     'upload_sopports'    =>  'Load Supports',
     'supports'           =>  'Supports',
@@ -162,8 +167,33 @@ return[
     'not_ext_valid'      =>  'The file {file} extension is not allowed',
     'exceeded_weight'    =>  'The file {file} has exceeded the size limit of 20MB',
     'file_not_valid'     =>  'The file {file} is not valid',
+    'error_name_file'    =>  'Error! in the name files',
+    'des_error_name_file'=>  'You must enter the name in all files',
+    'btn_verify'         =>  'check',
+    'un_error_name_file' =>  'The name of the file must be entered {file}',
+
 
     'ErrorLinkFormat' => 'Could not link the format with the appointment.',
     'Select' => 'Select',
+    'NoMatches'                 => 'No matches',
+    'PermissionError'           => 'You can not perform this action, you do not have permission',
+    'EditRequestedAppointment'  => 'You can not edit a requested appointment',
+
+    // Message for a signa
+    'SignaPassword'     => 'You must append the signa password for signature',
+    'SignnaUser'        => 'You must append the signa user for signature',
+    'SignaFailToken'    => 'A valid token was not obtained. verify your username or password. Try again',
+    'SignaToken'        => 'The token is required',
+    'SignaFailFile'     => 'The file could not be accessed',
+    'SignaUserFail'     => 'The format is already signed by the same user',
+    'FormatTwoSigna'    => 'The format already has 2 signatures',
+    'SignaReturnError'  => 'Errors in service response, try later',
+
+
+    //Estados de las citas
+    'Solicitado'    => 'Requested',
+    'Activo'        => 'Active',
+    'En proceso'    => 'In process',
+    'Finalizado'    => 'Finalized',
 ];
 ?>

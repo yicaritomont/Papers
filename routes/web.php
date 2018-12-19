@@ -25,20 +25,24 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('reminder', 'RemindersController');
 Route::get('reminder',['as'=>'reminder','uses' => 'RemindersController@getRemind']);
 Route::post('postRemind',['as'=>'postRemind','uses' => 'RemindersController@postRemind']);
-Route::get('validateInspector/{id}', ['as' =>'validateInspector','uses' => 'InspectorController@IdCardInspector' ]);
 
 Route::get('ajxVerifyPassword','PerfilController@VerifyPassword');
 // cargar ciudades al pais seleccionado
 Route::get('ajxCountry','InspectorController@asincronia');
 
 Route::group( ['middleware' => ['auth']], function() {
-
+    
+    // Ruta para validar informacion del inspector
+    Route::get('validateInspector/{id}', ['as' =>'validateInspector','uses' => 'InspectorController@IdCardInspector' ]);
+    Route::get('ReadQrInspector/{id}',['as'=>'ReadQrInspector','uses' => 'InspectorController@ReadQrInspector' ]);
+    Route::post('saveReadInspector',['as' => 'saveReadInspector','uses'=> 'InspectorController@saveReadInspector']);
+    
     // Rutas para la eleccion de inicio de session
     Route::get('elegirCompania', array('as' => 'elegirCompania', 'uses'=>'UserController@ShowMultiple'));
     Route::get('enviaCompania/{id}',array('as'=>'enviaCompania','uses'=>'UserController@PostMultiple'));
 
     //Eventos Calendario
-    Route::post('inspectionappointments/events/{id?}/{company?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
+    Route::post('inspectionappointments/events/{type?}/{id?}', 'InspectionAppointmentController@events')->name('inspectionappointments.events');
     Route::post('inspectoragendas/events/{id?}/{company?}', 'InspectorAgendaController@events')->name('inspectoragendas.events');
 
     //Completar las citas
@@ -46,15 +50,16 @@ Route::group( ['middleware' => ['auth']], function() {
 
     //Formato de citas
     Route::post('inspectionappointments/{inspectionappointment}/format', 'InspectionAppointmentController@format')->name('inspectionappointments.format');
+    
+    // Consultar las agendas por un subtipo
+    Route::post('inspectoragendas/subtype', 'InspectorAgendaController@subtype')->name('inspectoragendas.subtype');
 
     //Actualización de campos desplegables
     Route::get('inspectiontypes/subtypes/{id?}', 'InspectionTypeController@subtypes')->name('inspectionappointments.subtypes');
     Route::get('country/cities/{id?}', 'GeneralController@cities')->name('general.cities');
     Route::get('companies/clients/{company?}', 'CompanyController@clients')->name('company.clients');
-    Route::get('inspectors/contracts/{id?}', 'InspectorController@contracts')->name('inspectors.contracts');
-
-    //Actualización campo informativo
-    Route::get('contracts/clients/{id?}', 'ContractController@clients')->name('contracts.clients');
+    Route::get('companies/inspectors/{company?}', 'CompanyController@inspectors')->name('company.inspectors');
+    Route::get('clients/contracts/{id?}', 'ClientController@contracts')->name('clients.contracts');
 
     // ????
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');
@@ -103,15 +108,17 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('ajxVerifyInspector','InspectorController@VerifyInspector');
     Route::resource('contracts', 'ContractController');
 
-
-
-
-
     //Supports
     Route::post('supports/upload','FormatController@upload')->name('support.upload');
     Route::get('formats/supports/{id}','FormatController@supports')->name('formats.supports');
     Route::post('supports/get','FormatController@getInitialData')->name('get.initData');
     Route::post('supports/delete','FormatController@delete')->name('supports.delete');
+    Route::post('getMessageAjax','FormatController@getAjaxMessage')->name('getAjax.message');
+
+    //Routes Firma
+    Route::get('autenticarUsuarioWSFirma','ConsumirSignaController@autenticarUsuarioWSFirma')->name('autenticarUsuarioWSFirma');
+    Route::get('firmarDocumentoWSFirma','ConsumirSignaController@firmarDocumentoWSFirma')->name('firmarDocumentoWSFirma');
+    Route::get('formats/signedFormats/{id}','FormatController@signedFormats')->name('formats.signedFormats');
 
 
 });

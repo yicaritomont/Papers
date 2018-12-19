@@ -240,4 +240,15 @@ class ClientController extends Controller
             ]);
         }
     }
+
+    /**
+     * Retorna los contractos del cliente seleccionado
+     */
+    public static function contracts($id = null)
+    {
+        $clientContracts = Client::getClientContractsById($id)->pluck('name', 'id')
+        ->prepend(trans('words.ChooseOption'), '0');
+
+        return ['status' => $clientContracts];
+    }
 }

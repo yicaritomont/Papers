@@ -28,7 +28,7 @@ class PreformatoController extends Controller
     public function create()
     {
         $preformato = Preformato::pluck('name', 'id');
-        $inspection_subtypes = InspectionSubtype::pluck('name', 'id');
+        $inspection_subtypes = InspectionSubtype::with('inspection_types')->get()->pluck('subtype_type', 'id');
 
         return view('preformato.new', compact('preformato','inspection_subtypes'));
     }

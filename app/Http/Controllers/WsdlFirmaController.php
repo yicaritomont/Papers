@@ -81,11 +81,11 @@ class WsdlFirmaController extends Controller
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => $PostField,
             CURLOPT_HTTPHEADER => $this->headers(),
+            CURLOPT_TIMEOUT,500
         );
 
         return $setopt;
@@ -97,12 +97,12 @@ class WsdlFirmaController extends Controller
      ********************************************************************************************/
 
     // Method to request the user token for the SIGNATURE
-    public function autenticacionUsuario()
+    public function autenticacionUsuario($usuario,$password)
     {
         // define the param for send a setopt
         $parametros = [
-            'Usuario'       =>  $this->usuario,
-            'Password'      =>  $this->password,
+            'Usuario'       =>  $usuario,
+            'Password'      =>  $password,
         ];
 
         $curl = $this->initializer();
@@ -149,28 +149,31 @@ class WsdlFirmaController extends Controller
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
+        CURLOPT_TIMEOUT => 0,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_POSTFIELDS => "<?xml version=\"1.0\" encoding=\"utf-8\"?>
-        \n<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"
+        \n<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" 
         \nxmlns:web=\"http://webservice.thsigne.ae\">
-        \n<soapenv:Header/>
-        \n<soapenv:Body>
-        \n<web:FirmarDocumento>
-        \n<web:Token>$token</web:Token>
-        \n<web:TipoFirma>PAdES_LTV</web:TipoFirma>
-        \n<web:SelloTiempo>true</web:SelloTiempo>
-        \n<web:Documento>$base64Documento</web:Documento>
-        \n<web:SelloFirma>\n<web:Pagina>$page</web:Pagina>
-        \n<web:SelloX>$positionX</web:SelloX>
-        \n<web:SelloY>$positionY</web:SelloY>
-        \n<web:SelloWidth>$width</web:SelloWidth>
-        \n<web:SelloHeight>$height</web:SelloHeight>
-        \n</web:SelloFirma>
-        \n</web:FirmarDocumento>
-        \n</soapenv:Body>
+           \n<soapenv:Header/>
+           \n<soapenv:Body>
+              \n<web:FirmarDocumento>       
+        \n<web:Token>$token</web:Token>       
+                 \n<web:TipoFirma>PADES_LTV</web:TipoFirma>
+                 \n<web:NombreFichero>ListadoAplicaciones.pdf</web:NombreFichero>
+                 \n<web:FormatoFichero>PDF</web:FormatoFichero>
+                 \n<web:Documento>$base64Documento</web:Documento>
+                 \n<web:SelloFirma>
+                    \n<web:Pagina>$page</web:Pagina>
+                    \n<web:SelloX>$positionX</web:SelloX>
+                    \n<web:SelloY>$positionY</web:SelloY>
+                    \n<web:SelloWidth>$width</web:SelloWidth>
+                    \n<web:SelloHeight>$height</web:SelloHeight>
+                 \n</web:SelloFirma>
+              \n</web:FirmarDocumento>
+           \n</soapenv:Body>
         \n</soapenv:Envelope>",
+
         CURLOPT_HTTPHEADER => $this->headers()
         ));
 
@@ -195,7 +198,6 @@ class WsdlFirmaController extends Controller
                 {
                     foreach($soap['soap:Body'] as $soapcontent => $body)
                     {
-                        
                         foreach ($body['FirmarDocumentoResult'] as $tag => $resultautenticar) 
                         {
                             $dataResponse[$tag] = $resultautenticar['value'];                        

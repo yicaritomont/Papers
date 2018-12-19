@@ -3,7 +3,6 @@
 @section('title', trans('words.Edit').' '.trans_choice('words.Headquarters', 1).' '.$headquarters->name)
 
 @section('content')
-
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-md-6 col-md-offset-3">
             <a href="{{ route('headquarters.index') }}" class="btn btn-default btn-sm"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>

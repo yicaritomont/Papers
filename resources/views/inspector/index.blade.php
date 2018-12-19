@@ -135,7 +135,7 @@
                         return data + btn;
                     }
                 },
-                setDataTable([-2, -3])
+                formatDateTable([-2, -3])
             );
 
             dataTableObject.ajax.type = 'POST';

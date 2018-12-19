@@ -41,37 +41,13 @@ class GeneralController extends Controller
             ->toJson();
     }
 
-    /* public function datatableWhere($model, $company, $relations='none', $entity=null, $action=null){
-        
-        //El action se crea para saber que campo se va a usar como identificador en las acciones
-        
-        $object = 'App\\'.$model;
-        
-        if($relations != 'none'){
-
-            //Dividir las relaciones en un array
-            $relations = explode(',', $relations);
-            
-            $data = $object::query()->with($relations);
-        }else{
-            $data = $object::query();
-        }
-
-        $data->whereHas('companies', function($q) use($company){
-            $q->where('slug', '=', $company);
-        });
-    
-        return datatables()
-            ->of($data)
-            ->addColumn('entity', $entity)
-            ->addColumn('action', $action)
-            ->addColumn('actions', 'shared/_actions')
-            ->rawColumns(['actions'])
-            ->toJson();
-    } */
-
     public function cities($id = null)
     {
+        $countryCities = \App\Country::getCountryCitiesById($id)->pluck('name', 'id')
+        ->prepend(trans('words.ChooseOption'), '0');
+
+        return ['status' => $countryCities];
+
         $result = Citie::select('id', 'name')
             ->where('countries_id', '=', $id)
         ->get()->toArray();

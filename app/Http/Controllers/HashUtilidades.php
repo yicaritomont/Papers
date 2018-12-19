@@ -13,7 +13,8 @@ class HashUtilidades
 
     public static function generarBase64Documento($sourcePath)
     {
-        $sourcePath=asset('files/test.pdf');
+        //$sourcePath=asset('files/test.pdf');
+        //$sourcePath = asset('../storage/app/Formato1.pdf');
 
         $source = file_get_contents($sourcePath);
         if (empty($source) ) 
@@ -29,6 +30,7 @@ class HashUtilidades
     public static function obtenerDocumentoBase64($base64)
     {
         //return $base64;    
+        //echo $base64;
         $data = base64_decode($base64);
         header('Content-Type: application/pdf');
         echo $data;    
@@ -42,16 +44,23 @@ class HashUtilidades
 
     }
 
-    public static function base64binary()
+    
+    public static function almacenarDocumentoPDFdeBase64($base64,$idFirma)
     {
-        $file=asset('files/test.pdf');
-        $realname = "/usr/local/ampps/www/roles-permissions/public/files/test.pdf";
-        $fd = fopen($file, 'rb');
-        $size = filesize($realname);
-        $cont = fread($fd, $size);
-        fclose($fd);
-        $encimg = base64_encode($cont);
-        return $encimg;
+        
+        // we give the file a random name
+        $name    = "fomato_".$idFirma.".pdf";
+
+        // a route is created, (it must already be created in its repository(pdf)).
+        $rute    = '/storage/app/'.$name;
+
+        // decode base64
+        $pdf_b64 = base64_decode($base64);
+
+        // you record the file in existing folder
+        file_put_contents($rute, $pdf_b64);
+
+        return $rute;
     }
 
 }
