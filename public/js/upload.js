@@ -32,14 +32,15 @@ var upload = {
     browseOnZoneClick: true,
     theme: 'fa',
     language: props.lang,
+    required: true,
     allowedPreviewTypes: ['image', 'html', 'text', 'video', 'audio','pdf','office','other'],
     allowedFileExtensions: [],
     elErrorContainer: '#kartik-file-errors',
     removeClass: "btn btn-danger",
     uploadClass: "btn btn-success",
     uploadUrl: "../../supports/upload",
-    uploadExtraData: {'_token' : props._token , 'formato_id' : props.formato_id },
-    maxFileSize: 20000,
+    //uploadExtraData: {'_token' : props._token , 'formato_id' : props.formato_id },
+    maxFileSize: 24000,
     initialPreviewAsData: true,
     overwriteInitial: false,
     preferIconicPreview: true,
@@ -66,7 +67,15 @@ var upload = {
         'ogg'   : '<i class="fas fa-volume-up text-info"></i>'
     },
     previewTemplates: {
-
+        other: '<div class="file-preview-frame krajee-default  kv-preview-thumb" id="{previewId}" data-fileindex="{fileindex}" data-template="{template}"' +
+        ' title="{caption}">\n' +
+        '   <div class="kv-file-content">' +
+        '       <div class="kv-preview-data file-preview-other-frame" {style}>\n' + props.DEFAULT_PREVIEW + '\n' +
+        '       </div>\n' +
+        '   </div>\n' +
+        '   <input type="text" class="form-control name-lb" placeholder="Ingrese el nombre del archivo" name="name_file_{fileindex}">'+
+        '   <div class="file-preview-other-footer">{footer}</div>\n' +
+        '</div>'
     }
 };
 
@@ -107,26 +116,40 @@ var vm = new Vue({
             })
             .then(function (response) {
                 if(response.data.files.length > 0 ){
+                    console.log(response.data);
                     vm.initData( response.data.files, response.data.path );
                     vm.path = response.data.path;
                 }
-                $(props.input).fileinput(upload).on('fileuploaded', function(e, params) 
-                {
 
-                }).on('filebatchuploadsuccess', function(event, data) {
+                $(props.input).fileinput(upload)
+                .on('filebatchuploadsuccess', function(event, data) {
                     vm.initData(data.jqXHR.responseJSON, vm.path );
-                }).on('fileloaded', function(event, file, previewId, index, reader) {
-                    var domHT = document.getElementById(previewId,index);
-                    vm.setInput(domHT,index);
-                }).on('filepreajax', function(event) {
+                    vm.setOnlyRead(data);
+                    console.log("batch",event);
+                }).on('filebatchpreupload', function(event, data) {
+                    var formData = vm.getExtraData();
+                    for(var pair of formData.entries()) {
+                        data.form.append(pair[0],pair[1]);
+                    }
                     var response = vm.verifyNames();
                     if( response.failed.length > 0 ){
                         vm.renderizarError(response.failed);
-                        event.stopPropagation();
-                    }else{
-
                     }
+                }).on('filepreupload',function( event, data , previewId, index ){
+                    var formData = vm.getExtraData(index);
+                    for(var pair of formData.entries()) {
+                        data.form.append(pair[0],pair[1]);
+                    }
+                    var response = vm.verifyNames(index);
+                    if( response.failed.length > 0 ){
+                        vm.renderizarError(response.failed);
+                    }
+                }).on('fileremoved', function(event, id, index) {
+                    vm.resetKeys();
+                }).on('fileuploaded', function(event, data, previewId, index) {
+                    vm.afterUpload(previewId);                    
                 });
+                vm.setOnlyRead(response.data.files);
             })
             .catch(function (error) {
                 console.log(error);
@@ -148,7 +171,6 @@ var vm = new Vue({
                 }else{
                     urls.push(root+"/"+files[i].nombre_url); 
                 }
-                
                 var caption = this.getCaption(files[i].nombre_url);
                 switch( this.getType(this.getExt(caption)) )
                 {
@@ -169,9 +191,9 @@ var vm = new Vue({
                         var conf =  {type: this.getType(this.getExt(caption)) , size: 102400, caption: caption,url: root+"/supports/delete" , key: files[i].id , downloadUrl : root+"/"+files[i].nombre_url };
                         break;
                 }
+                config['nombre']  = files[i].nombre;
                 config.push(conf);
             }
-
             var obj = {
                 allowedFileExtensions: this.types,
                 overwriteInitial: false,
@@ -216,10 +238,14 @@ var vm = new Vue({
             input.setAttribute("name","name_file_"+index);
             dom.insertBefore(input,dom.children[1]);
         },
-        verifyNames(){
+        verifyNames( index = null ){
             var fields = {'success' : [] , 'failed' : []};
             var base = "name_file_";
-            var names = document.querySelectorAll("[name^='"+base+"']");
+            if( index ){
+                var names = document.querySelectorAll("[name^='"+base+index+"']");
+            }else{
+                var names = document.querySelectorAll("[name^='"+base+"']");
+            }
             for( var i = 0 ; i < names.length ; i++ ){
                 var value = names[i].value;
                 if( value.trim() == "" ){
@@ -231,11 +257,35 @@ var vm = new Vue({
             return fields;
         },
         renderizarError( errors ){
-            swal(this.messages.error_name_file, this.messages.des_error_name_file, "error", {
-                button: this.messages.btn_verify,
-            });
+            if( errors.length == 1 ){
+                var parents = $(errors[0]).parents();
+                var label = $(parents[0]).find(".file-caption-info");
+                var title = $(label[0]).text();
+                var msg = this.messages.un_error_name_file;
+                msg = msg.replace("{file}",title);
+                swal(this.messages.error_name_file, msg, "error", {
+                    button: this.messages.btn_verify,
+                });
+            }else{
+                swal(this.messages.error_name_file, this.messages.des_error_name_file, "error", {
+                    button: this.messages.btn_verify,
+                });
+            }
             for( var i = 0 ; i < errors.length; i++ ){
                 errors[i].style.border = "2px solid red";
+            }
+        },
+        getExtraData ( index = null ){
+            var form = document.getElementById("formSupports");
+            var formData = new FormData(form);
+            if( index ){
+                var formUnit = new FormData();
+                formUnit.append('_token',formData.get('_token'));
+                formUnit.append('name_file_'+index,formData.get('name_file_'+index));
+                formUnit.append('formato',props.formato_id);
+                return formUnit;
+            }else{
+                return formData;
             }
         },
         changeBorder( e ){
@@ -246,9 +296,48 @@ var vm = new Vue({
             }else{
                 input.style.border = "2px solid red";
             }
-        }   
+        },
+        enableButtons(){
+            $('.btn-file').removeAttr('disabled');
+            $('#input-supports').removeAttr('disabled');
+            $('.fileinput-remove-button').removeAttr('disabled');
+            $('.fileinput-upload-button').removeAttr('disabled');
+        },
+        getValueNames(){
+            var elements = {};
+            var nombres = document.querySelectorAll('.name-lb');
+            for( var i = 0 ; i < nombres.length; i++ ){
+                elements[nombres[i].name] = nombres[i].value;
+            }
+            return elements;
+        },
+        resetKeys(){
+            var boxText = $("[name^='name_file_']:text.name-lb");
+            $.each(boxText,function(i,item){
+                $(item).attr('name','name_file_'+i);
+            });
+        },
+        setOnlyRead( data ){
+            //Verificamos si estan cargador por el initialPreview
+            var initial = $("[name^='name_file_init_']:text:not([readonly])");
+            if( initial.length > 0 ){
+                $.each(initial,function(i,item){
+                    $(item).val(data[i].nombre);
+                    $(item).attr('readonly','readonly');
+                    $(item).css('border','2px solid #ccc');
+                });
+            }else{
+                console.log(data);
+            }
+        },
+        afterUpload( indexID ){
+            var elemento = $("#"+indexID).find('.name-lb')[0];
+            $(elemento).css('border','2px solid #ccc');
+            $(elemento).prop('readonly','readonly');
+        }  
     }
 });
 
           
 $(document).on('keyup','.name-lb',vm.changeBorder);
+$(document).on('click','.dlt-btn',vm.resetKeys);

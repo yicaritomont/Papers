@@ -162,6 +162,7 @@ return[
     'error_name_file'    =>  'Error! en el nombre archivos',
     'des_error_name_file'=>  'Debe ingresar el nombre en todos los archivos',
     'btn_verify'         =>  'Verificar',
+    'un_error_name_file' =>  'Se debe ingresar el nombre del archivo {file}'
 
  ];
 ?>

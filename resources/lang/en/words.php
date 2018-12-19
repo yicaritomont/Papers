@@ -163,7 +163,8 @@ return[
     'file_not_valid'     =>  'The file {file} is not valid',
     'error_name_file'    =>  'Error! in the name files',
     'des_error_name_file'=>  'You must enter the name in all files',
-    'btn_verify'         =>  'check'
+    'btn_verify'         =>  'check',
+    'un_error_name_file' =>  'The name of the file must be entered {file}'
 
 
 ];
