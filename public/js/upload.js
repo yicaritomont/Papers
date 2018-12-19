@@ -39,7 +39,6 @@ var upload = {
     removeClass: "btn btn-danger",
     uploadClass: "btn btn-success",
     uploadUrl: "../../supports/upload",
-    //uploadExtraData: {'_token' : props._token , 'formato_id' : props.formato_id },
     maxFileSize: 24000,
     initialPreviewAsData: true,
     overwriteInitial: false,
@@ -116,7 +115,6 @@ var vm = new Vue({
             })
             .then(function (response) {
                 if(response.data.files.length > 0 ){
-                    console.log(response.data);
                     vm.initData( response.data.files, response.data.path );
                     vm.path = response.data.path;
                 }
@@ -124,8 +122,7 @@ var vm = new Vue({
                 $(props.input).fileinput(upload)
                 .on('filebatchuploadsuccess', function(event, data) {
                     vm.initData(data.jqXHR.responseJSON, vm.path );
-                    vm.setOnlyRead(data);
-                    console.log("batch",event);
+                    vm.setOnlyRead();
                 }).on('filebatchpreupload', function(event, data) {
                     var formData = vm.getExtraData();
                     for(var pair of formData.entries()) {
@@ -317,24 +314,29 @@ var vm = new Vue({
                 $(item).attr('name','name_file_'+i);
             });
         },
-        setOnlyRead( data ){
+        setOnlyRead( data = null ){
             //Verificamos si estan cargador por el initialPreview
-            var initial = $("[name^='name_file_init_']:text:not([readonly])");
+            if( data ){
+                var initial = $("[name^='name_file_init_']:text:not([readonly])");
+            }else{
+                var initial = $("[name^='name_file_']:text:not([readonly])");
+            }
+            console.log("initial",initial);
             if( initial.length > 0 ){
                 $.each(initial,function(i,item){
-                    $(item).val(data[i].nombre);
+                    if( data ){
+                        $(item).val(data[i].nombre);
+                    }
                     $(item).attr('readonly','readonly');
                     $(item).css('border','2px solid #ccc');
                 });
-            }else{
-                console.log(data);
             }
         },
-        afterUpload( indexID ){
+        afterUpload( indexID = null ){
             var elemento = $("#"+indexID).find('.name-lb')[0];
             $(elemento).css('border','2px solid #ccc');
             $(elemento).prop('readonly','readonly');
-        }  
+        }
     }
 });
 
