@@ -68,22 +68,24 @@ class SignaBlockController
         try 
         {
             $res = $client->request('POST',$this->baseUrl.'documento',[
-                'multipart' => [
-                    [
-                        'name'  =>  $name,
-                        'FileContents'  => fopen($documento, 'r'),
-                        'contents'      => fopen($documento, 'r'),
-                        'headers'       =>  [
-                            'Content-Type' => 'text/plain',
-                            'Content-Disposition'   => 'form-data; name="FileContents"; filename="'. $name .'"',
-                            'authorization' => $token
-                        ],
-                        // 'contents' => $resource,
+                    'headers' => [
+                        'authorization' => $token
                     ],
-                'headers' => ['authorization' => $token]
-                ],
+                    'multipart' => [
+                        [
+                            'name'  =>  $name,
+                            'FileContents'  => fopen($documento, 'r'),
+                            'contents'      => fopen($documento, 'r'),
+                            'headers'       =>  [
+                                'Content-Type' => 'text/plain',
+                                'Content-Disposition'   => 'form-data; name="file"; filename="'. $name .'"',
+                                'authorization' => $token
+                            ],
+                            'contents' => fopen($documento, 'r'),
+                        ]
+                    ],
+                    'contents' => fopen($documento, 'r')
                 ]);
-            //$res = $client->request("POST", $this->baseUrl.'documento', array('content-type' => 'multipart/form-data'), array($documento), array(), '');
                     
             return json_decode($res->getBody());
         } 
@@ -91,15 +93,32 @@ class SignaBlockController
         {
             return false;
         }
-
-       /* $url = $this->minkParameters["base_url"] . '/' . ltrim($url, '/'); 
-$file = new \Symfony\Component\HttpFoundation\File\UploadedFile($path, "video");
-$fields = json_encode($table->getColumnsHash()[0]); //array("user" => "test")*/
-//$this->client->request("POST", $url, array('content-type' => 'multipart/form-data'), array($file), array(), $fields);
     }   
+     
 
+    /**
+     * Signa envio a endpoint apijson/documento (POST)
+     * Resgistra y custiroa docimento
+     * Requerido CABECERA authorization (TOKEN)
+     * Envia Parametros en una cadena JSON
+     * Retorna el hash y tx_has del documento
+     */
 
-
+    public function apijsonDocumento($token,$base64)
+    {
+        $client = $this->crearCliente();
+        try 
+        {
+            $res = $client->request('POST',$this->baseUrl.'apijson/documento',[
+                'headers' => $this->headers($token),
+                'form_params'    => ['file_name' => 'documento.pdf','file_base64'=> $base64 , 'identificacion' => 'Registro Documento Json'],
+            ]);
+        } 
+        catch (RequestException $e) 
+        {
+            return false;
+        }
+    }
     /**
      * Signa Envio a endpoint documento/info (GET)
      * Recupera la informacion del documento

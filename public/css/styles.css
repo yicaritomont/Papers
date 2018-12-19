@@ -448,6 +448,11 @@ tr.child ul.dtr-details li{
     margin-top: 20px !important;
     height: 80px !important
 }
+
+.name-lb{
+    border: 2px solid red
+}
+
 /* 
 .nav-sm ul.nav.child_menu li a{
     display: inline-block;
@@ -457,6 +462,33 @@ tr.child ul.dtr-details li{
     display: inline;
     vertical-align: middle;
     margin-right: .2em;
+}
+
+#map 
+{
+    width: 100%;
+    height: 400px;
+    background-color: grey;
+}
+
+.notificacion_carga 
+{
+    background-color: #F5F5F5;
+    border-color: gray;
+    border-style: solid;
+    border-width: 4px;
+    color: black;
+    display: none;
+    font-weight: bold;
+    height: 100%;    
+    opacity: 0.8;
+    padding-top: 20%;
+    position: fixed;
+    text-align: center;
+    top: 0;
+    width: 100%;
+    z-index: 1050;
+    font-size: 25px;
 }
 
 .lang-menu a{

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Helpers;
-
+use App\SignaFormat;
 class Equivalencia{
 
     private static $activo = 1;
@@ -27,6 +27,12 @@ class Equivalencia{
 
     public static function types(){
         return self::$types;
+    }
+
+    public static function numeroFirmasPorFormato($id)
+    {
+        $firmasFormato = SignaFormat::where('id_formato',$id)->get();
+        return count($firmasFormato);
     }
 
 }

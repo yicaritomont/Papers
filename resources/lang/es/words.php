@@ -142,7 +142,12 @@ return[
     'ClientMenu' => 'Menú del cliente',
     'Inspection' => 'Inspección',
     'AgendaEmpty' => 'No existen agendas',
+    'ErrorLinkFormat'    => 'No se pudo vincular el formato con la cita.',
+    'Select'             => 'Seleccione',
 
+
+
+    
     //Formatos
     'upload_sopports'    =>  'Cargar Soportes',
     'supports'           =>  'Soportes',
@@ -154,12 +159,27 @@ return[
     'not_ext_valid'      =>  'La extensión del archivo {file} no esta permitida',
     'exceeded_weight'    =>  'El archivo {file} ha excedido el limite de tamaño de 20MB',
     'file_not_valid'     =>  'El archivo {file} no es valido',
+    'error_name_file'    =>  'Error! en el nombre archivos',
+    'des_error_name_file'=>  'Debe ingresar el nombre en todos los archivos',
+    'btn_verify'         =>  'Verificar',
+    'un_error_name_file' =>  'Se debe ingresar el nombre del archivo {file}',
 
-    'ErrorLinkFormat'           => 'No se pudo vincular el formato con la cita.',
-    'Select'                    => 'Seleccione',
+    'ErrorLinkFormat' => 'No se pudo vincular el formato con la cita.',
+    'Select' => 'Seleccione',
     'NoMatches'                 => 'No hay coincidencias',
     'PermissionError'           => 'No puedes realizar esta acción, no tienes permisos',
     'EditRequestedAppointment'  => 'No puede editar una cita solicitada',
+
+    // Mensajes para signa
+    'SignaPassword'     => 'Debe anexar la contraseña signa para firma',
+    'SignnaUser'        => 'Debe anexar el usuario signa para firma',
+    'SignaFailToken'    => 'No se obtuvo un token válido. verifique su usuario o contraseña. inténtelo de nuevo',
+    'SignaToken'        => 'El token es requerido',
+    'SignaFailFile'     => 'No se ha podido acceder al archivo',
+    'SignaUserFail'     => 'El formato ya esta firmado por el mismo usuario',
+    'FormatTwoSigna'    => 'El formato ya cuenta con 2 firmas',
+    'SignaReturnError'  => 'Errores en respuesta de servicio, intente más tarde',
+    
 
     //Estados de las citas
     'Solicitado'    => 'Solicitado',

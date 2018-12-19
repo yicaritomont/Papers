@@ -15,7 +15,6 @@
         {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
         <!-- Font Awesome -->
         <link rel="stylesheet" href="{{ asset('css/all.css') }}">
-
         <!-- FullCalendar -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/fullCalendar/fullcalendar.min.css')}}">
         <!-- Bootstrap -->
@@ -400,5 +399,8 @@
             changeTopToast();
         </script>
     @endif
+        <div id="not_carga" class="notificacion_carga">
+            <span id="not_animada" class="animated infinite fadeInDown"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> CARGANDO <span id="pro"></span> . . .</span>
+        </div>
   </body>
 </html>
