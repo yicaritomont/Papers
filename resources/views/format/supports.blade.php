@@ -13,7 +13,7 @@
             <h3 class="panel-titles">@lang('words.manage') @lang('words.supports')</h3>
         </div>
         <div class="panel-body black-letter content-over">
-            <form method="POST">
+            <form method="POST" id="formSupports">
                 @csrf
                 <input type="hidden" name="formato" value="{{ $formato->id }}" />
                 <label for="input-supports">@lang('words.supports')</label>

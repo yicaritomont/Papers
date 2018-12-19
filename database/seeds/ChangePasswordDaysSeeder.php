@@ -15,9 +15,9 @@ class ChangePasswordDaysSeeder extends Seeder
         //
         $ChangePasswordDays = array(
 			array(
-				'id'       => 1,
-                'days'     => '30',
-                'state_id' => 1
+				'id'       =>   1,
+                'days'     =>   '60',
+                'state_id' =>   1
 			)            
 		);
 

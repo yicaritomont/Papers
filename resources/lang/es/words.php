@@ -142,7 +142,12 @@ return[
     'ClientMenu' => 'Menú del cliente',
     'Inspection' => 'Inspección',
     'AgendaEmpty' => 'No existen agendas',
+    'ErrorLinkFormat'    => 'No se pudo vincular el formato con la cita.',
+    'Select'             => 'Seleccione',
 
+
+
+    
     //Formatos
     'upload_sopports'    =>  'Cargar Soportes',
     'supports'           =>  'Soportes',
@@ -154,6 +159,10 @@ return[
     'not_ext_valid'      =>  'La extensión del archivo {file} no esta permitida',
     'exceeded_weight'    =>  'El archivo {file} ha excedido el limite de tamaño de 20MB',
     'file_not_valid'     =>  'El archivo {file} no es valido',
+    'error_name_file'    =>  'Error! en el nombre archivos',
+    'des_error_name_file'=>  'Debe ingresar el nombre en todos los archivos',
+    'btn_verify'         =>  'Verificar',
+    'un_error_name_file' =>  'Se debe ingresar el nombre del archivo {file}',
 
     'ErrorLinkFormat' => 'No se pudo vincular el formato con la cita.',
     'Select' => 'Seleccione',

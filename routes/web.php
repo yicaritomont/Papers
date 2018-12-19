@@ -113,6 +113,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('formats/supports/{id}','FormatController@supports')->name('formats.supports');
     Route::post('supports/get','FormatController@getInitialData')->name('get.initData');
     Route::post('supports/delete','FormatController@delete')->name('supports.delete');
+    Route::post('getMessageAjax','FormatController@getAjaxMessage')->name('getAjax.message');
 
     //Routes Firma
     Route::get('autenticarUsuarioWSFirma','ConsumirSignaController@autenticarUsuarioWSFirma')->name('autenticarUsuarioWSFirma');

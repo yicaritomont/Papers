@@ -313,54 +313,64 @@ class FormatController extends Controller
 
     public function upload( Request $request )
     {
-        $response = array();
+        $response = array(); $valid = array();
+        $data = $request->all();
         //Obtenemos el id del formato
-        $format_id = $request->input('formato_id');
+        $format_id = $request->input('formato');
         $file_id = $request->input('file_id');
         $files = $request->file('input-supports');
         //Directorio destino
         $destinationPath = "uploads/".$format_id."/";
         //Validación datos
         if( !is_null($files) ){
-            foreach( $files AS $key => $item )
-            {
+            foreach( $files AS $key => $item ){
                 if( $item->isValid() ){
-
-					//Verificamos que el peso no supere el limite
-					if( $this->getValidSize($item) ){
-
-						//Verificamos que la extensión este permitida
-						if( $this->getValidExt($item) ){
-
-							$name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
-							$upload_success = $item->move($destinationPath, $name_url['name'] );
-
-							if( $upload_success )
-							{
-								$new_file = array
-								(
-									'mime_type'     =>  $upload_success->getMimeType(),
-									'format_id'     =>  $format_id,
-									'nombre_url'    =>  $name_url['url'],
-									'user_id'       =>  Auth::id(),
-									'extension'     =>  $upload_success->getExtension()
-								);
-
-								$insert = File::insertGetId($new_file);
-								$new_file['id'] = $insert;
-								array_push($response,$new_file);
-
-							}else{
-								$response = $this->addError($response,'not_upload',$item);
-							}
-						}else{
-							$response = $this->addError($response,'not_ext_valid',$item);
-						}
-					}else{
-						$response = $this->addError($response,'exceeded_weight',$item);
-					}
+                    $indice = isset($data['file_id']) ? $data['file_id'] : $key;
+                    if( $this->isValidName($indice,$data) ){
+                        //Verificamos que el peso no supere el limite
+                        if( $this->getValidSize($item) ){
+                            //Verificamos que la extensión este permitida
+                            if( $this->getValidExt($item) ){
+                                array_push($valid,$item);
+                            }else{
+                                $response = $this->addError($response,'not_ext_valid',$item);
+                            }
+                        }else{
+                            $response = $this->addError($response,'exceeded_weight',$item);
+                        }
+                    }else{
+                        $response = $this->addError($response,'un_error_name_file',$item);
+                    }
                 }else{
 					$response = $this->addError($response,'file_not_valid',$item);
+                }
+            }
+        }
+        //Subimos las imagenes si no hay errores 
+        if( !isset($response['error']) ){
+            foreach( $valid AS $key => $item ){
+                $name_url = $this->getNameFile($destinationPath,$item->getClientOriginalName());
+                $upload_success = $item->move($destinationPath, $name_url['name'] );
+                //Si se subio correctamente de agregar el registro
+                if( $upload_success ){
+                    $indice = isset($data['file_id']) ? $data['file_id'] : $key;
+                    //Retiramos etiquetas PHP y HTML del nombre (XXS)
+                    $nombre = strip_tags($data['name_file_'.$indice]);
+                    //Generamos el objeto del archivo
+                    $new_file = array
+                    (
+                        'mime_type'     =>  $upload_success->getMimeType(),
+                        'format_id'     =>  $format_id,
+                        'nombre_url'    =>  $name_url['url'],
+                        'user_id'       =>  Auth::id(),
+                        'extension'     =>  $upload_success->getExtension(),
+                        'nombre'        =>  $nombre
+                    );
+                    $insert = File::insertGetId($new_file);
+                    $new_file['id'] = $insert;
+                    array_push($response,$new_file);
+                }else{
+                    $response = $this->addError($response,'not_upload',$item);
                 }
             }
         }
@@ -489,7 +499,18 @@ class FormatController extends Controller
 			return true;
 		}
 		return false;
-	}
+    }
+    
+    public function isValidName( $key, $data )
+    {
+        $base = "name_file_";
+        if( isset($data[$base.$key])){
+            if( !is_null($data[$base.$key]) && !empty($data[$base.$key]) ){
+                return true;
+            }
+        }
+        return false;
+    }
 
 	public function addError( $response , $message , $file )
 	{
@@ -499,13 +520,19 @@ class FormatController extends Controller
 		$text = str_replace("{file}",$name,$text);
 
 		if( isset($response['error']) ){
-			$response['error'] .= " <li>".$text."</li>";
+			$response['error'] .= "<li>".$text."</li>"; 
 		}else{
-			$response['error'] = "<li>".$text."</li>";
+			$response['error'] = $text;
 		}
 		return $response;
     }
     
+    public function getAjaxMessage()
+    {
+        $words =  \Lang::get('words');
+        return response()->json($words);
+    }
+
     public function signedFormats($id)
     {
         $format = SignaFormat::where('id_formato',$id)->orderBy('created_at', 'desc')->limit(1)->first();

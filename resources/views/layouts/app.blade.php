@@ -15,7 +15,6 @@
         {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
         <!-- Font Awesome -->
         <link rel="stylesheet" href="{{ asset('css/all.css') }}">
-
         <!-- FullCalendar -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/fullCalendar/fullcalendar.min.css')}}">
         <!-- Bootstrap -->

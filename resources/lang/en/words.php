@@ -145,7 +145,11 @@ return[
     'ClientMenu' => 'Client Menu',
     'Inspection' => 'Inspection',
     'AgendaEmpty' => 'There are no agendas',
+    'ErrorLinkFormat' => 'Could not link the format with the appointment.',
+    'Select' => 'Select',
 
+
+    
     //Supports
     'upload_sopports'    =>  'Load Supports',
     'supports'           =>  'Supports',
@@ -157,6 +161,11 @@ return[
     'not_ext_valid'      =>  'The file {file} extension is not allowed',
     'exceeded_weight'    =>  'The file {file} has exceeded the size limit of 20MB',
     'file_not_valid'     =>  'The file {file} is not valid',
+    'error_name_file'    =>  'Error! in the name files',
+    'des_error_name_file'=>  'You must enter the name in all files',
+    'btn_verify'         =>  'check',
+    'un_error_name_file' =>  'The name of the file must be entered {file}',
+
 
     'ErrorLinkFormat' => 'Could not link the format with the appointment.',
     'Select' => 'Select',
