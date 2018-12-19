@@ -13,6 +13,11 @@
 </div>
 {{-- <div class="col-md-12"> --}}
     <div class="panel panel-default">
+        <label for="name">{{trans_choice('words.header',1)}}</label>
+        {!! Form::textarea('header',null,['class' => 'ckeditor','id' => 'header']) !!}
+        @if ($errors->has('header')) <p class="help-block">{{ $errors->first('header') }}</p> @endif
+    </div>
+    <div class="panel panel-default">
         <label for="name">{{trans_choice('words.Preformato',1)}}</label>
         {!! Form::textarea('format',null,['class' => 'ckeditor','id' => 'editor1']) !!}
         @if ($errors->has('format')) <p class="help-block">{{ $errors->first('format') }}</p> @endif

@@ -142,6 +142,9 @@ return[
     'ClientMenu' => 'Menú del cliente',
     'Inspection' => 'Inspección',
     'AgendaEmpty' => 'No existen agendas',
+    'theFormatInactive' => 'El formato se encuentra en estado Inactivo',
+    'thePreformatInactive' => 'El preformato se encuentra en estado Inactivo',
+    'header' => 'Encabezado',
 
     //Formatos
     'upload_sopports'    =>  'Cargar Soportes',

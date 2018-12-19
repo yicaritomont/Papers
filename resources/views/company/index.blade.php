@@ -36,8 +36,8 @@
 @endsection
 
 @section('scripts')
-    <script>  
-        
+    <script>
+
         $(document).ready(function() {
 
             //Se definen las columnas (Sin actions)
@@ -54,7 +54,7 @@
 
             @if(Gate::check('edit_companies') || Gate::check('delete_companies') || Gate::check('view_users') || Gate::check('view_inspectors'))
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}"};
-                
+
                 columns.push({data: 'actions', className: 'text-center'},)
                 dataTableObject.columnDefs = [setDataTable([-2, -3])];
             @else
@@ -70,7 +70,7 @@
                     targets: 8,
                     render: function(data, type, row){
                         var btn =   '<div class="dropdown" style="display:inline-block">\
-                                        <button class="btn btn-xs btn-primary dropdown-toggle" type="button" id="watchMenu" data-toggle="dropdown">\
+                                        <button class="btn btn-xs btn-primary dropdown-toggle" title="Ver" type="button" id="watchMenu" data-toggle="dropdown">\
                                             <i class="fa fa-eye"></i>\
                                         </button>\
                                         <ul class="dropdown-menu pull-right" aria-labelledby="watchMenu" style="text-align:right">';

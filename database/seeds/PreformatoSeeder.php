@@ -16,40 +16,40 @@ class PreformatoSeeder extends Seeder
           array('id' => 1,
             'inspection_subtype_id' => 1,
             'name' => 'expediting & inspection',
-           'format' => '<div class="header" id="header">
-              <table border="1" cellpadding="1" cellspacing="1" style="width:100%">
-              	<tbody>
-              		<tr>
-              			<td colspan="2" rowspan="2" style="text-align:center">*company_logo*</td>
-              			<td colspan="4" rowspan="1" style="text-align:center"><strong>EXPEDITING &amp; INSPECTION</strong></td>
-              			<td colspan="2" rowspan="2" style="text-align:center">*iso_logo*</td>
-              		</tr>
-              		<tr>
-              			<td colspan="4" rowspan="1" style="text-align:center"><strong>INSPECTION REPORT</strong></td>
-              		</tr>
-              		<tr>
-              			<td><strong>CLIENT :</strong></td>
-              			<td>*client*</td>
-              			<td><strong>PROJECT :</strong></td>
-              			<td>*project*</td>
-              			<td><strong>N. PAGE:</strong></td>
-              			<td><center><div class="page"></div></center></td>
-              			<td><strong>OF</strong></td>
-              			<td>*tot_pages*</td>
-              		</tr>
-              		<tr>
-              			<td><strong>CONTRACT :</strong></td>
-              			<td>*contract*</td>
-              			<td colspan="2" rowspan="1"><strong>DATE OF CONTRACT :</strong></td>
-              			<td>*date_contract*</td>
-              			<td colspan="2" rowspan="1"><strong>CONTRACTUAL DELIVERY DATE</strong></td>
-              			<td>*date_contractual*</td>
-              		</tr>
-              	</tbody>
-              </table>
-            </div>
+            'header' =>'<div class="header" id="header">
+               <table border="1" cellpadding="1" cellspacing="1" style="width:100%">
+               	<tbody>
+               		<tr>
+               			<td colspan="2" rowspan="2" style="text-align:center">*company_logo*</td>
+               			<td colspan="4" rowspan="1" style="text-align:center"><strong>EXPEDITING &amp; INSPECTION</strong></td>
+               			<td colspan="2" rowspan="2" style="text-align:center">*iso_logo*</td>
+               		</tr>
+               		<tr>
+               			<td colspan="4" rowspan="1" style="text-align:center"><strong>INSPECTION REPORT</strong></td>
+               		</tr>
+               		<tr>
+               			<td><strong>CLIENT :</strong></td>
+               			<td>*client*</td>
+               			<td><strong>PROJECT :</strong></td>
+               			<td>*project*</td>
+               			<td><strong>N. PAGE:</strong></td>
+               			<td><center><div class="page"></div></center></td>
+               			<td><strong>OF</strong></td>
+               			<td>*tot_pages*</td>
+               		</tr>
+               		<tr>
+               			<td><strong>CONTRACT :</strong></td>
+               			<td>*contract*</td>
+               			<td colspan="2" rowspan="1"><strong>DATE OF CONTRACT :</strong></td>
+               			<td>*date_contract*</td>
+               			<td colspan="2" rowspan="1"><strong>CONTRACTUAL DELIVERY DATE</strong></td>
+               			<td>*date_contractual*</td>
+               		</tr>
+               	</tbody>
+               </table>
+             </div>',
+           'format' => '
             <p>&nbsp;</p>
-
             <table border="1" cellpadding="1" cellspacing="1" style="width:100%">
             	<tbody>
             		<tr>

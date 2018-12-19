@@ -7,16 +7,16 @@ function inicial (argument)
     $('#password_update').keyup(verifyPassword);
     $('#password-confirm').blur(verifyPassword);
     $('#identificacion_inspector').blur(verifyInspector);
-    $('#boton_guardar_html').click(guardarHtml);
     $('#boton_firmar_formato').click(deshabilitarCampos);
     $('#boton_firmar_formato').click(guardarHtml);
+    $('#boton_guardar_cambioshtml').click(guardarHtml);
     // $('#company_formato').change(cargarSelectClients);
     $('#company_formato').on('change', function(event, edit){
         if( !$.isNumeric(edit) )
         {
             edit = undefined;
         }
-        
+
         fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#cliente_formato', edit, () => {
             $('#format_preformato').val('');
             $('#cliente_formato').change(limpiarFormulario);
@@ -26,6 +26,7 @@ function inicial (argument)
         });
     });
     $('#format_preformato').change(llenarCabeceraFormato);
+    var tokenFormulario = $('[name="_token"]').val();
 
     //Se definen atributos generales de DataTable
     dataTableObject = {
@@ -79,6 +80,7 @@ function inicial (argument)
     console.log($(window).outerHeight()); */
 
     $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
+
 }
 
 // Si existe el campo icon cargue el archivo con todos los iconos de font awesome
@@ -103,7 +105,7 @@ $('#company_id').on('change', function(event, edit){
     {
         edit = undefined;
     }
-    
+
     fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#client_id', edit);
 });
 
@@ -167,7 +169,7 @@ function obtenerUrl()
     var url = window.location.protocol+'//'+window.location.host+'/'+vector[1];
     console.log('Ruta absoluta '+rutaAbsoluta);
     console.log('URL '+url);
-    
+
     return url;
 }
 
@@ -706,6 +708,7 @@ function verifyInspector()
 }
 
 function guardarHtml(e) {
+  console.log('aqui toy');
     e.preventDefault();
     camposLlenos();
     var contenedorHtml = $('#contenedor_formato').html();
@@ -832,7 +835,6 @@ function llenarCabeceraFormato()
             }).done(function(response)
                 {
                     console.log(response);
-                    console.log(response);
                     if(!jQuery.isEmptyObject(response))
                     {
                       console.log(response.error);
@@ -843,9 +845,9 @@ function llenarCabeceraFormato()
                         animation: false,
                         customClass: 'animateErrorIcon '
                     });
-                    $('#boton_guardar_html').attr("disabled", true);
+                    $('#boton_guardar_html').attr('disabled','disabled');
                     } else {
-                      var html_plantilla_formato = response.preformato.format;
+                      var html_plantilla_formato ='<div class="header" id="header">'+response.preformato.header+'</div><p>&nbsp;</p>'+response.preformato.format;
                       if( preformato != '')
                       {
                             $('#boton_guardar_html').attr("disabled", false);
@@ -864,7 +866,7 @@ function llenarCabeceraFormato()
                             html_plantilla_formato = html_plantilla_formato.replace('*num_page*',' ');
                             html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','');
                           }
-
+                          $('#boton_guardar_html').click(guardarHtml);
                           $('#contenedor_formato').html(html_plantilla_formato);
                           $('#contenedor_formato').show();
                       } else {

@@ -60,7 +60,7 @@
         <!-- Chosen -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosenStyle.css')}}">
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosen.min.css')}}">
-        
+
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
 
@@ -353,20 +353,39 @@
     <script src="{{ asset('js/lib/dataTable/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('js/lib/dataTable/responsive.bootstrap.min.js') }}"></script>
-    
+
     <!-- SweetAlert -->
     <script src="{{ asset('js/lib/sweetAlert/sweetalert2.min.js') }}"></script>
 
     <!-- text editor -->
-    <script src="{{ asset('/vendors/ckeditor/ckeditor.js') }}"></script>
-
+    <script src="{{ asset('/ckeditor/ckeditor.js') }}"></script>
+    <script>
+      try{CKEDITOR.replace( 'header',{
+        filebrowserBrowseUrl: '{{ asset('ckfinder/ckfinder.html') }}',
+        filebrowserImageBrowseUrl: '{{ asset('ckfinder/ckfinder.html?type=Images') }}',
+        filebrowserFlashBrowseUrl: '{{ asset('ckfinder/ckfinder.html?type=Flash') }}',
+        filebrowserUploadUrl: '{{ asset('ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files') }}',
+        filebrowserImageUploadUrl: '{{ asset('ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images') }}',
+        filebrowserFlashUploadUrl: '{{ asset('ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash') }}',
+      });}catch{}
+    </script>
+    <script>
+      try{CKEDITOR.replace( 'editor1',{
+        filebrowserBrowseUrl: '{{ asset('ckfinder/ckfinder.html') }}',
+        filebrowserImageBrowseUrl: '{{ asset('ckfinder/ckfinder.html?type=Images') }}',
+        filebrowserFlashBrowseUrl: '{{ asset('ckfinder/ckfinder.html?type=Flash') }}',
+        filebrowserUploadUrl: '{{ asset('ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files') }}',
+        filebrowserImageUploadUrl: '{{ asset('ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images') }}',
+        filebrowserFlashUploadUrl: '{{ asset('ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash') }}',
+      });}catch{}
+    </script>
     <!-- Moment timezone -->
     <script src="{{ asset('js/lib/momentTz/moment-timezone-with-data-2012-2022.min.js') }}"></script>
 
     <!-- Chosen -->
     <script src="{{asset('js/lib/chosen/chosen.jquery.min.js')}}"></script>
     <script src="{{asset('js/lib/chosen/chosen.proto.min.js')}}"></script>
-    
+
     <!-- Vue JS -->
     <script src="{{ asset('js/vue.js') }}"></script>
     <script src="{{ asset('js/axios.min.js') }}"></script>

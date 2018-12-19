@@ -30,10 +30,10 @@
                 <th>@lang('words.Addres')</th>
                 <th>@lang('words.Email')</th>
                 <th>@choice('words.Company',2)</th>
-                <th>@choice('words.Profession',2)</th>                
-                <th>@choice('words.InspectorType',2)</th>                
-                <th>@lang('words.CreatedAt')</th> 
-                <th>@lang('words.UpdatedAt')</th> 
+                <th>@choice('words.Profession',2)</th>
+                <th>@choice('words.InspectorType',2)</th>
+                <th>@lang('words.CreatedAt')</th>
+                <th>@lang('words.UpdatedAt')</th>
                 {{-- @if(Gate::check('edit_inspectors') || Gate::check('delete_inspectors') || Gate::check('view_inspectoragendas') || Gate::check('view_inspectionappointments'))              --}}
                 {{-- @can('edit_inspectors','delete_inspectors') --}}
                     <th class="text-center">@lang('words.Actions')</th>
@@ -107,13 +107,13 @@
                     targets: 11,
                     render: function(data, type, row){
                         var btn =   '<div class="dropdown" style="display:inline-block">\
-                                        <button class="btn btn-xs btn-primary dropdown-toggle" type="button" id="watchMenu" data-toggle="dropdown">\
+                                        <button class="btn btn-xs btn-primary dropdown-toggle" type="button" title="Ver" id="watchMenu" data-toggle="dropdown">\
                                             <i class="fa fa-eye"></i>\
                                             \
                                         </button>\
                                         <ul class="dropdown-menu pull-right" aria-labelledby="watchMenu" style="text-align:right">\
                                             <li><a target="_blank" href="'+window.Laravel.url+'/validateInspector/'+row.id+'">@lang("words.Whatch") {{trans_choice("words.Inspector", 2)}}</a></li>';
-                        
+
                         @can('view_inspectoragendas')
                             btn +=  '<li>\
                                         <a target="_blank" href="'+window.Laravel.url+'/inspectoragendas?id='+row.id+'">\
