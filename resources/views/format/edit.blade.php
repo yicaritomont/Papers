@@ -17,15 +17,15 @@
                     </div>
                 <input type="hidden" name="format_expediction" id="format_expediction">
                 <input type="hidden" name="state" id="state" value="1">
-          <div  style="display:{!! $state_format !!};">
-            <div class="col-xs-4">
+          <div  >
+            <div class="col-xs-4" style="display:{!! $state_format !!};">
                 <a href="{{ route('formats.supports', [str_singular('formats') => $formato->id])  }}" class="btn btn-primary btn-body">
                 {!! trans('words.upload_sopports') !!}</a>
             </div>
-            <div class="col-xs-4">
-              <span class="btn btn-primary btn-body" id="boton_firmar_formato">{!! trans('words.SignFormat') !!}</span>
+            <div class="col-xs-4" style="display:{!! $state_firma !!};">
+              <span class="btn btn-primary btn-body" id="boton_firmar_formato" value="{{$formato->id}}">{!! trans('words.SignFormat') !!}</span>
             </div>
-            <div class="col-xs-4">
+            <div class="col-xs-4" style="display:{!! $state_format !!};">
               <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.SaveChanges') !!}</span>
             </div>
           <div>

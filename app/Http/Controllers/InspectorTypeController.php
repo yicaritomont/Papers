@@ -29,14 +29,7 @@ class InspectorTypeController extends Controller
     {
         $inspector_types = InspectorType::pluck('name', 'id');
 
-        // $inspectionSubtype = InspectionSubtype::with(['inspection_types'])->get();
-
-        $inspectionSubtype = InspectionSubtype::join('inspection_types', 'inspection_types.id', '=', 'inspection_type_id')
-                                ->select(DB::raw('inspection_subtypes.id, CONCAT(inspection_types.name, " - ", inspection_subtypes.name) AS name'))
-                                ->get()->pluck('name', 'id');
-        // $sb->pluck('name', 'id');
-        // dd($sb);
-        //dd($inspectionSubtype[0]->name.' - '.$inspectionSubtype[2]->inspection_types['name']);
+        $inspectionSubtype = InspectionSubtype::with('inspection_types')->get()->pluck('subtype_type', 'id');
 
         return view('inspector_type.new',compact('inspector_types', 'inspectionSubtype'));
     }

@@ -10,7 +10,7 @@
     <!-- URL Input -->
     <div class="form-group @if ($errors->has('url')) has-error @endif">
         {!! Form::label('url', trans('words.Url')) !!}
-        {!! Form::select('url', $url, isset($user) ? $user->url->pluck('id')->toArray() : null,  ['class' => 'input-body form-control chosen-select', 'placeholder' => (isset($menus) && $menus['url']) ? trans('words.ChooseOption') : trans('words.DropdownMenu')]) !!}
+        {!! Form::select('url', $url, isset($user) ? $user->url->pluck('id')->toArray() : null,  ['class' => 'input-body select2', 'placeholder' => (isset($menus) && $menus['url']) ? trans('words.ChooseOption') : trans('words.DropdownMenu')]) !!}
         {{-- {!! Form::select('url', $url, isset($user) ? $user->url->pluck('id')->toArray() : null,  ['class' => 'input-body', 'placeholder' => trans('words.DropdownMenu')]) !!} --}}
         @if ($errors->has('url')) <p class="help-block">{{ $errors->first('url') }}</p> @endif
     </div> 
@@ -20,7 +20,7 @@
 <!-- Menu Input -->
 <div class="form-group @if ($errors->has('menu_id')) has-error @endif">
     {!! Form::label('menu_id', trans('words.MenuPadre') ) !!}
-    {!! Form::select('menu_id', $menu, isset($user) ? $user->menu->pluck('id')->toArray() : null,  ['class' => 'input-body form-control chosen-select', 'placeholder' => trans('words.ChooseOption')]) !!}
+    {!! Form::select('menu_id', $menu, isset($user) ? $user->menu->pluck('id')->toArray() : null,  ['class' => 'input-body select2', 'placeholder' => trans('words.ChooseOption')]) !!}
     @if ($errors->has('menu_id')) <p class="help-block">{{ $errors->first('menu_id') }}</p> @endif
 </div>
 

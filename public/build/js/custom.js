@@ -58,7 +58,7 @@ var setContentHeight = function () {
 	// reset height
 	// $('.container.body').css('height', $(window).height());
 	// $RIGHT_COL.css('min-height', $(window).height());
-	$RIGHT_COL.css('min-height', window.innerHeight);
+	// $RIGHT_COL.css('min-height', window.innerHeight);
 	/* $RIGHT_COL.css('min-height', $('.container.body').height()); */
 };
 

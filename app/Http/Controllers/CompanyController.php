@@ -208,20 +208,20 @@ class CompanyController extends Controller
         }
     }
 
-    public function clients($id = null)
+    public static function clients($id = null)
     {
+        $companyClients = Company::getCompanyClientsById($id)->pluck('user.name', 'id')
+        ->prepend(trans('words.ChooseOption'), '0');
 
-        $result = Client::join('users', 'users.id', '=', 'clients.user_id')
-            ->join('user_company', 'user_company.user_id', '=', 'users.id')
-            ->select('clients.id', 'users.name')
-            ->where('user_company.company_id', $id)
-        ->get()->toArray();
+        return ['status' => $companyClients];
+    }
 
-        array_unshift($result, ['id' => '', 'name' => trans('words.ChooseOption')]);
+    public static function inspectors($id = null)
+    {
+        $companyInspectors = Company::getCompanyInspectorsById($id)->pluck('user.name', 'id')
+        ->prepend(trans('words.ChooseOption'), '0');
 
-        echo json_encode([
-            'status' => $result
-        ]);
+        return ['status' => $companyInspectors];
     }
 
     /**

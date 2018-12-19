@@ -53,10 +53,10 @@
                 
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Menu', 'company' => 'none', 'entity' => 'menus', 'identificador' => 'id', 'relations' => 'menu']) }}"};
                 columns.push({data: 'actions', className: 'text-center w1em'},)
-                dataTableObject.columnDefs = [setDataTable([-2, -3])];
+                dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Menu', 'company' => 'none', 'relations' => 'menu']) }}"};
-                dataTableObject.columnDefs = [setDataTable([-1, -2])];
+                dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endcan
 
             dataTableObject.columns = columns;

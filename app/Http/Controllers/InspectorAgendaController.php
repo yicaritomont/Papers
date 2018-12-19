@@ -425,4 +425,70 @@ class InspectorAgendaController extends Controller
         echo json_encode($result);
 
     }
+
+    /**
+     * Muestra las agendas filtradas por un subtipo
+     *
+     * @return JSON
+     */
+    public static function subtype(Request $request)
+    {
+        $inspector_id = $request->inspector_id;
+        $subtype_id = $request->subtype_id;
+        $company = ($request->company_id) ? Company::find($request->company_id)->id :  session()->get('Session_Company');
+
+        $agendas = InspectorAgenda::with('inspector')
+            ->whereHas('inspector.inspectorType', function($q) use($subtype_id){
+                $q->where('inspection_subtypes_id', '=', $subtype_id);
+            })
+            ->whereHas('inspector.companies', function($q) use($company){
+                $q->where('companies.id', $company);
+            })
+            ->when($inspector_id, function($q, $inspector_id){
+                return $q->where('inspector_id', $inspector_id);
+            })
+            ->select('start_date', 'end_date')
+        ->get();
+
+        $citas = InspectionAppointment::
+            whereIn('appointment_states_id', [2,3,4])
+            ->whereHas('inspector.inspectorType', function($q) use($subtype_id){
+                $q->where('inspection_subtypes_id', '=', $subtype_id);
+            })
+            ->whereHas('inspector.companies', function($q) use($company){
+                $q->where('companies.id', $company);
+            })
+            ->when($inspector_id, function($q, $inspector_id){
+                return $q->where('inspector_id', $inspector_id);
+            })
+            ->select('start_date', 'end_date')
+        ->get();
+
+        $fechasAgendas = [];
+        $fechasCitas = [];
+
+        foreach($citas as $agenda){
+            for($i=$agenda->start_date ; $i<=$agenda->end_date ; $i = date("Y-m-d", strtotime($i ."+ 1 days"))){
+                $fechasCitas[] = $i;
+            }
+        }
+
+        foreach($agendas as $agenda){
+            for($i=$agenda->start_date ; $i<=$agenda->end_date ; $i = date("Y-m-d", strtotime($i ."+ 1 days"))){
+                $fechasAgendas[] = $i;
+            }
+        }
+
+        $diasDisponibles = collect($fechasAgendas)->diff($fechasCitas);
+
+        if($diasDisponibles->isEmpty()){
+            return json_encode([
+                'msg' => trans('words.NoMatches')
+            ]);
+        }else{
+            return json_encode([
+                'agendas' => $diasDisponibles
+            ]);
+        }
+    }
 }

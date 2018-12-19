@@ -22,7 +22,7 @@
 <!-- password Form Input -->
 <div class="form-group @if ($errors->has('password')) has-error @endif">
     <label for="password">@lang('words.Password')</label>
-    {!! Form::password('password', ['class' => 'input-body']) !!}   
+    {!! Form::password('password', ['class' => 'input-body', 'id' => 'password']) !!}   
     @if ($errors->has('password')) <p class="help-block">{{ $errors->first('password') }}</p> @endif
 </div>
 
@@ -44,7 +44,7 @@
     <!-- Companies Form Input -->
     <div class="form-group @if ($errors->has('companies')) has-error @endif">
         {!! Form::label('companies', trans_choice('words.Company', 2)) !!}
-        {!! Form::select('companies', $companies, isset($user) ? $user->companies->pluck('id')->toArray() : null,  ['class' => 'input-body form-control chosen-select', 'placeholder' => trans('words.ChooseOption')]) !!}
+        {!! Form::select('companies', $companies, isset($user) ? $user->companies->pluck('id')->toArray() : null,  ['class' => 'input-body form-control select2', 'placeholder' => trans('words.ChooseOption')]) !!}
         @if ($errors->has('companies')) <p class="help-block">{{ $errors->first('companies') }}</p> @endif
     </div>
 @endif

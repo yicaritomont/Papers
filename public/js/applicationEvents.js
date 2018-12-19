@@ -1,5 +1,11 @@
-// console.log('URL desde laravel '+window.Laravel.url);
+var guiaAgendas = [];
+
 $(window).ready(inicial);
+
+$(window).resize(function(){
+    changeTopToast();
+    // $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
+});
 
 function inicial (argument)
 {
@@ -9,14 +15,10 @@ function inicial (argument)
     $('#identificacion_inspector').blur(verifyInspector);
     $('#boton_guardar_html').click(guardarHtml);
     $('#boton_firmar_formato').click(deshabilitarCampos);
-    $('#boton_firmar_formato').click(guardarHtml);
+    //$('#boton_firmar_formato').click(guardarHtml);
+    $('#boton_firmar_formato').click(solicitarToken);
     // $('#company_formato').change(cargarSelectClients);
     $('#company_formato').on('change', function(event, edit){
-        if( !$.isNumeric(edit) )
-        {
-            edit = undefined;
-        }
-        
         fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#cliente_formato', edit, () => {
             $('#format_preformato').val('');
             $('#cliente_formato').change(limpiarFormulario);
@@ -54,11 +56,11 @@ function inicial (argument)
         chosenText = 'No matches for';
     }
 
-    $(".chosen-select").chosen({
+    /* $(".chosen-select").chosen({
         no_results_text: chosenText,
-    });
+    }); */
 
-    // if(window.Laravel.language == 'es') datePickerObj.language = 'es';
+    $('.select2').select2();
 
     $('.input-group.date').datepicker(datePickerObj);
 
@@ -66,19 +68,6 @@ function inicial (argument)
     datePickerObj.startDate = new Date();
 
     $('.input-group.date-range-inputs input').datepicker(datePickerObj);
-
-    $('.input-group.date').datepicker({
-        format: "yyyy-mm-dd",
-        startDate: new Date()
-    })
-
-    /* console.log($(window).height());
-    console.log('Alto: '+$('.container.body').height());
-
-    console.log(window.innerHeight);
-    console.log($(window).outerHeight()); */
-
-    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
 }
 
 // Si existe el campo icon cargue el archivo con todos los iconos de font awesome
@@ -97,13 +86,86 @@ if($('#icon')[0])
     });
 }
 
+// Pintar las citas en el calendario de acuerdo a la compañia seleccionada
+$('#citas-compania').on('change', function(event){
+    var companyVal = $(this).val();
+    
+    $('.fc-day.bgEvent').removeClass('bgEvent');
+    $('#appointment_loading').css('display', 'inline-block');
+    $('#company_id').val(companyVal);
+
+    if(companyVal){
+        $('#subtypeFilter').attr('disabled', false);
+    }else{
+        $('#subtypeFilter').attr('disabled', true);
+    }
+
+    // Se eliminan los origines de los eventos
+    $("#calendar").fullCalendar('removeEventSources');
+
+    // Se añade un origen de evento de acuerdo a la compañía seleccionada
+    $("#calendar").fullCalendar('addEventSource', {
+        url:$('#url').val()+'/events/company/'+companyVal,
+        type:'POST',
+        data:{ _token: window.Laravel.csrfToken},
+        success: function(){
+            $('#appointment_loading').hide();
+
+            //Cargue los subtipos
+            $('#subtypeFilter').trigger('change');
+
+            //Llene el select clientes
+            fillSelect(window.Laravel.url+'/companies/clients/'+companyVal, '#client_id');
+
+            //Llene el select de inspectores
+            fillSelect(window.Laravel.url+'/companies/inspectors/'+companyVal, '.inspectorField');
+        }
+    });
+});
+
+$('#subtypeFilter').on('change', function(event, edit){
+    $('#inspection_subtype_id').val($(this).val());
+
+    if($(this).val()){
+        // ajax parameters: url, Method, data, Function done, Function error(optional)
+        ajax(
+            window.Laravel.url+'/inspectoragendas/subtype',
+            'POST',
+            {_token: $('#_token').val(),
+            subtype_id: $(this).val(),
+            company_id: $('#citas-compania').val()},
+            (res) => {
+                if(res.msg){
+                    $('.fc-day.bgEvent').removeClass('bgEvent');
+                    swal({
+                        type: 'warning',
+                        titleText: res.msg
+                    });
+                }else{
+                    guiaAgendas = [];
+                    $.each(res.agendas, function(key, value){
+                        guiaAgendas.push(value);
+                    });
+                    
+                    colorearAgendas();
+                }
+            }
+        );
+    }else{
+        $('.fc-day.bgEvent').removeClass('bgEvent');
+    }
+});
+
+function colorearAgendas()
+{
+    $('.fc-day.bgEvent').removeClass('bgEvent');
+    $.each(guiaAgendas, function(key, objAgenda){
+        $('.fc-day[data-date="'+objAgenda+'"]').addClass('bgEvent');
+    });
+}
+
 //Todos los select que requieran una petición ajax para llenar otro select
 $('#company_id').on('change', function(event, edit){
-    if( !$.isNumeric(edit) )
-    {
-        edit = undefined;
-    }
-    
     fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#client_id', edit);
 });
 
@@ -111,41 +173,41 @@ $('.inspection_type_id').on('change',function(event, edit){
     fillSelect(window.Laravel.url+'/inspectiontypes/subtypes/'+$(this).val(), '.inspection_subtype_id', edit);
 });
 
-$('.inspector-contract').on('change',function(event, edit){
-    console.log('Cambio');
+/* $('.inspector-contract').on('change',function(event, edit){
     fillSelect(window.Laravel.url+'/inspectors/contracts/'+$(this).val(), '#contract_id', edit, () => {
         $('#contract_id').trigger('change');
     });
-});
-
-$('#contract_id').on('change',function(event){
-    console.log('Cambio contrato con id '+$(this).val());
-    $.ajax({
-        url:window.Laravel.url+'/contracts/clients/'+$(this).val(),
-        type:'GET',
-        dataType: 'json',
-        data:{
-            _token: $('#_token').val(),
-        }
-    })
-    .done(function(res){
-        $('#client_id').val(res.client);
-    })
-    .fail(function(res){
-        alert('Error.');
-    });
-});
+}); */
 
 $('.country').on('change',function(event, edit){
-    // Se valida si la variable edit es numerica, si no lo es asignele undefined
-    if( !$.isNumeric(edit) )
-    {
-        edit = undefined;
-    }
     fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit);
 });
 
-function setDataTable(targets){
+$('.client-contract').on('change', function(event, edit){
+    console.log('Cliente cambio');
+    fillSelect(window.Laravel.url+'/clients/contracts/'+$(this).val(), '#contract_id', edit);
+});
+
+/* // Actualización campo cliente en base al formato seleccionado
+$('#contract_id').on('change',function(event){
+    $('#client_id_loading').css('display', 'inline-block');
+
+    // ajax parameters: url, Method, data, Function done, Function error(optional)
+    ajax(
+        window.Laravel.url+'/contracts/clients/'+$(this).val(),
+        'GET',
+        {_token: $('#_token').val()},
+        (res) => {
+            $('#client_id').val(res.client);
+            $('#client_id_loading').hide();
+        }
+    );
+}); */
+
+// Evento para ocultar o mostrar elementos sin datos consultados
+$(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
+
+function formatDateTable(targets){
     return {
         targets:targets,
         render: function(data, type, row, meta){
@@ -165,8 +227,6 @@ function obtenerUrl()
 
     //Concatena la informacion para construir la url
     var url = window.location.protocol+'//'+window.location.host+'/'+vector[1];
-    console.log('Ruta absoluta '+rutaAbsoluta);
-    console.log('URL '+url);
     
     return url;
 }
@@ -334,11 +394,16 @@ function verifyPassword()
     }
 }
 
-//Retorna los mensajes de alerta en base al
+//Retorna los mensajes de alerta
 function alert(color, msg){
     return '<div class="alert alert-'+color+' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+msg+'</div>';
 }
 
+function spanError(error){
+    return '<p class="help-block">'+error+'</p>';
+}
+
+// Ocultar o mostrar elementos con animación slide
 function slideForms(obj, funcRes) {
     var selector = obj.data('toggle');
     $('.formSlide:not('+selector+')').slideUp('slow');
@@ -374,12 +439,6 @@ function confirmModal(form, msg, type, revertFunc){
     });
 }
 
-$(window).resize(function(){
-    changeTopToast();
-    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
-    // $('.dataTable').DataTable().columns.adjust().draw();
-});
-
 function changeTopToast(){
     $('.swal2-top-end').css('top', $('.nav_menu').outerHeight());
 }
@@ -392,56 +451,48 @@ const toast = swal.mixin({
 });
 
 // Ajax para los formularios de eliminar exceptuando los calendarios
-$(document).on('submit','.formDelete',function(e){
-    console.log($(this).attr('action'));
+$(document).on('submit','.formDelete',function(e)
+{
     e.preventDefault();
 
-    console.log($(this).serialize());
+    // ajax parameters: url, Method, data, Function done, Function error(optional)
+    ajax(
+        $(this).attr('action'),
+        'POST',
+        $(this).serialize(),
+        (res) => {
+            //Si no exite algun error
+            if(!res.error){
 
-    $.ajax({
-        url:$(this).attr('action'),
-        type:'POST',
-        data:$(this).serialize(),
-    })
-    .done(function(res){
-        var res = JSON.parse(res);
+                toast({
+                    type: 'success',
+                    title: res.status
+                });
 
-        //Si no exite algun error
-        if(!res.error){
+                changeTopToast();
 
-            toast({
-                type: 'success',
-                title: res.status
-            });
-
-            changeTopToast();
-
-            $('.dataTable').DataTable().ajax.reload();
-        }else{
-            toast({
-                type: 'error',
-                title: res.error
-            });
-            changeTopToast();
+                $('.dataTable').DataTable().ajax.reload();
+            }else{
+                toast({
+                    type: 'error',
+                    title: res.error
+                });
+                changeTopToast();
+            }
+        },
+        (res) => {
+            if(res.status == 403){
+                toast({
+                    type: 'error',
+                    title: res.responseJSON.message
+                });
+                changeTopToast();
+            }
         }
-    })
-    .fail(function(res){
-        console.log('error\n'+res);
-        console.log(res);
-    })
-    .error(function(res){
-        console.log(res.status);
-        if(res.status == 403){
-            toast({
-                type: 'error',
-                title: res.responseJSON.message
-            });
-            changeTopToast();
-        }
-    });
+    );
 });
 
-// Ajax para los formularios actualizar y eliminar de los calendarios
+// Ajax para los formularios crear, actualizar y eliminar de los calendarios
 $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
     var idForm = $(this).attr('id');
     var modal = this.dataset.modal;
@@ -453,82 +504,72 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
 
     e.preventDefault();
 
-    $.ajax({
-        url:$(this).attr('action'),
-        type:'POST',
-        data:datos,
+    // ajax parameters: url, Method, data, Function done, Function error(optional)
+    ajax(
+        $(this).attr('action'),
+        'POST',
+        datos,
+        (res) => {
+            //Si no exite algun error
+            if(!res.error){
 
-    })
-    .done(function(res){
-        console.log(res);
-        var res = JSON.parse(res);
-
-        console.log(res);
-
-        //Si no exite algun error
-        if(!res.error){
-
-            $(modal).modal('hide');
-            $('#'+idForm)[0].reset();
-            $('.msgError').html('');
-            $("#calendar").fullCalendar('refetchEvents');
-
-            toast({
-                type: 'success',
-                title: res.status
-            });
-
-            changeTopToast();
-        }else{
-            //Si la respuesta es en modal
-            if(salida == true){
-                swal('Error',res.error,'error');
-
-            //Si la respuesta es en toast
-            }else if(revertFunc){
-                revertFunc();
-                toast({
-                    type: 'error',
-                    title: res.error
-                });
-                changeTopToast();
-            }
-            else{
+                $(modal).modal('hide');
+                $('#'+idForm)[0].reset();
                 $('.msgError').html('');
-                $('.msgError').append(alert('danger', res.error));
-            }
+                $("#calendar").fullCalendar('refetchEvents');
 
-        }
-    })
-    .fail(function(res){
-        console.log('fail\n'+res);
-        console.log(res);
-    })
-    .error(function(res){
-        console.log(res.status);
-        if(res.status == 403){
-            $('.msgError').html('');
-            $('.msgError').append(alert('danger', res.responseJSON.message));
-        }else if(res.status == 422){
+                toast({
+                    type: 'success',
+                    title: res.status
+                });
 
-            $('.form-group').removeClass('has-error');
-            $('.errors').empty();
+                //Actualizar los días disponibles
+                $('#subtypeFilter').trigger('change');
 
-            $('#'+idForm).find(':input').each(function(){
-                var idInput = $(this).attr('id');
+                changeTopToast();
+            }else{
+                //Si la respuesta es en modal
+                if(salida == true){
+                    swal('Error',res.error,'error');
 
-                if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
-                    $(this).parents('.form-group').addClass('has-error');
-                    $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput][0]));
+                //Si la respuesta es en toast
+                }else if(revertFunc){
+                    revertFunc();
+                    toast({
+                        type: 'error',
+                        title: res.error
+                    });
+                    changeTopToast();
                 }
-            });
-        }
-    });
-});
+                else{
+                    $('.msgError').html('');
+                    $('.msgError').append(alert('danger', res.error));
+                }
 
-function spanError(error){
-    return '<p class="help-block">'+error+'</p>';
-}
+            }
+        },
+        (res) => {
+            if(res.status == 403){
+                $('.msgError').html('');
+                $('.msgError').append(alert('danger', res.responseJSON.message));
+            }else if(res.status == 422){
+    
+                $('.form-group').removeClass('has-error');
+                $('.errors').empty();
+    
+                $('#'+idForm).find(':input').each(function(){
+                    var idInput = $(this).attr('name');
+                    /* console.log(idInput);
+                    console.log($(this).attr('name')); */
+                    if(idInput !== undefined && res.responseJSON.errors[idInput] !== undefined){
+                        $(this).parents('.form-group').addClass('has-error');
+                        $(this).parents('.form-group').find('.errors').append(spanError(res.responseJSON.errors[idInput][0]));
+                    }
+                });
+            }
+        }
+    );
+});
 
 // Ajax para ver agendas y citas
 $('.showCalendar').on('click', function(e){
@@ -538,52 +579,50 @@ $('.showCalendar').on('click', function(e){
     if($(objElement.data('toggle')).css('display') == 'block'){
         slideForms(objElement);
     }else{
-        $.ajax({
-            url:$(this).attr('data-route'),
-            type:'GET',
-        })
-        .done(function(res){
-            var res = JSON.parse(res);
-
-            if(res.cita){
-                showAppointment(res.cita);
-            }else if(res.agenda){
-                $.each(res.agenda, function(key, value){
-                    if(key.substr(-4) == 'date'){
-                        value = moment(value, 'YYYY-MM-DD').format('dddd D MMMM YYYY');
-                    }
-
-                    $('#cell-'+key).html(value);
-                });
-
+        // ajax parameters: url, Method, data, Function done, Function error(optional)
+        ajax(
+            $(this).attr('data-route'),
+            'GET',
+            null,
+            (res) => {
+                if(res.cita){
+                    showAppointment(res.cita);
+                }else if(res.agenda){
+                    $.each(res.agenda, function(key, value){
+                        if(key.substr(-4) == 'date'){
+                            value = moment(value, 'YYYY-MM-DD').format('dddd D MMMM YYYY');
+                        }
+    
+                        $('#cell-'+key).html(value);
+                    });
+    
+                }
+                slideForms(objElement);
+            },
+            (res) => {
+                if(res.status == 403){
+                    $('.msgError').html('');
+                    $('.msgError').append(alert('danger', res.responseJSON.message));
+                }
             }
-            slideForms(objElement);
-        })
-        .fail(function(res){
-            console.log('error\n'+res);
-        })
-        .error(function(res){
-            if(res.status == 403){
-                $('.msgError').html('');
-                $('.msgError').append(alert('danger', res.responseJSON.message));
-            }
-        });
+        );
     }
 });
 
 function showAppointment(Cita){
     $('#cell-request_date').html(moment.tz(Cita.request_date.replace(' ', 'T')+'Z', moment.tz.guess()).format('MMMM DD YYYY, h:mm:ss a'));
-    $('#cell-inspector').html(Cita.inspector.user.name);
     $('#cell-inspectionType').html(Cita.inspection_subtype.inspection_types.name);
     $('#cell-inspectionSubtype').html(Cita.inspection_subtype.name);
     $('#cell-client').html(Cita.client.user.name);
     $('#cell-contract').html(Cita.contract.name);
 
     if(Cita.appointment_states_id != 1){
+        $('#cell-inspector').html(Cita.inspector.user.name).parent().show();
         $('#cell-assignment_date').html(moment.tz(Cita.assignment_date.replace(' ', 'T')+'Z', moment.tz.guess()).format('MMMM DD YYYY, h:mm:ss a')).parent().show();
         $('#cell-estimated_start_date').html(moment(Cita.estimated_end_date, 'YYYY-MM-DD').format('dddd D MMMM YYYY')).parent().show();
         $('#cell-estimated_end_date').html(moment(Cita.estimated_start_date, 'YYYY-MM-DD').format('dddd D MMMM YYYY')).parent().show();
     }else{
+        $('#cell-inspector').empty().parent().hide();
         $('#cell-assignment_date').empty().parent().hide();
         $('#cell-estimated_start_date').empty().parent().hide();
         $('#cell-estimated_end_date').empty().parent().hide();
@@ -598,54 +637,56 @@ $(document).on('click', '.editCalendar', function(e){
     if($(objElement.data('toggle')).css('display') == 'block'){
         slideForms(objElement);
     }else{
-        $.ajax({
-            url:$(this).attr('data-route'),
-            type:'GET',
-        })
-        .done(function(res){
-            var res = JSON.parse(res);
+        // ajax parameters: url, Method, data, Function done, Function error(optional)
+        ajax(
+            $(this).attr('data-route'),
+            'GET',
+            null,
+            (res) => {
+                if(objElement.data('toggle') == '#editAgenda')
+                {
+                    var aFields = ['start_date', 'end_date'];
 
-            if(objElement.data('toggle') == '#editAgenda')
-            {
-                var aFields = ['start_date', 'end_date', 'inspector_id'];
+                    //Se rellena el formulario de editar con los valores correspondientes
+                    $.map(aFields, function(nomField){
+                        $('#modalEditDel #'+nomField).val(res.agenda[nomField]);
+                    });
 
-                //Se rellena el formulario de editar con los valores correspondientes
-                $.map(aFields, function(nomField){
-                    $('#modalEditDel #'+nomField).val(res.agenda[nomField]);
-                });
+                    //Actualización de campos select
+                    $('#modalEditDel #edit-inspector_id').val(res.agenda.inspector_id).trigger('change');  
+                    $('#modalEditDel #edit-city_id').val(res.agenda.city_id).trigger('change');
+                    $('#modalEditDel #edit-country').val(res.agenda.city.countries_id);
 
-                $('#modalEditDel #country').val(res.agenda.city.countries_id);
-                $('#modalEditDel #country').trigger("chosen:updated");
-                $('#editAgenda').attr('action', $('#url').val()+'/'+res.agenda.slug);
+                    $('#editAgenda').attr('action', $('#url').val()+'/'+res.agenda.slug);
 
-                slideForms(objElement, () => {
-                    $('#modalEditDel #country').trigger('change',res.agenda.city_id);
-                });
+                    slideForms(objElement, () => {
+                        $('#modalEditDel #edit-country').trigger('change',res.agenda.city_id);
+                    });
 
+                }
+                else if(objElement.data('toggle') == '#editAppointment')
+                {
+                    var aFields = ['start_date', 'end_date'];
+
+                    //Se rellena el formulario de editar con los valores correspondientes
+                    $.map(aFields, function(nomField){
+                        $('#modalEditDel #'+nomField).val(res.cita[nomField]);
+                    });
+
+                    $('#modalEditDel #edit-inspector_id').val(res.cita.inspector_id).trigger('change');
+
+                    $('#editAppointment').attr('action', $('#url').val()+'/'+res.cita.id);
+
+                    slideForms(objElement);
+                }
+            },
+            (res) => {
+                if(res.status == 403){
+                    $('.msgError').html('');
+                    $('.msgError').append(alert('danger', res.responseJSON.message));
+                }
             }
-            else if(objElement.data('toggle') == '#editAppointment')
-            {
-                var aFields = ['inspector_id', 'start_date', 'end_date'];
-
-                //Se rellena el formulario de editar con los valores correspondientes
-                $.map(aFields, function(nomField){
-                    $('#modalEditDel #'+nomField).val(res.cita[nomField]);
-                });
-
-                $('#editAppointment').attr('action', $('#url').val()+'/'+res.cita.id);
-
-                slideForms(objElement);
-            }
-        })
-        .fail(function(res){
-            console.log('error\n'+res);
-        })
-        .error(function(res){
-            if(res.status == 403){
-                $('.msgError').html('');
-                $('.msgError').append(alert('danger', res.responseJSON.message));
-            }
-        });
+        );
     }
 });
 
@@ -659,13 +700,10 @@ function limpiarForm(startDate, endDate, form, fielDate, select){
     $(form)[0].reset();
     $(form+' #'+fielDate+'start_date').val(startDate);
     $(form+' #'+fielDate+'end_date').val(endDate);
-    $('#country').trigger("chosen:updated");
-    $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
-    $('#city_id').trigger("chosen:updated");
+    $(form+' .input-body.select2').trigger('change');
+    // $(form+' '+select).html('<option selected="selected" value="">'+$("#selectOption").val()+'</option>');
+    $('#city_id').trigger("change");
 }
-
-$(document).on('click', '.btn-form-slide', function(){ slideForms($(this)) });
-
 
 function verifyInspector()
 {
@@ -753,7 +791,7 @@ $('body').find(':radio').each(function(e){
 
 function deshabilitarCampos(){
     $('#state').val('2');
-    $('#plantilla_formato').find('input, textarea, button, select').prop('disabled',true);
+    $('#plantilla_formato').find('input, textarea, select').prop('disabled',true);
 
 }
 
@@ -768,7 +806,7 @@ function calendar(obj){
         header:{
             "left":"prev,next today,createButton",
             "center":"title",
-            "right":"month,agendaWeek,listMonth"
+            "right":"month,listMonth"
         },
         events: obj.events,
         eventClick: obj.eventClick,
@@ -776,42 +814,49 @@ function calendar(obj){
         dayClick: obj.dayClick,
         editable: true,
         eventDrop: obj.eventDrop,
+        eventDragStart: obj.eventDragStart,
+        eventDragStop: obj.eventDragStop,
+        /* eventAfterAllRender: function (){
+            $('.fc-next-button, .fc-prev-button').on('click', colorearAgendas);
+        }, */
+        viewRender: function(view, element) {
+            colorearAgendas();
+        }
+        // themeSystem: 'bootstrap4'$('#calendar').fullCalendar('renderEvents', vectorEventos);
     });
 }
 
 function fillSelect(url, select, edit, funcRes){
-    /* console.log(url);
-    console.log(select);
-    console.log(edit);
-    console.log(funcRes); */
-    $.ajax({
-        url:url,
-        type:'GET',
-        dataType:'json',
-        data:{
-            _token: $('#_token').val(),
+
+    // Se valida si la variable edit es numerica, si no lo es asignele undefined
+    if( !$.isNumeric(edit) ) edit = undefined;
+
+    $(select+'_loading').css('display', 'inline-block');
+
+    // ajax parameters: url, Method, data, Function done, Function error(optional)
+    ajax(
+        url,
+        'GET',
+        {_token: $('#_token').val()},
+        (res) => {
+            $(select).empty();
+
+            $.each(res.status, function( key, value )
+            {
+                if(key == 0){ key = ''}
+                $(select).append('<option value="'+key+'">'+value+'</option>');
+
+            });
+
+            if(edit){
+                $(select).val(edit);
+            }
+
+            $(select+'_loading').hide();
+
+            if(funcRes) funcRes();
         }
-    })
-    .done(function(res){
-        console.log(res);
-
-        $(select).empty();
-
-        $.each(res.status, function( key, value )
-        {
-            $(select).append('<option value="'+value.id+'">'+value.name+'</option>');
-        });
-
-        if(edit){
-            $(select).val(edit);
-        }
-        $(select).trigger("chosen:updated");
-
-        if(funcRes) funcRes();
-    })
-    .fail(function(res){
-        alert('Error.');
-    });
+    );
 }
 
 function llenarCabeceraFormato()
@@ -824,58 +869,59 @@ function llenarCabeceraFormato()
         $('#contenedor_formato').hide();
     }else if(select != "")
     {
-        $.ajax({
-            type: "GET",
-            url: window.Laravel.url+"/ajxllenarCabeceraFormato",
-            dataType:'json',
-            data: {select:select, company:company, preformato:preformato}
-            }).done(function(response)
+        // ajax parameters: url, Method, data, Function done, Function error(optional)
+        ajax(
+            window.Laravel.url+"/ajxllenarCabeceraFormato",
+            'GET',
+            {select:select, company:company, preformato:preformato},
+            (response) => {
+                console.log(response);
+                if(!jQuery.isEmptyObject(response))
                 {
-                    console.log(response);
-                    console.log(response);
-                    if(!jQuery.isEmptyObject(response))
+                    console.log(response.error);
+                    if (response.error != null)
                     {
-                      console.log(response.error);
-                      if (response.error != null)
-                      { swal({
+                        swal({
                         title: response.error,
                         type: 'warning',
                         animation: false,
                         customClass: 'animateErrorIcon '
-                    });
-                    $('#boton_guardar_html').attr("disabled", true);
+                        });
+                        $('#boton_guardar_html').attr("disabled", true);
                     } else {
-                      var html_plantilla_formato = response.preformato.format;
-                      if( preformato != '')
-                      {
+                        var html_plantilla_formato = response.preformato.format;
+                        if( preformato != '')
+                        {
                             $('#boton_guardar_html').attr("disabled", false);
 
-                          if(preformato == 1)
-                          {
-                            //var plantilla_formato = $('#plantilla_formato').clone();
-                            html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
-                            html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
-                            html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
-                            html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
-                            html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
-                            html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
-                            html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
-                            html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
-                            html_plantilla_formato = html_plantilla_formato.replace('*num_page*',' ');
-                            html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','');
-                          }
+                            if(preformato == 1)
+                            {
+                                //var plantilla_formato = $('#plantilla_formato').clone();
+                                html_plantilla_formato = html_plantilla_formato.replace('*company*',response.company.name);
+                                html_plantilla_formato = html_plantilla_formato.replace('*company_logo*',response.company.image);
+                                html_plantilla_formato = html_plantilla_formato.replace('*iso_logo*',response.company.iso);
+                                html_plantilla_formato = html_plantilla_formato.replace('*client*',response.client.name);
+                                html_plantilla_formato = html_plantilla_formato.replace(/\*contract\*/g,response.contract.name);
+                                html_plantilla_formato = html_plantilla_formato.replace('*date_contract*',response.contract.date);
+                                html_plantilla_formato = html_plantilla_formato.replace('*date_contractual*',response.contract.date);
+                                html_plantilla_formato = html_plantilla_formato.replace('*project*','Proyecto Prueba');
+                                html_plantilla_formato = html_plantilla_formato.replace('*num_page*',' ');
+                                html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','');
+                            }
 
-                          $('#contenedor_formato').html(html_plantilla_formato);
-                          $('#contenedor_formato').show();
-                      } else {
-                        $('#plantilla_formato').css('display','none');
-                        $('#contenedor_formato').css('display','none');
+                            $('#contenedor_formato').html(html_plantilla_formato);
+                            $('#contenedor_formato').show();
+                        } else {
+                            $('#plantilla_formato').css('display','none');
+                            $('#contenedor_formato').css('display','none');
 
 
-                      }
+                        }
                     }
-                  }
-            });
+                }
+            }
+        );
+        
     }
 }
 
@@ -971,3 +1017,102 @@ $('.form-group.picker .input-group-addon').on('click', function(){
         $(".oculto").fadeIn("fast");
     }
 });
+
+
+/**
+ * funcion de apoyo para solicitar al firmante del formato las key para traer la firma
+ */
+function solicitarToken()
+{
+    var id_formato = $(this).attr('value');
+    Swal.mixin({
+        input: 'text',
+        confirmButtonText: 'Next',
+        showCancelButton: true,
+        progressSteps: ['1', '2']
+    }).queue([
+        {
+            title: 'User',
+            text: 'User for signature '
+        },
+        {
+            title: 'Password',
+            text: 'Password for signature'
+        }
+        
+    ]).then((result) => 
+    {
+        if (result.value) 
+        {
+            $('#not_carga').show();
+            $.ajax({
+                type: "GET",
+                url: window.Laravel.url+"/autenticarUsuarioWSFirma",
+                dataType:'json',
+                data: {info:result.value}
+            }).done(function(response)
+            {      
+                $('#not_carga').hide();                
+                if(response.error == "")
+                {
+                    if(response.token != "")
+                    {
+                        Swal('Token Successfully generate');
+                        // Como se recibe el token se solicita la firma}
+                         $('#not_carga').show();
+                        $.ajax({
+                            type : "GET",
+                            url : window.Laravel.url+"/firmarDocumentoWSFirma",
+                            dataType : 'json',
+                            data : {token : response.token ,id_formato : id_formato }
+                        }).done(function(result)
+                        {
+                            $('#not_carga').hide();                            
+                            if(result.error == "")
+                            {
+                                if(result.respuestaFirma)
+                                {
+                                    Swal('Signed format with id '+result.respuestaFirma.IdFirma); 
+                                }
+                            }
+                            else
+                            {
+                                Swal(result.error);
+                            }
+                        })
+                        
+
+                    }
+                    else
+                    {
+                        Swal('Error!');
+                    }
+                }
+                else
+                {
+                    Swal(response.error);
+                }
+            });
+        }
+    })
+}
+
+function ajax(url, type, data, funcDone, funcError)
+{
+    $.ajax({
+        url: url,
+        type: type,
+        dataType:'json',
+        data: data,
+    })
+    .done(function(res){
+        funcDone(res)
+    })
+    .fail(function(res){
+        console.log('error\n');
+        console.log(res);
+    })
+    .error(function(res){
+        if(funcError) funcError(res);
+    });
+}

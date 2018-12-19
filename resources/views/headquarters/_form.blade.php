@@ -16,7 +16,7 @@
     <!-- Client of Headquarters Form Select -->
     <div class="form-group @if ($errors->has('client_id')) has-error @endif">
         {!! Form::label('client_id', trans_choice('words.Client', 1)) !!}
-        {!!Form::select('client_id', $clients, isset($headquarters) ? $headquarters->client_id : null, ['class' => 'input-body form-control chosen-select', 'placeholder' => trans('words.ChooseOption')])!!}
+        {!!Form::select('client_id', $clients, isset($headquarters) ? $headquarters->client_id : null, ['class' => 'input-body form-control select2', 'placeholder' => trans('words.ChooseOption')])!!}
         @if ($errors->has('client_id')) <p class="help-block">{{ $errors->first('client_id') }}</p> @endif
     </div>
 @endif
@@ -24,15 +24,16 @@
 <!-- Country of Headquarters Form Select -->
 <div class="form-group  @if ($errors->has('country')) has-error @endif">
     {!! Form::label('country', trans('words.Country')) !!}
-    {!!Form::select('country', $countries, isset($headquarters) ? $headquarters->cities->countries_id : null, ['class' => 'input-body country form-control chosen-select', 'placeholder' => trans('words.ChooseOption')])!!}
+    {!!Form::select('country', $countries, isset($headquarters) ? $headquarters->cities->countries_id : null, ['class' => 'input-body country form-control select2', 'placeholder' => trans('words.ChooseOption')])!!}
     @if ($errors->has('country')) <p class="help-block">{{ $errors->first('country') }}</p> @endif
 </div>
 
 <!-- City of Headquarters Form Select -->
 <div class="form-group @if ($errors->has('cities_id')) has-error @endif">
     {!! Form::label('cities_id', trans('words.City')) !!}
+    <div class="loading city_id_loading"></div>
     {{-- {!!Form::select('cities_id', null, isset($headquarters) ? $headquarters->cities_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!} --}}
-    <select id="cities_id" name="cities_id" class="input-body city_id form-control chosen-select">
+    <select id="cities_id" name="cities_id" class="input-body city_id form-control select2">
         <option selected value>@lang('words.ChooseOption')</option>
     </select>
     @if ($errors->has('cities_id')) <p class="help-block">{{ $errors->first('cities_id') }}</p> @endif
