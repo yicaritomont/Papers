@@ -113,6 +113,7 @@ class HeadquartersController extends Controller
      */
     public function update(HeadquartersRequest $request, Headquarters $headquarters)
     {
+        // dd($request->all());
         if( auth()->user()->hasRole('Cliente') && auth()->user()->clients->id != $headquarters->client_id ){
             abort(403, 'This action is unauthorized.');
         }

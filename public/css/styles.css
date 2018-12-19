@@ -577,3 +577,7 @@ tr.child ul.dtr-details li{
 .fc-list-empty-wrap2{
     position: relative;
 }
+
+.has-error #map{
+    border: 1px solid #a94442;
+}

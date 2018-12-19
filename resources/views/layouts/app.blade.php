@@ -186,7 +186,7 @@
                                         <!-- Made Menu, with modules -->
                                         {{-- {{ dd(MadeMenu::menus()) }} --}}
                                         @foreach (MadeMenu::menus() as $key => $item)
-                                            @include('shared.menu-item', ['item' => $item])
+                                            @include('shared._menu-item', ['item' => $item])
                                         @endforeach
 
 
