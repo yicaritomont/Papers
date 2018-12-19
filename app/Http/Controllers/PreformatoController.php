@@ -44,14 +44,16 @@ class PreformatoController extends Controller
         $this->validate($request, [
             'name' => 'required|unique:preformatos|min:2',
             'inspection_subtype_id' => 'required',
+            'header' => 'required',
             'format' => 'required',
         ]);
 
         $preformato = new Preformato();
         $preformato->name = $request->name;
         $preformato->inspection_subtype_id = $request->inspection_subtype_id;
+        $preformato->header = $request->header;
         $preformato->format = $request->format;
-        $preformato->state = 1;
+        $preformato->status = 1;
 
         if ($preformato->save()) {
             $alert = ['success', trans_choice('words.Preformato',1).' '.trans('words.HasAdded')];
@@ -82,6 +84,11 @@ class PreformatoController extends Controller
     {
         $inspection_subtypes = InspectionSubtype::pluck('name', 'id');
         $preformato = Preformato::find($id);
+        if ($preformato->status == 0)
+        {
+          $alert = ['success', trans('words.thePreformatInactive')];
+          return redirect()->route('preformatos.index')->with('alert',$alert);
+        }
         return view('preformato.edit', compact('preformato','inspection_subtypes'));
     }
 
@@ -115,17 +122,39 @@ class PreformatoController extends Controller
      * @param  \App\Support  $support
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Support $support)
+    public function destroy($id)
     {
-      if (Preformato::findOrFail($id)->delete()) {
-          echo json_encode([
-              'status' => 'Format Type has been deleted',
-          ]);
-      } else {
-          echo json_encode([
-              'status' => 'Format Type not deleted',
-          ]);
+      $preformat = Preformato::find($id);
+      //Valida que exista el servicio
+      if($preformat)
+      {
+      switch ($preformat->status)
+      {
+        case 1 : $preformat->status = 0;
+               $accion = 'Desactivó';
+          break;
+
+        case 0 : $preformat->status = 1;
+               $accion = 'Activó';
+          break;
+
+        default : $preformat->status = 0;
+
+            break;
       }
+
+      $preformat->save();
+          $menssage = \Lang::get('validation.MessageCreated');
+          echo json_encode([
+              'status' => $menssage,
+          ]);
+      }else
+          {
+            $menssage = \Lang::get('validation.MessageError');
+              echo json_encode([
+                  'status' => $menssage,
+              ]);
+          }
     }
 
 }

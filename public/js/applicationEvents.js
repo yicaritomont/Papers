@@ -13,8 +13,13 @@ function inicial (argument)
     $('#password_update').keyup(verifyPassword);
     $('#password-confirm').blur(verifyPassword);
     $('#identificacion_inspector').blur(verifyInspector);
-    $('#boton_guardar_html').click(guardarHtml);
     $('#boton_firmar_formato').click(deshabilitarCampos);
+    $('#boton_guardar_cambioshtml').click(guardarHtml);
+        /*if( !$.isNumeric(edit) )
+        {
+            edit = undefined;
+        }*/
+
     //$('#boton_firmar_formato').click(guardarHtml);
     $('#boton_firmar_formato').click(solicitarToken);
     // $('#company_formato').change(cargarSelectClients);
@@ -28,6 +33,7 @@ function inicial (argument)
         });
     });
     $('#format_preformato').change(llenarCabeceraFormato);
+    var tokenFormulario = $('[name="_token"]').val();
 
     //Se definen atributos generales de DataTable
     dataTableObject = {
@@ -68,6 +74,20 @@ function inicial (argument)
     datePickerObj.startDate = new Date();
 
     $('.input-group.date-range-inputs input').datepicker(datePickerObj);
+
+    $('.input-group.date').datepicker({
+        format: "yyyy-mm-dd",
+        startDate: new Date()
+    })
+
+    /* console.log($(window).height());
+    console.log('Alto: '+$('.container.body').height());
+
+    console.log(window.innerHeight);
+    console.log($(window).outerHeight()); */
+
+    $('.right_col>.row').css('margin-top', $('.nav_menu').height()+'px');
+
 }
 
 // Si existe el campo icon cargue el archivo con todos los iconos de font awesome
@@ -89,7 +109,7 @@ if($('#icon')[0])
 // Pintar las citas en el calendario de acuerdo a la compañia seleccionada
 $('#citas-compania').on('change', function(event){
     var companyVal = $(this).val();
-    
+
     $('.fc-day.bgEvent').removeClass('bgEvent');
     $('#appointment_loading').css('display', 'inline-block');
     $('#company_id').val(companyVal);
@@ -146,7 +166,7 @@ $('#subtypeFilter').on('change', function(event, edit){
                     $.each(res.agendas, function(key, value){
                         guiaAgendas.push(value);
                     });
-                    
+
                     colorearAgendas();
                 }
             }
@@ -166,6 +186,11 @@ function colorearAgendas()
 
 //Todos los select que requieran una petición ajax para llenar otro select
 $('#company_id').on('change', function(event, edit){
+    if( !$.isNumeric(edit) )
+    {
+        edit = undefined;
+    }
+
     fillSelect(window.Laravel.url+'/companies/clients/'+$(this).val(), '#client_id', edit);
 });
 
@@ -227,7 +252,9 @@ function obtenerUrl()
 
     //Concatena la informacion para construir la url
     var url = window.location.protocol+'//'+window.location.host+'/'+vector[1];
-    
+    console.log('Ruta absoluta '+rutaAbsoluta);
+    console.log('URL '+url);
+
     return url;
 }
 
@@ -553,10 +580,10 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
                 $('.msgError').html('');
                 $('.msgError').append(alert('danger', res.responseJSON.message));
             }else if(res.status == 422){
-    
+
                 $('.form-group').removeClass('has-error');
                 $('.errors').empty();
-    
+
                 $('#'+idForm).find(':input').each(function(){
                     var idInput = $(this).attr('name');
                     /* console.log(idInput);
@@ -592,10 +619,10 @@ $('.showCalendar').on('click', function(e){
                         if(key.substr(-4) == 'date'){
                             value = moment(value, 'YYYY-MM-DD').format('dddd D MMMM YYYY');
                         }
-    
+
                         $('#cell-'+key).html(value);
                     });
-    
+
                 }
                 slideForms(objElement);
             },
@@ -653,7 +680,7 @@ $(document).on('click', '.editCalendar', function(e){
                     });
 
                     //Actualización de campos select
-                    $('#modalEditDel #edit-inspector_id').val(res.agenda.inspector_id).trigger('change');  
+                    $('#modalEditDel #edit-inspector_id').val(res.agenda.inspector_id).trigger('change');
                     $('#modalEditDel #edit-city_id').val(res.agenda.city_id).trigger('change');
                     $('#modalEditDel #edit-country').val(res.agenda.city.countries_id);
 
@@ -744,6 +771,7 @@ function verifyInspector()
 }
 
 function guardarHtml(e) {
+  console.log('aqui toy');
     e.preventDefault();
     camposLlenos();
     var contenedorHtml = $('#contenedor_formato').html();
@@ -878,6 +906,8 @@ function llenarCabeceraFormato()
                 console.log(response);
                 if(!jQuery.isEmptyObject(response))
                 {
+                    console.log(response);
+                    if(!jQuery.isEmptyObject(response))
                     console.log(response.error);
                     if (response.error != null)
                     {
@@ -889,7 +919,7 @@ function llenarCabeceraFormato()
                         });
                         $('#boton_guardar_html').attr("disabled", true);
                     } else {
-                        var html_plantilla_formato = response.preformato.format;
+                        var html_plantilla_formato ='<div class="header" id="header">'+response.preformato.header+'</div><p>&nbsp;</p>'+response.preformato.format;
                         if( preformato != '')
                         {
                             $('#boton_guardar_html').attr("disabled", false);
@@ -908,7 +938,7 @@ function llenarCabeceraFormato()
                                 html_plantilla_formato = html_plantilla_formato.replace('*num_page*',' ');
                                 html_plantilla_formato = html_plantilla_formato.replace('*tot_pages*','');
                             }
-
+                            $('#boton_guardar_html').click(guardarHtml);
                             $('#contenedor_formato').html(html_plantilla_formato);
                             $('#contenedor_formato').show();
                         } else {
@@ -921,7 +951,7 @@ function llenarCabeceraFormato()
                 }
             }
         );
-        
+
     }
 }
 
@@ -1039,10 +1069,10 @@ function solicitarToken()
             title: 'Password',
             text: 'Password for signature'
         }
-        
-    ]).then((result) => 
+
+    ]).then((result) =>
     {
-        if (result.value) 
+        if (result.value)
         {
             $('#not_carga').show();
             $.ajax({
@@ -1051,8 +1081,8 @@ function solicitarToken()
                 dataType:'json',
                 data: {info:result.value}
             }).done(function(response)
-            {      
-                $('#not_carga').hide();                
+            {
+                $('#not_carga').hide();
                 if(response.error == "")
                 {
                     if(response.token != "")
@@ -1067,12 +1097,12 @@ function solicitarToken()
                             data : {token : response.token ,id_formato : id_formato }
                         }).done(function(result)
                         {
-                            $('#not_carga').hide();                            
+                            $('#not_carga').hide();
                             if(result.error == "")
                             {
                                 if(result.respuestaFirma)
                                 {
-                                    Swal('Signed format with id '+result.respuestaFirma.IdFirma); 
+                                    Swal('Signed format with id '+result.respuestaFirma.IdFirma);
                                 }
                             }
                             else
@@ -1080,7 +1110,7 @@ function solicitarToken()
                                 Swal(result.error);
                             }
                         })
-                        
+
 
                     }
                     else
