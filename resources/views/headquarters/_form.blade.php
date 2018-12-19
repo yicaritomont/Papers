@@ -21,25 +21,20 @@
     </div>
 @endif
 
-<!-- Country of Headquarters Form Select -->
-<div class="form-group  @if ($errors->has('country')) has-error @endif">
-    {!! Form::label('country', trans('words.Country')) !!}
-    {!!Form::select('country', $countries, isset($headquarters) ? $headquarters->cities->countries_id : null, ['class' => 'input-body country form-control select2', 'placeholder' => trans('words.ChooseOption')])!!}
-    @if ($errors->has('country')) <p class="help-block">{{ $errors->first('country') }}</p> @endif
-</div>
-
-<!-- City of Headquarters Form Select -->
-<div class="form-group @if ($errors->has('cities_id')) has-error @endif">
-    {!! Form::label('cities_id', trans('words.City')) !!}
-    <div class="loading city_id_loading"></div>
-    {{-- {!!Form::select('cities_id', null, isset($headquarters) ? $headquarters->cities_id : null, ['class' => 'input-body', 'placeholder' => trans('words.ChooseOption')])!!} --}}
-    <select id="cities_id" name="cities_id" class="input-body city_id form-control select2">
-        <option selected value>@lang('words.ChooseOption')</option>
-    </select>
-    @if ($errors->has('cities_id')) <p class="help-block">{{ $errors->first('cities_id') }}</p> @endif
-</div>
-
-@push('scripts')
-<script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
+<!-- Location of Headquarters Form Select -->
+<div class="form-group @if ($errors->has('latitude') || $errors->has('longitude')) has-error @endif">
+    <label>Ubicación</label>
     
-@endpush
+    <div id="map"></div>
+
+    <input type="hidden" name="latitude" id="latitude">
+    <input type="hidden" name="longitude" id="longitude">
+
+    @if ($errors->has('latitude') || $errors->has('longitude')) <p class="help-block">@lang('words.ErrorMapForm')</p> @endif
+</div>
+
+@section('scripts')
+
+    @include ('shared._formMap')
+    
+@endsection

@@ -9,7 +9,7 @@ use App\Citie;
 class Headquarters extends Model
 {
 
-    protected $fillable = ['client_id', 'cities_id', 'name', 'address', 'status'];
+    protected $fillable = ['client_id', 'latitude', 'longitude', 'name', 'address', 'status'];
 
     public function client()
     {

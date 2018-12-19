@@ -164,8 +164,9 @@ return[
     'btn_verify'         =>  'Verificar',
     'un_error_name_file' =>  'Se debe ingresar el nombre del archivo {file}',
 
-    'ErrorLinkFormat' => 'No se pudo vincular el formato con la cita.',
-    'Select' => 'Seleccione',
+    'ErrorLinkFormat'           => 'No se pudo vincular el formato con la cita.',
+    'ErrorMapForm'              => 'Debe seleccionar una ubicación en el mapa',
+    'Select'                    => 'Seleccione',
     'NoMatches'                 => 'No hay coincidencias',
     'PermissionError'           => 'No puedes realizar esta acción, no tienes permisos',
     'EditRequestedAppointment'  => 'No puede editar una cita solicitada',

@@ -167,8 +167,9 @@ return[
     'un_error_name_file' =>  'The name of the file must be entered {file}',
 
 
-    'ErrorLinkFormat' => 'Could not link the format with the appointment.',
-    'Select' => 'Select',
+    'ErrorLinkFormat'           => 'Could not link the format with the appointment.',
+    'ErrorMapForm'              => 'You must select a location on the map',
+    'Select'                    => 'Select',
     'NoMatches'                 => 'No matches',
     'PermissionError'           => 'You can not perform this action, you do not have permission',
     'EditRequestedAppointment'  => 'You can not edit a requested appointment',
