@@ -142,17 +142,23 @@ return[
     'ClientMenu' => 'Menú del cliente',
     'Inspection' => 'Inspección',
     'AgendaEmpty' => 'No existen agendas',
+    'theFormatInactive' => 'El formato se encuentra en estado Inactivo',
+    'thePreformatInactive' => 'El preformato se encuentra en estado Inactivo',
+    'header' => 'Encabezado',
     'ErrorLinkFormat'    => 'No se pudo vincular el formato con la cita.',
     'Select'             => 'Seleccione',
 
 
 
-    
+
     //Formatos
     'upload_sopports'    =>  'Cargar Soportes',
     'supports'           =>  'Soportes',
     'browse'             =>  'Examinar' ,
     'upload'             =>  'Subir',
+    'inactivate'         =>  'Inactivar',
+    'activate'           =>  'Activate',
+    'download'           =>  'Descargar',
     'browseMsg'          =>  'Seleccione archivos...',
     'manage'             =>  'Gestionar',
     'not_upload'         =>  'El archivo {file} no pudo ser subido',
@@ -180,7 +186,7 @@ return[
     'SignaUserFail'     => 'El formato ya esta firmado por el mismo usuario',
     'FormatTwoSigna'    => 'El formato ya cuenta con 2 firmas',
     'SignaReturnError'  => 'Errores en respuesta de servicio, intente más tarde',
-    
+
 
     //Estados de las citas
     'Solicitado'    => 'Solicitado',

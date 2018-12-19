@@ -5,7 +5,7 @@
 @section('content')
 <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
     <a href="{{ route('formats.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
-    
+
     <div class="panel panel-default">
         <div class="panel-header-form">
             <h3 class="panel-titles">@lang('words.Edit') {{ $formato->name  }}</h3>
@@ -26,7 +26,7 @@
               <span class="btn btn-primary btn-body" id="boton_firmar_formato" value="{{$formato->id}}">{!! trans('words.SignFormat') !!}</span>
             </div>
             <div class="col-xs-4" style="display:{!! $state_format !!};">
-              <span class="btn btn-primary btn-body" id="boton_guardar_html">{!! trans('words.SaveChanges') !!}</span>
+              <span class="btn btn-primary btn-body" id="boton_guardar_cambioshtml">{!! trans('words.SaveChanges') !!}</span>
             </div>
           <div>
             {!! Form::close() !!}
