@@ -3,7 +3,7 @@
 * HashUtilidades.php
 */
 namespace App\Http\Controllers;
-
+use Storage;
 class HashUtilidades
 {
     public static function generarHash(string $datos):string
@@ -30,7 +30,6 @@ class HashUtilidades
     public static function obtenerDocumentoBase64($base64)
     {
         //return $base64;    
-        //echo $base64;
         $data = base64_decode($base64);
         header('Content-Type: application/pdf');
         echo $data;    
@@ -44,23 +43,22 @@ class HashUtilidades
 
     }
 
-    
-    public static function almacenarDocumentoPDFdeBase64($base64,$idFirma)
+    public static function obtenerContenidoTxt($ruta)
     {
-        
-        // we give the file a random name
-        $name    = "fomato_".$idFirma.".pdf";
+        $segmentoRuta= explode('/',$ruta);
+        $cuantos= count($segmentoRuta)-1;        
+        $size = Storage::size($segmentoRuta[$cuantos]);
+        $contents = Storage::get($segmentoRuta[$cuantos]);
 
-        // a route is created, (it must already be created in its repository(pdf)).
-        $rute    = '/storage/app/'.$name;
+        return $contents;
+    }
 
-        // decode base64
-        $pdf_b64 = base64_decode($base64);
-
-        // you record the file in existing folder
-        file_put_contents($rute, $pdf_b64);
-
-        return $rute;
+    public static function generarPDFdeTXT($ruta)
+    {
+        $contents =HashUtilidades::obtenerContenidoTxt($ruta);
+        $pdf_decoded = base64_decode ($contents);
+        header('Content-Type: application/pdf');
+        echo $pdf_decoded; 
     }
 
 }

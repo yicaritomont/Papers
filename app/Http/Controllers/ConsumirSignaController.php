@@ -71,11 +71,11 @@ class ConsumirSignaController extends Controller
                     $page =1 ;
                     $positionX = '100';
                     $positionY = '800';
-                    $base64Documento = $verifica_firma[0]->base64;
+                    $base64Documento = HashUtilidades::obtenerContenidoTxt($verifica_firma[0]->base64);
                 }
                 else
                 {
-                    $documento = $formatController->downloadOnePagePDF($_GET['id_formato']);
+                    $documento = $formatController->downloadPDF($_GET['id_formato']);
                     $page =1 ;
                     $positionX = '300';
                     $positionY = '800';
@@ -104,19 +104,14 @@ class ConsumirSignaController extends Controller
                                 {
                                     //generar el documento base64 y darle una rita. 
                                     //$doc_recibido = HashUtilidades::obtenerDocumentoBase64($respuestaFirma['DocumentoFirmado']);
-                                    //Storage::put('FormatoFirma'.$respuestaFirma['IdFirma'].'.pdf',$doc_recibido,0777);
-                                    echo $respuestaFirma['DocumentoFirmado'];
-                                    exit();
-
-                                    $ruta = HashUtilidades::almacenarDocumentoPDFdeBase64($respuestaFirma['DocumentoFirmado'],$respuestaFirma['IdFirma']);
-
+                                    Storage::put('FormatoFirma'.$respuestaFirma['IdFirma'].'.txt',$respuestaFirma['DocumentoFirmado']);
+                                    $ruta = 'storage/app/FormatoFirma'.$respuestaFirma['IdFirma'].'.txt';
 
                                     // como se tiene un identificador de firma, realizar el registro de la firma
                                     $signaFormat = new SignaFormat();
                                     $signaFormat->id_formato = $_GET['id_formato'];
                                     $signaFormat->id_usuario = Auth::user()->id;
                                     $signaFormat->id_firma   = $respuestaFirma['IdFirma'];
-                                    //$signaFormat->base64     = $respuestaFirma['DocumentoFirmado'];
                                     $signaFormat->base64     = $ruta;
                                     $signaFormat->save();
 

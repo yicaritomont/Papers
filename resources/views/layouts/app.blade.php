@@ -401,7 +401,13 @@
         </script>
     @endif
         <div id="not_carga" class="notificacion_carga">
-            <span id="not_animada" class="animated infinite fadeInDown"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> CARGANDO <span id="pro"></span> . . .</span>
+            <div class="container_load">
+                <div class="item_load item-1_load"></div>
+                <div class="item_load item-2_load"></div>
+                <div class="item_load item-3_load"></div>
+                <div class="item_load item-4_load"></div>
+            </div>
+            Loading...
         </div>
   </body>
 </html>
