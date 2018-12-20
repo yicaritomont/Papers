@@ -514,4 +514,11 @@ class FormatController extends Controller
         $documento = HashUtilidades::generarPDFdeTXT($format->base64);
         return $documento;
     }
+
+    public function signature($id)
+    {
+        $format = SignaFormat::where('id_formato',$id)->orderBy('created_at', 'desc')->limit(1)->first();
+        $contents =HashUtilidades::obtenerContenidoTxt($format->base64);
+        return view('format.signature',compact('id','contents'));
+    }
 }
