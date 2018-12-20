@@ -128,6 +128,7 @@ class InspectorAgendaController extends Controller
                 }
             }
 
+            // Validar si insgreso una fecha anterior a la actual
             if($request->start_date < date('Y-m-d')){
                 echo json_encode([
                     'error' => trans('words.DateGreater'),

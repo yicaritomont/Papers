@@ -91,35 +91,37 @@ $('#citas-compania').on('change', function(event){
     var companyVal = $(this).val();
     
     $('.fc-day.bgEvent').removeClass('bgEvent');
-    $('#appointment_loading').css('display', 'inline-block');
     $('#company_id').val(companyVal);
 
+    // Se eliminan los origines de los eventos
+    $("#calendar").fullCalendar('removeEventSources');
+
     if(companyVal){
+
+        $('#appointment_loading').css('display', 'inline-block');
         $('#citas-subtipo').attr('disabled', false);
+        $('#citas-subtipo').trigger('change');
+
+        // Se añade un origen de evento de acuerdo a la compañía seleccionada
+        $("#calendar").fullCalendar('addEventSource', {
+            url:$('#url').val()+'/events/company/'+companyVal,
+            type:'POST',
+            data:{ _token: window.Laravel.csrfToken},
+            success: function(){
+                $('#appointment_loading').hide();
+
+                console.log('Origen de evntos añadidos');
+
+                //Llene el select clientes
+                fillSelect(window.Laravel.url+'/companies/clients/'+companyVal, '#client_id');
+
+                //Llene el select de inspectores
+                fillSelect(window.Laravel.url+'/companies/inspectors/'+companyVal, '.inspectorField');
+            }
+        });
     }else{
         $('#citas-subtipo').attr('disabled', true);
     }
-    // Se eliminan los origines de los eventos
-    $("#calendar").fullCalendar('removeEventSources');
-    console.log('Cambio de campo compañia');
-
-    // Se añade un origen de evento de acuerdo a la compañía seleccionada
-    $("#calendar").fullCalendar('addEventSource', {
-        url:$('#url').val()+'/events/company/'+companyVal,
-        type:'POST',
-        data:{ _token: window.Laravel.csrfToken},
-        success: function(){
-            $('#appointment_loading').hide();
-
-            console.log('Origen de evntos añadidos');
-
-            //Llene el select clientes
-            fillSelect(window.Laravel.url+'/companies/clients/'+companyVal, '#client_id');
-
-            //Llene el select de inspectores
-            fillSelect(window.Laravel.url+'/companies/inspectors/'+companyVal, '.inspectorField');
-        }
-    });
 });
 
 // Colorear los días disponibles del inspector en la vista citas

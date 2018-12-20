@@ -166,6 +166,14 @@ class InspectionAppointmentController extends Controller
                 'error' => trans('words.ErrorRangeDate'),
             ]);
         }
+
+        // Validar si insgreso una fecha anterior a la actual
+        elseif($request->estimated_start_date < date('Y-m-d')){
+            echo json_encode([
+                'error' => trans('words.DateGreater'),
+            ]);
+        }
+
         else
         {
             $fechasCitas = collect();
@@ -300,6 +308,21 @@ class InspectionAppointmentController extends Controller
                 'error' => trans('words.ErrorRangeDate'),
             ]);
         }
+
+        // Validar si insgreso una fecha anterior a la actual
+        elseif($request->start_date < date('Y-m-d')){
+            echo json_encode([
+                'error' => trans('words.DateGreater'),
+            ]);
+        }
+
+        // Validar si insgreso una fecha anterior a la actual
+        elseif($request->start_date < date('Y-m-d')){
+            echo json_encode([
+                'error' => trans('words.DateGreater'),
+            ]);
+        }
+
         else
         {
             
@@ -534,6 +557,14 @@ class InspectionAppointmentController extends Controller
                 'error' => trans('words.ErrorRangeDate'),
             ]);
         }
+
+        // Validar si insgreso una fecha anterior a la actual
+        elseif($request->start_date < date('Y-m-d')){
+            echo json_encode([
+                'error' => trans('words.DateGreater'),
+            ]);
+        }
+
         else
         {
             //Se valida si es una cita con estado solicitada
