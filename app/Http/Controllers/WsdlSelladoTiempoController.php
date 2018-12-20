@@ -32,7 +32,7 @@ class WsdlSelladoTiempoController extends Controller
         return $curl;
     }
 
-    public function autenticacionUsuario()
+    public function autenticacionUsuario($usuario,$contrasena)
     {
         $curl = $this->initializer();
         curl_setopt_array($curl, array(
@@ -48,8 +48,8 @@ class WsdlSelladoTiempoController extends Controller
         <soapenv:Header/>
         <soapenv:Body>
         <web:AutenticaUsuario>
-        <web:Usuario>'.$this->usuario.'</web:Usuario>
-        <web:Password>'.$this->password.'</web:Password>
+        <web:Usuario>'.$usuario.'</web:Usuario>
+        <web:Password>'.$contrasena.'</web:Password>
         <web:Aplicacion>WSTSA</web:Aplicacion>
         </web:AutenticaUsuario>
         </soapenv:Body>
@@ -98,7 +98,7 @@ class WsdlSelladoTiempoController extends Controller
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
+        CURLOPT_TIMEOUT => 0,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_POSTFIELDS => '<?xml version="1.0" encoding="utf-8"?>
@@ -126,6 +126,7 @@ class WsdlSelladoTiempoController extends Controller
         {
             $dataResponse =[];
             $xmlArray = XmlArray::xml2array($response);
+
             if(count($xmlArray)>0)
             {
                 foreach ($xmlArray as $content => $soap) 
@@ -138,12 +139,17 @@ class WsdlSelladoTiempoController extends Controller
                             $dataResponse['IdentificadorSello'] = $body['SellaDocumentoResult']['IdentificadorSello']['value'];
                             $dataResponse['Sello'] = $body['SellaDocumentoResult']['Sello']['value'];
                             
-                        } 
+                        }
+                        else
+                        {
+                            $dataResponse['error'] = $body['SellaDocumentoResult']['ResultadoOperacion']['Descripcion']['value'];
+                        }
                         
                     }
                 }    
             }
             return $dataResponse;
+            //return $xmlArray;
         }
     }
 
@@ -248,7 +254,7 @@ class WsdlSelladoTiempoController extends Controller
                         $dataResponse['ResultadoOperacion'] = $body['ConsultaConsumoResult']['ResultadoOperacion']['Codigo']['value'];
                         if($body['ConsultaConsumoResult']['ResultadoOperacion']['Codigo']['value'] == 0)
                         {
-                            $objectDataResponse = json_decode(json_encode($body['ConsultaConsumoResult']['Datos']), FALSE);
+                            $objectDataResponse = $body['ConsultaConsumoResult']['Datos'];
                         } 
                         
                     }

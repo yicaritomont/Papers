@@ -189,6 +189,28 @@ return[
     'SignaUserFail'     => 'The format is already signed by the same user',
     'FormatTwoSigna'    => 'The format already has 2 signatures',
     'SignaReturnError'  => 'Errors in service response, try later',
+    'ViewSignanute'     => 'Visualize signed document',
+    'SignaSelloTiempo'  => 'Record time stamp',
+    'SignaInfo'         => 'If you need to know the status of stamps consumption, please click on the following button. Fill in the user and password fields for signatures and you will soon see the information.',
+    'Info'              => 'Information!',
+
+    // Mensajes informativos signa
+    'SignaNombreUsuario' => 'Username',
+    'SignaNombreOrganizacion' => 'Organization name',
+    'SignaIdentificadorTSA' => 'TSA Identifier',
+    'SignaTotalSellosConsumidos' => 'Total of stamps consumed',
+    'SignaTotalSellosDisponibles' => 'Total stamps available',
+    'SignaFechaAlta' => 'Date of registration',
+    'SignaFechaBaja' => 'Date of withdrawal',
+    'SignaTramoIdentificador' => 'Identifier of the section',
+    'SignaTramoFechaAlta' => 'High date of the stretch',
+    'SignaTramoFechaCaducidad' => 'Expiration date of the tranche',
+    'SignaTramoEstado' => 'State of the stretch',
+    'SignaTramoSellosTotales' => 'Total seals of the stretch',
+    'SignaTramoSellosConsumidos' => 'Sellos consumed of the stretch',
+    'SignaTramoSellosDisponibles' => 'Available seals of the stretch',
+    'SignaTramoFechaPrimerSello' => 'Date of the first seal of the section',
+    'SignaTramoFechaUltimoSello' => 'Date of the last seal of the section',
 
 
     //Estados de las citas
