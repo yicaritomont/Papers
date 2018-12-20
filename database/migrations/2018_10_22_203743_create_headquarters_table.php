@@ -16,9 +16,10 @@ class CreateHeadquartersTable extends Migration
         Schema::create('headquarters', function (Blueprint $table) {
             $table->increments('id');
             $table->Integer('client_id')->unsigned();
-            $table->Integer('cities_id')->unsigned();
             $table->string('name', 40);
             $table->string('address', 60);
+            $table->string('latitude', 100);
+            $table->string('longitude', 100);
             $table->integer('status')->default('1');
             $table->string('slug', 40)->unique()->nullable();
 
@@ -26,9 +27,6 @@ class CreateHeadquartersTable extends Migration
                 ->references('id')->on('clients')
                 ->onDelete('cascade');
 
-            $table->foreign('cities_id')
-                ->references('id')->on('cities')
-                ->onDelete('cascade');
             $table->timestamps();
         });
     }

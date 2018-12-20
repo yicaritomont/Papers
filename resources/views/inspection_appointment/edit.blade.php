@@ -9,7 +9,7 @@
             <a href="{{ route('inspectionappointments.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
             <div class="panel panel-default">
                 <div class="panel-header-form">
-                    <h3 class="panel-titles">@lang('words.Edit') {{ $inspection_appointment->name  }}</h3>    
+                    <h3 class="panel-titles">@lang('words.Edit') {{ $inspection_appointment->name  }}</h3>
                 </div>
                 <div class="panel-body black-letter">
                     {!! Form::model($inspection_appointment,['method' => 'PUT', 'route' => [ 'inspectionappointments.update', $inspection_appointment->id]]) !!}

@@ -50,6 +50,7 @@
         <!-- SweetAlert -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
 
+<<<<<<< HEAD
         <!-- Chosen -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosenStyle.css')}}">
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosen.min.css')}}">
@@ -58,6 +59,11 @@
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/select2/select2.min.css')}}">
 
 
+=======
+        <!-- Select 2 -->
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/select2/select2.min.css')}}">
+
+>>>>>>> upstream/master
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
 
@@ -184,7 +190,7 @@
                                         <!-- Made Menu, with modules -->
                                         {{-- {{ dd(MadeMenu::menus()) }} --}}
                                         @foreach (MadeMenu::menus() as $key => $item)
-                                            @include('shared.menu-item', ['item' => $item])
+                                            @include('shared._menu-item', ['item' => $item])
                                         @endforeach
 
 
@@ -384,8 +390,6 @@
     <script src="{{ asset('js/lib/momentTz/moment-timezone-with-data-2012-2022.min.js') }}"></script>
 
     <!-- Chosen -->
-    {{-- <script src="{{asset('js/lib/chosen/chosen.proto.min.js')}}"></script>
-    <script src="{{asset('js/lib/chosen/chosen.jquery.min.js')}}"></script> --}}
     <script src="{{asset('js/lib/select2/select2.min.js')}}"></script>
 
     <!-- Vue JS -->

@@ -18,6 +18,11 @@ class InspectionSubtype extends Model
         return $this->belongsTo(InspectionType::class, 'inspection_type_id', 'id');
     }
 
+    public function inspector_types()
+    {
+        return $this->hasMany(InspectorType::class,'inspection_subtypes_id');
+    }
+
     public function getSubtypeTypeAttribute()
     {
         return $this->name . ' - ' . $this->inspection_types->name;

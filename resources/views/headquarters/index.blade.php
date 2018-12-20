@@ -21,7 +21,6 @@
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>
                 <th>@choice('words.Client', 1)</th>
-                <th>@lang('words.City')</th>
                 <th>@lang('words.Address')</th>
                 <th>@lang('words.CreatedAt')</th>
                 <th>@lang('words.UpdatedAt')</th>
@@ -44,7 +43,6 @@
                 {data: 'id'},
                 {data: 'name'},
                 {data: 'client.user.name'},
-                {data: 'cities.name'},
                 {data: 'address'},
                 {data: 'created_at'},
                 {data: 'updated_at'},

@@ -42,11 +42,6 @@
             {data: 'updated_at'},
           ]
 
-            var dataTableObject = {
-                responsive: true,
-                serverSide: true,
-            };
-
             @can('edit_formats','delete_preformats')
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Format', 'company' => 'none', 'entity' => 'formats', 'identificador' => 'id', 'relations' => 'preformato,company.user,client.user']) }}"};
                 columns.push({data: 'actions', className: 'text-center w1em'},)

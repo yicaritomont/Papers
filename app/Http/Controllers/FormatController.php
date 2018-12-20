@@ -481,7 +481,6 @@ class FormatController extends Controller
       {
         if($format->preformat_id == 1)
         {
-
           $format_pdf = str_replace($eliminar,'',$format->format);
         } else {
           $format_pdf = $format->format;

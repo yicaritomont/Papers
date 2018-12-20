@@ -25,19 +25,19 @@ class HeadquartersRequest extends FormRequest
     {
         if( auth()->user()->hasRole('Cliente') ){
             return [
-                'cities_id' => 'required',
                 'name'      => 'required',
                 'address'   => 'required',
-                'country'   => 'required',
+                'latitude'   => 'required',
+                'longitude'   => 'required',
             ];
         }
 
         return [
             'client_id' => 'required',
-            'cities_id' => 'required',
-            'name' => 'required',
-            'address' => 'required',
-            'country' => 'required',
+            'name'      => 'required',
+            'address'   => 'required',
+            'latitude'  => 'required',
+            'longitude'  => 'required',
         ];
     }
 }

@@ -25,7 +25,7 @@
                         </a>
                     </li>
                 @else
-                    @include('shared.menu-item', [ 'item' => $submenu ])
+                    @include('shared._menu-item', [ 'item' => $submenu ])
                 @endif
             @endforeach
         </ul>
