@@ -19,7 +19,6 @@ class MenuSeeder extends Seeder
             ['id' => '5' , 'name' => 'ManageRoles'                      ,'status' => 1 , 'menu_id' => 1, 'url' => 'roles', 'icon' => 'fa-lock'],
             ['id' => '6' , 'name' => 'ManageModulo'                     ,'status' => 1 , 'menu_id' => 1, 'url' => 'modulos', 'icon' => 'fa-tasks'],
             ['id' => '7' , 'name' => 'ManageMenu'                       ,'status' => 1 , 'menu_id' => 1, 'url' => 'menus', 'icon' => 'fa-th-list'],
-            ['id' => '8' , 'name' => 'Preformato'                       ,'status' => 1 , 'menu_id' => 1, 'url' => 'preformatos', 'icon' => 'fa-wpforms'],
             ['id' => '9' , 'name' => 'Master'                           ,'status' => 1 , 'menu_id' => 2],
             ['id' => '10' , 'name' => 'ClientMenu'                      ,'status' => 1 , 'menu_id' => 2],
             ['id' => '11' , 'name' => 'Inspection'                      ,'status' => 1 , 'menu_id' => 2],
@@ -35,6 +34,7 @@ class MenuSeeder extends Seeder
             ['id' => '21' , 'name' => 'InspectorAgenda'                 ,'status' => 1 , 'menu_id' => 11 , 'url' => 'inspectoragendas'],
             ['id' => '22' , 'name' => 'Inspectionappointment'           ,'status' => 1 , 'menu_id' => 11 , 'url' => 'inspectionappointments'],
             ['id' => '23' , 'name' => 'Format'                          ,'status' => 1 , 'menu_id' => 11 , 'url' => 'formats'],
+            ['id' => '24' , 'name' => 'Preformato'                       ,'status' => 1 , 'menu_id' => 9, 'url' => 'preformatos'],
 
         ];
 

@@ -18,8 +18,7 @@
                             {!! Form::submit(trans('words.Create'), ['class' => 'btn-body']) !!}
                         {!! Form::close() !!}
                     </div>
-                </div>                 
-            
+                </div>
         </div>
     </div>
 @endsection

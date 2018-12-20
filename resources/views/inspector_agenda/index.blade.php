@@ -7,16 +7,23 @@
         
     <div class="row">
         <div class="col-md-12 col-lg-8 col-lg-offset-2">
+
+            <div class="inputs-header">
+                @if(auth()->user()->hasRole('Admin'))
+                    {!! Form::select('citas-compania',$companies, null, ['class' => 'input-body select2 form-control', 'id' => 'agenda-compania', 'placeholder' => 'Compañias']) !!}
+                @endif
+            </div>
+
             <div class="panel panel-default">
                 <div class="panel-heading">              
                     <div class="row">
                         <div class="col-md-12">
                             @if(isset($inspector))
                                 <h3 class="modal-title">{{ count($inspector->inspector_agendas) }} {{ trans_choice('words.InspectorAgenda', count($inspector->inspector_agendas)) }} {{ $inspector->user->name }}  </h3>
-                            @elseif(isset($companies))
+                            @elseif(isset($company))
                                 <h3 class="modal-title">@choice('words.InspectorAgenda', 2)</h3>
                             @else
-                                <h3 class="modal-title">{{ $quantity }} @choice('words.InspectorAgenda', $quantity) </h3>
+                                <h3 class="modal-title">@choice('words.InspectorAgenda', 2) </h3>
                             @endif
                         </div>
                     </div>
@@ -163,11 +170,12 @@
         calendarObj.customButtons = null;
 
         @if(isset($inspector))
-            calendarObj.events = {url: $('#url').val()+'/events/{{ $inspector->id }}'};
-        @elseif(isset($companies))
-            calendarObj.events = {url: $('#url').val()+'/events/none/{{ $companies->slug }}'};
+            calendarObj.events = {url: $('#url').val()+'/events/inspector/{{ $inspector->id }}'};
+        @elseif(isset($company))
+            calendarObj.events = {url: $('#url').val()+'/events/company/{{ $company->id }}'};
         @else
-            calendarObj.events = {url: $('#url').val()+'/events'};
+            {{-- calendarObj.events = {url: $('#url').val()+'/events'}; --}}
+            calendarObj.events = [];
         @endif
         
         calendarObj.events.type = 'POST';
@@ -221,9 +229,7 @@
                 createButton: {
                     text: '{{trans('words.Create')}}',
                     click: function() {
-                        $('.msgError').html('');
-                        $('#modalCreate #date').removeAttr("disabled");
-                        $('#formCreateAgenda')[0].reset();
+                        limpiarForm(null, null, '#formCreateAgenda', '');
                         $('#modalCreate').modal('show');
                     }
                 }
@@ -240,7 +246,7 @@
                 $('#editAgenda').attr('action', $('#url').val()+'/'+calEvent.slug);
                 $('#modalEditDel #start_date').val(calEvent.start.format());
                 $('#modalEditDel #end_date').val(end[0]);
-                $('#modalEditDel #inspector_id').val(calEvent.inspector_id);
+                $('#modalEditDel #edit-inspector_id').val(calEvent.inspector_id);
 
                 confirmModal('#editAgenda', '{{trans('words.UpdateMessage')}}', 'question', revertFunc);
 

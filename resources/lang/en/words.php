@@ -145,16 +145,22 @@ return[
     'ClientMenu' => 'Client Menu',
     'Inspection' => 'Inspection',
     'AgendaEmpty' => 'There are no agendas',
+    'theFormatInactive' => 'The format is in the Inactive state',
+    'thePreformatInactive' => 'The preformat is in the Inactive state',
+    'header' => 'Header',
     'ErrorLinkFormat' => 'Could not link the format with the appointment.',
     'Select' => 'Select',
 
 
-    
+
     //Supports
     'upload_sopports'    =>  'Load Supports',
     'supports'           =>  'Supports',
     'browse'             =>  'Browse',
     'upload'             =>  'Upload',
+    'inactivate'         =>  'Inactivate',
+    'download'           =>  'Descargar',
+    'activate'           =>  'Activar',
     'browseMsg'          =>  'Select files...',
     'manage'             =>  'Manage',
     'not_upload'         =>  'The file {file} could not be uploaded',
@@ -167,13 +173,14 @@ return[
     'un_error_name_file' =>  'The name of the file must be entered {file}',
 
 
-    'ErrorLinkFormat' => 'Could not link the format with the appointment.',
-    'Select' => 'Select',
+    'ErrorLinkFormat'           => 'Could not link the format with the appointment.',
+    'ErrorMapForm'              => 'You must select a location on the map',
+    'Select'                    => 'Select',
     'NoMatches'                 => 'No matches',
     'PermissionError'           => 'You can not perform this action, you do not have permission',
     'EditRequestedAppointment'  => 'You can not edit a requested appointment',
 
-    // Message for a signa 
+    // Message for a signa
     'SignaPassword'     => 'You must append the signa password for signature',
     'SignnaUser'        => 'You must append the signa user for signature',
     'SignaFailToken'    => 'A valid token was not obtained. verify your username or password. Try again',

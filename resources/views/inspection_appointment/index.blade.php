@@ -14,7 +14,7 @@
                     {!! Form::select('citas-compania',$companies, null, ['class' => 'input-body select2 form-control', 'id' => 'citas-compania', 'placeholder' => 'Compañias']) !!}
                 @endif
                 @if( !isset($inspector) )
-                    {!! Form::select('subtypes',$subtypes, null, ['class' => 'input-body select2 form-control', 'id' => 'subtypeFilter', 'placeholder' => 'Agendas disponibles por', (auth()->user()->hasRole('Admin')) ? 'disabled' : '']) !!}
+                    {!! Form::select('subtypes',$subtypes, null, ['class' => 'input-body select2 form-control', 'id' => 'citas-subtipo', 'placeholder' => 'Agendas disponibles por', (auth()->user()->hasRole('Admin')) ? 'disabled' : '']) !!}
                 @endif
             </div>
 
@@ -281,14 +281,8 @@
             if($('#completeAppointment')[0])
             {
                 $('#completeAppointment')[0].reset();
+                $('#inspector_id').trigger('change');
                 $('#completeAppointment').attr('action', $('#url').val()+'/'+event.id+'/complete');
-            }
-
-            //Resetar y setear el action el formulario de formato si existe el elemento
-            if($('#fillFormat')[0])
-            {
-                $('#fillFormat')[0].reset();
-                $('#fillFormat').attr('action', $('#url').val()+'/'+event.id+'/format');
             }
 
             //Cambiar el action del formulario
@@ -370,9 +364,7 @@
                 createButton: {
                     text: '{{trans('words.Create')}}',
                     click: function() {
-                        $('.msgError').html('');
-                        $('#modalCreate #date').removeAttr("disabled");
-                        $('#formCreateAppointmet')[0].reset();
+                        limpiarForm(null, null, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
                         $('#modalCreate').modal('show');
                     }
                 }
@@ -406,31 +398,35 @@
 
         calendarObj.eventDragStart = function( event, jsEvent, ui, view )
         {
-            ajax(
-                window.Laravel.url+'/inspectoragendas/subtype',
-                'POST',
-                {_token: $('#_token').val(),
-                subtype_id: $('#subtypeFilter').val(),
-                company_id: $('#citas-compania').val(),
-                inspector_id: event.inspector_id},
-                (res) => {
-                    if(res.msg){
-                         $('.fc-day.bgEvent').removeClass('bgEvent');
-                    }else{
-                        guiaAgendas = [];
-                        $.each(res.agendas, function(key, value){
-                            guiaAgendas.push(value);
-                        });
-                        
-                        colorearAgendas();
+            if(event.appointment_states_id != 1){
+                ajax(
+                    window.Laravel.url+'/inspectoragendas/subtype',
+                    'POST',
+                    {_token: $('#_token').val(),
+                    subtype_id: $('#subtypeFilter').val(),
+                    company_id: $('#citas-compania').val(),
+                    inspector_id: event.inspector_id},
+                    (res) => {
+                        if(res.msg){
+                            $('.fc-day.bgEvent').removeClass('bgEvent');
+                        }else{
+                            guiaAgendas = [];
+                            $.each(res.agendas, function(key, value){
+                                guiaAgendas.push(value);
+                            });
+                            
+                            colorearAgendas();
+                        }
                     }
-                }
-            );
+                );
+            }
         };
 
         calendarObj.eventDragStop = function( event, jsEvent, ui, view )
         {
-            $('#subtypeFilter').trigger('change');
+            if(event.appointment_states_id != 1){
+                $('#citas-subtipo').trigger('change');
+            }
         };
 
         //Se llama la función que inicializará el calendario de acuerdo al objeto enviado

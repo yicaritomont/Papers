@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Preformato extends Model
 {
     protected $fillable = [
-        'inspection_subtype_id','name','format', 'state',
+        'inspection_subtype_id','name','format', 'state','header'
 
     ];
 

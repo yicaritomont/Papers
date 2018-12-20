@@ -17,8 +17,9 @@ class PreformatosTable extends Migration
             $table->increments('id');
             $table->integer('inspection_subtype_id')->unsigned();
             $table->string('name');
+            $table->longText('header');
             $table->longText('format');
-            $table->integer('state');
+            $table->integer('status');
             $table->timestamps();
 
             $table->foreign('inspection_subtype_id')
