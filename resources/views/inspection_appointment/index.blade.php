@@ -354,10 +354,10 @@
             };
             calendarObj.dayClick = function(date, jsEvent, view)
             {
-                {{-- if($('.fc-day[data-date="'+date.format()+'"]').hasClass('bgEvent')){ --}}
+                if($('.fc-day[data-date="'+date.format()+'"]').hasClass('bgEvent')){
                     limpiarForm(date.format(), null, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
                     $('#modalCreate').modal('show');
-                {{-- } --}}
+                }
             };
 
             calendarObj.customButtons = {
