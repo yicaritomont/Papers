@@ -114,7 +114,8 @@ class DatabaseSeeder extends Seeder
         CitiesTableSeeder::run();
         //ClientTableSeeder::run();
         //HeadquartesTableSeeder::run();
-        //CompanyTableSeeder::run();
+        UserTableSeeder::run();
+        CompanyTableSeeder::run();
         ProfessionTableSeeder::run();
         InspectionTypeTableSeeder::run();
         InspectionSubTypeTableSeeder::run();
