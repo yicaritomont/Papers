@@ -15,4 +15,9 @@ class Preformato extends Model
     {
         return $this->belongsTo('App\InspectionSubtype','inspection_subtype_id','id');
     }
+
+    public function company()
+    {
+      return $this->belongsTo('App\Company', 'company_id', 'id');
+    }
 }
