@@ -229,9 +229,7 @@
                 createButton: {
                     text: '{{trans('words.Create')}}',
                     click: function() {
-                        $('.msgError').html('');
-                        $('#modalCreate #date').removeAttr("disabled");
-                        $('#formCreateAgenda')[0].reset();
+                        limpiarForm(null, null, '#formCreateAgenda', '');
                         $('#modalCreate').modal('show');
                     }
                 }

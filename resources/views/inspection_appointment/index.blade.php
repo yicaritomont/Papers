@@ -364,9 +364,7 @@
                 createButton: {
                     text: '{{trans('words.Create')}}',
                     click: function() {
-                        $('.msgError').html('');
-                        $('#modalCreate #date').removeAttr("disabled");
-                        $('#formCreateAppointmet')[0].reset();
+                        limpiarForm(null, null, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
                         $('#modalCreate').modal('show');
                     }
                 }
