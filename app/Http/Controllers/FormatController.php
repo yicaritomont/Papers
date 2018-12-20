@@ -210,10 +210,9 @@ class FormatController extends Controller
                 $state_format = 'none';
             }
         }
-
+      }
         return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companies','clients','preformats','user','state_format','state_firma'));
-    }
-    }
+  }
 
     /**
      * Update the specified resource in storage.
@@ -477,6 +476,15 @@ class FormatController extends Controller
         $pagination = Estilo::where('name','=','paginate_pdf')->first();
         $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
         '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
+
+      if ($format != '')
+      {
+        if($format->preformat_id == 1)
+        {
+          $format_pdf = str_replace($eliminar,'',$format->format);
+        } else {
+          $format_pdf = $format->format;
+        }
         if ($format != '')
         {
             $format_pdf = str_replace($eliminar,'',$format->format);
@@ -495,6 +503,7 @@ class FormatController extends Controller
             //return $pdf->output();
         }
     }
+  }
 
     public function downloadOnePagePDF($id,$firma = "")
     {
@@ -509,7 +518,6 @@ class FormatController extends Controller
         $file_pdf = '';
         foreach( $supports AS $key => $item )
         {
-          //echo "<pre>";print_r($item);echo "</pre>";exit();
           /*if ($item->extension == 'pdf')
           {
             $img = new Spatie\PdfToImage\Pdf(public_path().'/'.$item->nombre_url);
@@ -517,7 +525,6 @@ class FormatController extends Controller
           }*/
             $file_pdf .= '<div class="contenedor_image"><img class="image" src="'.public_path().'/'.$item->nombre_url.'"/></di>';
         }
-        //echo "<pre>";print_r($file_pdf);echo "</pre>";exit();
         $config_format = $estilos->estilos.$format_pdf.$file_pdf.$pagination->estilos;
         $pdf = \App::make('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);

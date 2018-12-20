@@ -50,8 +50,13 @@
         <!-- SweetAlert -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/sweetAlert/sweetalert2.min.css')}}">
 
+        <!-- Chosen -->
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosenStyle.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{asset('css/lib/chosen/chosen.min.css')}}">
+
         <!-- Select 2 -->
         <link rel="stylesheet" type="text/css" href="{{asset('css/lib/select2/select2.min.css')}}">
+
 
         <!-- Custom Theme Style -->
         <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
