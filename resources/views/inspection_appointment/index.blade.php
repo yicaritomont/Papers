@@ -354,19 +354,17 @@
             };
             calendarObj.dayClick = function(date, jsEvent, view)
             {
-                if($('.fc-day[data-date="'+date.format()+'"]').hasClass('bgEvent')){
+                {{-- if($('.fc-day[data-date="'+date.format()+'"]').hasClass('bgEvent')){ --}}
                     limpiarForm(date.format(), null, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
                     $('#modalCreate').modal('show');
-                }
+                {{-- } --}}
             };
 
             calendarObj.customButtons = {
                 createButton: {
                     text: '{{trans('words.Create')}}',
                     click: function() {
-                        $('.msgError').html('');
-                        $('#modalCreate #date').removeAttr("disabled");
-                        $('#formCreateAppointmet')[0].reset();
+                        limpiarForm(null, null, '#formCreateAppointmet', 'estimated_', '#inspection_subtype_id');
                         $('#modalCreate').modal('show');
                     }
                 }

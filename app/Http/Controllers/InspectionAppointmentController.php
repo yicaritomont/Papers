@@ -179,6 +179,7 @@ class InspectionAppointmentController extends Controller
             $requestParam->subtype_id = $request->inspection_subtype_id;
             $requestParam->company_id = $request->company_id;
 
+            // Traer todos los días disponibles de los inspectores filtrados por una compañía y un subtipo de inspección
             $agenasDisponibles = json_decode(InspectorAgendaController::subtype($requestParam), true);
 
             // Validar si seleccionó un subtipo

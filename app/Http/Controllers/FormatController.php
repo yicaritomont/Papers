@@ -213,6 +213,7 @@ class FormatController extends Controller
 
         return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companies','clients','preformats','user','state_format','state_firma'));
     }
+    }
 
     /**
      * Update the specified resource in storage.
@@ -476,17 +477,6 @@ class FormatController extends Controller
         $pagination = Estilo::where('name','=','paginate_pdf')->first();
         $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
         '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
-<<<<<<< HEAD
-      if ($format != '')
-      {
-        if($format->preformat_id == 1)
-        {
-
-          $format_pdf = str_replace($eliminar,'',$format->format);
-        } else {
-          $format_pdf = $format->format;
-        }
-=======
         if ($format != '')
         {
             $format_pdf = str_replace($eliminar,'',$format->format);
@@ -515,7 +505,6 @@ class FormatController extends Controller
         $eliminar = array('<input style="width:100%" type="text" disabled="">','<input type="text" disabled="">',
             '<textarea disabled="">','<textarea cols="80" rows="10" disabled="">','</textarea>');
         $format_pdf = str_replace($eliminar,'',$format->format);
->>>>>>> upstream/master
         $supports = File::where('format_id','=',$format->id)->get();
         $file_pdf = '';
         foreach( $supports AS $key => $item )
