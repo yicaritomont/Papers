@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Preformato;
 use App\InspectionSubtype;
+use App\Company;
 
 class PreformatoController extends Controller
 {
@@ -27,10 +28,11 @@ class PreformatoController extends Controller
      */
     public function create()
     {
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $preformato = Preformato::pluck('name', 'id');
         $inspection_subtypes = InspectionSubtype::with('inspection_types')->get()->pluck('subtype_type', 'id');
 
-        return view('preformato.new', compact('preformato','inspection_subtypes'));
+        return view('preformato.new', compact('preformato','inspection_subtypes', 'companies'));
     }
 
     /**
@@ -46,6 +48,7 @@ class PreformatoController extends Controller
             'inspection_subtype_id' => 'required',
             'header' => 'required',
             'format' => 'required',
+            'company_id' => 'required',
         ]);
 
         $preformato = new Preformato();
@@ -54,6 +57,7 @@ class PreformatoController extends Controller
         $preformato->header = $request->header;
         $preformato->format = $request->format;
         $preformato->status = 1;
+        $preformato->company_id = $request->company_id;
 
         if ($preformato->save()) {
             $alert = ['success', trans_choice('words.Preformato',1).' '.trans('words.HasAdded')];
@@ -82,6 +86,7 @@ class PreformatoController extends Controller
      */
     public function edit($id)
     {
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $inspection_subtypes = InspectionSubtype::pluck('name', 'id');
         $preformato = Preformato::find($id);
         if ($preformato->status == 0)
@@ -89,7 +94,7 @@ class PreformatoController extends Controller
           $alert = ['success', trans('words.thePreformatInactive')];
           return redirect()->route('preformatos.index')->with('alert',$alert);
         }
-        return view('preformato.edit', compact('preformato','inspection_subtypes'));
+        return view('preformato.edit', compact('preformato','inspection_subtypes', 'companies'));
     }
 
     /**
@@ -105,11 +110,22 @@ class PreformatoController extends Controller
 
         if ($preformato->name != $request->name)
             { $this->validate($request, [
-                'name' => 'required|unique:preformatos|min:2',
+                'name'                  => 'required|unique:preformatos|min:2',
                 'inspection_subtype_id' => 'required',
-                'preformato' => 'required',
+                'format'                => 'required',
+                'header'                => 'required',
+                'company_id'            => 'required',
+            ]);
+        }else{
+            $this->validate($request, [
+                'name'                  => 'required|min:2',
+                'inspection_subtype_id' => 'required',
+                'format'                => 'required',
+                'header'                => 'required',
+                'company_id'            => 'required',
             ]);
         }
+
         $preformato->update($request->except(array('_method','_token')));
 
         $alert = ['success', trans_choice('words.Preformato',1).' '.trans('words.HasUpdated')];
