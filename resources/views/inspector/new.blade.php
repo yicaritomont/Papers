@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create')
+@section('title', trans('words.Create').' '.trans_choice('words.Inspector',1).' - ')
 
 @section('content')
     <div class="row">
@@ -8,16 +8,16 @@
             <a href="{{ route('inspectors.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
             <div class="panel panel-default">
                 <div class="panel-header-form">
-                    <h3 class="panel-titles">@lang('words.Create')</h3>                    
+                    <h3 class="panel-titles">@lang('words.Create') {{ trans_choice('words.Inspector',1)}}</h3>
                 </div>
                 <div class="panel-body black-letter">
                     {!! Form::open(['route' => ['inspectors.store'] ]) !!}
                         @include('inspector._form')
-                        <!-- Submit Form Button -->                        
+                        <!-- Submit Form Button -->
                         {!! Form::submit('Create', ['class' => 'btn-body']) !!}
                     {!! Form::close() !!}
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
 @endsection

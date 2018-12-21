@@ -16,7 +16,7 @@ class PreformatoSeeder extends Seeder
           array('id' => 1,
             'inspection_subtype_id' => 1,
             'name' => 'expediting & inspection',
-            'header' =>'<div class="header" id="header">
+            'header' =>'<div class="encabezado" id="encabezado">
                <table border="1" cellpadding="1" cellspacing="1" style="width:100%">
                	<tbody>
                		<tr>

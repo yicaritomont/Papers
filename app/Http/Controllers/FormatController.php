@@ -39,7 +39,7 @@ class FormatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    /*public function create(Request $request)
+    public function create(Request $request)
     {
         $formato = Preformato::where('id',1)->first();
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
@@ -72,9 +72,9 @@ class FormatController extends Controller
             return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
         }
         return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats'));
-    }*/
+    }
 
-    public function create(Request $request)
+    /*public function create(Request $request)
     {
         $cita = InspectionAppointment::with('contract.company.user:id,name', 'client.user:id,name')->find($request->get('appointment'));
         $preformato = Preformato::where([
@@ -125,17 +125,6 @@ class FormatController extends Controller
                         ->pluck('name', 'id');
         }
         $preformats = Preformato::pluck('name', 'id'); */
-
-        if($request->get('appointment'))
-        {
-            $appointment = $request->get('appointment');
-            return view('format.new', compact('formatoSeteado', 'mostrar_formato', 'appointment', 'companyName', 'clientName', 'preformatoName'));
-        }
-        else
-        {
-            return redirect()->route('formats.index');
-        }
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -567,8 +556,8 @@ class FormatController extends Controller
             if($format->preformat_id == 1)
             {
                 $format_pdf = str_replace($eliminar,'',$format->format);
-            } 
-            else 
+            }
+            else
             {
                 $format_pdf = $format->format;
             }

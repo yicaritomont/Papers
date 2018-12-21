@@ -9,7 +9,7 @@
             <a href="{{ route('formats.index') }}" class="btn btn-default"> <i class="fa fa-arrow-left"></i> @lang('words.Back')</a>
             <div class="panel panel-default">
                 <div class="panel-header-form">
-                    <h3 class="panel-titles">@lang('words.Create')</h3>
+                    <h3 class="panel-titles">@lang('words.Create') {{ trans_choice('words.Format',1)}}</h3>
                 </div>
                 <div class="panel-body black-letter">
                     {!! Form::open(['route' => ['formats.store'], 'id' => 'form_expediction' ]) !!}
