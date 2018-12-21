@@ -176,6 +176,8 @@ return[
     'NoMatches'                 => 'No hay coincidencias',
     'PermissionError'           => 'No puedes realizar esta acción, no tienes permisos',
     'EditRequestedAppointment'  => 'No puede editar una cita solicitada',
+    'PreformatNotFound'         => 'No se encuentra registrado un preformato para el tipo de inspección de la cita',
+    'Fill'                      => 'Llenar',
 
     // Mensajes para peticiones signa
     'SignaPassword'     => 'Debe anexar la contraseña signa',

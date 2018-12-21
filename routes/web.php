@@ -79,7 +79,6 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');
     Route::resource('permissions','PermissionController');
-    Route::resource('modulos','ModuloController');
     Route::resource('menus','MenuController');
     Route::resource('perfiles','PerfilController');
     Route::resource('agendas','MenuController');

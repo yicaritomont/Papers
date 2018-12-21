@@ -9,7 +9,7 @@
         <div class="col-md-12 col-lg-8 col-lg-offset-2">
 
             <div class="inputs-header">
-                @if(auth()->user()->hasRole('Admin'))
+                @if(auth()->user()->hasRole('Admin') && !isset($inspector))
                     {!! Form::select('citas-compania',$companies, null, ['class' => 'input-body select2 form-control', 'id' => 'agenda-compania', 'placeholder' => 'Compañias']) !!}
                 @endif
             </div>

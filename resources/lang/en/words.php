@@ -179,6 +179,8 @@ return[
     'NoMatches'                 => 'No matches',
     'PermissionError'           => 'You can not perform this action, you do not have permission',
     'EditRequestedAppointment'  => 'You can not edit a requested appointment',
+    'PreformatNotFound'         => 'A pre-form for the type of inspection of the appointment is not registered',
+    'Fill'                      => 'Fill',
 
     // Message for a signa
     'SignaPassword'     => 'You must append the signa password for signature',

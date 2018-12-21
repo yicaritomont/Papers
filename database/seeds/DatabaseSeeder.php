@@ -120,7 +120,6 @@ class DatabaseSeeder extends Seeder
         InspectionTypeTableSeeder::run();
         InspectionSubTypeTableSeeder::run();
         InspectorTypeTableSeeder::run();
-        ModuloSeeder::run();
         MenuSeeder::run();
         PreformatoSeeder::run();
         estiloCssSeeder::run();

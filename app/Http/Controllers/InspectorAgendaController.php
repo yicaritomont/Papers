@@ -27,6 +27,7 @@ class InspectorAgendaController extends Controller
     public function index(Request $request)
     {
         $countries = Country::all()->pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
 
         if(auth()->user()->hasRole('Inspector')){
             $request['id'] = auth()->user()->inspectors->id;
@@ -44,7 +45,7 @@ class InspectorAgendaController extends Controller
 
             $this->authorize('validateId', $inspector);
             
-            return view('inspector_agenda.index', compact('countries', 'inspector'));
+            return view('inspector_agenda.index', compact('countries', 'inspector', 'companies'));
             
         }elseif( !auth()->user()->hasRole('Admin') ){
             // $companySlug = Company::findOrFail(session()->get('Session_Company'))->slug;;
@@ -60,7 +61,6 @@ class InspectorAgendaController extends Controller
             
         // Administrador
         }else{
-            $companies = Company::with('user')->get()->pluck('user.name', 'id');
             return view('inspector_agenda.index', compact('countries', 'companies'));
         }
         

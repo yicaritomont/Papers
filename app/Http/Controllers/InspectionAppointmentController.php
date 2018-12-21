@@ -39,6 +39,9 @@ class InspectionAppointmentController extends Controller
             ['id', '!=', '6'],
         ])->get();
 
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
+        $appointment_locations = AppointmentLocation::pluck('coordenada','id');
+
         // Si se consultan las citas de un inspector (Usuario inspector)
         if($request->get('id')){
 
@@ -51,12 +54,11 @@ class InspectionAppointmentController extends Controller
 
             $this->authorize('validateId', $inspector);
 
-            return view('inspection_appointment.index',compact('inspector', 'appointment_states'));
+            return view('inspection_appointment.index',compact('inspector', 'appointment_states', 'companies', 'appointment_locations'));
 
         }
 
         $subtypes = InspectionSubtype::with('inspection_types')->get()->pluck('subtype_type', 'id');
-        $appointment_locations = AppointmentLocation::pluck('coordenada','id');
         
         if( auth()->user()->hasRole('Cliente') )
         {
@@ -85,8 +87,6 @@ class InspectionAppointmentController extends Controller
         }
 
         // Administrador
-
-        $companies = Company::with('user')->get()->pluck('user.name', 'id');
 
         return view('inspection_appointment.index',compact('subtypes', 'inspectors', 'appointment_states', 'appointment_locations', 'companies'));
     }
@@ -460,7 +460,8 @@ class InspectionAppointmentController extends Controller
     public function events($type=null, $id=null)
     {
         $solicitadas = InspectionAppointment::
-            join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
+            join('contracts', 'contracts.id', '=', 'inspection_appointments.contract_id')
+            ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
             ->join('clients', 'clients.id', '=', 'inspection_appointments.client_id')
             ->join('users', 'users.id', '=', 'clients.user_id')
             ->select('estimated_start_date AS start',
@@ -471,7 +472,9 @@ class InspectionAppointmentController extends Controller
                 'appointment_states.color AS className',
                 'appointment_states_id',
                 'format_id',
-                'client_id')
+                'inspection_appointments.client_id',
+                'inspection_subtype_id',
+                'contracts.company_id')
         ->where('appointment_states_id', 1);
 
         // dd($solicitadas->get());
@@ -487,7 +490,8 @@ class InspectionAppointmentController extends Controller
         }
         // dd($solicitadas->get());
         $result = InspectionAppointment::
-            join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
+            join('contracts', 'contracts.id', '=', 'inspection_appointments.contract_id')
+            ->join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
             ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
             ->join('users', 'users.id', '=', 'inspectors.user_id')
             ->select('start_date AS start',
@@ -498,12 +502,14 @@ class InspectionAppointmentController extends Controller
                 'appointment_states.color',
                 'appointment_states_id',
                 'format_id',
-                'client_id')
+                'inspection_appointments.client_id',
+                'inspection_subtype_id',
+                'contracts.company_id')
             ->where(function($q){
                 $q->where('appointment_states_id', 2)  
                     ->orWhere('appointment_states_id', 3)
                     ->orWhere('appointment_states_id', 4);
-            })    
+            })
         ->union($solicitadas);
 
         if($type == 'inspector'){
@@ -519,12 +525,34 @@ class InspectionAppointmentController extends Controller
 
         // dd($result->get());
 
+        $preformato = Preformato::select('inspection_subtype_id', 'company_id')->get();
+
+        /* dd($preformato->where('inspection_subtype_id', 1)->where('company_id', 1));
+        dd($preformato->where('inspection_subtype_id', 1)->isEmpty());
+ */
         $result = $result->get();
 
+        $result->each(function($cita, $key) use($preformato){
+
+            // Se agrega un nuevo campo hasPreformat para comprobar si la cita tiene un preformato
+            if( $preformato->where('inspection_subtype_id', $cita->inspection_subtype_id)->where('company_id', $cita->company_id)->isNotEmpty() ){
+                $cita->hasPreformat = 1;
+            }else{
+                $cita->hasPreformat = 0;
+            }
+
+            //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario
+            $cita->end = $cita->end.'T23:59:59';
+        });
+
+
+        /* dd ($result);
+        dd ($preformato); */
+
         //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario y un alert al className para los colores de los eventos
-        foreach($result as $item){
+        /* foreach($result as $item){
             $item->end = $item->end.'T23:59:59';
-        }
+        } */
         
         echo json_encode($result);      
     }
