@@ -76,12 +76,18 @@ class FormatController extends Controller
 
     public function create(Request $request)
     {
-        $cita = InspectionAppointment::with('contract')->find($request->get('appointment'));
+        $cita = InspectionAppointment::with('contract.company.user:id,name', 'client.user:id,name')->find($request->get('appointment'));
         $preformato = Preformato::where([
             ['inspection_subtype_id', $cita->inspection_subtype_id],
             ['company_id', $cita->contract->company_id],
         ])->first();
 
+        $companyName = $cita->contract->company->user->name;
+        $clientName = $cita->client->user->name;
+        $preformatoName = $preformato->name;
+
+        // return $cita;
+        // return $preformato->name;
         $formato = $this->llenarCabeceraFormato($cita->client_id, $cita->contract->company_id, $preformato->id);
 
         $datos = [
@@ -123,7 +129,7 @@ class FormatController extends Controller
         if($request->get('appointment'))
         {
             $appointment = $request->get('appointment');
-            return view('format.new', compact('formatoSeteado', 'mostrar_formato', 'appointment'));
+            return view('format.new', compact('formatoSeteado', 'mostrar_formato', 'appointment', 'companyName', 'clientName', 'preformatoName'));
         }
         else
         {
@@ -220,9 +226,10 @@ class FormatController extends Controller
               $state_format = 'none';
             }
           }
-          $companies = Company::with('user')->get()->pluck('user.name', 'id');
-          $clients = Client::with('user')->get()->pluck('user.name', 'id');
-          $preformats = Preformato::pluck('name', 'id');
+          $companyName = $formato->company->user->name;
+          $clientName = $formato->client->name;
+          $preformatoName = $formato->preformato->name;
+          
           $disabled = 'disabled';
         if ($formato != '')
         {
@@ -238,7 +245,7 @@ class FormatController extends Controller
             }
         }
       }
-        return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companies','clients','preformats','user','state_format','state_firma'));
+        return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companyName','clientName','preformatoName','user','state_format','state_firma'));
   }
 
     /**

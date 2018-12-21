@@ -16,20 +16,19 @@
     {!! Form::select('preformat_id',$preformats, null, ['class' => 'input-body select2 form-control','id' => 'format_preformato',$disabled,'placeholder' => trans('words.ChooseOption')]) !!}
     @if ($errors->has('preformat_id')) <p class="help-block">{{ $errors->first('preformat_id')}}</p> @endif
 </div> --}}
-{{-- <div class="form-group">
+<div class="form-group">
     <label for="company_id">@choice('words.Company',1)</label>
     {!! Form::text('company_id', $companyName, ['class' => 'input-body form-control', 'disabled']) !!}
 </div>
-<div class="form-group @if ($errors->has('client_id')) has-error @endif">
+<div class="form-group">
     <label for="client_id">@choice('words.Client', 1)</label>
       {!! Form::text('client_id', $clientName, ['class' => 'input-body form-control', 'disabled']) !!}
 </div>
-<div class="form-group @if ($errors->has('preformat_id')) has-error @endif" id="contenedor_preformat">
+<div class="form-group">
     <label for="preformat_id">@choice('words.Preformato',1)</label>
-    {!! Form::text('preformat_id',$preformat, null, ['class' => 'input-body select2 form-control','id' => 'format_preformato',$disabled,'placeholder' => trans('words.ChooseOption')]) !!}
-    @if ($errors->has('preformat_id')) <p class="help-block">{{ $errors->first('preformat_id')}}</p> @endif
-</div> --}}
-{{-- {{ ($formato->format) }} --}}
+    {!! Form::text('preformat_id',$preformatoName,  ['class' => 'input-body form-control', 'disabled']) !!}
+</div>
+
 <div id="plantilla_formato" class="col-xs-12" style="display:{!! $mostrar_formato !!};overflow-y: scroll;">{!! isset($formatoSeteado) ? $formatoSeteado : $formato->format !!}</div>
     <div class="panel panel-default col-xs-12" name="format"   id="contenedor_formato" style="display:none;overflow-y: scroll;">
 </div>
