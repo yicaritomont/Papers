@@ -591,7 +591,7 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
             }
         },
         (res) => {
-            if(res.status == 403){
+            if(res.status == 403 || res.status == 500){
                 $('.msgError').html('');
                 $('.msgError').append(alert('danger', res.responseJSON.message));
             }else if(res.status == 422){
@@ -642,7 +642,7 @@ $('.showCalendar').on('click', function(e){
                 slideForms(objElement);
             },
             (res) => {
-                if(res.status == 403){
+                if(res.status == 403 || res.status == 500){
                     $('.msgError').html('');
                     $('.msgError').append(alert('danger', res.responseJSON.message));
                 }
@@ -725,7 +725,7 @@ $(document).on('click', '.editCalendar', function(e){
                 }
             },
             (res) => {
-                if(res.status == 403){
+                if(res.status == 403 || res.status == 500){
                     $('.msgError').html('');
                     $('.msgError').append(alert('danger', res.responseJSON.message));
                 }

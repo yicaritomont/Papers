@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a8bccc5a6751f937a84ae8f2252dbe66",
+    "content-hash": "e80b7076cdfbfcf20f77f7427232220a",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -1949,7 +1949,6 @@
         },
         {
             "name": "spatie/laravel-permission",
-<<<<<<< HEAD
             "version": "2.29.0",
             "source": {
                 "type": "git",
@@ -1960,18 +1959,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/7f308806ca051fca42685e4a97a282139a6a7982",
                 "reference": "7f308806ca051fca42685e4a97a282139a6a7982",
-=======
-            "version": "2.28.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/laravel-permission.git",
-                "reference": "1887a5851013bf1a457f2a65477f96e98ae3f53a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/1887a5851013bf1a457f2a65477f96e98ae3f53a",
-                "reference": "1887a5851013bf1a457f2a65477f96e98ae3f53a",
->>>>>>> upstream/master
                 "shasum": ""
             },
             "require": {
@@ -2023,61 +2010,7 @@
                 "security",
                 "spatie"
             ],
-<<<<<<< HEAD
             "time": "2018-12-16T00:49:22+00:00"
-        },
-        {
-            "name": "spatie/pdf-to-image",
-            "version": "1.8.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/pdf-to-image.git",
-                "reference": "f33afc92ff7bff272fa6a9ba1cc335e96c57eb26"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/pdf-to-image/zipball/f33afc92ff7bff272fa6a9ba1cc335e96c57eb26",
-                "reference": "f33afc92ff7bff272fa6a9ba1cc335e96c57eb26",
-                "shasum": ""
-            },
-            "require": {
-                "ext-imagick": "*",
-                "php": "^7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\PdfToImage\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "homepage": "https://spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Convert a pdf to an image",
-            "homepage": "https://github.com/spatie/pdf-to-image",
-            "keywords": [
-                "convert",
-                "image",
-                "pdf",
-                "pdf-to-image",
-                "spatie"
-            ],
-            "time": "2018-07-02T09:30:32+00:00"
-=======
-            "time": "2018-12-11T02:03:59+00:00"
->>>>>>> upstream/master
         },
         {
             "name": "swiftmailer/swiftmailer",

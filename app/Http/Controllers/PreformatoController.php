@@ -97,7 +97,7 @@ class PreformatoController extends Controller
     public function edit($id)
     {
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
-        $inspection_subtypes = InspectionSubtype::pluck('name', 'id');
+        $inspection_subtypes = InspectionSubtype::with('inspection_types')->get()->pluck('subtype_type', 'id');
         $preformato = Preformato::find($id);
 
         if(CompanyController::compareCompanySession([$preformato->company]))

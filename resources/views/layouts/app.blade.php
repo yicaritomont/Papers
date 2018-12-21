@@ -283,7 +283,29 @@
                 </div>
                 <!-- /top navigation -->
                 <div class="right_col" role="main">
+                    @if ($errors->any())
 
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </div>
+
+                        {{-- <div class="form-group">
+                            <div class="col-xs-12">
+                                <div class="alert alert-danger"><label>@lang('messages_web.mensaje.error')</label>
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div> --}}
+                    @endif
                     {{-- <div class="content-page"> --}}
                         {{-- <div id="flash-msg">
                             @include('flash::message')
