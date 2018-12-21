@@ -44,7 +44,7 @@
 
             @can('edit_formats','delete_preformats')
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Format', 'company' => 'none', 'entity' => 'formats', 'identificador' => 'id', 'relations' => 'preformato,company.user,client.user']) }}"};
-                columns.push({data: 'actions', className: 'text-center w1em'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Format', 'company' => 'none', 'relations' => 'preformato,company.user,client.user']) }}"};

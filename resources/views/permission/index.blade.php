@@ -49,7 +49,7 @@
             @can('delete_permissions')
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Permission', 'company' => 'none', 'entity' => 'permissions', 'identificador' => 'name', 'relations' => 'none']) }}"};
  
-                columns.push({data: 'actions', className: 'text-center w1em'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Permission']) }}"};

@@ -412,9 +412,9 @@ tr.child ul.dtr-details li{
     vertical-align: top;
 }
 
-.w1em
-{
-    width: 1em;
+.wCellActions .btn{
+    margin:0;
+    margin-bottom:5px;
 }
 
 .main_container

@@ -55,7 +55,7 @@
                     dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}"};
                 @endif
 
-                columns.push({data: 'actions', className: 'text-center w1em'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 @if(isset($clientAuth))

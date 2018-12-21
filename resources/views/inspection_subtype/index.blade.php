@@ -49,7 +49,7 @@
 
             @can('edit_inspectionsubtypes','delete_inspectionsubtypes')
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'InspectionSubtype', 'company' => 'none', 'entity' => 'inspectionsubtypes', 'identificador' => 'id', 'relations' => 'inspection_types']) }}"};
-                columns.push({data: 'actions', className: 'text-center w1em'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'InspectionSubtype', 'company' => 'none', 'relations' => 'inspection_types']) }}"};

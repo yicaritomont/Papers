@@ -52,7 +52,7 @@
             @can('edit_menus', 'delete_menus')
                 
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Menu', 'company' => 'none', 'entity' => 'menus', 'identificador' => 'id', 'relations' => 'menu']) }}"};
-                columns.push({data: 'actions', className: 'text-center w1em'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Menu', 'company' => 'none', 'relations' => 'menu']) }}"};

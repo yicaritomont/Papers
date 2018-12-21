@@ -98,7 +98,7 @@
                 @endif
             @endif
 
-            columns.push({data: 'actions', className: 'text-center w1em'});
+            columns.push({data: 'actions', className: 'text-center wCellActions'});
             dataTableObject.columns = columns;
 
             dataTableObject.columnDefs.push(

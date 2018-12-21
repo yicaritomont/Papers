@@ -34,6 +34,7 @@ function inicial (argument)
         responsive: true,
         serverSide: true,
         processing: true,
+        autoWidth: false,
     };
 
 
@@ -899,8 +900,11 @@ function fillSelect(url, select, edit, funcRes){
     );
 }
 
-function llenarCabeceraFormato()
+function llenarCabeceraFormato(event, p, select, company)
 {
+    /* var preformato = (p) ? p : $(this).val();
+    console.log(preformato);
+    return preformato; */
     var preformato = $(this).val();
     var select = $('#cliente_formato').val();
     var company = $('#company_formato').val();
@@ -911,9 +915,9 @@ function llenarCabeceraFormato()
     {
         // ajax parameters: url, Method, data, Function done, Function error(optional)
         ajax(
-            window.Laravel.url+"/ajxllenarCabeceraFormato",
+            window.Laravel.url+"/ajxllenarCabeceraFormato/"+select+'/'+company+'/'+preformato,
             'GET',
-            {select:select, company:company, preformato:preformato},
+            null,
             (response) => {
                 console.log(response);
                 if(!jQuery.isEmptyObject(response))
@@ -929,7 +933,7 @@ function llenarCabeceraFormato()
                         });
                         $('#boton_guardar_html').attr("disabled", true);
                     } else {
-                        var html_plantilla_formato = response.preformato.format;
+                        var html_plantilla_formato = response.preformato.header + response.preformato.format;
                         if( preformato != '')
                         {
                             $('#boton_guardar_html').attr("disabled", false);

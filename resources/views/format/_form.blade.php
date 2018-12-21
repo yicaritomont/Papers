@@ -1,4 +1,4 @@
-<div class="form-group @if ($errors->has('company_id')) has-error @endif" id="motrarcompanies" style="display:{!! $companyselect !!};">
+{{-- <div class="form-group @if ($errors->has('company_id')) has-error @endif" id="motrarcompanies" style="display:{!! $companyselect !!};">
     <label for="name">@choice('words.Company',1)</label>
     {!! Form::select('company_id',$companies, isset($user) ? $user->companies->pluck('id')->toArray() : null, ['class' => 'input-body select2 form-control','id' => 'company_formato',$disabled,'placeholder' => trans('words.ChooseOption')]) !!}
     @if ($errors->has('company_id')) <p class="help-block">{{ $errors->first('company_id')}}</p> @endif
@@ -15,8 +15,22 @@
     <label for="name">@choice('words.Preformato',1)</label>
     {!! Form::select('preformat_id',$preformats, null, ['class' => 'input-body select2 form-control','id' => 'format_preformato',$disabled,'placeholder' => trans('words.ChooseOption')]) !!}
     @if ($errors->has('preformat_id')) <p class="help-block">{{ $errors->first('preformat_id')}}</p> @endif
+</div> --}}
+{{-- <div class="form-group">
+    <label for="company_id">@choice('words.Company',1)</label>
+    {!! Form::text('company_id', $companyName, ['class' => 'input-body form-control', 'disabled']) !!}
 </div>
-<div id="plantilla_formato" class="col-xs-12" style="display:{!! $mostrar_formato !!};overflow-y: scroll;">{!! $formato->format!!}</div>
+<div class="form-group @if ($errors->has('client_id')) has-error @endif">
+    <label for="client_id">@choice('words.Client', 1)</label>
+      {!! Form::text('client_id', $clientName, ['class' => 'input-body form-control', 'disabled']) !!}
+</div>
+<div class="form-group @if ($errors->has('preformat_id')) has-error @endif" id="contenedor_preformat">
+    <label for="preformat_id">@choice('words.Preformato',1)</label>
+    {!! Form::text('preformat_id',$preformat, null, ['class' => 'input-body select2 form-control','id' => 'format_preformato',$disabled,'placeholder' => trans('words.ChooseOption')]) !!}
+    @if ($errors->has('preformat_id')) <p class="help-block">{{ $errors->first('preformat_id')}}</p> @endif
+</div> --}}
+{{-- {{ ($formato->format) }} --}}
+<div id="plantilla_formato" class="col-xs-12" style="display:{!! $mostrar_formato !!};overflow-y: scroll;">{!! isset($formatoSeteado) ? $formatoSeteado : $formato->format !!}</div>
     <div class="panel panel-default col-xs-12" name="format"   id="contenedor_formato" style="display:none;overflow-y: scroll;">
 </div>
 @if(isset($appointment))

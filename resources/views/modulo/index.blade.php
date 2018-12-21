@@ -48,7 +48,7 @@
             @can('edit_modulos', 'delete_modulos')
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Modulo', 'company' => 'none', 'entity' => 'modulos', 'identificador' => 'id', 'relations' => 'none']) }}"};
 
-                columns.push({data: 'actions', className: 'text-center w1em'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Modulo']) }}"};

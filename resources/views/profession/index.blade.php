@@ -48,7 +48,7 @@
             @can('edit_professions','delete_professions')
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Profession', 'company' => 'none', 'entity' => 'professions', 'identificador' => 'id', 'relations' => 'none']) }}"};
                 
-                columns.push({data: 'actions', className: 'text-center w1em'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];     
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Profession', 'company' => 'none']) }}"};

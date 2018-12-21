@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
             elseif( $role->name == "Compania")
             {
                 // Assing compania permissions
-                $role->syncPermissions(Permission::where('name' , 'LIKE' , '%_clients')->orWhere('name' , 'LIKE' , '%_inspectors')->orWhere('name' , 'LIKE' , '%_contracts')->get());
+                $role->syncPermissions(Permission::where('name' , 'LIKE' , '%_clients')->orWhere('name' , 'LIKE' , '%_inspectors')->orWhere('name' , 'LIKE' , '%_contracts')->orWhere('name' , 'LIKE' , '%_preformatos')->get());
             }
             elseif( $role->name == 'Cliente')
             {
