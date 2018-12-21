@@ -8,7 +8,6 @@
             <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Format',$result->count()) }}</h3>
         </div>
     </div>
-
     <div class="result-set">
         <table class="table table-bordered table-striped table-hover dataTable" id="data-table">
             <thead>

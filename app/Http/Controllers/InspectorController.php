@@ -363,7 +363,7 @@ class InspectorController extends Controller
         if(!Session::has('TokenWSLSello'))        
         {       
             // solicita el token para el sellado de firma
-            $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
+            $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario('ACME_pruebas','A0000usr78X');
             if($tokenSelladoFirma['ResultadoOperacion'] == 0)
             {
                 // se registra el token en una variable de session
@@ -381,7 +381,7 @@ class InspectorController extends Controller
         {
             echo "solicita otro token y lo agrega a la temporal";
             //Solicita y asigna de nuevo el token
-            $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario();
+            $tokenSelladoFirma = $signaSelladoFirma->autenticacionUsuario('ACME_pruebas','A0000usr78X');
             Session::put('TokenWSLSello', $tokenSelladoFirma['Token']);
             Session::save();
         }
@@ -417,8 +417,8 @@ class InspectorController extends Controller
             print_r($consultaSellado);
             echo "</pre>";       
             
-        }
-        */
+        }*/
+        
 
         /**
          * El bloque  comentado a continuacion muestra como debe ser consumo del WS de firma 

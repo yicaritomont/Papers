@@ -16,17 +16,25 @@
     @if( isset($parameters['entity']) && $parameters['entity'] == 'formats' )
         <a href="{{ route($entity.'.supports', [str_singular($entity) => ${$action}])  }}" title="@lang('words.supports')" class="btn btn-xs btn-warning">
             <i class="glyphicon glyphicon-folder-open"></i></a>
-        <a href="{{ route($entity.'.supports', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-warning">
-            <i class="glyphicon glyphicon-folder-open"></i>
-        </a>
         @if($status == 2)
             @php
                 $num_firmas = App\Http\Helpers\Equivalencia::numeroFirmasPorFormato(${$action});
+                $num_sellos = App\Http\Helpers\Equivalencia::numeroSellosPorFormato(${$action});
             @endphp
             @if($num_firmas > 0)
                 <a href="{{ route($entity.'.signedFormats', [str_singular($entity) => ${$action}])  }}" target="_blank" class="btn btn-xs btn-success">
                     <i class="glyphicon glyphicon-pencil"></i>
                 </a>
+            @endif
+
+            @if($num_firmas == 2 && $num_sellos == 0)  
+                <a href="{{ route($entity.'.signature', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-info">
+                    <i class="glyphicon glyphicon-tag"></i>
+                </a>   
+            @elseif($num_firmas == 2 && $num_sellos == 1)    
+                <a href="{{ route($entity.'.infoSignature', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-info">
+                    <i class="glyphicon glyphicon-info-sign"></i>
+                </a>  
             @endif
         @endif
     @endif
