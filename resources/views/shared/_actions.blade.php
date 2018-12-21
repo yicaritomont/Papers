@@ -16,9 +16,6 @@
     @if( isset($parameters['entity']) && $parameters['entity'] == 'formats' )
         <a href="{{ route($entity.'.supports', [str_singular($entity) => ${$action}])  }}" title="@lang('words.supports')" class="btn btn-xs btn-warning">
             <i class="glyphicon glyphicon-folder-open"></i></a>
-        <a href="{{ route($entity.'.supports', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-warning">
-            <i class="glyphicon glyphicon-folder-open"></i>
-        </a>
         @if($status == 2)
             @php
                 $num_firmas = App\Http\Helpers\Equivalencia::numeroFirmasPorFormato(${$action});
