@@ -177,15 +177,37 @@ return[
     'PermissionError'           => 'No puedes realizar esta acción, no tienes permisos',
     'EditRequestedAppointment'  => 'No puede editar una cita solicitada',
 
-    // Mensajes para signa
-    'SignaPassword'     => 'Debe anexar la contraseña signa para firma',
-    'SignnaUser'        => 'Debe anexar el usuario signa para firma',
+    // Mensajes para peticiones signa
+    'SignaPassword'     => 'Debe anexar la contraseña signa',
+    'SignnaUser'        => 'Debe anexar el usuario signa',
     'SignaFailToken'    => 'No se obtuvo un token válido. verifique su usuario o contraseña. inténtelo de nuevo',
     'SignaToken'        => 'El token es requerido',
     'SignaFailFile'     => 'No se ha podido acceder al archivo',
     'SignaUserFail'     => 'El formato ya esta firmado por el mismo usuario',
     'FormatTwoSigna'    => 'El formato ya cuenta con 2 firmas',
     'SignaReturnError'  => 'Errores en respuesta de servicio, intente más tarde',
+    'ViewSignanute'     => 'Visualizar documento firmado',
+    'SignaSelloTiempo'  => 'Registrar sellado del tiempo',
+    'SignaInfo'         => 'Si necesita conocer el estado de consumo de los sellos, por favor haga clic en el  siguiente botón. Diligencie los campos de usuario y contraseña para firmas y en breve visualizará la información.',
+    'Info'              => 'Información!',
+
+    // Mensajes informativos signa
+    'SignaNombreUsuario'             => 'Nombre de usuario',
+    'SignaNombreOrganizacion'        => 'Nombre de organización',
+    'SignaIdentificadorTSA'          => 'Identificador TSA',
+    'SignaTotalSellosConsumidos'     => 'Total de sellos consumidos',
+    'SignaTotalSellosDisponibles'    => 'Total de sellos disponibles',
+    'SignaFechaAlta'                 => 'Fecha de alta',
+    'SignaFechaBaja'                 => 'Fecha de baja',
+    'SignaTramoIdentificador'        => 'Identificador del tramo',
+    'SignaTramoFechaAlta'            => 'Fecha alta del tramo',
+    'SignaTramoFechaCaducidad'       => 'Fecha caducidad del tramo',
+    'SignaTramoEstado'               => 'Estado del tramo',
+    'SignaTramoSellosTotales'        => 'Sellos totales del tramo',
+    'SignaTramoSellosConsumidos'     => 'Sellos consumidos del tramo',
+    'SignaTramoSellosDisponibles'    => 'Sellos disponibles del tramo',
+    'SignaTramoFechaPrimerSello'     => 'Fecha del primer sello del tramo',
+    'SignaTramoFechaUltimoSello'     => 'Fecha del último sello del tramo',
 
 
     //Estados de las citas

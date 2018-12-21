@@ -2,6 +2,8 @@
 
 namespace App\Http\Helpers;
 use App\SignaFormat;
+use App\SelloFormat;
+
 class Equivalencia{
 
     private static $activo = 1;
@@ -33,6 +35,12 @@ class Equivalencia{
     {
         $firmasFormato = SignaFormat::where('id_formato',$id)->get();
         return count($firmasFormato);
+    }
+
+    public static function numeroSellosPorFormato($id)
+    {
+        $sellosFormato = SelloFormat::where('id_formato',$id)->get();
+        return count($sellosFormato);
     }
 
 }

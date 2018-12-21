@@ -115,10 +115,15 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::post('supports/delete','FormatController@delete')->name('supports.delete');
     Route::post('getMessageAjax','FormatController@getAjaxMessage')->name('getAjax.message');
 
-    //Routes Firma
+    //Routes Firma, Sello, Blockchain con SIGNA
     Route::get('autenticarUsuarioWSFirma','ConsumirSignaController@autenticarUsuarioWSFirma')->name('autenticarUsuarioWSFirma');
     Route::get('firmarDocumentoWSFirma','ConsumirSignaController@firmarDocumentoWSFirma')->name('firmarDocumentoWSFirma');
     Route::get('formats/signedFormats/{id}','FormatController@signedFormats')->name('formats.signedFormats');
+    Route::get('signature/{id}','FormatController@signature')->name('formats.signature');    
+    Route::get('autenticarUsuarioWSSello','ConsumirSignaController@autenticarUsuarioWSSello')->name('autenticarUsuarioWSSello');
+    Route::get('sellarDocumentoWSSello','ConsumirSignaController@sellarDocumentoWSSello')->name('sellarDocumentoWSSello');
+    Route::get('infoSignature','ConsumirSignaController@infoSignature')->name('formats.infoSignature');
+    Route::get('consultaConsumo','ConsumirSignaController@consultaConsumo')->name('formats.consultaConsumo');
 
 
 });

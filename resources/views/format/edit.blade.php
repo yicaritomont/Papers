@@ -23,7 +23,7 @@
                 {!! trans('words.upload_sopports') !!}</a>
             </div>
             <div class="col-xs-4" style="display:{!! $state_firma !!};">
-              <span class="btn btn-primary btn-body" id="boton_firmar_formato" value="{{$formato->id}}">{!! trans('words.SignFormat') !!}</span>
+              <span class="btn btn-primary btn-body" id="boton_firmar_formato" info="firma" value="{{$formato->id}}">{!! trans('words.SignFormat') !!}</span>
             </div>
             <div class="col-xs-4" style="display:{!! $state_format !!};">
               <span class="btn btn-primary btn-body" id="boton_guardar_cambioshtml">{!! trans('words.SaveChanges') !!}</span>
