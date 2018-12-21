@@ -92,7 +92,7 @@ if($('#icon')[0])
 // Pintar las citas en el calendario de acuerdo a la compañia seleccionada
 $('#citas-compania').on('change', function(event){
     var companyVal = $(this).val();
-    
+
     $('.fc-day.bgEvent').removeClass('bgEvent');
     $('#appointment_loading').css('display', 'inline-block');
     $('#company_id').val(companyVal);
@@ -144,7 +144,7 @@ $('#citas-subtipo').on('change', function(event, edit){
             (res) => {
                 if(res.msg){
                     $('#appointment_loading').hide();
-                    
+
                     $('.fc-day.bgEvent').removeClass('bgEvent');
                     swal({
                         type: 'warning',
@@ -152,12 +152,12 @@ $('#citas-subtipo').on('change', function(event, edit){
                     });
                 }else{
                     $('#appointment_loading').hide();
-                    
+
                     guiaAgendas = [];
                     $.each(res.agendas, function(key, value){
                         guiaAgendas.push(value);
                     });
-                    
+
                     colorearAgendas();
                 }
             }
@@ -172,7 +172,7 @@ $('#agenda-compania').on('change', function(event){
     console.log($(this).val());
     var companyVal = $(this).val();
     console.log($('#url').val()+'/events/company/'+companyVal);
-    
+
     $('#appointment_loading').css('display', 'inline-block');
     // $('#company_id').val(companyVal);
 
@@ -265,7 +265,7 @@ function obtenerUrl()
 
     //Concatena la informacion para construir la url
     var url = window.location.protocol+'//'+window.location.host+'/'+vector[1];
-    
+
     return url;
 }
 
@@ -592,10 +592,10 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
                 $('.msgError').html('');
                 $('.msgError').append(alert('danger', res.responseJSON.message));
             }else if(res.status == 422){
-    
+
                 $('.form-group').removeClass('has-error');
                 $('.errors').empty();
-    
+
                 $('#'+idForm).find(':input').each(function(){
                     var idInput = $(this).attr('name');
                     /* console.log(idInput);
@@ -631,10 +631,10 @@ $('.showCalendar').on('click', function(e){
                         if(key.substr(-4) == 'date'){
                             value = moment(value, 'YYYY-MM-DD').format('dddd D MMMM YYYY');
                         }
-    
+
                         $('#cell-'+key).html(value);
                     });
-    
+
                 }
                 slideForms(objElement);
             },
@@ -930,7 +930,7 @@ function llenarCabeceraFormato()
                         });
                         $('#boton_guardar_html').attr("disabled", true);
                     } else {
-                        var html_plantilla_formato = response.preformato.format;
+                        var html_plantilla_formato = '<div class="encabezado" id="encabezado">'+response.preformato.header+'</div>'+response.preformato.format;
                         if( preformato != '')
                         {
                             $('#boton_guardar_html').attr("disabled", false);
@@ -962,7 +962,7 @@ function llenarCabeceraFormato()
                 }
             }
         );
-        
+
     }
 }
 
@@ -1069,13 +1069,13 @@ function solicitarToken()
     var ruta = $(this).attr('info');
 
     var urlsend = "";
-    
+
     if(ruta == 'firma')
     {
         urlsend = window.Laravel.url+"/autenticarUsuarioWSFirma";
         id_formato = $(this).attr('value');
     }
-    
+
     if(ruta == 'sello')
     {
         urlsend = window.Laravel.url+"/autenticarUsuarioWSSello";
@@ -1086,7 +1086,7 @@ function solicitarToken()
     {
         urlsend =  window.Laravel.url+"/autenticarUsuarioWSSello";
     }
-    
+
     console.log(ruta);
     console.log(urlsend)
 
@@ -1106,10 +1106,10 @@ function solicitarToken()
                 title: 'Password',
                 text: 'Password for signature'
             }
-            
-        ]).then((result) => 
+
+        ]).then((result) =>
         {
-            if (result.value) 
+            if (result.value)
             {
                 $('#not_carga').show();
                 $.ajax({
@@ -1118,8 +1118,8 @@ function solicitarToken()
                     dataType:'json',
                     data: {info:result.value}
                 }).done(function(response)
-                {      
-                    $('#not_carga').hide();                
+                {
+                    $('#not_carga').hide();
                     if(response.error == "")
                     {
                         if(response.token != "")
@@ -1159,7 +1159,7 @@ function solicitarToken()
         Swal('Error URL');
     }
 
-    
+
 }
 
 /** Funcion que complementa la firma del documento */
@@ -1172,12 +1172,12 @@ function continuarFirmaFormato(response,id_formato)
         data : {token : response.token ,id_formato : id_formato }
     }).done(function(result)
     {
-        $('#not_carga').hide();                            
+        $('#not_carga').hide();
         if(result.error == "")
         {
             if(result.respuestaFirma)
             {
-                Swal('Signed format with id '+result.respuestaFirma.IdFirma); 
+                Swal('Signed format with id '+result.respuestaFirma.IdFirma);
             }
         }
         else
@@ -1197,12 +1197,12 @@ function continuarSelloFormato(response,id_formato)
         data : {token : response.token ,id_formato : id_formato }
     }).done(function(result)
     {
-        $('#not_carga').hide();                            
+        $('#not_carga').hide();
         if(result.error == "")
         {
             if(result.respuestaFirma)
             {
-                Swal('Signed format with id '+result.respuestaFirma.IdFirma); 
+                Swal('Signed format with id '+result.respuestaFirma.IdFirma);
             }
         }
         else
@@ -1224,8 +1224,8 @@ function continuarInforSello(response)
         data : {token : response.token}
     }).done(function(result)
     {
-        $('#not_carga').hide();        
-                            
+        $('#not_carga').hide();
+
         if(result.error == "")
         {
             Swal('Info Generated');
