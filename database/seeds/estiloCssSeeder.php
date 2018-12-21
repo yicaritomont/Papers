@@ -21,7 +21,7 @@ class estiloCssSeeder extends Seeder
               margin: 200px 50px 80px 50px;
               font-size: 12px;
             }
-            #header {
+            #encabezado {
               position: fixed;
               left: 0px;
               top: -180px;
@@ -30,10 +30,10 @@ class estiloCssSeeder extends Seeder
               font-size: 11px;
               text-align: center;
             }
-            #header .page:after {
+            #encabezado .page:after {
               content: counter(page, decimal);
             }
-            #header img {
+            #encabezado img {
               width:100px;
               height:100px;
             }

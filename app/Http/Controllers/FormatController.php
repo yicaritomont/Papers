@@ -38,7 +38,7 @@ class FormatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    /*public function create(Request $request)
+    public function create(Request $request)
     {
         $formato = Preformato::where('id',1)->first();
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
@@ -71,9 +71,9 @@ class FormatController extends Controller
             return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
         }
         return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats'));
-    }*/
+    }
 
-    public function create(Request $request)
+    /*public function create(Request $request)
     {
         $formato = Preformato::where('id',1)->first();
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
@@ -104,7 +104,7 @@ class FormatController extends Controller
             return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
         }
         return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats'));
-    }
+    }*/
 
     /**
      * Store a newly created resource in storage.
@@ -495,6 +495,8 @@ class FormatController extends Controller
                 $file_pdf .= '<div class="contenedor_image"><img class="image" src="'.public_path().'/'.$item->nombre_url.'"/></di>';
             }
             $config_format = $estilos->estilos.$format_pdf.$file_pdf.$pagination->estilos;
+
+            //echo "<pre>";print_r($format_pdf);echo "</pre>";exit();
             $pdf = \App::make('dompdf.wrapper');
             $pdf->getDomPDF()->set_option("enable_php", true);
             $pdf->loadHTML($config_format);
