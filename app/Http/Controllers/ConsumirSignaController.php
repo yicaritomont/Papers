@@ -1,17 +1,22 @@
 <?php
-
+/**
+ * Contorlador que se encarga de realizar las peticiones para el consumo de los webservices de firma, sellado de firma y el registro de blockchain
+ */
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\SignaFormat;
 use App\SelloFormat;
+use App\BlockInfo;
 use Auth;
 use Session;
 
 class ConsumirSignaController extends Controller
 {
-    //
+    /**
+     * Función de apoyo que soliciuta el consumo de la autenticación para el usuario de webservice firma
+     */
     public function autenticarUsuarioWSFirma()
     {
         $response = [];
@@ -53,7 +58,7 @@ class ConsumirSignaController extends Controller
     }
 
     /**
-     * Funcion para la generacion de archivo inspeccion para envio a firma
+     * Funcion para solicitar la firma del documento al ws de firma
      */
     public function firmarDocumentoWSFirma()
     {
@@ -160,7 +165,9 @@ class ConsumirSignaController extends Controller
         return $response;
     }
 
-
+    /**
+     * Función de apoyo que soliciuta el consumo de la autenticación para el usuario de webservice Sello
+     */
     public function autenticarUsuarioWSSello()
     {
         $response = [];
@@ -232,6 +239,9 @@ class ConsumirSignaController extends Controller
         return $response;
     }
 
+     /**
+     * Funcion para solicitar el sello del documento al ws de firma
+     */
     public function sellarDocumentoWSSello()
     {
         $response = [];
@@ -254,6 +264,8 @@ class ConsumirSignaController extends Controller
                         $signaFormat->id_sello   = $SelladoFirma['IdentificadorSello'];
                         $signaFormat->sello     = $SelladoFirma['Sello'];
                         $signaFormat->save();
+                        
+                        //como ya se tiene el sello
                         $response = ['error' =>'', 'response'=> $SelladoFirma];
                     }
                     else
@@ -280,11 +292,17 @@ class ConsumirSignaController extends Controller
         return $response;
     }
 
+    /**
+     * Función envió de vista para la consulta de la cantidad de sellos. 
+     */
     public function infoSignature()
     {
         return view('format.info_signature');
     }
 
+    /**
+     * Función para manejar la respuesta de la información de los consumos de sellos
+     */
     public function consultaConsumo()
     {
         $response = [];
@@ -364,5 +382,51 @@ class ConsumirSignaController extends Controller
         }
 
         return $response;
+    }
+
+    /**
+     * funcion de apoyo que soliocita el registro de losdocumentos en la red blockchain
+     */
+    public function registrarBlockchain()
+    {
+        
+        $id_formato = $_GET['format'];
+        $response = [];
+        // Solicita el token para el registro de block
+        $signa = new ManejadorPeticionesController();
+        $obtenerToken = $signa->obtenerAuthToken();
+        if($obtenerToken != "")
+        {
+            // Solicita 
+            $verifica_firma = SignaFormat::where('id_formato',$id_formato)->orderBy('created_at', 'desc')->limit(1)->get();
+            $base64Documento = HashUtilidades::obtenerContenidoTxt($verifica_firma[0]->base64)."2";
+            $hash = HashUtilidades::generarHash($base64Documento);
+            $registrar_hash = $signa->hash($obtenerToken,$hash);
+            
+            if(!is_object($registrar_hash))
+            {
+                
+                $blockFormat = new BlockInfo();
+                $blockFormat->id_formato = $id_formato;
+                $blockFormat->id_usuario = Auth::user()->id;
+                $blockFormat->hash       = $hash;
+                $blockFormat->base64     = $verifica_firma[0]->base64;
+                $blockFormat->tx_hash    = $registrar_hash;
+                $blockFormat->save();
+                $response = ['error' => '' ,'respuesta' => $registrar_hash];
+
+            }
+            else
+            {
+                $response = ['error' => \Lang::get('words.BlockFail')];
+            }
+        }
+        else
+        {
+            $response = ['error' => \Lang::get('words.BlockFailToken')];
+        }
+        echo "<pre>";
+        print_r($response);
+        echo "</pre>";
     }
 }

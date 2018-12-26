@@ -124,6 +124,8 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('sellarDocumentoWSSello','ConsumirSignaController@sellarDocumentoWSSello')->name('sellarDocumentoWSSello');
     Route::get('infoSignature','ConsumirSignaController@infoSignature')->name('formats.infoSignature');
     Route::get('consultaConsumo','ConsumirSignaController@consultaConsumo')->name('formats.consultaConsumo');
+    Route::get('registrarBlockchain','ConsumirSignaController@registrarBlockchain')->name('formats.registrarBlockchain');
+
 
 
 });

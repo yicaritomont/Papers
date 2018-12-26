@@ -58,7 +58,6 @@ return[
     '404' => 'Oops! Looks like you got lost',
     'TakeMeBack' => 'Take Me Back',
 
-
     'Identification' => 'Identification',
     'Phone' => 'Phone',
     'Addres' => 'Addres',
@@ -151,9 +150,12 @@ return[
     'ErrorLinkFormat' => 'Could not link the format with the appointment.',
     'Select' => 'Select',
 
-
-
     //Supports
+    'signa'              =>  'View signed document',
+    'tagsello'           =>  'Sealing of document',
+    'viewSellos'         =>  'See consumption of stamps',
+    'saveBlockchain'     =>  'Save format in Blockchain',
+    'viewCertificateBlo' =>  'View certificate Blockchain',
     'upload_sopports'    =>  'Load Supports',
     'supports'           =>  'Supports',
     'browse'             =>  'Browse',
@@ -171,7 +173,6 @@ return[
     'des_error_name_file'=>  'You must enter the name in all files',
     'btn_verify'         =>  'check',
     'un_error_name_file' =>  'The name of the file must be entered {file}',
-
 
     'ErrorLinkFormat'           => 'Could not link the format with the appointment.',
     'ErrorMapForm'              => 'You must select a location on the map',
@@ -193,6 +194,8 @@ return[
     'SignaSelloTiempo'  => 'Record time stamp',
     'SignaInfo'         => 'If you need to know the status of stamps consumption, please click on the following button. Fill in the user and password fields for signatures and you will soon see the information.',
     'Info'              => 'Information!',
+    'BlockFailToken'    => 'A valid token was not obtained. Try again',
+    'BlockFail'         => 'Errors in service response, try later',
 
     // Mensajes informativos signa
     'SignaNombreUsuario' => 'Username',
@@ -211,7 +214,6 @@ return[
     'SignaTramoSellosDisponibles' => 'Available seals of the stretch',
     'SignaTramoFechaPrimerSello' => 'Date of the first seal of the section',
     'SignaTramoFechaUltimoSello' => 'Date of the last seal of the section',
-
 
     //Estados de las citas
     'Solicitado'    => 'Requested',

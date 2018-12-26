@@ -53,6 +53,7 @@ return[
     'ManageRoles' => 'Roles',
     'ManageRolesPermission' => 'Roles y Permisos',
     'ManageModulo' => 'Módulos',
+    
     //404 page
     '404' => 'Oops! Parece que se ha perdido.',
     'TakeMeBack' => 'Regresar',
@@ -101,6 +102,7 @@ return[
     'InspectorExist' => 'Inspector Ya existe',
     'InspectorCompany' => 'Relación inspector-compañia, ya existe',
     'RelationshipInspectorCompany' => 'Relación inspector-company creada',
+
     'calendarView' => 'Vista Calendario',
     'tableView' => 'Vista tabla',
     'AgendaBusy' => 'La agenda está ocupada',
@@ -148,10 +150,12 @@ return[
     'ErrorLinkFormat'    => 'No se pudo vincular el formato con la cita.',
     'Select'             => 'Seleccione',
 
-
-
-
     //Formatos
+    'signa'              =>  'Ver documento firmado',
+    'tagsello'           =>  'Sellado de documento', 
+    'viewSellos'         =>  'Ver consumo de sellos',
+    'saveBlockchain'     =>  'Guardar formato Blockchain',
+    'viewCertificateBlo' =>  'Ver certificado Blockchain',
     'upload_sopports'    =>  'Cargar Soportes',
     'supports'           =>  'Soportes',
     'browse'             =>  'Examinar' ,
@@ -190,6 +194,8 @@ return[
     'SignaSelloTiempo'  => 'Registrar sellado del tiempo',
     'SignaInfo'         => 'Si necesita conocer el estado de consumo de los sellos, por favor haga clic en el  siguiente botón. Diligencie los campos de usuario y contraseña para firmas y en breve visualizará la información.',
     'Info'              => 'Información!',
+    'BlockFailToken'    => 'No se obtuvo un token válido.Inténtelo de nuevo.',
+    'BlockFail'         => 'Errores en respuesta de servicio, intente más tarde.',
 
     // Mensajes informativos signa
     'SignaNombreUsuario'             => 'Nombre de usuario',
@@ -208,7 +214,6 @@ return[
     'SignaTramoSellosDisponibles'    => 'Sellos disponibles del tramo',
     'SignaTramoFechaPrimerSello'     => 'Fecha del primer sello del tramo',
     'SignaTramoFechaUltimoSello'     => 'Fecha del último sello del tramo',
-
 
     //Estados de las citas
     'Solicitado'    => 'Solicitado',

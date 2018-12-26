@@ -448,22 +448,22 @@ class InspectorController extends Controller
          */
 
         
-        /*$concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
+        $concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
         $hash = HashUtilidades::generarHash($concatenado);
         $signa = new ManejadorPeticionesController();
-        //$obtenerToken = $signa->obtenerAuthToken();
-        $obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQ0NTY3NjUyLCJleHAiOjE1NDQ1Njg1NTIsImlhdCI6MTU0NDU2NzY1MiwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.sHz4aJSwuG4tWSBonjf7iVsgE6RUEUDNva9pWM0pU2s";
+        $obtenerToken = $signa->obtenerAuthToken();
+        //$obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQ0NTY3NjUyLCJleHAiOjE1NDQ1Njg1NTIsImlhdCI6MTU0NDU2NzY1MiwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.sHz4aJSwuG4tWSBonjf7iVsgE6RUEUDNva9pWM0pU2s";
 
         echo "<pre>";
         print_r($obtenerToken);
         echo "</pre>";
         if($obtenerToken != "")
         {
-            $docbase64 = HashUtilidades::generarBase64Documento('');
+            /*$docbase64 = HashUtilidades::generarBase64Documento('');
             $apiDocumento = $signa->apijsonDocumento($obtenerToken,$docbase64);
             echo "<pre>";
             print_r($apiDocumento);
-            echo "</pre>";
+            echo "</pre>";*/
             $sourcePath=asset('files/test.pdf');
             $registrar_documento = $signa->registrarDocumento($obtenerToken,$sourcePath);
 
@@ -494,7 +494,7 @@ class InspectorController extends Controller
             echo "<pre>";
             print_r($certificado_hash);
             echo "</pre>";
-        }*/
+        }
         
         return view('inspector.card', compact('infoInspector','usuario'));
 

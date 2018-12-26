@@ -187,7 +187,7 @@ class SignaBlockController
                 'form_params' => [
                     'hash' => $hash
                 ],
-                'headers'   => ['authorization'=>$this->headers($token)]
+                'headers'   => $this->headers($token)
             ]);
             return json_decode($res->getBody());
         } 
