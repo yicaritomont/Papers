@@ -65,7 +65,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');
 
     //Consultar datos para dataTable
-    Route::post('datatable/{model}/{company?}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatable')->name('datatable');
+    Route::post('datatable/{model}/{whereHas?}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatable')->name('datatable');
 
     //Consultar datos para dataTable con una consulta relacionada
     // Route::get('datatableCompany/{model}/{company}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatableWhere')->name('datatableCompany');

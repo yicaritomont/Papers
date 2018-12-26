@@ -101,7 +101,8 @@ class ContractController extends Controller
         if(CompanyController::compareCompanySession([$contract->company])){
             return view('contract.edit', compact(['contract', 'clients', 'companies']));
         }else{
-            abort(403, 'This action is unauthorized.');
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('contracts.index')->with('alert',$alert);
         }
     }
 
@@ -115,7 +116,8 @@ class ContractController extends Controller
     public function update(Request $request, Contract $contract)
     {
         if( !CompanyController::compareCompanySession([$contract->company]) ){
-            abort(403, 'This action is unauthorized.');        
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('contracts.index')->with('alert',$alert);
         }
 
         $this->validate($request, [

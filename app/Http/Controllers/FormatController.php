@@ -30,8 +30,12 @@ class FormatController extends Controller
      */
     public function index()
     {
-        $result = Format::latest()->paginate();
-        return view('format.index', compact('result'));
+        if(auth()->user()->hasRole('Inspector')){
+            $inspectorId = auth()->user()->inspectors->id;
+            return view('format.index', compact('inspectorId'));
+        }
+
+        return view('format.index');
     }
 
     /**
@@ -39,7 +43,7 @@ class FormatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    /*public function create(Request $request)
     {
         $formato = Preformato::where('id',1)->first();
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
@@ -72,11 +76,18 @@ class FormatController extends Controller
             return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
         }
         return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats'));
-    }
+    }*/
 
-    /*public function create(Request $request)
+    public function create(Request $request)
     {
         $cita = InspectionAppointment::with('contract.company.user:id,name', 'client.user:id,name')->find($request->get('appointment'));
+
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->inspectors->id != $cita->inspector_id ){
+                $alert = ['error', 'This action is unauthorized.'];
+                return redirect()->route('formats.index')->with('alert',$alert);
+            }
+        }
         $preformato = Preformato::where([
             ['inspection_subtype_id', $cita->inspection_subtype_id],
             ['company_id', $cita->contract->company_id],
@@ -126,6 +137,17 @@ class FormatController extends Controller
         }
         $preformats = Preformato::pluck('name', 'id'); */
 
+        if($request->get('appointment'))
+        {
+            $appointment = $request->get('appointment');
+            return view('format.new', compact('formatoSeteado', 'mostrar_formato', 'appointment', 'companyName', 'clientName', 'preformatoName'));
+        }
+        else
+        {
+            return redirect()->route('formats.index');
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -142,6 +164,13 @@ class FormatController extends Controller
           $request->company_id = session()->get('Session_Company');
         } */
         $cita = InspectionAppointment::with('contract')->find($request->appointment);
+
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->inspectors->id != $cita->inspector_id ){
+                $alert = ['error', 'This action is unauthorized.'];
+                return redirect()->route('formats.index')->with('alert',$alert);
+            }
+        }
         /* dd($request->appointment);
         dd($cita); */
         $preformato = Preformato::where([
@@ -197,6 +226,15 @@ class FormatController extends Controller
      */
     public function edit($id)
     {
+        $formato = Format::find($id);
+
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->id != $formato->inspection_appointments->inspector->user_id ){
+                $alert = ['error', 'This action is unauthorized.'];
+                return redirect()->route('formats.index')->with('alert',$alert);
+            }
+        }
+        
         $mostrar_formato = 'block';
         $companyselect ='block';
         $state_format = $state_firma = '';
@@ -204,7 +242,7 @@ class FormatController extends Controller
         {
           $companyselect ='none';
         }
-        $formato = Format::find($id);
+        
         if ($formato->status == 0)
         {
           $alert = ['success', trans('words.theFormatInactive')];
@@ -246,6 +284,12 @@ class FormatController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->id != $formato->inspection_appointments->inspector->user_id ){
+                redirect()->route('home');
+            }
+        }
+
         $formato = Format::findOrFail($id);
         $formato->format = $request->format_expediction;
         $formato->status = $request->state;
@@ -264,6 +308,12 @@ class FormatController extends Controller
     public function destroy($id)
     {
         $format = Format::find($id);
+
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->id != $format->inspection_appointments->inspector->user_id ){
+                abort(403, 'This action is unauthorized.');
+            }
+        }
 
           //Valida que exista el servicio
           if($format)
@@ -424,6 +474,14 @@ class FormatController extends Controller
     public function supports($id)
     {
       $formato = Format::find($id);
+
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->id != $formato->inspection_appointments->inspector->user_id ){
+                $alert = ['error', 'This action is unauthorized.'];
+                return redirect()->route('formats.index')->with('alert',$alert);
+            }
+        }
+
       if ($formato->status == 0)
       {
         $alert = ['success', trans('words.theFormatInactive')];
@@ -651,8 +709,8 @@ class FormatController extends Controller
 
     public function reemplazarInformacionFormato($datos, $formato){
         $comodines = [
-            'company'   => ['company_name'], 
-            'client'    => ['client_name'], 
+            'company'   => ['company_name'],
+            'client'    => ['client_name'],
             'contract'  => ['contract_name', 'contract_date'],
             'project'   => ['project_name'],
             'page'      => ['page_num', 'page_tot']

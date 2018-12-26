@@ -22,24 +22,6 @@
 
 @endphp
 
-<script>
-
-    $.getScript('{{ resource_path("lang/es/words.php") }}', function( data, textStatus, jqxhr )
-    {
-        console.log(data);
-        /* var iconos='<div id="text"></div><ul>';
-        $.each(fA, function(key, value){
-            iconos += '<li title="'+value+'"><i data-icon="'+value+'" class="fa '+value+'"></i></li>';
-        });
-
-        iconos+="</ul>";
-
-        $('#icon').parent().after("<div class='oculto'>"+iconos+"</div>"); */
-    });
-
-</script>
-
-
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUCXlkrB9E1qZYjF3j5OZxXoeD9gYGRPs&callback=initMap" ></script>
 
 <script type="text/javascript">
@@ -76,7 +58,9 @@
         $('#latitude').val(pos.lat);
         $('#longitude').val(pos.lng);
 
-        marker.addListener('dragend', markerDragEnd);
+        marker.addListener('dragend', function(event){
+            markerDragEnd(event.latLng.lat(), event.latLng.lng());
+        });
 
         // Try HTML5 geolocation.
         if (navigator.geolocation) 
@@ -88,14 +72,12 @@
                     pos.lng = position.coords.longitude;
                 }
 
-                $('#latitude').val(pos.lat);
-                $('#longitude').val(pos.lng);
-
                 map.setCenter(pos);
                 map.setZoom(16);
 
                 marker.setPosition(pos);
 
+                markerDragEnd(pos.lat, pos.lng);
             }, function() {
                 handleLocationError(true, infoWindow, map.getCenter());
             });
@@ -107,16 +89,16 @@
         }
     }
 
-    function markerDragEnd(event)
+    function markerDragEnd(lat, lng)
     {
         console.log('Arrastro');
-        console.log('https://maps.googleapis.com/maps/api/geocode/json?latlng='+event.latLng.lat()+','+event.latLng.lng()+'&key=AIzaSyBUCXlkrB9E1qZYjF3j5OZxXoeD9gYGRPs');
-        $('#latitude').val(event.latLng.lat());
-        $('#longitude').val(event.latLng.lng());
+
+        $('#latitude').val(lat);
+        $('#longitude').val(lng);
 
         // ajax parameters: url, Method, data, Function done, Function error(optional)
         ajax(
-            'https://maps.googleapis.com/maps/api/geocode/json?latlng='+event.latLng.lat()+','+event.latLng.lng()+'&key=AIzaSyBUCXlkrB9E1qZYjF3j5OZxXoeD9gYGRPs',
+            'https://maps.googleapis.com/maps/api/geocode/json?latlng='+lat+','+lng+'&key=AIzaSyBUCXlkrB9E1qZYjF3j5OZxXoeD9gYGRPs',
             'POST',
             null,
             (res) => {                    

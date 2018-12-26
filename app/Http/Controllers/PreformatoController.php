@@ -112,7 +112,8 @@ class PreformatoController extends Controller
         }
         else
         {
-            abort(403, 'This action is unauthorized.');
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('preformatos.index')->with('alert',$alert);
         }
     }
 
@@ -129,7 +130,8 @@ class PreformatoController extends Controller
 
         if( !CompanyController::compareCompanySession([$preformato->company]) )
         {
-            abort(403, 'This action is unauthorized.');
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('preformatos.index')->with('alert',$alert);
         }
 
         if( !auth()->user()->hasRole('Admin') ){

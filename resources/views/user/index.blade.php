@@ -57,18 +57,18 @@
 
             @can('edit_users', 'delete_users')
                 @if(isset($companies))
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'User', 'company' => 'companies,'.$companies->slug, 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'User', 'whereHas' => 'companies,slug,'.$companies->slug, 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}"};
                 @else
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'User', 'company' => 'none', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'User', 'whereHas' => 'none', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}"};
                 @endif
 
                 columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 @if(isset($companies))
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'User', 'company' => 'companies,'.$companies->slug, 'relations' => 'roles,companies,companies.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'User', 'whereHas' => 'companies,'.$companies->slug, 'relations' => 'roles,companies,companies.user']) }}"};
                 @else
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'User', 'company' => 'none', 'relations' => 'roles,companies,companies.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'User', 'whereHas' => 'none', 'relations' => 'roles,companies,companies.user']) }}"};
                 @endif
 
                 dataTableObject.columnDefs = [formatDateTable([-1, -2])];

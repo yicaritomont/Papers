@@ -8,7 +8,7 @@ use DB;
 
 class GeneralController extends Controller
 {
-    public function datatable($model, $company='none', $relations='none', $entity=null, $action=null){
+    public function datatable($model, $whereHas='none', $relations='none', $entity=null, $action=null){
         
         //El action se crea para saber que campo se va a usar como identificador en las acciones
         
@@ -24,11 +24,11 @@ class GeneralController extends Controller
             $data = $object::query();
         }
 
-        if($company != 'none'){
-            $company = explode(',', $company);
+        if($whereHas != 'none'){
+            $whereHas = explode(',', $whereHas);
 
-            $data->whereHas($company[0], function($q) use($company){
-                $q->where('slug', '=', $company[1]);
+            $data->whereHas($whereHas[0], function($q) use($whereHas){
+                $q->where($whereHas[1], '=', $whereHas[2]);
             });
         }
 

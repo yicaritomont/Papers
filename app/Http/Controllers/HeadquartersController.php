@@ -89,7 +89,8 @@ class HeadquartersController extends Controller
     public function edit(Headquarters $headquarters)
     {
         if( auth()->user()->hasRole('Cliente') && auth()->user()->clients->id != $headquarters->client_id ){
-            abort(403, 'This action is unauthorized.');
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('headquarters.index')->with('alert',$alert);
         }
 
         $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
@@ -113,9 +114,9 @@ class HeadquartersController extends Controller
      */
     public function update(HeadquartersRequest $request, Headquarters $headquarters)
     {
-        // dd($request->all());
         if( auth()->user()->hasRole('Cliente') && auth()->user()->clients->id != $headquarters->client_id ){
-            abort(403, 'This action is unauthorized.');
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('headquarters.index')->with('alert',$alert);
         }
 
         if( auth()->user()->hasRole('Cliente') ){

@@ -56,7 +56,7 @@ class DatabaseSeeder extends Seeder
             elseif( $role->name == 'Inspector')
             {
                 // Assing inspector permissions
-                $role->syncPermissions(Permission::where('name', 'view_inspectionappointments')->orWhere('name','LIKE','%_inspectoragendas')->get());
+                $role->syncPermissions(Permission::where('name', 'view_inspectionappointments')->orWhere('name','LIKE','%_inspectoragendas')->orWhere('name','LIKE','%_formats')->get());
             }
             elseif( $role->name == "Compania")
             {

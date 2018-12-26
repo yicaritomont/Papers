@@ -278,8 +278,10 @@
 
         calendarObj.eventClick = function(event)
         {
-            // Vaciar el div de información
+            // Vaciar el div de los mensajes
             $('.info').empty();
+
+            $('.btns').empty();
 
             //Resetar y setear el action el formulario de completar si existe el elemento
             if($('#completeAppointment')[0])
@@ -305,9 +307,15 @@
                 // Si hay preformato por el subtipo y la compañía de la cita
                 if(event.hasPreformat == 1){
                     if(event.format_id){
-                        @can('edit_formats')
-                            $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/'+event.format_id+'/edit">@lang("words.Edit") @choice("words.Format", 1)</a>');
-                        @endcan
+                        if(event.format_status == 2){
+                            @can('edit_formats')
+                                $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/'+event.format_id+'/edit">@lang("words.Whatch") @choice("words.Format", 1)</a>');
+                            @endcan
+                        }else{
+                            @can('edit_formats')
+                                $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/'+event.format_id+'/edit">@lang("words.Edit") @choice("words.Format", 1)</a>');
+                            @endcan
+                        }
                     }else{
                         @can('add_formats')
                             $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/create?appointment='+event.id+'">@lang("words.Fill") @choice("words.Format", 1)</a>');

@@ -61,18 +61,18 @@
 
             @can('edit_clients', 'delete_clients')
                 @if(isset($companies))
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'whereHas' => 'user.companies,slug,'.$companies->slug, 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}"};
                 @else
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'company' => 'none', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'whereHas' => 'none', 'entity' => 'clients', 'identificador' => 'slug', 'relations' => 'user']) }}"};
                 @endif
 
                 columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 @if(isset($companies))
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'company' => 'user.companies,'.$companies->slug, 'relations' => 'user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'whereHas' => 'user.companies,slug,'.$companies->slug, 'relations' => 'user']) }}"};
                 @else
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'company' => 'none', 'relations' => 'user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Client', 'whereHas' => 'none', 'relations' => 'user']) }}"};
                 @endif
 
                 dataTableObject.columnDefs = [formatDateTable([-1, -2])];

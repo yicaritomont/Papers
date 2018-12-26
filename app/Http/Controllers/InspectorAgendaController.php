@@ -445,7 +445,7 @@ class InspectorAgendaController extends Controller
     public function events($type=null, $id=null)
     {
         try{
-            $result = InspectorAgenda::join('inspectorss', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
+            $result = InspectorAgenda::join('inspectors', 'inspectors.id', '=', 'inspector_agendas.inspector_id')
                     ->join('users', 'users.id', '=', 'inspectors.user_id')
                     ->select('users.name AS title', 'start_date AS start', 'end_date AS end', 'inspector_agendas.slug', 'inspector_id');
             

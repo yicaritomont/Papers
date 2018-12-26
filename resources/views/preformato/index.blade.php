@@ -46,9 +46,9 @@
 
                 @can('edit_preformatos','delete_preformatos')
                     @if(isset($companySlug))
-                        dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Preformato', 'company' => 'company,'.$companySlug, 'entity' => 'preformatos', 'identificador' => 'id', 'relations' => 'company.user']) }}"};
+                        dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Preformato', 'whereHas' => 'company,slug,'.$companySlug, 'entity' => 'preformatos', 'identificador' => 'id', 'relations' => 'company.user']) }}"};
                     @else
-                        dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Preformato', 'company' => 'none', 'entity' => 'preformatos', 'identificador' => 'id', 'relations' => 'company.user']) }}"};
+                        dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Preformato', 'whereHas' => 'none', 'entity' => 'preformatos', 'identificador' => 'id', 'relations' => 'company.user']) }}"};
                     @endif
                     columns.push({data: 'actions', className: 'text-center wCellActions'},)
                     dataTableObject.columnDefs = [formatDateTable([-2, -3])];

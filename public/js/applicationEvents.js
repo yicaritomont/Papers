@@ -1,3 +1,4 @@
+console.log('URL: '+window.Laravel.url+'/clients/contracts/');
 var guiaAgendas = [];
 
 $(window).ready(inicial);
@@ -221,12 +222,21 @@ $('.inspection_type_id').on('change',function(event, edit){
 }); */
 
 $('.country').on('change',function(event, edit, funcRes){
-    fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit, funcRes);
+    // Validación para que tome un parametro vacio en las rutas
+    if($(this).val()){
+        fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit, funcRes);
+    }else{
+        fillSelect(window.Laravel.url+'/country/cities', '.city_id', edit, funcRes);
+    }
 });
 
 $('.client-contract').on('change', function(event, edit){
-    console.log('Cliente cambio');
-    fillSelect(window.Laravel.url+'/clients/contracts/'+$(this).val(), '#contract_id', edit);
+    // Validación para que tome un parametro vacio en las rutas
+    if($(this).val()){
+        fillSelect(window.Laravel.url+'/clients/contracts/'+$(this).val(), '#contract_id', edit);
+    }else{
+        fillSelect(window.Laravel.url+'/clients/contracts', '#contract_id', edit);
+    }
 });
 
 /* // Actualización campo cliente en base al formato seleccionado
@@ -870,8 +880,7 @@ function calendar(obj){
     });
 }
 
-function fillSelect(url, select, edit, funcRes){
-
+function fillSelect(url, select, edit, funcRes){console.log('URL: '+url);
     // Se valida si la variable edit es numerica, si no lo es asignele undefined
     if( !$.isNumeric(edit) ) edit = undefined;
 
@@ -881,7 +890,7 @@ function fillSelect(url, select, edit, funcRes){
     ajax(
         url,
         'GET',
-        {_token: $('#_token').val()},
+        null,
         (res) => {
             $(select).empty();
 

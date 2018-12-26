@@ -50,11 +50,11 @@
             
 
             @can('edit_inspectortypes','delete_inspectortypes')
-                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'InspectorType', 'company' => 'none', 'entity' => 'inspectortypes', 'identificador' => 'id', 'relations' => 'inspection_subtypes,inspection_subtypes.inspection_types']) }}"};
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'InspectorType', 'whereHas' => 'none', 'entity' => 'inspectortypes', 'identificador' => 'id', 'relations' => 'inspection_subtypes,inspection_subtypes.inspection_types']) }}"};
                 columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
-                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'InspectorType', 'company' => 'none', 'relations' => 'inspection_subtypes,inspection_subtypes.inspection_types']) }}"};
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'InspectorType', 'whereHas' => 'none', 'relations' => 'inspection_subtypes,inspection_subtypes.inspection_types']) }}"};
                 dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endcan
 

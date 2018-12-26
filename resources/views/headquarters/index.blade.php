@@ -50,18 +50,18 @@
 
             @can('edit_headquarters', 'delete_headquarters')
                 @if(isset($clientAuth))
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'client,'.$clientAuth->slug, 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'whereHas' => 'client,slug,'.$clientAuth->slug, 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}"};
                 @else    
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'whereHas' => 'none', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}"};
                 @endif
 
                 columns.push({data: 'actions', className: 'text-center wCellActions'},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 @if(isset($clientAuth))
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'client,'.$clientAuth->slug, 'relations' => 'cities,client,client.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'whereHas' => 'client,slug,'.$clientAuth->slug, 'relations' => 'cities,client,client.user']) }}"};
                 @else    
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'relations' => 'cities,client,client.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'whereHas' => 'none', 'relations' => 'cities,client,client.user']) }}"};
                 @endif
                 dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endcan
