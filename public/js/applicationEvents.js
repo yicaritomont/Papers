@@ -500,7 +500,7 @@ const toast = swal.mixin({
     toast: true,
     position: 'top-end',
     showConfirmButton: false,
-    timer: 4000,
+    timer: 5000,
 });
 
 // Ajax para los formularios de eliminar exceptuando los calendarios

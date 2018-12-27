@@ -179,6 +179,7 @@ return[
     'PreformatNotFound'         => 'No se encuentra registrado un preformato para el tipo de inspección de la cita',
     'Fill'                      => 'Llenar',
     'ErrorGeocoding'            => 'Falló al obtener la localización de las ciudades.',
+    'PreformatoExist'           => 'Ya existe un preformato de ese subtipo para esa compañía',
 
     // Mensajes para peticiones signa
     'SignaPassword'     => 'Debe anexar la contraseña signa',

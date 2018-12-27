@@ -633,7 +633,6 @@ class InspectionAppointmentController extends Controller
                             'error' => trans('words.IncorrectAppointments'),
                         ]);
                     }else{
-                        dd('Llego');
                         $appointment->update([
                             'assignment_date'       => date('Y-m-d H:i:s'),
                             'start_date'            => $request['start_date'],

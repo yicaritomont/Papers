@@ -61,6 +61,12 @@ class PreformatoController extends Controller
             'company_id' => 'required',
         ]);
 
+        // Si ya existe un preformato de con el subtipo y la compañía que esta ingresando no lo dejará
+        if( Preformato::where('company_id', $request->company_id)->where('inspection_subtype_id', $request->inspection_subtype_id)->get()->count() > 0 ){
+            $alert = ['error', trans('words.PreformatoExist')];
+            return redirect()->route('preformatos.index')->with('alert', $alert);
+        }
+
         $preformato = new Preformato();
         $preformato->name = $request->name;
         $preformato->inspection_subtype_id = $request->inspection_subtype_id;
