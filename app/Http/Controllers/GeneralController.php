@@ -64,4 +64,17 @@ class GeneralController extends Controller
         ]);
        
     }
+
+    /**
+     * Devuelve un arreglo de días en base a un rango de fechas pasadas
+     */
+    public static function getDaysArray($start_date, $end_date)
+    {
+        for($i=$start_date ; $i<=$end_date ; $i = date("Y-m-d", strtotime($i ."+ 1 days")))
+        {
+            $fechas[] = $i;
+        }
+
+        return $fechas;
+    }
 }

@@ -127,7 +127,7 @@ class InspectionAppointmentController extends Controller
         }
 
         $request->validate([
-            'appointment_location_id'   => 'required',
+            'headquarters_id'           => 'required',
             'contract_id'               => 'required',
             'client_id'                 => 'required',
             'estimated_start_date'      => 'required|date|date_format:Y-m-d',
@@ -158,6 +158,11 @@ class InspectionAppointmentController extends Controller
         {
             abort(403, 'This action is unauthorized.');    
         }
+        // Si selecciono una sede que no pertenece al cliente
+        elseif( !Client::getClientHeadquartersById($request->client_id)->pluck('id')->contains($request->headquarters_id) )
+        {
+            abort(403, 'This action is unauthorized.');    
+        }
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
         elseif($request->estimated_start_date > $request->estimated_end_date)
@@ -176,12 +181,7 @@ class InspectionAppointmentController extends Controller
 
         else
         {
-            $fechasCitas = collect();
-
-            
-            for($i=$request->estimated_start_date ; $i<=$request->estimated_end_date ; $i = date("Y-m-d", strtotime($i ."+ 1 days"))){
-                $fechasCitas->push($i);
-            }
+            $fechasCitas = collect( GeneralController::getDaysArray($request->estimated_start_date, $request->estimated_end_date) );
 
             $requestParam = new Request;
             $requestParam->subtype_id = $request->inspection_subtype_id;
@@ -197,7 +197,7 @@ class InspectionAppointmentController extends Controller
                 if($fechasCitas->intersect($agenasDisponibles['agendas']) == $fechasCitas){
                     InspectionAppointment::create([
                         'inspection_subtype_id'     => $request['inspection_subtype_id'],
-                        'appointment_location_id'   => $request['appointment_location_id'],
+                        'headquarters_id'           => $request['headquarters_id'],
                         'contract_id'               => $request['contract_id'],
                         'client_id'                 => $request['client_id'],
                         'request_date'              => date('Y-m-d H:i:s'),
@@ -229,7 +229,7 @@ class InspectionAppointmentController extends Controller
      */
     public function show($id)
     {
-        $cita = InspectionAppointment::with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract.company', 'inspector.user:id,name')
+        $cita = InspectionAppointment::with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract.company', 'inspector.user:id,name', 'headquarters:id,name')
             ->where('inspection_appointments.id', $id)
         ->first();
         // dd($cita);
@@ -284,20 +284,14 @@ class InspectionAppointmentController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'inspector_id'  => 'required',
             'start_date'    => 'required|date|date_format:Y-m-d',
             'end_date'      => 'required|date|date_format:Y-m-d',
         ]);
 
         $inspection_appointment = InspectionAppointment::findOrFail($id);
-
+        // dd( $inspection_appointment->inspector_id );
         // Validar si se modifico el id del formulario
         if( !CompanyController::compareCompanySession([$inspection_appointment->contract->company]) ){
-            abort(403, 'This action is unauthorized.');
-
-        // Validar si se modifico el id del campo inspectores
-        }elseif( !Company::getCompanyInspectorsById($inspection_appointment->contract->company->id)->pluck('id')->contains($request->inspector_id) )
-        {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -335,7 +329,7 @@ class InspectionAppointmentController extends Controller
                 $contCitasError=0;
 
                 // Se Consula las agendas filtrada por un inspector
-                $inspectorAgenda = InspectorAgenda::where('inspector_id','=',$request->input('inspector_id'))->get();
+                $inspectorAgenda = InspectorAgenda::where('inspector_id', '=', $inspection_appointment->inspector_id)->get();
 
                 foreach($inspectorAgenda as $agenda)
                 {
@@ -347,7 +341,7 @@ class InspectionAppointmentController extends Controller
 
                         //Consulte todas las citas por el inspector y fechas seleccionadas, se exceptuan las citas reprogramadas (5) y/o canceladas (6)
                         $citas = InspectionAppointment::where([
-                            ['inspector_id', '=', $request->input('inspector_id')],
+                            ['inspector_id', '=', $inspection_appointment->inspector_id],
                             ['start_date', '>=', $request->input('start_date')],
                             ['start_date', '<=', $request->input('end_date')],
                             ['id', '!=', $id],
@@ -372,7 +366,7 @@ class InspectionAppointmentController extends Controller
 
                 //Comprueba si selecciono un día incorrecto
                 if($contFecha==0)
-                {
+                {dd( $contFecha );
                     echo json_encode([
                         'error' => trans('words.IncorrectDate'),
                     ]);
@@ -386,7 +380,7 @@ class InspectionAppointmentController extends Controller
                         ]);
                     }else{
 
-                        if(($request['start_date'] != $inspection_appointment->start_date) || ($request['end_date'] != $inspection_appointment->end_date) || ($request['inspector_id'] != $inspection_appointment->inspector_id)){
+                        if(($request['start_date'] != $inspection_appointment->start_date) || ($request['end_date'] != $inspection_appointment->end_date)){
 
                             //Cambie el estado de la cita a reprogramado
                             $inspection_appointment->appointment_states_id = 5;
@@ -394,9 +388,9 @@ class InspectionAppointmentController extends Controller
                             $inspection_appointment->save();
 
                             InspectionAppointment::create([
-                                'inspector_id'              => $request['inspector_id'],
+                                'inspector_id'              => $inspection_appointment->inspector_id,
                                 'appointment_states_id'     => 2,
-                                'appointment_location_id'   => $inspection_appointment->appointment_location_id,
+                                'headquarters_id'           => $inspection_appointment->headquarters_id,
                                 'inspection_subtype_id'     => $inspection_appointment->inspection_subtype_id,
                                 'contract_id'               => $inspection_appointment->contract_id,
                                 'client_id'                 => $inspection_appointment->client_id,
@@ -639,6 +633,7 @@ class InspectionAppointmentController extends Controller
                             'error' => trans('words.IncorrectAppointments'),
                         ]);
                     }else{
+                        dd('Llego');
                         $appointment->update([
                             'assignment_date'       => date('Y-m-d H:i:s'),
                             'start_date'            => $request['start_date'],

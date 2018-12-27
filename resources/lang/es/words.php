@@ -178,6 +178,7 @@ return[
     'EditRequestedAppointment'  => 'No puede editar una cita solicitada',
     'PreformatNotFound'         => 'No se encuentra registrado un preformato para el tipo de inspección de la cita',
     'Fill'                      => 'Llenar',
+    'ErrorGeocoding'            => 'Falló al obtener la localización de las ciudades.',
 
     // Mensajes para peticiones signa
     'SignaPassword'     => 'Debe anexar la contraseña signa',

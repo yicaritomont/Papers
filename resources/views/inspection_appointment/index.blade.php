@@ -111,12 +111,6 @@
                                 <div class="errors"></div>
                             </div>
 
-                            <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
-                                {!! Form::label('edit-inspector_id', trans_choice("words.Inspector", 1)) !!}
-                                {!! Form::select('inspector_id', isset($inspectors) ? $inspectors : [], isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 inspectorField', 'placeholder'=>trans('words.ChooseOption'), 'id' => 'edit-inspector_id']) !!}
-                                <div class="errors"></div>
-                            </div>
-
                             <!-- Submit Form Button -->                        
                             {!! Form::submit(trans('words.Edit'), ['class' => 'btn btn-primary btn-block']) !!}
                         {!! Form::close() !!}
@@ -137,7 +131,8 @@
                             </div>
                             <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
                                 {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
-                                    {!! Form::select('inspector_id', isset($inspectors) ? $inspectors : [], isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control inspectorField', 'placeholder'=>trans('words.ChooseOption')]) !!}
+                                <div class="loading inspectorField_loading"></div>
+                                {!! Form::select('inspector_id', isset($inspectors) ? $inspectors : [], isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control inspectorField', 'placeholder'=>trans('words.ChooseOption')]) !!}
                                 <div class="errors"></div>
                             </div>
                             <!-- Submit Form Button -->                        
@@ -184,6 +179,10 @@
                             <tr>
                                 <th>@choice('words.Client', 1): </th>
                                 <td id="cell-client"></td>
+                            </tr>
+                            <tr>
+                                <th>@choice('words.Headquarters', 1): </th>
+                                <td id="cell-headquarters"></td>
                             </tr>
                             <tr>
                                 <th>@choice('words.Contract', 1): </th>
@@ -298,6 +297,9 @@
             if(event.appointment_states_id == 1){
                 @can('edit_inspectionappointments')
                     $('.btns').html('<button class="btn btn-info btn-form-slide" data-toggle="#completeAppointment">@lang("words.Confirm")</button>');
+
+                    //Llene el select de inspectores
+                    fillSelect(window.Laravel.url+'/headquarters/inspectors/'+event.id, '.inspectorField');
                 @endcan
             }else if(event.appointment_states_id == 2){
                 @can('edit_inspectionappointments')

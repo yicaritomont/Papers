@@ -253,4 +253,12 @@ class ClientController extends Controller
 
         return ['status' => $clientContracts];
     }
+
+    public static function headquarters($id = null)
+    {
+        $clientHeadquarters = Client::getClientHeadquartersById($id)->pluck('name', 'id')
+        ->prepend(trans('words.ChooseOption'), '0');
+
+        return ['status' => $clientHeadquarters];
+    }
 }

@@ -181,6 +181,7 @@ return[
     'EditRequestedAppointment'  => 'You can not edit a requested appointment',
     'PreformatNotFound'         => 'A pre-form for the type of inspection of the appointment is not registered',
     'Fill'                      => 'Fill',
+    'ErrorGeocoding'            => 'Failed to obtain the location of cities.',
 
     // Message for a signa
     'SignaPassword'     => 'You must append the signa password for signature',

@@ -31,4 +31,13 @@ class Client extends Model
         return $contracts;
     }
 
+    public static function getClientHeadquartersById($id)
+    {
+        $headquarters = Headquarters::whereHas('client', function($q) use($id){
+            $q->where('id', $id);
+        })->get();
+
+        return $headquarters;
+    }
+
 }

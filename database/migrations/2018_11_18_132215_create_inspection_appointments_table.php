@@ -17,7 +17,7 @@ class CreateInspectionAppointmentsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('inspector_id')->nullable();
             $table->unsignedInteger('appointment_states_id')->default(1);
-            $table->unsignedInteger('appointment_location_id');
+            $table->unsignedInteger('headquarters_id');
             $table->unsignedInteger('inspection_subtype_id');
             $table->unsignedInteger('contract_id');
             $table->unsignedInteger('client_id');
@@ -37,8 +37,8 @@ class CreateInspectionAppointmentsTable extends Migration
             $table->foreign('appointment_states_id')
                 ->references('id')->on('appointment_states')
                 ->onDelete('cascade');
-            $table->foreign('appointment_location_id')
-                ->references('id')->on('appointment_locations')
+            $table->foreign('headquarters_id')
+                ->references('id')->on('headquarters')
                 ->onDelete('cascade');
             $table->foreign('inspection_subtype_id')
                 ->references('id')->on('inspection_subtypes')

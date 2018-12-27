@@ -175,10 +175,31 @@ class HeadquartersController extends Controller
             echo json_encode([
                 'status' => $menssage,
             ]);
-        }	
+        }
+    }
 
-        /* $headquarters->delete();
-        flash()->success(trans_choice('words.Headquarters', 1).' '.trans('words.HasEliminated'));
-        return back(); */
+    /**
+     * Buscar y ordenar los inspectores de acuerdo a la distancia de ellos a la sede
+     */
+    public function inspectors($appointmentId)
+    {
+        $cita = \App\InspectionAppointment::findOrFail($appointmentId);
+        
+        $response = \App\InspectorAgenda::obtenerAgendasOrdenadasDistanciaParaCita($cita);
+
+        if($response['success']){
+            $agendasOrdenadas = $response['response'];
+    
+            $inspectores = $agendasOrdenadas->pluck('inspector.user.name', 'inspector.id')->prepend(trans('words.ChooseOption'), '0');
+    
+            return ['status' => $inspectores];
+        }else{
+            abort(500, $response['message']);
+            return ['error' => $response['message']];
+        }
+
+        dd( $agendasOrdenadas );
+        dd( $cita->headquarters->latitude );
+        dd( $cita->headquarters->longitude );
     }
 }

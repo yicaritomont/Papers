@@ -1,4 +1,3 @@
-console.log('URL: '+window.Laravel.url+'/clients/contracts/');
 var guiaAgendas = [];
 
 $(window).ready(inicial);
@@ -115,13 +114,11 @@ $('#citas-compania').on('change', function(event){
             success: function(){
                 $('#appointment_loading').hide();
 
-                console.log('Origen de evntos añadidos');
-
                 //Llene el select clientes
                 fillSelect(window.Laravel.url+'/companies/clients/'+companyVal, '#client_id');
 
                 //Llene el select de inspectores
-                fillSelect(window.Laravel.url+'/companies/inspectors/'+companyVal, '.inspectorField');
+                // fillSelect(window.Laravel.url+'/companies/inspectors/'+companyVal, '.inspectorField');
             }
         });
     }else{
@@ -131,7 +128,6 @@ $('#citas-compania').on('change', function(event){
 
 // Colorear los días disponibles del inspector en la vista citas
 $('#citas-subtipo').on('change', function(event, edit){
-    console.log('Cambio de tipo');
     $('#inspection_subtype_id').val($(this).val());
 
     if($(this).val()){
@@ -234,8 +230,14 @@ $('.client-contract').on('change', function(event, edit){
     // Validación para que tome un parametro vacio en las rutas
     if($(this).val()){
         fillSelect(window.Laravel.url+'/clients/contracts/'+$(this).val(), '#contract_id', edit);
+
+        //Llene el select de sedes
+        fillSelect(window.Laravel.url+'/clients/headquarters/'+$(this).val(), '#headquarters_id', edit);
     }else{
         fillSelect(window.Laravel.url+'/clients/contracts', '#contract_id', edit);
+
+        //Llene el select de sedes
+        fillSelect(window.Laravel.url+'/clients/headquarters', '#headquarters_id');
     }
 });
 
@@ -667,6 +669,7 @@ function showAppointment(Cita){
     $('#cell-inspectionSubtype').html(Cita.inspection_subtype.name);
     $('#cell-client').html(Cita.client.user.name);
     $('#cell-contract').html(Cita.contract.name);
+    $('#cell-headquarters').html(Cita.headquarters.name);
 
     if(Cita.appointment_states_id != 1){
         $('#cell-inspector').html(Cita.inspector.user.name).parent().show();
@@ -880,7 +883,7 @@ function calendar(obj){
     });
 }
 
-function fillSelect(url, select, edit, funcRes){console.log('URL: '+url);
+function fillSelect(url, select, edit, funcRes){
     // Se valida si la variable edit es numerica, si no lo es asignele undefined
     if( !$.isNumeric(edit) ) edit = undefined;
 
@@ -908,6 +911,16 @@ function fillSelect(url, select, edit, funcRes){console.log('URL: '+url);
             $(select+'_loading').hide();
 
             if(funcRes) funcRes();
+        },
+        (res) => {
+            // console.log(res);
+            if(res.status == 500){
+                console.log(res);
+                swal({
+                    type: 'warning',
+                    titleText: res.responseJSON.message
+                });
+            }
         }
     );
 }
