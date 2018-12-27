@@ -3,6 +3,8 @@
 namespace App\Http\Helpers;
 use App\SignaFormat;
 use App\SelloFormat;
+use App\BlockInfo;
+
 
 class Equivalencia{
 
@@ -43,4 +45,9 @@ class Equivalencia{
         return count($sellosFormato);
     }
 
+    public static function numeroBlockPorFormato($id)
+    {
+        $blockFormato = BlockInfo::where('id_formato',$id)->get();
+        return count($blockFormato);
+    }
 }

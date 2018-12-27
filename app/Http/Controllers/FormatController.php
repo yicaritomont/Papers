@@ -177,42 +177,48 @@ class FormatController extends Controller
     {
         $mostrar_formato = 'block';
         $companyselect ='block';
-        $state_format = $state_firma = '';
+        $state_format = $state_firma = $disabled= '';
         if (session()->get('Session_Company') != '')
         {
           $companyselect ='none';
         }
         $formato = Format::find($id);
+      
         if ($formato->status == 0)
         {
           $alert = ['success', trans('words.theFormatInactive')];
           return redirect()->route('formats.index')->with('alert',$alert);
-        } else {
-          if ($formato != '') {
-            if ($formato->status == 2){
-              $state_format = 'none';
-            }
-          }
-          $companies = Company::with('user')->get()->pluck('user.name', 'id');
-          $clients = Client::with('user')->get()->pluck('user.name', 'id');
-          $preformats = Preformato::pluck('name', 'id');
-          $disabled = 'disabled';
-        if ($formato != '')
+        } 
+        else 
         {
-            // Verifica la cantidad de firmas que lleva el formato
-            $consultar_cantidad_firmas = SignaFormat::where('id_formato',$id)->get()->count();
-            if($consultar_cantidad_firmas >=2)
+            if ($formato != '') 
             {
-                $state_firma = 'none';
+                if ($formato->status == 2)
+                {
+                    $state_format = 'none';
+                    $disabled = 'disabled';
+                }
             }
-            if ($formato->status == 2 )
+            $companies = Company::with('user')->get()->pluck('user.name', 'id');
+            $clients = Client::with('user')->get()->pluck('user.name', 'id');
+            $preformats = Preformato::pluck('name', 'id');
+            
+            if ($formato != '')
             {
-                $state_format = 'none';
+                // Verifica la cantidad de firmas que lleva el formato
+                $consultar_cantidad_firmas = SignaFormat::where('id_formato',$id)->get()->count();
+                if($consultar_cantidad_firmas >=2)
+                {
+                    $state_firma = 'none';
+                }
+                if ($formato->status == 2 )
+                {
+                    $state_format = 'none';
+                }
             }
         }
-      }
         return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companies','clients','preformats','user','state_format','state_firma'));
-  }
+    }
 
     /**
      * Update the specified resource in storage.

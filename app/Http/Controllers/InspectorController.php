@@ -14,6 +14,7 @@ use App\company_inspector;
 use App\User;
 use App\usuario_rol;
 use App\Role;
+use App\LecturaQr;
 use View;
 use Illuminate\Http\Request;
 use QR_Code\Types\QR_Url;
@@ -26,6 +27,7 @@ use Artisaninweb\SoapWrapper\SoapWrapper;
 use SoapClient;
 use Session;
 use Illuminate\Support\Facades\Log;
+use Auth;
 
 class InspectorController extends Controller
 {
@@ -352,7 +354,6 @@ class InspectorController extends Controller
         // Se trae la información del usuario
         $usuario = User::find($infoInspector->user_id);
         $code = "";  
-
         /**
          * El bloque comentado a continuacion muestera como debe ser el consumo del WS de sellado del tiempo
          */
@@ -372,7 +373,6 @@ class InspectorController extends Controller
             }
         }    
 
-       
         // Verifica el tiempo restante para el token
         $token = session()->get('TokenWSLSello');
         $consultaEstadoToken = $signaSelladoFirma->consultaEstadoToken($token);     
@@ -441,13 +441,12 @@ class InspectorController extends Controller
             echo print_r($respuestaFirma);
             echo "</pre>";
         }*/
-
         
         /**
          * El bloque comentado acontinuacion muestra como deben de realizar las peticiones para blokchain.
          */
 
-        
+        /*
         $concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
         $hash = HashUtilidades::generarHash($concatenado);
         $signa = new ManejadorPeticionesController();
@@ -459,11 +458,11 @@ class InspectorController extends Controller
         echo "</pre>";
         if($obtenerToken != "")
         {
-            /*$docbase64 = HashUtilidades::generarBase64Documento('');
+            $docbase64 = HashUtilidades::generarBase64Documento('');
             $apiDocumento = $signa->apijsonDocumento($obtenerToken,$docbase64);
             echo "<pre>";
             print_r($apiDocumento);
-            echo "</pre>";*/
+            echo "</pre>";
             $sourcePath=asset('files/test.pdf');
             $registrar_documento = $signa->registrarDocumento($obtenerToken,$sourcePath);
 
@@ -494,7 +493,7 @@ class InspectorController extends Controller
             echo "<pre>";
             print_r($certificado_hash);
             echo "</pre>";
-        }
+        }*/
         
         return view('inspector.card', compact('infoInspector','usuario'));
 
@@ -568,6 +567,42 @@ class InspectorController extends Controller
     public function saveReadInspector()
     {
         print_r($_POST);
+        // Verifica la existencia del inspector
+        $verifica_inspector = Inspector::find($_POST['id_inspector']);
+        if(count($verifica_inspector)>0)
+        {
+            // verifique el estado del inspector
+            if($verifica_inspector->status == 1)
+            {
+                //Verifica la lecturas anteriores el mismo usuario,inspector, y ubicacion.
+                $verifica_lectura = LecturaQr::where('id_usuario',Auth::user()->id)->where('id_inspector',$_POST['id_inspector'])
+                ->where('long',$_POST['map_localization_lng'])->where('lat',$_POST['map_localization_lat'])->get();
+                if(count($verifica_lectura)<=0)
+                {
+                    $lecturaQr = new LecturaQr();
+                    $lecturaQr->id_usuario   = Auth::user()->id;
+                    $lecturaQr->id_inspector = $_POST['id_inspector'];
+                    $lecturaQr->long         = $_POST['map_localization_lng'];
+                    $lecturaQr->lat          = $_POST['map_localization_lat'];
+                    $lecturaQr->save();
+
+                    $alert = ['success',trans('words.ReadSave')];
+                }
+                else
+                {
+                    $alert = ['danger', trans('words.ReadSaveBefore')];
+                }
+            }
+            else
+            {
+                $alert = ['danger', trans('words.InactiveInspector')];
+            }
+        }
+        else
+        {
+            $alert = ['danger', trans('words.NoFoundInspector')];
+        }
+        return redirect()->route('ReadQrInspector',$_POST['id_inspector'])->with('alert',$alert);
     }
     
 }

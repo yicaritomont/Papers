@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class LecturaQr extends Model
 {
     //
-    protected $fillable = ['user','long','lat'];
+    protected $fillable = ['id_usuario','id_inspector','long','lat'];
 	protected $table = 'lecturaqr';
 }
