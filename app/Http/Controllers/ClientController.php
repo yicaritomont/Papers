@@ -8,6 +8,7 @@ use App\Role;
 use App\Company;
 use App\Contract;
 use App\Headquarters;
+use App\UserCompanie;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -51,22 +52,20 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        
         //Se valida si es un usuario con rol compañia agregue al request la compañia en sesión
         if( auth()->user()->hasRole('Compania') ){
             $request['companies'] = auth()->user()->companies->pluck('id');
         }
-
+        
         $this->validate($request, [
             'name'              => 'required',
             'identification'    => 'required',
             'email'             => 'required|email|unique:users,email',
-            'password'          => 'required|min:6',
             'phone'             => 'required|numeric',
             'cell_phone'        => 'required|numeric',
             'companies'         => 'required',
-        ]);
-
+            ]);
+            
         $request['roles'] = 4;
 
         $user = new User();
@@ -74,23 +73,50 @@ class ClientController extends Controller
         $user->picture = 'images/user.png';
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = bcrypt($request->get('password'));
-        
+        $user->password = bcrypt('secret');
+            
+            
         if($user->save())
         {
+            
             UserController::syncPermissions($request, $user);
             $user->companies()->attach($request->companies);
-                         
+            
             $client = Client::create([
                 'identification'    => $request['identification'],
                 'phone'             => $request['phone'],
                 'cell_phone'        => $request['cell_phone'],
                 'user_id'           => $user->id,
-            ]);
-            
+                ]);
+                
             $client->slug = md5($client->id);
             $client->save(); 
+                
+            //Organiza la información para enviarla a la vista del correo electronico
+            $busca_relacion_usuario_compania = UserCompanie::where('user_id',$user->id)->get();
+            $relacion_usuario_compania = [];
+            foreach ($busca_relacion_usuario_compania as $key => $value) 
+            {
+                $company_user = Company::find($value->company_id);
+                $info_user_compania = User::where('id',$company_user->user_id)->first();
+                $relacion_usuario_compania[$value->user_id] = $info_user_compania->name;
+            }
+            $informacion_rol = Role::where('id',4)->first();
+            $datos= array(
+                'nombre_persona'    => $request->name,
+                'usuario'			=> $request->email,
+                'contrasena'		=> 'secret',
+                'perfil'			=> $informacion_rol->name,
+                'usuario_nuevo'		=> 1,
+                'companies'         => $relacion_usuario_compania,                    
+            );
+            $user = array(
+                'email'=>$request->email,
+                'name'=>'USUARIO'
+            );
             
+            //Notiificar creaión de usuario
+            UserController::SendMailToNewUser($datos,$user);
             $alert = ['success', trans_choice('words.Client', 1).' '.trans('words.HasAdded')];
 
             return redirect()->route('clients.index')->with('alert', $alert);
@@ -181,9 +207,9 @@ class ClientController extends Controller
         //$user->fill($request->except('roles', 'permissions', 'password'));
         
         // check for password change
-        if($request->get('password')) {
+        /*if($request->get('password')) {
             $user->password = bcrypt($request->get('password'));
-        }
+        }*/
  
         UserController::syncPermissions($request, $user);
         $user->save();

@@ -1,0 +1,5 @@
+{
+    "powermode.enabled": true,
+    "powermode.comboThreshold": 1,
+    "powermode.presets": "flames"
+}

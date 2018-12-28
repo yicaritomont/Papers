@@ -107,7 +107,7 @@ class ManejadorPeticionesController
     public function hash($token,$hash)
     {
         $controller = new SignaBlockController;
-        $response = $controller->hash($token,$hash);        
+        $response = $controller->hash($token,$hash);     
         if($response)
         {
             if($response->result == "OK")

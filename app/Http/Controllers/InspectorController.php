@@ -14,6 +14,7 @@ use App\company_inspector;
 use App\User;
 use App\usuario_rol;
 use App\Role;
+use App\LecturaQr;
 use View;
 use Illuminate\Http\Request;
 use QR_Code\Types\QR_Url;
@@ -26,6 +27,8 @@ use Artisaninweb\SoapWrapper\SoapWrapper;
 use SoapClient;
 use Session;
 use Illuminate\Support\Facades\Log;
+use Auth;
+use App\UserCompanie;
 
 class InspectorController extends Controller
 {
@@ -75,6 +78,15 @@ class InspectorController extends Controller
      */
     public function store(Request $request)
     {
+        $busca_relacion_usuario_compania = UserCompanie::where('user_id',8)->get();
+        $relacion_usuario_compania = [];
+        foreach ($busca_relacion_usuario_compania as $key => $value) 
+        {
+            $company_user = Company::find($value->company_id);
+            $info_user_compania = User::where('id',$company_user->user_id)->first();
+            $relacion_usuario_compania[$value->company_id] = $info_user_compania->name;
+        }
+
         //Si no es administrador agregue la compañia en sesión
         if( !auth()->user()->hasRole('Admin') ){
             $request['companies'] = session()->get('Session_Company');
@@ -87,7 +99,7 @@ class InspectorController extends Controller
                 'identification'    => 'required|numeric',
                 'phone'             => 'required|numeric',
                 'addres'            => 'required|string',
-                'email'             => 'required|email|unique:users,email',
+                'email'             => 'required|email',
                 'profession_id'     => 'required',
                 'inspector_type_id' => 'required',
                 'companies'         => 'required|min:1',
@@ -120,6 +132,32 @@ class InspectorController extends Controller
                 $inspector->companies()->attach($request->companies);
                 $userInspector = User::find($inspector->user_id);
                 $userInspector->companies()->attach($request->companies);
+
+                //Organiza la información para enviarla a la vista del correo electronico
+                $busca_relacion_usuario_compania = UserCompanie::where('user_id',$inspector->user_id)->get();
+                $relacion_usuario_compania = [];
+                foreach ($busca_relacion_usuario_compania as $key => $value) 
+                {
+                    $company_user = Company::find($value->company_id);
+                    $info_user_compania = User::where('id',$company_user->user_id)->first();
+                    $relacion_usuario_compania[$value->company_id] = $info_user_compania->name;
+                }
+                $informacion_rol = Role::where('id',2)->first();
+                $datos= array(
+                    'nombre_persona'    => $userInspector->name,
+                    'usuario'			=> $userInspector->email,
+                    'contrasena'		=> 'secret',
+                    'perfil'			=> $informacion_rol->name,
+                    'usuario_nuevo'		=> 0,
+                    'companies'         => $relacion_usuario_compania,                    
+                );
+                $user_mail = array(
+                    'email'=>$userInspector->email,
+                    'name'=>'USUARIO'
+                );
+            
+                //Notiificar creaión de usuario
+                UserController::SendMailToNewUser($datos,$user_mail);
 
                 $alert = ['success', trans('words.RelationshipInspectorCompany')];
             }
@@ -154,11 +192,35 @@ class InspectorController extends Controller
                 $inspector->profession_id = $request->profession_id;
                 $inspector->inspector_type_id = $request->inspector_type_id;
                 $inspector->user_id = $user->id;
-              
+
                 if ($inspector->save()) 
                 {
                     $alert = ['success', trans_choice('words.Inspector', 1).' '.trans('words.HasAdded')];
                     $inspector->companies()->attach($request->companies);
+                    //Organiza la información para enviarla a la vista del correo electronico
+                    $busca_relacion_usuario_compania = UserCompanie::where('user_id',$user->id)->get();
+                    $relacion_usuario_compania = [];
+                    foreach ($busca_relacion_usuario_compania as $key => $value) 
+                    {
+                        $info_user_compania = User::where('id',$value->user_id)->first();
+                        $relacion_usuario_compania[$value->user_id] = $info_user_compania->name;
+                    }
+                    $informacion_rol = Role::where('id',2)->first();
+                    $datos= array(
+                        'nombre_persona'    => $request->name,
+                        'usuario'			=> $request->email,
+                        'contrasena'		=> 'secret',
+                        'perfil'			=> $informacion_rol->name,
+                        'usuario_nuevo'		=> 1,
+                        'companies'         => $relacion_usuario_compania,                    
+                    );
+                    $user_mail = array(
+                        'email'=>$request->email,
+                        'name'=>'USUARIO'
+                    );
+            
+                //Notiificar creaión de usuario
+                UserController::SendMailToNewUser($datos,$user_mail);
                 } 
                 else 
                 {
@@ -355,7 +417,6 @@ class InspectorController extends Controller
         // Se trae la información del usuario
         $usuario = User::find($infoInspector->user_id);
         $code = "";  
-
         /**
          * El bloque comentado a continuacion muestera como debe ser el consumo del WS de sellado del tiempo
          */
@@ -375,7 +436,6 @@ class InspectorController extends Controller
             }
         }    
 
-       
         // Verifica el tiempo restante para el token
         $token = session()->get('TokenWSLSello');
         $consultaEstadoToken = $signaSelladoFirma->consultaEstadoToken($token);     
@@ -444,18 +504,17 @@ class InspectorController extends Controller
             echo print_r($respuestaFirma);
             echo "</pre>";
         }*/
-
         
         /**
          * El bloque comentado acontinuacion muestra como deben de realizar las peticiones para blokchain.
          */
 
-        
-        /*$concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
+        /*
+        $concatenado = ObtenerConcatenadoObjeto::concatenar($infoInspector);
         $hash = HashUtilidades::generarHash($concatenado);
         $signa = new ManejadorPeticionesController();
-        //$obtenerToken = $signa->obtenerAuthToken();
-        $obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQ0NTY3NjUyLCJleHAiOjE1NDQ1Njg1NTIsImlhdCI6MTU0NDU2NzY1MiwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.sHz4aJSwuG4tWSBonjf7iVsgE6RUEUDNva9pWM0pU2s";
+        $obtenerToken = $signa->obtenerAuthToken();
+        //$obtenerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjNiOGUwNDg3MWI5OGI5YmE3Yzg3OTk3NTNmN2FlNGY5IiwibmJmIjoxNTQ0NTY3NjUyLCJleHAiOjE1NDQ1Njg1NTIsImlhdCI6MTU0NDU2NzY1MiwiaXNzIjoiU0lHTkVCTE9DSyIsImF1ZCI6IlNJR05FQkxPQ0tfQVBJIn0.sHz4aJSwuG4tWSBonjf7iVsgE6RUEUDNva9pWM0pU2s";
 
         echo "<pre>";
         print_r($obtenerToken);
@@ -571,6 +630,42 @@ class InspectorController extends Controller
     public function saveReadInspector()
     {
         print_r($_POST);
+        // Verifica la existencia del inspector
+        $verifica_inspector = Inspector::find($_POST['id_inspector']);
+        if(count($verifica_inspector)>0)
+        {
+            // verifique el estado del inspector
+            if($verifica_inspector->status == 1)
+            {
+                //Verifica la lecturas anteriores el mismo usuario,inspector, y ubicacion.
+                $verifica_lectura = LecturaQr::where('id_usuario',Auth::user()->id)->where('id_inspector',$_POST['id_inspector'])
+                ->where('long',$_POST['map_localization_lng'])->where('lat',$_POST['map_localization_lat'])->get();
+                if(count($verifica_lectura)<=0)
+                {
+                    $lecturaQr = new LecturaQr();
+                    $lecturaQr->id_usuario   = Auth::user()->id;
+                    $lecturaQr->id_inspector = $_POST['id_inspector'];
+                    $lecturaQr->long         = $_POST['map_localization_lng'];
+                    $lecturaQr->lat          = $_POST['map_localization_lat'];
+                    $lecturaQr->save();
+
+                    $alert = ['success',trans('words.ReadSave')];
+                }
+                else
+                {
+                    $alert = ['danger', trans('words.ReadSaveBefore')];
+                }
+            }
+            else
+            {
+                $alert = ['danger', trans('words.InactiveInspector')];
+            }
+        }
+        else
+        {
+            $alert = ['danger', trans('words.NoFoundInspector')];
+        }
+        return redirect()->route('ReadQrInspector',$_POST['id_inspector'])->with('alert',$alert);
     }
     
 }

@@ -15,10 +15,14 @@ class CreateLecturaqrTable extends Migration
     {
         Schema::create('lecturaqr', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user');
+            $table->unsignedInteger('id_usuario');
+            $table->unsignedInteger('id_inspector');
             $table->double('long');
             $table->double('lat');
             $table->timestamps(); 
+
+            $table->foreign('id_usuario')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_inspector')->references('id')->on('inspector')->onDelete('cascade');
         });
     }
 

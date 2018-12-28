@@ -9,6 +9,8 @@ use App\Http\Requests\CompanyRequest;
 use Illuminate\Http\Request;
 use DB;
 use App\Inspector;
+use App\UserCompanie;
+use App\Role;
 
 class CompanyController extends Controller
 {
@@ -45,7 +47,6 @@ class CompanyController extends Controller
             'address' => 'required',
             'phone' => 'required|numeric',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
             'activity' => 'required',
         ]);
 
@@ -56,7 +57,7 @@ class CompanyController extends Controller
         $user->picture = 'images/user.png';
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = bcrypt($request->get('password'));
+        $user->password = bcrypt('secret');
 
         
         if($user->save())
@@ -70,7 +71,33 @@ class CompanyController extends Controller
 
             $company->slug = md5($company->id);
             $company->save();
+
+            //Organiza la información para enviarla a la vista del correo electronico
+            $busca_relacion_usuario_compania = UserCompanie::where('user_id',$user->id)->get();
+            $relacion_usuario_compania = [];
+            foreach ($busca_relacion_usuario_compania as $key => $value) 
+            {
+                $company_user = Company::find($value->company_id);
+                $info_user_compania = User::where('id',$company_user->user_id)->first();
+                $relacion_usuario_compania[$value->user_id] = $info_user_compania->name;
+            }
+            $informacion_rol = Role::where('id',3)->first();
+            $datos= array(
+                'nombre_persona'    => $request->name,
+                'usuario'			=> $request->email,
+                'contrasena'		=> 'secret',
+                'perfil'			=> $informacion_rol->name,
+                'usuario_nuevo'		=> 1,
+                'companies'         => $relacion_usuario_compania,                    
+            );
+            $user_mail = array(
+                'email'=>$request->email,
+                'name'=>'USUARIO'
+            );
             
+            //Notiificar creaión de usuario
+            UserController::SendMailToNewUser($datos,$user_mail);
+
             UserController::syncPermissions($request, $user);
             $user->companies()->attach($company);
 
@@ -136,9 +163,9 @@ class CompanyController extends Controller
         $user->email = $request->email;
 
         // check for password change
-        if($request->get('password')) {
+        /*if($request->get('password')) {
             $user->password = bcrypt($request->get('password'));
-        }
+        }*/
 
         UserController::syncPermissions($request, $user);
         $user->save();

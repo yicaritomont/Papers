@@ -20,21 +20,32 @@
             @php
                 $num_firmas = App\Http\Helpers\Equivalencia::numeroFirmasPorFormato(${$action});
                 $num_sellos = App\Http\Helpers\Equivalencia::numeroSellosPorFormato(${$action});
+                $num_block  = App\Http\Helpers\Equivalencia::numeroBlockPorFormato(${$action});
+
             @endphp
             @if($num_firmas > 0)
-                <a href="{{ route($entity.'.signedFormats', [str_singular($entity) => ${$action}])  }}" target="_blank" class="btn btn-xs btn-success">
+                <a href="{{ route($entity.'.signedFormats', [str_singular($entity) => ${$action}])  }}" title="@lang('words.signa')" target="_blank" class="btn btn-xs btn-success">
                     <i class="glyphicon glyphicon-pencil"></i>
                 </a>
             @endif
 
             @if($num_firmas == 2 && $num_sellos == 0)  
-                <a href="{{ route($entity.'.signature', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-info">
+                <a href="{{ route($entity.'.signature', [str_singular($entity) => ${$action}])  }}" title="@lang('words.tagsello')" class="btn btn-xs btn-info">
                     <i class="glyphicon glyphicon-tag"></i>
                 </a>   
             @elseif($num_firmas == 2 && $num_sellos == 1)    
-                <a href="{{ route($entity.'.infoSignature', [str_singular($entity) => ${$action}])  }}" class="btn btn-xs btn-info">
+                <a href="{{ route($entity.'.infoSignature', [str_singular($entity) => ${$action}])  }}" title="@lang('words.viewSellos')" class="btn btn-xs btn-info">
                     <i class="glyphicon glyphicon-info-sign"></i>
-                </a>  
+                </a>
+                @if($num_block <=0 )
+                    <a href="{{ route($entity.'.registrarBlockchain', [str_singular($entity) => ${$action}])  }}" title="@lang('words.saveBlockchain')" class="btn btn-xs btn-danger">
+                        <i class="fa fa-btc"></i>
+                    </a> 
+                @else
+                    <a href="{{ route($entity.'.certificarBlockchain', [str_singular($entity) => ${$action}])  }}" target="_blank" title="@lang('words.viewCertificateBlo')" class="btn btn-xs btn-danger">
+                        <i class="fa fa-file-pdf-o"></i>
+                    </a> 
+                @endif 
             @endif
         @endif
     @endif

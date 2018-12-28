@@ -1,17 +1,22 @@
 <?php
-
+/**
+ * Contorlador que se encarga de realizar las peticiones para el consumo de los webservices de firma, sellado de firma y el registro de blockchain
+ */
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\SignaFormat;
 use App\SelloFormat;
+use App\BlockInfo;
 use Auth;
 use Session;
 
 class ConsumirSignaController extends Controller
 {
-    //
+    /**
+     * Función de apoyo que soliciuta el consumo de la autenticación para el usuario de webservice firma
+     */
     public function autenticarUsuarioWSFirma()
     {
         $response = [];
@@ -53,7 +58,7 @@ class ConsumirSignaController extends Controller
     }
 
     /**
-     * Funcion para la generacion de archivo inspeccion para envio a firma
+     * Funcion para solicitar la firma del documento al ws de firma
      */
     public function firmarDocumentoWSFirma()
     {
@@ -160,7 +165,9 @@ class ConsumirSignaController extends Controller
         return $response;
     }
 
-
+    /**
+     * Función de apoyo que soliciuta el consumo de la autenticación para el usuario de webservice Sello
+     */
     public function autenticarUsuarioWSSello()
     {
         $response = [];
@@ -232,6 +239,9 @@ class ConsumirSignaController extends Controller
         return $response;
     }
 
+     /**
+     * Funcion para solicitar el sello del documento al ws de firma
+     */
     public function sellarDocumentoWSSello()
     {
         $response = [];
@@ -254,6 +264,11 @@ class ConsumirSignaController extends Controller
                         $signaFormat->id_sello   = $SelladoFirma['IdentificadorSello'];
                         $signaFormat->sello     = $SelladoFirma['Sello'];
                         $signaFormat->save();
+                        
+                        // registra blockChain
+                        $blockChain = $this->registrarBlockchain($_GET['id_formato']);
+
+                        //como ya se tiene el sello
                         $response = ['error' =>'', 'response'=> $SelladoFirma];
                     }
                     else
@@ -280,11 +295,17 @@ class ConsumirSignaController extends Controller
         return $response;
     }
 
+    /**
+     * Función envió de vista para la consulta de la cantidad de sellos. 
+     */
     public function infoSignature()
     {
         return view('format.info_signature');
     }
 
+    /**
+     * Función para manejar la respuesta de la información de los consumos de sellos
+     */
     public function consultaConsumo()
     {
         $response = [];
@@ -294,6 +315,7 @@ class ConsumirSignaController extends Controller
             $signaSelladoFirma = new WsdlSelladoTiempoController();
             $consultaSellado = $signaSelladoFirma->consumoConsulta(session()->get('TokenWSLSello'));
             $respuesta_completa = $consultaSellado;
+            //print_r($consultaSellado);
             $retornar  = "<table class='table table-responsive'>";
             $retornar .= "<tr>
                             <td><b>".\Lang::get('words.SignaNombreUsuario')."</b></td>
@@ -318,43 +340,7 @@ class ConsumirSignaController extends Controller
             $retornar .= "<tr>
                             <td><b>".\Lang::get('words.SignaFechaAlta')."</b></td>
                             <td>".$respuesta_completa['FechaAlta']['value']."</td>
-                          </tr>";
-            $retornar .= "<tr>
-                            <td><b>".\Lang::get('words.SignaTramoIdentificador')."</b></td>
-                            <td>".$respuesta_completa['Tramo']['Identificador']['value']."</td>
-                          </tr>";
-            $retornar .= "<tr>
-                            <td><b>".\Lang::get('words.SignaTramoFechaAlta')."</b></td>
-                            <td>".$respuesta_completa['Tramo']['FechaAlta']['value']."</td>
-                          </tr>";
-            $retornar .= "<tr>
-                            <td><b>".\Lang::get('words.SignaTramoFechaCaducidad')."</b></td>
-                            <td>".$respuesta_completa['Tramo']['FechaCaducidad']['value']."</td>
-                          </tr>";
-            $retornar .= "<tr>
-                            <td><b>".\Lang::get('words.SignaTramoEstado')."</b></td>
-                            <td>".$respuesta_completa['Tramo']['Estado']['value']."</td>
-                          </tr>";
-            $retornar .= "<tr>
-                            <td><b>".\Lang::get('words.SignaTramoSellosTotales')."</b></td>
-                            <td>".$respuesta_completa['Tramo']['SellosTotales']['value']."</td>
-                          </tr>";
-            $retornar .= "<tr>
-                            <td><b>".\Lang::get('words.SignaTramoSellosConsumidos')."</b></td>
-                            <td>".$respuesta_completa['Tramo']['SellosConsumidos']['value']."</td>
-                          </tr>";
-            $retornar .= "<tr>
-                            <td><b>".\Lang::get('words.SignaTramoSellosDisponibles')."</b></td>
-                            <td>".$respuesta_completa['Tramo']['SellosDisponibles']['value']."</td>
-                          </tr>";
-            $retornar .= "<tr>
-                            <td><b>".\Lang::get('words.SignaTramoFechaPrimerSello')."</b></td>
-                            <td>".$respuesta_completa['Tramo']['FechaPrimerSello']['value']."</td>
-                          </tr>";
-            $retornar .= "<tr>
-                            <td><b>".\Lang::get('words.SignaTramoFechaUltimoSello')."</b></td>
-                            <td>".$respuesta_completa['Tramo']['FechaUltimoSello']['value']."</td>
-                          </tr>";            
+                          </tr>";   
             $retornar .= "</table>";
             $response = ['error' => '', 'respuesta' => $retornar];
         }
@@ -364,5 +350,109 @@ class ConsumirSignaController extends Controller
         }
 
         return $response;
+    }
+
+    /**
+     * funcion de apoyo que soliocita el registro de losdocumentos en la red blockchain
+     */
+    public function registrarBlockchain($format = "")
+    {
+        $return = 0;
+        if($format == "")
+        {
+            $id_formato = $_GET['format'];
+            $return = 1;
+        }
+        else
+        {
+            $id_formato = $format;
+        }
+        
+        $response = [];
+        // Solicita el token para el registro de block
+        $signa = new ManejadorPeticionesController();
+        $obtenerToken = $signa->obtenerAuthToken();
+        if($obtenerToken != "")
+        {
+            // Solicita ubicación formato base64
+            $verifica_firma = SignaFormat::where('id_formato',$id_formato)->orderBy('created_at', 'desc')->limit(1)->get();
+            //obtiene el contenido base64
+            $base64Documento = HashUtilidades::obtenerContenidoTxt($verifica_firma[0]->base64);
+            //genera el hash apartir del documento
+            $hash = HashUtilidades::generarHash($base64Documento.'15');
+            //Registra el hash en la red de signa
+            $registrar_hash = $signa->hash($obtenerToken,$hash);
+            if(!is_object($registrar_hash))
+            {
+                // Almacena la información del block
+                $blockFormat = new BlockInfo();
+                $blockFormat->id_formato = $id_formato;
+                $blockFormat->id_usuario = Auth::user()->id;
+                $blockFormat->hash       = $hash;
+                $blockFormat->base64     = $verifica_firma[0]->base64;
+                $blockFormat->tx_hash    = $registrar_hash;
+                $blockFormat->save();
+                $response = ['error' => '' ,'respuesta' => $registrar_hash];
+
+                if($return == 1)
+                {
+                    $alert = ['success', trans('words.BlockSuccess')];
+                    return redirect()->route('formats.index')->with('alert',$alert);
+                }
+                else
+                {
+                    return $response;
+                }
+
+            }
+            else
+            {
+                $alert = ['danger', trans('words.BlockFail')];
+                $response = ['error' => \Lang::get('words.BlockFail')];
+                return redirect()->route('formats.index')->with('alert',$alert);
+            }
+        }
+        else
+        {
+            $alert = ['danger', trans('words.BlockFail')];
+            $response = ['error' => \Lang::get('words.BlockFailToken')];
+            return redirect()->route('formats.index')->with('alert',$alert);
+        }
+    }
+
+    public function certificarBlockchain()
+    {
+        $id_formato = $_GET['format'];
+        //consulta el hash certificado
+        $consultaHash = BlockInfo::where('id_formato',$id_formato)->get();
+        if($consultaHash)
+        {
+            // Solicitar el token de block
+            $signa = new ManejadorPeticionesController();
+            $obtenerToken = $signa->obtenerAuthToken();
+            if($obtenerToken != "")
+            {
+                // Hacer llamado a certificado de block                
+                $certificado_hash =(array) $signa->hashCertificado($obtenerToken,$consultaHash[0]->hash);               
+                if(array_key_exists('file_base64',$certificado_hash))
+                {
+                    HashUtilidades::obtenerDocumentoBase64($certificado_hash['file_base64']);
+                }
+                else
+                {
+                    $alert = ['danger', trans('words.BlockMissing')];
+                }
+            }
+            else
+            {
+                $alert = ['danger', trans('words.BlockMissing')];
+            }
+
+        }
+        else
+        {
+            $alert = ['danger', trans('words.BlockMissing')];
+        }
+        return redirect()->route('formats.index')->with('alert',$alert);
     }
 }

@@ -38,6 +38,10 @@
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div id="map"></div>
                                 </div>
+                                <input type="hidden" name="map_localization_lat" id="map_localization_lat">
+                                <input type="hidden" name="map_localization_lng" id="map_localization_lng">
+                                <input type="hidden" name="id_inspector" id="id_inspector" value="{{$infoInspector->id}}">
+                                {!! Form::submit(trans('words.Confirmlocation'), ['class' => 'btn btn-primary'])!!}
                             {!! Form::close() !!}
                         </div>
                     </div>
