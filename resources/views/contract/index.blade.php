@@ -63,7 +63,7 @@
                 @endif
 
                 
-                columns.push({data: 'actions', className: 'text-center wCellActions'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions', orderable: false},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 @if(isset($companies))

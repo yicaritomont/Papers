@@ -51,7 +51,7 @@
                 {data: 'address'},
                 {data: 'created_at'},
                 {data: 'updated_at'},
-                {data: 'actions', className: 'text-center wCellActions'},
+                {data: 'actions', className: 'text-center wCellActions', orderable: false},
             ];
 
             dataTableObject.columnDefs = [formatDateTable([-2, -3])];

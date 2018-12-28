@@ -43,8 +43,8 @@
             var columns = [
                 {data: 'id'},
                 {data: 'name'},
-                {data: 'url'},
-                {data: 'menu.name'},
+                {data: 'url', orderable: false},
+                {data: 'menu.name', orderable: false},
                 {data: 'created_at'},
                 {data: 'updated_at'},
             ];
@@ -52,7 +52,7 @@
             @can('edit_menus', 'delete_menus')
                 
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Menu', 'whereHas' => 'none', 'entity' => 'menus', 'identificador' => 'id', 'relations' => 'menu']) }}"};
-                columns.push({data: 'actions', className: 'text-center wCellActions'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions', orderable: false},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Menu', 'whereHas' => 'none', 'relations' => 'menu']) }}"};

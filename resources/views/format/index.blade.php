@@ -48,7 +48,7 @@
                     dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Format', 'whereHas' => 'none', 'entity' => 'formats', 'identificador' => 'id', 'relations' => 'preformato,company.user,client.user']) }}"};
                 @endif
 
-                columns.push({data: 'actions', className: 'text-center wCellActions'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions', orderable: false},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Format', 'whereHas' => 'none', 'relations' => 'preformato,company.user,client.user']) }}"};

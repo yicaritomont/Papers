@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Citie;
 use DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class GeneralController extends Controller
 {
@@ -33,7 +34,8 @@ class GeneralController extends Controller
         }
 
         return datatables()
-            ->of($data)
+            // ->of($data)
+            ->collection($data->get())
             ->addColumn('entity', $entity)
             ->addColumn('action', $action)
             ->addColumn('actions', 'shared/_actions')

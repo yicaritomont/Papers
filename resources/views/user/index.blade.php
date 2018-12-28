@@ -49,8 +49,8 @@
                 {data: 'id'},
                 {data: 'name'},
                 {data: 'email'},
-                {data: 'companies'},
-                {data: 'roles'},
+                {data: 'companies', orderable: false},
+                {data: 'roles', orderable: false},
                 {data: 'created_at'},
                 {data: 'updated_at'},
             ];
@@ -62,7 +62,7 @@
                     dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'User', 'whereHas' => 'none', 'entity' => 'users', 'identificador' => 'id', 'relations' => 'roles,companies,companies.user']) }}"};
                 @endif
 
-                columns.push({data: 'actions', className: 'text-center wCellActions'},)
+                columns.push({data: 'actions', className: 'text-center wCellActions', orderable: false},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 @if(isset($companies))

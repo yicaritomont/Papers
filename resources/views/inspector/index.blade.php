@@ -58,7 +58,7 @@
                 {data: 'phone'},
                 {data: 'addres'},
                 {data: 'user.email'},
-                {data: 'companies'},
+                {data: 'companies', orderable: false},
                 {data: 'profession.name'},
                 {data: 'inspector_type.name'},
                 {data: 'created_at'},
@@ -98,7 +98,7 @@
                 @endif
             @endif
 
-            columns.push({data: 'actions', className: 'text-center wCellActions'});
+            columns.push({data: 'actions', className: 'text-center wCellActions', orderable: false});
             dataTableObject.columns = columns;
 
             dataTableObject.columnDefs.push(
