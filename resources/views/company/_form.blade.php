@@ -27,11 +27,11 @@
 </div>
 
 <!-- password Form Input -->
-<div class="form-group @if ($errors->has('password')) has-error @endif">
+<!--<div class="form-group @if ($errors->has('password')) has-error @endif">
     {!! Form::label('password', trans('words.Password')) !!}
     {!! Form::password('password', ['class' => 'input-body']) !!}   
     @if ($errors->has('password')) <p class="help-block">{{ $errors->first('password') }}</p> @endif
-</div>
+</div>-->
 
 <!-- Activity of Company Form Input -->
 <div class="form-group @if ($errors->has('activity')) has-error @endif">

@@ -11,6 +11,8 @@ use App\UserCompanie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -293,5 +295,28 @@ class UserController extends Controller
 
             return Redirect::to('alertasVeterinario')->with('success_message', 'Ha iniciado Sesión Exitosamente en la Agremiaci&oacute;n '.$asociacion_session->nombre);
         }*/
+    }
+
+    public static function SendMailToNewUser($datos, $user)
+    {
+        /**
+        * $datos= array('nombre_persona'  => $valida_persona->nombre ,
+        *'apellido_persona' 	        => $valida_persona->apellido,
+        *'usuario'				    => $usuario,
+        *'contrasena'			    => '123456',
+        *'perfil'				    => $informacion_rol->name,
+        *'usuario_nuevo'		        => $user_nuevo,
+        *'equino_personas'           => $relacion_equido_persona,
+        *'equido'                    => $infoequido,
+        *);
+        *$user = array(
+        *    'email'=>$valida_persona->correo,
+        *    'name'=>'USUARIO LSE'
+        *);
+         */
+        Mail::send('emails.newUser', array('datos'=>$datos), function($message) use ($datos ,$user)
+        {
+            $message->to($user['email'], $user['name'])->subject('Registro Usuario');
+        });  
     }
 }

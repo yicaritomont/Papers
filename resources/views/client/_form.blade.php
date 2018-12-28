@@ -20,11 +20,11 @@
 </div>
 
 <!-- password Form Input -->
-<div class="form-group @if ($errors->has('password')) has-error @endif">
+<!--<div class="form-group @if ($errors->has('password')) has-error @endif">
     <label for="password">@lang('words.Password')</label>
     {!! Form::password('password', ['class' => 'input-body', 'id' => 'password']) !!}   
     @if ($errors->has('password')) <p class="help-block">{{ $errors->first('password') }}</p> @endif
-</div>
+</div>-->
 
 <!-- Phone of Client Form Input -->
 <div class="form-group @if ($errors->has('phone')) has-error @endif">

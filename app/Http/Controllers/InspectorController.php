@@ -28,6 +28,7 @@ use SoapClient;
 use Session;
 use Illuminate\Support\Facades\Log;
 use Auth;
+use App\UserCompanie;
 
 class InspectorController extends Controller
 {
@@ -77,6 +78,15 @@ class InspectorController extends Controller
      */
     public function store(Request $request)
     {
+        $busca_relacion_usuario_compania = UserCompanie::where('user_id',8)->get();
+        $relacion_usuario_compania = [];
+        foreach ($busca_relacion_usuario_compania as $key => $value) 
+        {
+            $company_user = Company::find($value->company_id);
+            $info_user_compania = User::where('id',$company_user->user_id)->first();
+            $relacion_usuario_compania[$value->company_id] = $info_user_compania->name;
+        }
+
         //Si no es administrador agregue la compañia en sesión
         if( !auth()->user()->hasRole('Admin') ){
             $request['companies'] = session()->get('Session_Company');
@@ -89,7 +99,7 @@ class InspectorController extends Controller
                 'identification'    => 'required|numeric',
                 'phone'             => 'required|numeric',
                 'addres'            => 'required|string',
-                'email'             => 'required|email|unique:users,email',
+                'email'             => 'required|email',
                 'profession_id'     => 'required',
                 'inspector_type_id' => 'required',
                 'companies'         => 'required|min:1',
@@ -122,6 +132,32 @@ class InspectorController extends Controller
                 $inspector->companies()->attach($request->companies);
                 $userInspector = User::find($inspector->user_id);
                 $userInspector->companies()->attach($request->companies);
+
+                //Organiza la información para enviarla a la vista del correo electronico
+                $busca_relacion_usuario_compania = UserCompanie::where('user_id',$inspector->user_id)->get();
+                $relacion_usuario_compania = [];
+                foreach ($busca_relacion_usuario_compania as $key => $value) 
+                {
+                    $company_user = Company::find($value->company_id);
+                    $info_user_compania = User::where('id',$company_user->user_id)->first();
+                    $relacion_usuario_compania[$value->company_id] = $info_user_compania->name;
+                }
+                $informacion_rol = Role::where('id',2)->first();
+                $datos= array(
+                    'nombre_persona'    => $userInspector->name,
+                    'usuario'			=> $userInspector->email,
+                    'contrasena'		=> 'secret',
+                    'perfil'			=> $informacion_rol->name,
+                    'usuario_nuevo'		=> 0,
+                    'companies'         => $relacion_usuario_compania,                    
+                );
+                $user_mail = array(
+                    'email'=>$userInspector->email,
+                    'name'=>'USUARIO'
+                );
+            
+                //Notiificar creaión de usuario
+                UserController::SendMailToNewUser($datos,$user_mail);
 
                 $alert = ['success', trans('words.RelationshipInspectorCompany')];
             }
@@ -156,11 +192,35 @@ class InspectorController extends Controller
                 $inspector->profession_id = $request->profession_id;
                 $inspector->inspector_type_id = $request->inspector_type_id;
                 $inspector->user_id = $user->id;
-              
+
                 if ($inspector->save()) 
                 {
                     $alert = ['success', trans_choice('words.Inspector', 1).' '.trans('words.HasAdded')];
                     $inspector->companies()->attach($request->companies);
+                    //Organiza la información para enviarla a la vista del correo electronico
+                    $busca_relacion_usuario_compania = UserCompanie::where('user_id',$user->id)->get();
+                    $relacion_usuario_compania = [];
+                    foreach ($busca_relacion_usuario_compania as $key => $value) 
+                    {
+                        $info_user_compania = User::where('id',$value->user_id)->first();
+                        $relacion_usuario_compania[$value->user_id] = $info_user_compania->name;
+                    }
+                    $informacion_rol = Role::where('id',2)->first();
+                    $datos= array(
+                        'nombre_persona'    => $request->name,
+                        'usuario'			=> $request->email,
+                        'contrasena'		=> 'secret',
+                        'perfil'			=> $informacion_rol->name,
+                        'usuario_nuevo'		=> 1,
+                        'companies'         => $relacion_usuario_compania,                    
+                    );
+                    $user_mail = array(
+                        'email'=>$request->email,
+                        'name'=>'USUARIO'
+                    );
+            
+                //Notiificar creaión de usuario
+                UserController::SendMailToNewUser($datos,$user_mail);
                 } 
                 else 
                 {
