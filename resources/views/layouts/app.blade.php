@@ -283,7 +283,6 @@
                 </div>
                 <!-- /top navigation -->
                 <div class="right_col" role="main">
-
                     {{-- <div class="content-page"> --}}
                         {{-- <div id="flash-msg">
                             @include('flash::message')

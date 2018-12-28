@@ -37,6 +37,7 @@ function inicial (argument)
         responsive: true,
         serverSide: true,
         processing: true,
+        autoWidth: false,
     };
 
 
@@ -94,40 +95,39 @@ $('#citas-compania').on('change', function(event){
     var companyVal = $(this).val();
 
     $('.fc-day.bgEvent').removeClass('bgEvent');
-    $('#appointment_loading').css('display', 'inline-block');
     $('#company_id').val(companyVal);
 
+    // Se eliminan los origines de los eventos
+    $("#calendar").fullCalendar('removeEventSources');
+
     if(companyVal){
+
+        $('#appointment_loading').css('display', 'inline-block');
         $('#citas-subtipo').attr('disabled', false);
+        $('#citas-subtipo').trigger('change');
+
+        // Se añade un origen de evento de acuerdo a la compañía seleccionada
+        $("#calendar").fullCalendar('addEventSource', {
+            url:$('#url').val()+'/events/company/'+companyVal,
+            type:'POST',
+            data:{ _token: window.Laravel.csrfToken},
+            success: function(){
+                $('#appointment_loading').hide();
+
+                //Llene el select clientes
+                fillSelect(window.Laravel.url+'/companies/clients/'+companyVal, '#client_id');
+
+                //Llene el select de inspectores
+                // fillSelect(window.Laravel.url+'/companies/inspectors/'+companyVal, '.inspectorField');
+            }
+        });
     }else{
         $('#citas-subtipo').attr('disabled', true);
     }
-    // Se eliminan los origines de los eventos
-    $("#calendar").fullCalendar('removeEventSources');
-    console.log('Cambio de campo compañia');
-
-    // Se añade un origen de evento de acuerdo a la compañía seleccionada
-    $("#calendar").fullCalendar('addEventSource', {
-        url:$('#url').val()+'/events/company/'+companyVal,
-        type:'POST',
-        data:{ _token: window.Laravel.csrfToken},
-        success: function(){
-            $('#appointment_loading').hide();
-
-            console.log('Origen de evntos añadidos');
-
-            //Llene el select clientes
-            fillSelect(window.Laravel.url+'/companies/clients/'+companyVal, '#client_id');
-
-            //Llene el select de inspectores
-            fillSelect(window.Laravel.url+'/companies/inspectors/'+companyVal, '.inspectorField');
-        }
-    });
 });
 
 // Colorear los días disponibles del inspector en la vista citas
 $('#citas-subtipo').on('change', function(event, edit){
-    console.log('Cambio de tipo');
     $('#inspection_subtype_id').val($(this).val());
 
     if($(this).val()){
@@ -218,12 +218,27 @@ $('.inspection_type_id').on('change',function(event, edit){
 }); */
 
 $('.country').on('change',function(event, edit, funcRes){
-    fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit, funcRes);
+    // Validación para que tome un parametro vacio en las rutas
+    if($(this).val()){
+        fillSelect(window.Laravel.url+'/country/cities/'+$(this).val(), '.city_id', edit, funcRes);
+    }else{
+        fillSelect(window.Laravel.url+'/country/cities', '.city_id', edit, funcRes);
+    }
 });
 
 $('.client-contract').on('change', function(event, edit){
-    console.log('Cliente cambio');
-    fillSelect(window.Laravel.url+'/clients/contracts/'+$(this).val(), '#contract_id', edit);
+    // Validación para que tome un parametro vacio en las rutas
+    if($(this).val()){
+        fillSelect(window.Laravel.url+'/clients/contracts/'+$(this).val(), '#contract_id', edit);
+
+        //Llene el select de sedes
+        fillSelect(window.Laravel.url+'/clients/headquarters/'+$(this).val(), '#headquarters_id', edit);
+    }else{
+        fillSelect(window.Laravel.url+'/clients/contracts', '#contract_id', edit);
+
+        //Llene el select de sedes
+        fillSelect(window.Laravel.url+'/clients/headquarters', '#headquarters_id');
+    }
 });
 
 /* // Actualización campo cliente en base al formato seleccionado
@@ -485,7 +500,7 @@ const toast = swal.mixin({
     toast: true,
     position: 'top-end',
     showConfirmButton: false,
-    timer: 4000,
+    timer: 5000,
 });
 
 // Ajax para los formularios de eliminar exceptuando los calendarios
@@ -588,7 +603,7 @@ $(document).on('submit','.formCalendar',function(e, salida, revertFunc){
             }
         },
         (res) => {
-            if(res.status == 403){
+            if(res.status == 403 || res.status == 500){
                 $('.msgError').html('');
                 $('.msgError').append(alert('danger', res.responseJSON.message));
             }else if(res.status == 422){
@@ -639,7 +654,7 @@ $('.showCalendar').on('click', function(e){
                 slideForms(objElement);
             },
             (res) => {
-                if(res.status == 403){
+                if(res.status == 403 || res.status == 500){
                     $('.msgError').html('');
                     $('.msgError').append(alert('danger', res.responseJSON.message));
                 }
@@ -654,6 +669,7 @@ function showAppointment(Cita){
     $('#cell-inspectionSubtype').html(Cita.inspection_subtype.name);
     $('#cell-client').html(Cita.client.user.name);
     $('#cell-contract').html(Cita.contract.name);
+    $('#cell-headquarters').html(Cita.headquarters.name);
 
     if(Cita.appointment_states_id != 1){
         $('#cell-inspector').html(Cita.inspector.user.name).parent().show();
@@ -722,7 +738,7 @@ $(document).on('click', '.editCalendar', function(e){
                 }
             },
             (res) => {
-                if(res.status == 403){
+                if(res.status == 403 || res.status == 500){
                     $('.msgError').html('');
                     $('.msgError').append(alert('danger', res.responseJSON.message));
                 }
@@ -868,7 +884,6 @@ function calendar(obj){
 }
 
 function fillSelect(url, select, edit, funcRes){
-
     // Se valida si la variable edit es numerica, si no lo es asignele undefined
     if( !$.isNumeric(edit) ) edit = undefined;
 
@@ -878,7 +893,7 @@ function fillSelect(url, select, edit, funcRes){
     ajax(
         url,
         'GET',
-        {_token: $('#_token').val()},
+        null,
         (res) => {
             $(select).empty();
 
@@ -896,12 +911,25 @@ function fillSelect(url, select, edit, funcRes){
             $(select+'_loading').hide();
 
             if(funcRes) funcRes();
+        },
+        (res) => {
+            // console.log(res);
+            if(res.status == 500){
+                console.log(res);
+                swal({
+                    type: 'warning',
+                    titleText: res.responseJSON.message
+                });
+            }
         }
     );
 }
 
-function llenarCabeceraFormato()
+function llenarCabeceraFormato(event, p, select, company)
 {
+    /* var preformato = (p) ? p : $(this).val();
+    console.log(preformato);
+    return preformato; */
     var preformato = $(this).val();
     var select = $('#cliente_formato').val();
     var company = $('#company_formato').val();
@@ -912,9 +940,9 @@ function llenarCabeceraFormato()
     {
         // ajax parameters: url, Method, data, Function done, Function error(optional)
         ajax(
-            window.Laravel.url+"/ajxllenarCabeceraFormato",
+            window.Laravel.url+"/ajxllenarCabeceraFormato/"+select+'/'+company+'/'+preformato,
             'GET',
-            {select:select, company:company, preformato:preformato},
+            null,
             (response) => {
                 console.log(response);
                 if(!jQuery.isEmptyObject(response))

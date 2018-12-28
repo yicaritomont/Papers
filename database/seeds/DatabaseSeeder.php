@@ -56,12 +56,12 @@ class DatabaseSeeder extends Seeder
             elseif( $role->name == 'Inspector')
             {
                 // Assing inspector permissions
-                $role->syncPermissions(Permission::where('name', 'view_inspectionappointments')->orWhere('name','LIKE','%_inspectoragendas')->get());
+                $role->syncPermissions(Permission::where('name', 'view_inspectionappointments')->orWhere('name','LIKE','%_inspectoragendas')->orWhere('name','LIKE','%_formats')->get());
             }
             elseif( $role->name == "Compania")
             {
                 // Assing compania permissions
-                $role->syncPermissions(Permission::where('name' , 'LIKE' , '%_clients')->orWhere('name' , 'LIKE' , '%_inspectors')->orWhere('name' , 'LIKE' , '%_contracts')->get());
+                $role->syncPermissions(Permission::where('name' , 'LIKE' , '%_clients')->orWhere('name' , 'LIKE' , '%_inspectors')->orWhere('name' , 'LIKE' , '%_contracts')->orWhere('name' , 'LIKE' , '%_preformatos')->get());
             }
             elseif( $role->name == 'Cliente')
             {
@@ -114,12 +114,12 @@ class DatabaseSeeder extends Seeder
         CitiesTableSeeder::run();
         //ClientTableSeeder::run();
         //HeadquartesTableSeeder::run();
-        //CompanyTableSeeder::run();
+        UserTableSeeder::run();
+        CompanyTableSeeder::run();
         ProfessionTableSeeder::run();
         InspectionTypeTableSeeder::run();
         InspectionSubTypeTableSeeder::run();
         InspectorTypeTableSeeder::run();
-        ModuloSeeder::run();
         MenuSeeder::run();
         PreformatoSeeder::run();
         estiloCssSeeder::run();

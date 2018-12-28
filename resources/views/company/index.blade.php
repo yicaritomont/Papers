@@ -53,12 +53,12 @@
             ];
 
             @if(Gate::check('edit_companies') || Gate::check('delete_companies') || Gate::check('view_users') || Gate::check('view_inspectors'))
-                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}"};
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'whereHas' => 'none', 'entity' => 'companies', 'identificador' => 'slug', 'relations' => 'user']) }}"};
 
-                columns.push({data: 'actions', className: 'text-center'},)
+                columns.push({data: 'actions', className: 'text-center', orderable: false},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
-                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'company' => 'none', 'relations' => 'user']) }}"};
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Company', 'whereHas' => 'none', 'relations' => 'user']) }}"};
                 dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endif
 

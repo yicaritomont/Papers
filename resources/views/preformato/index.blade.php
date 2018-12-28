@@ -3,7 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{trans_choice('words.Preformato', $result->count())}}</h3>
+            <h3 class="modal-title">{{trans_choice('words.Preformato',2)}}</h3>
         </div>
         <div class="col-md-7 page-action text-right">
             @can('add_preformatos')
@@ -18,6 +18,7 @@
             <tr>
                 <th>@lang('words.Id')</th>
                 <th>@lang('words.Name')</th>
+                <th>@choice('words.Company', 1)</th>
                 <th>@lang('words.CreatedAt')</th>
                 <th>@lang('words.UpdatedAt')</th>
                 @can('edit_preformatos','delete_preformatos')
@@ -38,13 +39,18 @@
                 var columns = [
                     {data: 'id'},
                     {data: 'name'},
+                    {data: 'company.user.name'},
                     {data: 'created_at'},
                     {data: 'updated_at'},
                 ];
 
                 @can('edit_preformatos','delete_preformatos')
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Preformato', 'company' => 'none', 'entity' => 'preformatos', 'identificador' => 'id', 'relations' => 'none']) }}"};
-                    columns.push({data: 'actions', className: 'text-center w1em'},)
+                    @if(isset($companySlug))
+                        dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Preformato', 'whereHas' => 'company,slug,'.$companySlug, 'entity' => 'preformatos', 'identificador' => 'id', 'relations' => 'company.user']) }}"};
+                    @else
+                        dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Preformato', 'whereHas' => 'none', 'entity' => 'preformatos', 'identificador' => 'id', 'relations' => 'company.user']) }}"};
+                    @endif
+                    columns.push({data: 'actions', className: 'text-center wCellActions', orderable: false},)
                     dataTableObject.columnDefs = [formatDateTable([-2, -3])];
                 @else
                     dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Preformato']) }}"};

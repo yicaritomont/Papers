@@ -24,12 +24,17 @@
                 <th>@lang('words.Address')</th>
                 <th>@lang('words.CreatedAt')</th>
                 <th>@lang('words.UpdatedAt')</th>
-                @can('edit_headquarters', 'delete_headquarters')
-                    <th class="text-center">@lang('words.Actions')</th>
-                @endcan
+                <th class="text-center">@lang('words.Actions')</th>
             </tr>
             </thead>
         </table>
+
+    </div>
+
+    <div class="row" style="padding: 10px 0">
+        <div class="col-sm-12">
+            <div id="map" style="//border: 1px solid #d3d3d3;"></div>
+        </div>
     </div>
 @endsection
 
@@ -46,31 +51,45 @@
                 {data: 'address'},
                 {data: 'created_at'},
                 {data: 'updated_at'},
+                {data: 'actions', className: 'text-center wCellActions', orderable: false},
             ];
+
+            dataTableObject.columnDefs = [formatDateTable([-2, -3])];
+
+            dataTableObject.columnDefs.push({
+                //En la columna 6 (actions) se agregan nuevo boton
+                targets: 6,
+                render: function(data, type, row){
+
+                    btn = '<button type="button" class="btn-delete btn btn-xs btn-primary" title="@lang("words.Whatch")" onclick="VerMapa('+row.id+')">\
+                        <i class="fa fa-eye"></i>\
+                    </button>';
+
+                    return data + btn;
+                }
+            });
 
             @can('edit_headquarters', 'delete_headquarters')
                 @if(isset($clientAuth))
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'client,'.$clientAuth->slug, 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'whereHas' => 'client,slug,'.$clientAuth->slug, 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}"};
                 @else    
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'whereHas' => 'none', 'entity' => 'headquarters', 'identificador' => 'slug', 'relations' => 'cities,client,client.user']) }}"};
                 @endif
-
-                columns.push({data: 'actions', className: 'text-center w1em'},)
-                dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
                 @if(isset($clientAuth))
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'client,'.$clientAuth->slug, 'relations' => 'cities,client,client.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'whereHas' => 'client,slug,'.$clientAuth->slug, 'relations' => 'cities,client,client.user']) }}"};
                 @else    
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'company' => 'none', 'relations' => 'cities,client,client.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Headquarters', 'whereHas' => 'none', 'relations' => 'cities,client,client.user']) }}"};
                 @endif
-                dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endcan
             
             dataTableObject.ajax.type = 'POST';
             dataTableObject.ajax.data = {_token: window.Laravel.csrfToken};
             dataTableObject.columns = columns;
 
-            var table = $('.dataTable').DataTable(dataTableObject);
+            table = $('.dataTable').DataTable(dataTableObject);
         });
     </script>
+
+    @include ('shared._mapIndex')
 @endsection

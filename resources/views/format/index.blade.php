@@ -5,7 +5,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-5">
-            <h3 class="modal-title">{{ $result->total() }} {{ trans_choice('words.Format',$result->count()) }}</h3>
+            <h3 class="modal-title">{{ trans_choice('words.Format', 2) }}</h3>
         </div>
     </div>
     <div class="result-set">
@@ -42,11 +42,16 @@
           ]
 
             @can('edit_formats','delete_preformats')
-                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Format', 'company' => 'none', 'entity' => 'formats', 'identificador' => 'id', 'relations' => 'preformato,company.user,client.user']) }}"};
-                columns.push({data: 'actions', className: 'text-center w1em'},)
+                @if(isset($inspectorId))
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Format', 'whereHas' => 'inspection_appointments.inspector,id,'.$inspectorId, 'entity' => 'formats', 'identificador' => 'id', 'relations' => 'preformato,company.user,client.user']) }}"};
+                @else
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Format', 'whereHas' => 'none', 'entity' => 'formats', 'identificador' => 'id', 'relations' => 'preformato,company.user,client.user']) }}"};
+                @endif
+
+                columns.push({data: 'actions', className: 'text-center wCellActions', orderable: false},)
                 dataTableObject.columnDefs = [formatDateTable([-2, -3])];
             @else
-                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Format', 'company' => 'none', 'relations' => 'preformato,company.user,client.user']) }}"};
+                dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Format', 'whereHas' => 'none', 'relations' => 'preformato,company.user,client.user']) }}"};
                 dataTableObject.columnDefs = [formatDateTable([-1, -2])];
             @endcan
 

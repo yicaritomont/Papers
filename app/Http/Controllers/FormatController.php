@@ -16,6 +16,7 @@ use App\Estilo;
 use App\File;
 use App\InspectionAppointment;
 use App\SignaFormat;
+use App\Route;
 use PDF;
 use DB;
 use App\Http\Controllers\Config;
@@ -29,8 +30,12 @@ class FormatController extends Controller
      */
     public function index()
     {
-        $result = Format::latest()->paginate();
-        return view('format.index', compact('result'));
+        if(auth()->user()->hasRole('Inspector')){
+            $inspectorId = auth()->user()->inspectors->id;
+            return view('format.index', compact('inspectorId'));
+        }
+
+        return view('format.index');
     }
 
     /**
@@ -38,7 +43,7 @@ class FormatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    /*public function create(Request $request)
     {
         $formato = Preformato::where('id',1)->first();
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
@@ -71,15 +76,48 @@ class FormatController extends Controller
             return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
         }
         return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats'));
-    }
+    }*/
 
-    /*public function create(Request $request)
+    public function create(Request $request)
     {
+        $cita = InspectionAppointment::with('contract.company.user:id,name', 'client.user:id,name')->find($request->get('appointment'));
+
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->inspectors->id != $cita->inspector_id ){
+                $alert = ['error', 'This action is unauthorized.'];
+                return redirect()->route('formats.index')->with('alert',$alert);
+            }
+        }
+        $preformato = Preformato::where([
+            ['inspection_subtype_id', $cita->inspection_subtype_id],
+            ['company_id', $cita->contract->company_id],
+        ])->first();
+
+        $companyName = $cita->contract->company->user->name;
+        $clientName = $cita->client->user->name;
+        $preformatoName = $preformato->name;
+
+        // return $cita;
+        // return $preformato->name;
+        $formato = $this->llenarCabeceraFormato($cita->client_id, $cita->contract->company_id, $preformato->id);
+
+        $datos = [
+            'company'   => $formato['company'],
+            'client'    => $formato['client'],
+            'contract'  => $formato['contract'],
+            'project'   => ['name' => 'Proyecto Prueba'],
+            'page'      => ['num' => '', 'tot' => ''],
+        ];
+
+        $formatoSeteado = $this->reemplazarInformacionFormato($datos, $formato['preformato']['header'].$formato['preformato']['format']);
+        
+        // return ($formatoSeteado);
+
+        $mostrar_formato = 'block';
+        /* $companyselect ='none';
         $formato = Preformato::where('id',1)->first();
         $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $company = Company::where('id',session()->get('Session_Company'))->first();
-        $companyselect ='none';
-        $mostrar_formato = 'none';
         $disabled = '';
         if($company == '')
         {
@@ -97,14 +135,18 @@ class FormatController extends Controller
                         ->get()
                         ->pluck('name', 'id');
         }
-        $preformats = Preformato::pluck('name', 'id');
+        $preformats = Preformato::pluck('name', 'id'); */
 
-        if($request->get('appointment')){
+        if($request->get('appointment'))
+        {
             $appointment = $request->get('appointment');
-            return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats', 'appointment'));
+            return view('format.new', compact('formatoSeteado', 'mostrar_formato', 'appointment', 'companyName', 'clientName', 'preformatoName'));
         }
-        return view('format.new', compact('format', 'formato','clients','companies','companyselect','mostrar_formato','disabled','preformats'));
-    }*/
+        else
+        {
+            return redirect()->route('formats.index');
+        }
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -115,23 +157,35 @@ class FormatController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'company_id'         => 'required',
-            'client_id'          => 'required',
-            'preformat_id'       => 'required',
+            'appointment'   => 'required',
         ]);
-        if($request->company_id == null)
+        /* if($request->company_id == null)
         {
           $request->company_id = session()->get('Session_Company');
+        } */
+        $cita = InspectionAppointment::with('contract')->find($request->appointment);
+
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->inspectors->id != $cita->inspector_id ){
+                $alert = ['error', 'This action is unauthorized.'];
+                return redirect()->route('formats.index')->with('alert',$alert);
+            }
         }
+        /* dd($request->appointment);
+        dd($cita); */
+        $preformato = Preformato::where([
+            ['inspection_subtype_id', $cita->inspection_subtype_id],
+            ['company_id', $cita->contract->company_id],
+        ])->first();
+
         $format = new Format();
-        $format->company_id = $request->company_id;
-        $format->client_id = $request->client_id;
-        $format->preformat_id = $request->preformat_id;
+        $format->company_id = $cita->contract->company_id;
+        $format->client_id = $cita->client_id;
+        $format->preformat_id = $preformato->id;
         $format->format = $request->format_expediction;
         $format->status = 1;
 
         if ($format->save()) {
-          if($request->appointment){
             $cita = InspectionAppointment::findOrFail($request->appointment);
 
             if($cita->appointment_states_id == 2)
@@ -147,9 +201,6 @@ class FormatController extends Controller
             {
                 $alert = ['success', trans('words.ErrorLinkFormat')];
             }
-          }else{
-              $alert = ['success', trans_choice('words.Format',1).' '.trans('words.HasAdded')];
-          }
       } else {
           $alert = ['error',trans('words.UnableCreate').' '.trans_choice('words.Format',1)];
       }
@@ -175,6 +226,15 @@ class FormatController extends Controller
      */
     public function edit($id)
     {
+        $formato = Format::find($id);
+
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->id != $formato->inspection_appointments->inspector->user_id ){
+                $alert = ['error', 'This action is unauthorized.'];
+                return redirect()->route('formats.index')->with('alert',$alert);
+            }
+        }
+        
         $mostrar_formato = 'block';
         $companyselect ='block';
         $state_format = $state_firma = '';
@@ -182,7 +242,7 @@ class FormatController extends Controller
         {
           $companyselect ='none';
         }
-        $formato = Format::find($id);
+        
         if ($formato->status == 0)
         {
           $alert = ['success', trans('words.theFormatInactive')];
@@ -193,9 +253,10 @@ class FormatController extends Controller
               $state_format = 'none';
             }
           }
-          $companies = Company::with('user')->get()->pluck('user.name', 'id');
-          $clients = Client::with('user')->get()->pluck('user.name', 'id');
-          $preformats = Preformato::pluck('name', 'id');
+          $companyName = $formato->company->user->name;
+          $clientName = $formato->client->name;
+          $preformatoName = $formato->preformato->name;
+
           $disabled = 'disabled';
         if ($formato != '')
         {
@@ -211,7 +272,7 @@ class FormatController extends Controller
             }
         }
       }
-        return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companies','clients','preformats','user','state_format','state_firma'));
+        return view('format.edit', compact('formato','companyselect','mostrar_formato','disabled','companyName','clientName','preformatoName','user','state_format','state_firma'));
   }
 
     /**
@@ -223,6 +284,12 @@ class FormatController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->id != $formato->inspection_appointments->inspector->user_id ){
+                redirect()->route('home');
+            }
+        }
+
         $formato = Format::findOrFail($id);
         $formato->format = $request->format_expediction;
         $formato->status = $request->state;
@@ -241,6 +308,12 @@ class FormatController extends Controller
     public function destroy($id)
     {
         $format = Format::find($id);
+
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->id != $format->inspection_appointments->inspector->user_id ){
+                abort(403, 'This action is unauthorized.');
+            }
+        }
 
           //Valida que exista el servicio
           if($format)
@@ -274,24 +347,81 @@ class FormatController extends Controller
               }
     }
 
-    public function llenarCabeceraFormato()
-    {
-      if ($_GET['select'] != '')
-      {
-        $format = Format::where('company_id','=',$_GET['company'])
+    public function getFormat($client, $company, $contract, $preformato){
+        if ($_GET['select'] != '')
+        {
+            $format = Format::where('company_id','=',$_GET['company'])
             ->where('client_id','=',$_GET['select'])
             ->where('preformat_id','=',$_GET['preformato'])
             ->get()->first();
-        if (!isset($format) & $format == '')
-        {
+            
+            if (!isset($format) & $format == '')
+            {
+                $client = Client::join('users', 'users.id', '=', 'clients.user_id')
+                                ->select('clients.id AS id', 'users.name AS name')
+                                ->where('clients.id',$_GET['select'])
+                                ->get()
+                                ->first();
+                if ($_GET['company'] != '')
+                {
+                    $company = Company::where('id',$_GET['company'])->first();
+                    $usuario = User::find($company->user_id);
+                }
+                else
+                {
+                    $company = Company::where('id',session()->get('Session_Company'))->first();
+                    $usuario = User::find($company->user_id);
+                }
+
+                $usuario->image ='<img width="40%" src="'.asset($usuario->picture).'">';
+                $usuario->iso ='<img width="40%" src="'.asset('images/iso.jpg').'">';
+                $contract = Contract::where('company_id',$company->id)
+                ->where('client_id','=',$client->id)
+                ->first();
+                $preformato = Preformato::where('id',$_GET['preformato'])->first();
+
+                json_encode($response = [
+                    'company' => $usuario,
+                    'client' => $client,
+                    'contract' => $contract,
+                    'preformato' => $preformato,
+                ]);
+
+                if (!isset($contract))
+                {
+                    $error = trans('words.ThereNoContract');
+                    json_encode($response = [
+                        'error' => $error,
+                    ]);
+                }
+            } else {
+                $error = trans('words.FormatExists');
+                json_encode($response = [
+                    'error' => $error,
+                ]);
+            }
+
+        }
+        return $response;
+    }
+
+    public function llenarCabeceraFormato($select, $company, $preformato)
+    {
+      if ($select != '')
+      {
+        $format = Format::where('company_id','=',$company)
+            ->where('client_id','=',$select)
+            ->where('preformat_id','=',$preformato)
+            ->get()->first();
+
           $client = Client::join('users', 'users.id', '=', 'clients.user_id')
                           ->select('clients.id AS id', 'users.name AS name')
-                          ->where('clients.id',$_GET['select'])
+                          ->where('clients.id',$select)
                           ->get()
                           ->first();
-          if ($_GET['company'] != '')
+          if ($company != '')
           {
-            $company = Company::where('id',$_GET['company'])->first();
+            $company = Company::where('id',$company)->first();
             $usuario = User::find($company->user_id);
           } else {
             $company = Company::where('id',session()->get('Session_Company'))->first();
@@ -302,7 +432,7 @@ class FormatController extends Controller
           $contract = Contract::where('company_id',$company->id)
             ->where('client_id','=',$client->id)
             ->first();
-          $preformato = Preformato::where('id',$_GET['preformato'])->first();
+          $preformato = Preformato::where('id',$preformato)->first();
 
           json_encode($response = [
             'company' => $usuario,
@@ -317,12 +447,6 @@ class FormatController extends Controller
               'error' => $error,
             ]);
           }
-        } else {
-           $error = trans('words.FormatExists');
-           json_encode($response = [
-               'error' => $error,
-             ]);
-        }
 
       }
       return $response;
@@ -350,6 +474,14 @@ class FormatController extends Controller
     public function supports($id)
     {
       $formato = Format::find($id);
+
+        if(auth()->user()->hasRole('Inspector')){
+            if ( auth()->user()->id != $formato->inspection_appointments->inspector->user_id ){
+                $alert = ['error', 'This action is unauthorized.'];
+                return redirect()->route('formats.index')->with('alert',$alert);
+            }
+        }
+
       if ($formato->status == 0)
       {
         $alert = ['success', trans('words.theFormatInactive')];
@@ -575,6 +707,29 @@ class FormatController extends Controller
         return $documento;
     }
 
+    public function reemplazarInformacionFormato($datos, $formato){
+        $comodines = [
+            'company'   => ['company_name'],
+            'client'    => ['client_name'],
+            'contract'  => ['contract_name', 'contract_date'],
+            'project'   => ['project_name'],
+            'page'      => ['page_num', 'page_tot']
+        ];
+
+        if(count($datos) > 0){
+            foreach($comodines as $parent => $arrayComodines){
+                foreach($arrayComodines as $string_comodin){
+                    $partes = explode('_', $string_comodin);
+                    $nombreAtributo = $partes[1];
+
+                    $formato = str_replace('*'.$string_comodin.'*', $datos[$parent][$nombreAtributo], $formato);
+                }
+            }
+        }
+
+        return $formato;
+    }
+    
     public function signature($id)
     {
         $format = SignaFormat::where('id_formato',$id)->orderBy('created_at', 'desc')->limit(1)->first();

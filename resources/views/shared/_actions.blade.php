@@ -1,5 +1,5 @@
 @can('edit_'.$entity)
-  @if($status == 2)
+  @if(isset($status) && $status == 2)
     <a href="{{ route($entity.'.edit', [str_singular($entity) => ${$action}])  }}" title="@lang('words.Whatch')" class="btn btn-xs btn-default">
         <i class="glyphicon glyphicon-eye-open"></i>
     </a>

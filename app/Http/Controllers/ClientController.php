@@ -128,7 +128,8 @@ class ClientController extends Controller
         if(CompanyController::compareCompanySession($client->user->companies)){
             return view('client.edit', compact('user', 'client', 'companies'));
         }else{
-            abort(403, 'This action is unauthorized.');
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('clients.index')->with('alert',$alert);
         }
 
         return view('client.edit', compact('user', 'client', 'companies'));
@@ -144,7 +145,8 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         if( !CompanyController::compareCompanySession($client->user->companies) ){
-            abort(403, 'This action is unauthorized.');        
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('clients.index')->with('alert',$alert);
         }
 
         if( !auth()->user()->hasRole('Compania') ){
@@ -250,5 +252,13 @@ class ClientController extends Controller
         ->prepend(trans('words.ChooseOption'), '0');
 
         return ['status' => $clientContracts];
+    }
+
+    public static function headquarters($id = null)
+    {
+        $clientHeadquarters = Client::getClientHeadquartersById($id)->pluck('name', 'id')
+        ->prepend(trans('words.ChooseOption'), '0');
+
+        return ['status' => $clientHeadquarters];
     }
 }

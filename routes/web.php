@@ -59,13 +59,15 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('country/cities/{id?}', 'GeneralController@cities')->name('general.cities');
     Route::get('companies/clients/{company?}', 'CompanyController@clients')->name('company.clients');
     Route::get('companies/inspectors/{company?}', 'CompanyController@inspectors')->name('company.inspectors');
+    Route::get('clients/headquarters/{client?}', 'ClientController@headquarters')->name('clients.headquarters');
+    Route::get('headquarters/inspectors/{headquarter?}', 'HeadquartersController@inspectors')->name('headquarters.inspectors');
     Route::get('clients/contracts/{id?}', 'ClientController@contracts')->name('clients.contracts');
 
     // ????
     Route::post('inspectionappointments/create', 'InspectionAppointmentController@create')->name('inspectionappointments.create.post');
 
     //Consultar datos para dataTable
-    Route::post('datatable/{model}/{company?}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatable')->name('datatable');
+    Route::post('datatable/{model}/{whereHas?}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatable')->name('datatable');
 
     //Consultar datos para dataTable con una consulta relacionada
     // Route::get('datatableCompany/{model}/{company}/{relations?}/{entity?}/{identificador?}', 'GeneralController@datatableWhere')->name('datatableCompany');
@@ -79,7 +81,6 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('roles', 'RoleController');
     Route::resource('posts', 'PostController');
     Route::resource('permissions','PermissionController');
-    Route::resource('modulos','ModuloController');
     Route::resource('menus','MenuController');
     Route::resource('perfiles','PerfilController');
     Route::resource('agendas','MenuController');
@@ -96,7 +97,7 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::resource('preformatos','PreformatoController');
     Route::resource('formats','FormatController');
     //Route::get('formats/informationFormat','FormatController@informationFormat')->name('formats.informationFormat');
-    Route::get('ajxllenarCabeceraFormato','FormatController@llenarCabeceraFormato');
+    Route::get('ajxllenarCabeceraFormato/{select}/{company}/{preformato}','FormatController@llenarCabeceraFormato');
     Route::get('ajxcargarSelectClients','FormatController@cargarSelectClients');
     Route::get('/formats/downloadPDF/{id}','FormatController@downloadPDF');
     Route::resource('clients', 'ClientController');
