@@ -258,7 +258,8 @@ class InspectorController extends Controller
         if(CompanyController::compareCompanySession($inspector->companies)){
             return view('inspector.edit', compact('inspector', 'permissions','professions','inspector_types','countries','cities', 'companies','user'));
         }else{
-            abort(403, 'This action is unauthorized.');
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('inspectors.index')->with('alert',$alert);
         }
     }
 
@@ -275,7 +276,8 @@ class InspectorController extends Controller
         $inspector = Inspector::findOrFail($id);
 
         if( !CompanyController::compareCompanySession($inspector->companies) ){
-            abort(403, 'This action is unauthorized.');        
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('inspectors.index')->with('alert',$alert); 
         }
 
         //Si no es administrador agregue la compañia en sesión
@@ -408,7 +410,8 @@ class InspectorController extends Controller
         $infoInspector = Inspector::findOrFail($id);
         
         if( !CompanyController::compareCompanySession($infoInspector->companies) ){
-            abort(403, 'This action is unauthorized.');        
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('inspectors.index')->with('alert',$alert);       
         }
 
         // Se trae la información del usuario

@@ -58,7 +58,7 @@
                 {data: 'phone'},
                 {data: 'addres'},
                 {data: 'user.email'},
-                {data: 'companies'},
+                {data: 'companies', orderable: false},
                 {data: 'profession.name'},
                 {data: 'inspector_type.name'},
                 {data: 'created_at'},
@@ -86,19 +86,19 @@
 
             @if(Gate::check('edit_inspectors') || Gate::check('delete_inspectors') || Gate::check('view_inspectoragendas') || Gate::check('view_inspectionappointments'))
                 @if(isset($companies))
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'company' => 'user.companies,'.$companies->slug, 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'whereHas' => 'user.companies,slug,'.$companies->slug, 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
                 @else
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'company' => 'none', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'whereHas' => 'none', 'entity' => 'inspectors', 'identificador' => 'id', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
                 @endif
             @else
                 @if(isset($companies))
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'company' => 'user.companies,'.$companies->slug, 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'whereHas' => 'user.companies,slug,'.$companies->slug, 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
                 @else
-                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'company' => 'none', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
+                    dataTableObject.ajax = {url: "{{ route('datatable', ['model' => 'Inspector', 'whereHas' => 'none', 'relations' => 'companies,profession,inspectorType,user,companies.user']) }}"};
                 @endif
             @endif
 
-            columns.push({data: 'actions', className: 'text-center w1em'});
+            columns.push({data: 'actions', className: 'text-center wCellActions', orderable: false});
             dataTableObject.columns = columns;
 
             dataTableObject.columnDefs.push(

@@ -89,7 +89,8 @@ class HeadquartersController extends Controller
     public function edit(Headquarters $headquarters)
     {
         if( auth()->user()->hasRole('Cliente') && auth()->user()->clients->id != $headquarters->client_id ){
-            abort(403, 'This action is unauthorized.');
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('headquarters.index')->with('alert',$alert);
         }
 
         $clients = Client::join('users', 'users.id', '=', 'clients.user_id')
@@ -113,9 +114,9 @@ class HeadquartersController extends Controller
      */
     public function update(HeadquartersRequest $request, Headquarters $headquarters)
     {
-        // dd($request->all());
         if( auth()->user()->hasRole('Cliente') && auth()->user()->clients->id != $headquarters->client_id ){
-            abort(403, 'This action is unauthorized.');
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('headquarters.index')->with('alert',$alert);
         }
 
         if( auth()->user()->hasRole('Cliente') ){
@@ -174,10 +175,31 @@ class HeadquartersController extends Controller
             echo json_encode([
                 'status' => $menssage,
             ]);
-        }	
+        }
+    }
 
-        /* $headquarters->delete();
-        flash()->success(trans_choice('words.Headquarters', 1).' '.trans('words.HasEliminated'));
-        return back(); */
+    /**
+     * Buscar y ordenar los inspectores de acuerdo a la distancia de ellos a la sede
+     */
+    public function inspectors($appointmentId)
+    {
+        $cita = \App\InspectionAppointment::findOrFail($appointmentId);
+        
+        $response = \App\InspectorAgenda::obtenerAgendasOrdenadasDistanciaParaCita($cita);
+
+        if($response['success']){
+            $agendasOrdenadas = $response['response'];
+    
+            $inspectores = $agendasOrdenadas->pluck('inspector.user.name', 'inspector.id')->prepend(trans('words.ChooseOption'), '0');
+    
+            return ['status' => $inspectores];
+        }else{
+            abort(500, $response['message']);
+            return ['error' => $response['message']];
+        }
+
+        dd( $agendasOrdenadas );
+        dd( $cita->headquarters->latitude );
+        dd( $cita->headquarters->longitude );
     }
 }

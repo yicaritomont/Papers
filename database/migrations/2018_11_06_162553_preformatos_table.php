@@ -16,6 +16,7 @@ class PreformatosTable extends Migration
         Schema::create('preformatos', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('inspection_subtype_id')->unsigned();
+            $table->integer('company_id')->unsigned();
             $table->string('name');
             $table->longText('header');
             $table->longText('format');
@@ -25,6 +26,11 @@ class PreformatosTable extends Migration
             $table->foreign('inspection_subtype_id')
               ->references('id')
               ->on('inspection_subtypes')
+              ->onDelete('cascade');
+
+            $table->foreign('company_id')
+              ->references('id')
+              ->on('companies')
               ->onDelete('cascade');
         });
     }

@@ -10,7 +10,7 @@
         <div class="col-xs-12 col-lg-8 col-lg-offset-2">
 
             <div class="inputs-header">
-                @if(auth()->user()->hasRole('Admin'))
+                @if(auth()->user()->hasRole('Admin') && !isset($inspector))
                     {!! Form::select('citas-compania',$companies, null, ['class' => 'input-body select2 form-control', 'id' => 'citas-compania', 'placeholder' => 'Compañias']) !!}
                 @endif
                 @if( !isset($inspector) )
@@ -111,12 +111,6 @@
                                 <div class="errors"></div>
                             </div>
 
-                            <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
-                                {!! Form::label('edit-inspector_id', trans_choice("words.Inspector", 1)) !!}
-                                {!! Form::select('inspector_id', isset($inspectors) ? $inspectors : [], isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 inspectorField', 'placeholder'=>trans('words.ChooseOption'), 'id' => 'edit-inspector_id']) !!}
-                                <div class="errors"></div>
-                            </div>
-
                             <!-- Submit Form Button -->                        
                             {!! Form::submit(trans('words.Edit'), ['class' => 'btn btn-primary btn-block']) !!}
                         {!! Form::close() !!}
@@ -137,11 +131,12 @@
                             </div>
                             <div class="form-group @if ($errors->has('inspector_id')) has-error @endif">
                                 {!! Form::label('inspector_id', trans_choice("words.Inspector", 1)) !!}
-                                    {!! Form::select('inspector_id', isset($inspectors) ? $inspectors : [], isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control inspectorField', 'placeholder'=>trans('words.ChooseOption')]) !!}
+                                <div class="loading inspectorField_loading"></div>
+                                {!! Form::select('inspector_id', isset($inspectors) ? $inspectors : [], isset($agenda) ? $agenda['inspector_id'] : null, ['class' => 'input-body select2 form-control inspectorField', 'placeholder'=>trans('words.ChooseOption')]) !!}
                                 <div class="errors"></div>
                             </div>
                             <!-- Submit Form Button -->                        
-                            {!! Form::submit(trans('words.Complete'), ['class' => 'btn btn-primary btn-block']) !!}
+                            {!! Form::submit(trans('words.Confirm'), ['class' => 'btn btn-primary btn-block']) !!}
                         {!! Form::close() !!}
 
                     @endcan
@@ -186,11 +181,17 @@
                                 <td id="cell-client"></td>
                             </tr>
                             <tr>
+                                <th>@choice('words.Headquarters', 1): </th>
+                                <td id="cell-headquarters"></td>
+                            </tr>
+                            <tr>
                                 <th>@choice('words.Contract', 1): </th>
                                 <td id="cell-contract"></td>
                             </tr>
                         </table>
                     </div>
+
+                    <div class="text-center info"></div>
                 
                 </div>
                 <div class="modal-footer">
@@ -276,7 +277,11 @@
 
         calendarObj.eventClick = function(event)
         {
-            console.log(event);
+            // Vaciar el div de los mensajes
+            $('.info').empty();
+
+            $('.btns').empty();
+
             //Resetar y setear el action el formulario de completar si existe el elemento
             if($('#completeAppointment')[0])
             {
@@ -291,21 +296,35 @@
             
             if(event.appointment_states_id == 1){
                 @can('edit_inspectionappointments')
-                    $('.btns').html('<button class="btn btn-info btn-form-slide" data-toggle="#completeAppointment">@lang("words.Complete")</button>');
+                    $('.btns').html('<button class="btn btn-info btn-form-slide" data-toggle="#completeAppointment">@lang("words.Confirm")</button>');
+
+                    //Llene el select de inspectores
+                    fillSelect(window.Laravel.url+'/headquarters/inspectors/'+event.id, '.inspectorField');
                 @endcan
             }else if(event.appointment_states_id == 2){
                 @can('edit_inspectionappointments')
                     $('.btns').html('<button data-toggle="#editAppointment" class="btn btn-primary editCalendar" data-route="'+$('#url').val()+'/'+event.id+'/edit'+'">@lang("words.Edit")</button>');
                 @endcan
 
-                if(event.format_id){
-                    @can('edit_formats')
-                        $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/'+event.format_id+'/edit">@lang("words.Edit") @choice("words.Format", 1)</a>');
-                    @endcan
-                }else{
-                    @can('add_formats')
-                        $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/create?appointment='+event.id+'">@lang("words.Create") @choice("words.Format", 1)</a>');
-                    @endcan
+                // Si hay preformato por el subtipo y la compañía de la cita
+                if(event.hasPreformat == 1){
+                    if(event.format_id){
+                        if(event.format_status == 2){
+                            @can('edit_formats')
+                                $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/'+event.format_id+'/edit">@lang("words.Whatch") @choice("words.Format", 1)</a>');
+                            @endcan
+                        }else{
+                            @can('edit_formats')
+                                $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/'+event.format_id+'/edit">@lang("words.Edit") @choice("words.Format", 1)</a>');
+                            @endcan
+                        }
+                    }else{
+                        @can('add_formats')
+                            $('.btns').append('<a target="_blank" class="btn btn-default btn-form-slide" data-toggle="#fillFormat" href="'+window.Laravel.url+'/formats/create?appointment='+event.id+'">@lang("words.Fill") @choice("words.Format", 1)</a>');
+                        @endcan
+                    }
+                }else if(event.hasPreformat == 0){
+                   $('.info').html('<span>@lang("words.PreformatNotFound")</span>');
                 }
             }else{
                 $('.btns').html('');

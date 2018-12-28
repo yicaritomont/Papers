@@ -3,6 +3,15 @@
     {!! Form::select('inspection_subtype_id', $inspection_subtypes, null,  ['class' => 'input-body form-control select2', 'require']) !!}
     @if ($errors->has('inspection_subtypes')) <p class="help-block">{{ $errors->first('inspection_subtypes') }}</p> @endif
 </div>
+
+@if( auth()->user()->hasRole('Admin') )
+    <div class="form-group @if ($errors->has('company_id')) has-error @endif">
+        {!! Form::label('company_id', trans_choice('words.Company', 1)) !!}
+        {!! Form::select('company_id', $companies, null,  ['class' => 'input-body form-control select2', 'placeholder' => trans('words.ChooseOption')]) !!}
+        @if ($errors->has('company_id')) <p class="help-block">{{ $errors->first('company_id') }}</p> @endif
+    </div>
+@endif
+
 <div class="form-group @if ($errors->has('name')) has-error @endif">
     <label for="name">@lang('words.Name')</label>
     {!! Form::text('name', null, ['class' => 'input-body','placeholder' => trans('words.Name')]) !!}

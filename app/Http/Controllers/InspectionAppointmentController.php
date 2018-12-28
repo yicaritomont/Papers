@@ -39,6 +39,9 @@ class InspectionAppointmentController extends Controller
             ['id', '!=', '6'],
         ])->get();
 
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
+        $appointment_locations = AppointmentLocation::pluck('coordenada','id');
+
         // Si se consultan las citas de un inspector (Usuario inspector)
         if($request->get('id')){
 
@@ -51,12 +54,11 @@ class InspectionAppointmentController extends Controller
 
             $this->authorize('validateId', $inspector);
 
-            return view('inspection_appointment.index',compact('inspector', 'appointment_states'));
+            return view('inspection_appointment.index',compact('inspector', 'appointment_states', 'companies', 'appointment_locations'));
 
         }
 
         $subtypes = InspectionSubtype::with('inspection_types')->get()->pluck('subtype_type', 'id');
-        $appointment_locations = AppointmentLocation::pluck('coordenada','id');
         
         if( auth()->user()->hasRole('Cliente') )
         {
@@ -85,8 +87,6 @@ class InspectionAppointmentController extends Controller
         }
 
         // Administrador
-
-        $companies = Company::with('user')->get()->pluck('user.name', 'id');
 
         return view('inspection_appointment.index',compact('subtypes', 'inspectors', 'appointment_states', 'appointment_locations', 'companies'));
     }
@@ -127,7 +127,7 @@ class InspectionAppointmentController extends Controller
         }
 
         $request->validate([
-            'appointment_location_id'   => 'required',
+            'headquarters_id'           => 'required',
             'contract_id'               => 'required',
             'client_id'                 => 'required',
             'estimated_start_date'      => 'required|date|date_format:Y-m-d',
@@ -158,6 +158,11 @@ class InspectionAppointmentController extends Controller
         {
             abort(403, 'This action is unauthorized.');    
         }
+        // Si selecciono una sede que no pertenece al cliente
+        elseif( !Client::getClientHeadquartersById($request->client_id)->pluck('id')->contains($request->headquarters_id) )
+        {
+            abort(403, 'This action is unauthorized.');    
+        }
 
         // Validar si la fecha de inicio ingresada supera a la fecha final
         elseif($request->estimated_start_date > $request->estimated_end_date)
@@ -166,14 +171,17 @@ class InspectionAppointmentController extends Controller
                 'error' => trans('words.ErrorRangeDate'),
             ]);
         }
+
+        // Validar si insgreso una fecha anterior a la actual
+        elseif($request->estimated_start_date < date('Y-m-d')){
+            echo json_encode([
+                'error' => trans('words.DateGreater'),
+            ]);
+        }
+
         else
         {
-            $fechasCitas = collect();
-
-            
-            for($i=$request->estimated_start_date ; $i<=$request->estimated_end_date ; $i = date("Y-m-d", strtotime($i ."+ 1 days"))){
-                $fechasCitas->push($i);
-            }
+            $fechasCitas = collect( GeneralController::getDaysArray($request->estimated_start_date, $request->estimated_end_date) );
 
             $requestParam = new Request;
             $requestParam->subtype_id = $request->inspection_subtype_id;
@@ -189,7 +197,7 @@ class InspectionAppointmentController extends Controller
                 if($fechasCitas->intersect($agenasDisponibles['agendas']) == $fechasCitas){
                     InspectionAppointment::create([
                         'inspection_subtype_id'     => $request['inspection_subtype_id'],
-                        'appointment_location_id'   => $request['appointment_location_id'],
+                        'headquarters_id'           => $request['headquarters_id'],
                         'contract_id'               => $request['contract_id'],
                         'client_id'                 => $request['client_id'],
                         'request_date'              => date('Y-m-d H:i:s'),
@@ -221,7 +229,7 @@ class InspectionAppointmentController extends Controller
      */
     public function show($id)
     {
-        $cita = InspectionAppointment::with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract.company', 'inspector.user:id,name')
+        $cita = InspectionAppointment::with('inspectionSubtype.inspection_types:id,name', 'client.user:id,name', 'contract.company', 'inspector.user:id,name', 'headquarters:id,name')
             ->where('inspection_appointments.id', $id)
         ->first();
         // dd($cita);
@@ -276,20 +284,14 @@ class InspectionAppointmentController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'inspector_id'  => 'required',
             'start_date'    => 'required|date|date_format:Y-m-d',
             'end_date'      => 'required|date|date_format:Y-m-d',
         ]);
 
         $inspection_appointment = InspectionAppointment::findOrFail($id);
-
+        // dd( $inspection_appointment->inspector_id );
         // Validar si se modifico el id del formulario
         if( !CompanyController::compareCompanySession([$inspection_appointment->contract->company]) ){
-            abort(403, 'This action is unauthorized.');
-
-        // Validar si se modifico el id del campo inspectores
-        }elseif( !Company::getCompanyInspectorsById($inspection_appointment->contract->company->id)->pluck('id')->contains($request->inspector_id) )
-        {
             abort(403, 'This action is unauthorized.');
         }
 
@@ -300,6 +302,21 @@ class InspectionAppointmentController extends Controller
                 'error' => trans('words.ErrorRangeDate'),
             ]);
         }
+
+        // Validar si insgreso una fecha anterior a la actual
+        elseif($request->start_date < date('Y-m-d')){
+            echo json_encode([
+                'error' => trans('words.DateGreater'),
+            ]);
+        }
+
+        // Validar si insgreso una fecha anterior a la actual
+        elseif($request->start_date < date('Y-m-d')){
+            echo json_encode([
+                'error' => trans('words.DateGreater'),
+            ]);
+        }
+
         else
         {
             
@@ -312,7 +329,7 @@ class InspectionAppointmentController extends Controller
                 $contCitasError=0;
 
                 // Se Consula las agendas filtrada por un inspector
-                $inspectorAgenda = InspectorAgenda::where('inspector_id','=',$request->input('inspector_id'))->get();
+                $inspectorAgenda = InspectorAgenda::where('inspector_id', '=', $inspection_appointment->inspector_id)->get();
 
                 foreach($inspectorAgenda as $agenda)
                 {
@@ -324,7 +341,7 @@ class InspectionAppointmentController extends Controller
 
                         //Consulte todas las citas por el inspector y fechas seleccionadas, se exceptuan las citas reprogramadas (5) y/o canceladas (6)
                         $citas = InspectionAppointment::where([
-                            ['inspector_id', '=', $request->input('inspector_id')],
+                            ['inspector_id', '=', $inspection_appointment->inspector_id],
                             ['start_date', '>=', $request->input('start_date')],
                             ['start_date', '<=', $request->input('end_date')],
                             ['id', '!=', $id],
@@ -349,7 +366,7 @@ class InspectionAppointmentController extends Controller
 
                 //Comprueba si selecciono un día incorrecto
                 if($contFecha==0)
-                {
+                {dd( $contFecha );
                     echo json_encode([
                         'error' => trans('words.IncorrectDate'),
                     ]);
@@ -363,19 +380,21 @@ class InspectionAppointmentController extends Controller
                         ]);
                     }else{
 
-                        if(($request['start_date'] != $inspection_appointment->start_date) || ($request['end_date'] != $inspection_appointment->end_date) || ($request['inspector_id'] != $inspection_appointment->inspector_id)){
+                        if(($request['start_date'] != $inspection_appointment->start_date) || ($request['end_date'] != $inspection_appointment->end_date)){
 
                             //Cambie el estado de la cita a reprogramado
                             $inspection_appointment->appointment_states_id = 5;
+
                             $inspection_appointment->save();
 
                             InspectionAppointment::create([
-                                'inspector_id'              => $request['inspector_id'],
+                                'inspector_id'              => $inspection_appointment->inspector_id,
                                 'appointment_states_id'     => 2,
-                                'appointment_location_id'   => $inspection_appointment->appointment_location_id,
+                                'headquarters_id'           => $inspection_appointment->headquarters_id,
                                 'inspection_subtype_id'     => $inspection_appointment->inspection_subtype_id,
                                 'contract_id'               => $inspection_appointment->contract_id,
                                 'client_id'                 => $inspection_appointment->client_id,
+                                'format_id'                 => $inspection_appointment->format_id,
                                 'request_date'              => $inspection_appointment->request_date,
                                 'estimated_start_date'      => $inspection_appointment->estimated_start_date,
                                 'estimated_end_date'        => $inspection_appointment->estimated_end_date,
@@ -437,9 +456,11 @@ class InspectionAppointmentController extends Controller
     public function events($type=null, $id=null)
     {
         $solicitadas = InspectionAppointment::
-            join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
+            join('contracts', 'contracts.id', '=', 'inspection_appointments.contract_id')
+            ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
             ->join('clients', 'clients.id', '=', 'inspection_appointments.client_id')
             ->join('users', 'users.id', '=', 'clients.user_id')
+            ->leftJoin('formats', 'formats.id', '=', 'inspection_appointments.format_id')
             ->select('estimated_start_date AS start',
                 'estimated_end_date AS end',
                 'users.name AS title',
@@ -448,10 +469,11 @@ class InspectionAppointmentController extends Controller
                 'appointment_states.color AS className',
                 'appointment_states_id',
                 'format_id',
-                'client_id')
+                'inspection_appointments.client_id',
+                'inspection_subtype_id',
+                'contracts.company_id',
+                'formats.status AS format_status')
         ->where('appointment_states_id', 1);
-
-        // dd($solicitadas->get());
 
         if($type == 'inspector'){
             $solicitadas = $solicitadas->where('inspector_id', $id);
@@ -462,11 +484,13 @@ class InspectionAppointmentController extends Controller
         }elseif($type == 'client'){
             $solicitadas = $solicitadas->where('client_id', $id);
         }
-        // dd($solicitadas->get());
+
         $result = InspectionAppointment::
-            join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
+            join('contracts', 'contracts.id', '=', 'inspection_appointments.contract_id')
+            ->join('inspectors', 'inspectors.id', '=', 'inspection_appointments.inspector_id')
             ->join('appointment_states', 'appointment_states.id', '=', 'inspection_appointments.appointment_states_id')    
             ->join('users', 'users.id', '=', 'inspectors.user_id')
+            ->leftJoin('formats', 'formats.id', '=', 'inspection_appointments.format_id')
             ->select('start_date AS start',
                 'end_date AS end',
                 'users.name AS title',
@@ -475,12 +499,15 @@ class InspectionAppointmentController extends Controller
                 'appointment_states.color',
                 'appointment_states_id',
                 'format_id',
-                'client_id')
+                'inspection_appointments.client_id',
+                'inspection_subtype_id',
+                'contracts.company_id',
+                'formats.status AS format_status')
             ->where(function($q){
                 $q->where('appointment_states_id', 2)  
                     ->orWhere('appointment_states_id', 3)
                     ->orWhere('appointment_states_id', 4);
-            })    
+            })
         ->union($solicitadas);
 
         if($type == 'inspector'){
@@ -489,19 +516,26 @@ class InspectionAppointmentController extends Controller
             $result = $result->whereHas('contract.company', function($q) use($id){
                 $q->where('id', '=', $id);
             });
-        }
-        elseif($type == 'client'){
+        }elseif($type == 'client'){
             $result = $result->where('client_id', $id);
         }
 
-        // dd($result->get());
+        $preformato = Preformato::select('inspection_subtype_id', 'company_id')->get();
 
         $result = $result->get();
 
-        //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario y un alert al className para los colores de los eventos
-        foreach($result as $item){
-            $item->end = $item->end.'T23:59:59';
-        }
+        $result->each(function($cita, $key) use($preformato){
+
+            // Se agrega un nuevo campo hasPreformat para comprobar si la cita tiene un preformato
+            if( $preformato->where('inspection_subtype_id', $cita->inspection_subtype_id)->where('company_id', $cita->company_id)->isNotEmpty() ){
+                $cita->hasPreformat = 1;
+            }else{
+                $cita->hasPreformat = 0;
+            }
+
+            //Se agrega la hora 23:59:59 a la fecha final para que se vea el día final correcto en el calendario
+            $cita->end = $cita->end.'T23:59:59';
+        });
         
         echo json_encode($result);      
     }
@@ -534,6 +568,14 @@ class InspectionAppointmentController extends Controller
                 'error' => trans('words.ErrorRangeDate'),
             ]);
         }
+
+        // Validar si insgreso una fecha anterior a la actual
+        elseif($request->start_date < date('Y-m-d')){
+            echo json_encode([
+                'error' => trans('words.DateGreater'),
+            ]);
+        }
+
         else
         {
             //Se valida si es una cita con estado solicitada

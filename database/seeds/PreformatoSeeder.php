@@ -29,21 +29,21 @@ class PreformatoSeeder extends Seeder
                		</tr>
                		<tr>
                			<td><strong>CLIENT :</strong></td>
-               			<td>*client*</td>
+               			<td>*client_name*</td>
                			<td><strong>PROJECT :</strong></td>
-               			<td>*project*</td>
+               			<td>*project_name*</td>
                			<td><strong>N. PAGE:</strong></td>
                			<td><center><div class="page"></div></center></td>
                			<td><strong>OF</strong></td>
-               			<td>*tot_pages*</td>
+               			<td>*page_tot*</td>
                		</tr>
                		<tr>
                			<td><strong>CONTRACT :</strong></td>
-               			<td>*contract*</td>
+               			<td>*contract_name*</td>
                			<td colspan="2" rowspan="1"><strong>DATE OF CONTRACT :</strong></td>
-               			<td>*date_contract*</td>
+               			<td>*contract_date*</td>
                			<td colspan="2" rowspan="1"><strong>CONTRACTUAL DELIVERY DATE</strong></td>
-               			<td>*date_contractual*</td>
+               			<td>*contract_date*</td>
                		</tr>
                	</tbody>
                </table>
@@ -64,7 +64,7 @@ class PreformatoSeeder extends Seeder
 
             <div style="background:#072360; border:1px solid #ffffff"><span style="color:#ffffff">&nbsp;1 - REFERENCES AND SPECIFICATIONS</span></div>
 
-            <p>Contract&nbsp; *contract* between&nbsp; *company*&nbsp;&nbsp;</p>
+            <p>Contract&nbsp; *contract_name* between&nbsp; *company_name*&nbsp;&nbsp;</p>
 
             <div style="background:#072360; border:1px solid #cccccc"><span style="color:#ffffff">&nbsp;2 - INSPECTION COPE</span></div>
 
@@ -115,7 +115,7 @@ class PreformatoSeeder extends Seeder
 
             <p>The current status of the manufacturing process is, according to the following tables:</p>
 
-            <p><strong><u>Note :</u></strong>&nbsp;The internal control number at the workshop of the order purchase is *contract*</p>
+            <p><strong><u>Note :</u></strong>&nbsp;The internal control number at the workshop of the order purchase is *contract_name*</p>
 
             <p>_The process for all the&nbsp;<strong><u>H.S.&nbsp; pinion</u></strong>&nbsp; will be:</p>
 
@@ -983,7 +983,8 @@ class PreformatoSeeder extends Seeder
                $pdf->page_text($x, $y, $text, $font, $size);
            }
          </script>',
-      'status' => 1),
+	  'status' => 1,
+	  'company_id' => 1),
     );
 
     foreach ($preformatos as $preformato) {

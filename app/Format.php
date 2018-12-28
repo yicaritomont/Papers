@@ -24,4 +24,9 @@ class Format extends Model
     {
       return $this->belongsTo('App\Company', 'company_id', 'id');
     }
+
+    public function inspection_appointments()
+    {
+        return $this->hasOne('App\InspectionAppointment');
+    }
 }

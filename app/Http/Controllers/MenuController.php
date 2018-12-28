@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Menu;
-use App\Modulo;
 Use App\Permission;
 //use Illuminate\Support\Collection;
 
@@ -61,8 +60,6 @@ class MenuController extends Controller
      */
     public function create()
     {
-        $modulos            = Modulo::where('status',1)->pluck('name', 'id');
-
         //Se agruga el por nombre y se añade un nuevo elemento al inicio
         $menu = collect($this->getDropdownMenu())->pluck('name', 'id')->prepend(trans('words.MainMenu'), 0);
         
@@ -107,7 +104,7 @@ class MenuController extends Controller
             $url[$ruta] = $ruta;
         }
     
-        return view('menu.new',compact('modulos','menu','url'));
+        return view('menu.new',compact('menu','url'));
     }
 
     /**
@@ -187,10 +184,7 @@ class MenuController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        //
-        $modulos           = Modulo::where('status',1)->pluck('name', 'id');
-        
+    {        
         //Se agruga el por nombre y se añade un nuevo elemento al inicio
         $menu = collect($this->getDropdownMenu())->pluck('name', 'id')->prepend(trans('words.MainMenu'), 0);       
         
@@ -239,7 +233,7 @@ class MenuController extends Controller
         //Si es del menu principal el menu_id va a ser 0
         if($menus['id'] == $menus['menu_id']) $menus['menu_id'] = 0;
 
-        return view('menu.edit', compact('modulos','menu','url','menus'));
+        return view('menu.edit', compact('menu','url','menus'));
     }
 
     /**

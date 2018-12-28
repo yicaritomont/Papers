@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Preformato;
 use App\InspectionSubtype;
+use App\Company;
 
 class PreformatoController extends Controller
 {
@@ -15,9 +16,15 @@ class PreformatoController extends Controller
      */
     public function index()
     {
-        $result = Preformato::all();
+        if(auth()->user()->hasRole('Admin')){
+            $result = Preformato::all();
 
-        return view('preformato.index', compact('result'));
+            return view('preformato.index', compact('result'));
+        }
+
+        $companySlug = Company::find(session()->get('Session_Company'))->slug;
+        
+        return view('preformato.index', compact('companySlug'));
     }
 
     /**
@@ -27,10 +34,11 @@ class PreformatoController extends Controller
      */
     public function create()
     {
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
         $preformato = Preformato::pluck('name', 'id');
         $inspection_subtypes = InspectionSubtype::with('inspection_types')->get()->pluck('subtype_type', 'id');
 
-        return view('preformato.new', compact('preformato','inspection_subtypes'));
+        return view('preformato.new', compact('preformato','inspection_subtypes', 'companies'));
     }
 
     /**
@@ -41,12 +49,23 @@ class PreformatoController extends Controller
      */
     public function store(Request $request)
     {
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['company_id'] = session()->get('Session_Company');
+        }
+
         $this->validate($request, [
             'name' => 'required|unique:preformatos|min:2',
             'inspection_subtype_id' => 'required',
             'header' => 'required',
             'format' => 'required',
+            'company_id' => 'required',
         ]);
+
+        // Si ya existe un preformato de con el subtipo y la compañía que esta ingresando no lo dejará
+        if( Preformato::where('company_id', $request->company_id)->where('inspection_subtype_id', $request->inspection_subtype_id)->get()->count() > 0 ){
+            $alert = ['error', trans('words.PreformatoExist')];
+            return redirect()->route('preformatos.index')->with('alert', $alert);
+        }
 
         $preformato = new Preformato();
         $preformato->name = $request->name;
@@ -54,6 +73,7 @@ class PreformatoController extends Controller
         $preformato->header = $request->header;
         $preformato->format = $request->format;
         $preformato->status = 1;
+        $preformato->company_id = $request->company_id;
 
         if ($preformato->save()) {
             $alert = ['success', trans_choice('words.Preformato',1).' '.trans('words.HasAdded')];
@@ -82,14 +102,25 @@ class PreformatoController extends Controller
      */
     public function edit($id)
     {
-        $inspection_subtypes = InspectionSubtype::pluck('name', 'id');
+        $companies = Company::with('user')->get()->pluck('user.name', 'id');
+        $inspection_subtypes = InspectionSubtype::with('inspection_types')->get()->pluck('subtype_type', 'id');
         $preformato = Preformato::find($id);
-        if ($preformato->status == 0)
+
+        if(CompanyController::compareCompanySession([$preformato->company]))
         {
-          $alert = ['success', trans('words.thePreformatInactive')];
-          return redirect()->route('preformatos.index')->with('alert',$alert);
+            if ($preformato->status == 0)
+            {
+                $alert = ['success', trans('words.thePreformatInactive')];
+                return redirect()->route('preformatos.index')->with('alert',$alert);
+            }
+            return view('preformato.edit', compact('preformato','inspection_subtypes', 'companies'));
+
         }
-        return view('preformato.edit', compact('preformato','inspection_subtypes'));
+        else
+        {
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('preformatos.index')->with('alert',$alert);
+        }
     }
 
     /**
@@ -103,13 +134,34 @@ class PreformatoController extends Controller
     {
         $preformato = Preformato::findOrFail($id);
 
+        if( !CompanyController::compareCompanySession([$preformato->company]) )
+        {
+            $alert = ['error', 'This action is unauthorized.'];
+            return redirect()->route('preformatos.index')->with('alert',$alert);
+        }
+
+        if( !auth()->user()->hasRole('Admin') ){
+            $request['company_id'] = session()->get('Session_Company');
+        }
+
         if ($preformato->name != $request->name)
             { $this->validate($request, [
-                'name' => 'required|unique:preformatos|min:2',
+                'name'                  => 'required|unique:preformatos|min:2',
                 'inspection_subtype_id' => 'required',
-                'preformato' => 'required',
+                'format'                => 'required',
+                'header'                => 'required',
+                'company_id'            => 'required',
+            ]);
+        }else{
+            $this->validate($request, [
+                'name'                  => 'required|min:2',
+                'inspection_subtype_id' => 'required',
+                'format'                => 'required',
+                'header'                => 'required',
+                'company_id'            => 'required',
             ]);
         }
+
         $preformato->update($request->except(array('_method','_token')));
 
         $alert = ['success', trans_choice('words.Preformato',1).' '.trans('words.HasUpdated')];
@@ -125,6 +177,12 @@ class PreformatoController extends Controller
     public function destroy($id)
     {
       $preformat = Preformato::find($id);
+
+      if( !CompanyController::compareCompanySession([$preformat->company]) )
+      {
+        abort(403, 'This action is unauthorized.');
+      }
+
       //Valida que exista el servicio
       if($preformat)
       {
