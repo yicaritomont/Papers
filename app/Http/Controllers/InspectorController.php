@@ -567,10 +567,12 @@ class InspectorController extends Controller
      */
     public static function qrInfoInspector($id)
     {
-        $url = new QR_Url($_SERVER["HTTP_HOST"].'/roles-permissions/public/ReadQrInspector/'.$id);
+        $base_url = $_SERVER['REQUEST_URI'];
+        $vector_url = explode('/',$base_url);
+        $server =  $_SERVER['SERVER_NAME']."/".$vector_url[1]; 
+        $url = new QR_Url($server.'/public/ReadQrInspector/'.$id);
         $url->setSize(4)->setMargin(2)->svg();
     }
-
     /**
 	 * Resolves the ajax requests
 	 *
