@@ -121,8 +121,15 @@ class InspectorAgenda extends Model
             $fechasCitas->push($i);
         }
 
+        $arrContextOptions=array(
+            "ssl"=>array(
+                "verify_peer"=> false,
+                "verify_peer_name"=> false,
+            ),
+        );
+        
         // Llamar a la api de geocoding de google maps para obtener las coordenadas de las ciudades
-        $jsonGeocoding = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$agendas->pluck('city.name').'&key=AIzaSyBUCXlkrB9E1qZYjF3j5OZxXoeD9gYGRPs');
+        $jsonGeocoding = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$agendas->pluck('city.name').'&key=AIzaSyBUCXlkrB9E1qZYjF3j5OZxXoeD9gYGRPs',false,stream_context_create($arrContextOptions));
         $agendasLocation = json_decode( $jsonGeocoding, true );
         
         if( $agendasLocation['status'] != 'OK' ){

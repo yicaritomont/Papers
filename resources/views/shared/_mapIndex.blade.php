@@ -12,7 +12,7 @@
         map = new google.maps.Map(document.getElementById('map'));
 
         // Cuando los datos del dataTable se hallan cargado
-        table.on( 'xhr', function () {
+        $('.dataTable').DataTable().on( 'xhr', function () {
 
             var bounds  = new google.maps.LatLngBounds();
 
@@ -22,7 +22,7 @@
 
             markers = [];
 
-            var tableDataAjax = table.ajax.json();
+            var tableDataAjax = $('.dataTable').DataTable().ajax.json();
 
             $.each(tableDataAjax.data, function(key, value){
                 var id = value.id;
