@@ -22,7 +22,7 @@ class CreateLecturaqrTable extends Migration
             $table->timestamps(); 
 
             $table->foreign('id_usuario')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('id_inspector')->references('id')->on('inspector')->onDelete('cascade');
+            $table->foreign('id_inspector')->references('id')->on('inspectors')->onDelete('cascade');
         });
     }
 
